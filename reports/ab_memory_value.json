@@ -1,0 +1,753 @@
+{
+  "protocol": {
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "teachers": 3,
+    "teacher_seeds": [
+      9901,
+      9902,
+      9903
+    ],
+    "generations": 8,
+    "population": 12,
+    "teacher_prior": "disabled (plain experience only)",
+    "memory_prior": "enabled, frozen snapshot of the teacher store (cache_ttl=1e9)",
+    "control_prior": "hard-disabled (prior_enabled=False), identical instrumentation",
+    "metric": "evals to first holdout success; censored at total evals"
+  },
+  "results": [
+    {
+      "scenario": "click_cli_parser",
+      "difficulty": "medium",
+      "teacher_experiences": 291,
+      "per_edit_kind": {
+        "<no_edits>": {
+          "n": 3,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "int_wrap": {
+          "n": 361,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "bool_flip": {
+          "n": 445,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "compare_flip": {
+          "n": 212,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "index_flip": {
+          "n": 303,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        }
+      },
+      "pairs": 10,
+      "N_mean_evals": 81.2,
+      "M_mean_evals": 82.2,
+      "search_efficiency_gain": -0.0123,
+      "successes": {
+        "control": 2,
+        "memory": 2
+      },
+      "paired": {
+        "memory_wins": 1,
+        "control_wins": 2,
+        "ties": 7
+      },
+      "sign_test_p": 1.0,
+      "runs": [
+        {
+          "seed": 1,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 2,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 3,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 4,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 5,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 6,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 7,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 8,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 9,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 10,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "requests_http_helper",
+      "difficulty": "easy",
+      "teacher_experiences": 291,
+      "per_edit_kind": {
+        "<no_edits>": {
+          "n": 3,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "auth_prefix": {
+          "n": 497,
+          "holdout_success": 34,
+          "errors": 0,
+          "success_rate": 0.0684
+        },
+        "string_sep": {
+          "n": 251,
+          "holdout_success": 34,
+          "errors": 0,
+          "success_rate": 0.1355
+        }
+      },
+      "pairs": 10,
+      "N_mean_evals": 16.0,
+      "M_mean_evals": 18.1,
+      "search_efficiency_gain": -0.1313,
+      "successes": {
+        "control": 10,
+        "memory": 10
+      },
+      "paired": {
+        "memory_wins": 4,
+        "control_wins": 4,
+        "ties": 2
+      },
+      "sign_test_p": 1.0,
+      "runs": [
+        {
+          "seed": 1,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 2,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 3,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 28,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 4,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 5,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 6,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 7,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 8,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 9,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 10,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "lru_cache_logic",
+      "difficulty": "medium",
+      "teacher_experiences": 291,
+      "per_edit_kind": {
+        "<no_edits>": {
+          "n": 3,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "compare_flip": {
+          "n": 236,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "pop_to_front": {
+          "n": 257,
+          "holdout_success": 27,
+          "errors": 0,
+          "success_rate": 0.1051
+        },
+        "hit_move_to_end": {
+          "n": 258,
+          "holdout_success": 27,
+          "errors": 0,
+          "success_rate": 0.1047
+        }
+      },
+      "pairs": 10,
+      "N_mean_evals": 26.5,
+      "M_mean_evals": 43.4,
+      "search_efficiency_gain": -0.6377,
+      "successes": {
+        "control": 9,
+        "memory": 7
+      },
+      "paired": {
+        "memory_wins": 3,
+        "control_wins": 6,
+        "ties": 1
+      },
+      "sign_test_p": 0.5078125,
+      "runs": [
+        {
+          "seed": 1,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 2,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 3,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 4,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 5,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 6,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        },
+        {
+          "seed": 7,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 8,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 9,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 10,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        }
+      ]
+    },
+    {
+      "scenario": "multi_file_config",
+      "difficulty": "hard",
+      "teacher_experiences": 291,
+      "per_edit_kind": {
+        "<no_edits>": {
+          "n": 3,
+          "holdout_success": 0,
+          "errors": 0,
+          "success_rate": 0.0
+        },
+        "swap_int_args": {
+          "n": 263,
+          "holdout_success": 41,
+          "errors": 0,
+          "success_rate": 0.1559
+        },
+        "compare_flip": {
+          "n": 487,
+          "holdout_success": 41,
+          "errors": 0,
+          "success_rate": 0.0842
+        }
+      },
+      "pairs": 10,
+      "N_mean_evals": 15.0,
+      "M_mean_evals": 15.3,
+      "search_efficiency_gain": -0.02,
+      "successes": {
+        "control": 10,
+        "memory": 10
+      },
+      "paired": {
+        "memory_wins": 1,
+        "control_wins": 3,
+        "ties": 6
+      },
+      "sign_test_p": 0.625,
+      "runs": [
+        {
+          "seed": 1,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 2,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 3,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 4,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 5,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 6,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 7,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 8,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 9,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        },
+        {
+          "seed": 10,
+          "control": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          "memory": {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        }
+      ]
+    }
+  ],
+  "overall": {
+    "pairs": 40,
+    "N_mean_evals": 34.675,
+    "M_mean_evals": 39.75,
+    "search_efficiency_gain": -0.1464,
+    "successes": {
+      "control": 31,
+      "memory": 29
+    },
+    "paired": {
+      "memory_wins": 9,
+      "control_wins": 15,
+      "ties": 16
+    },
+    "sign_test_p": 0.30745625495910645
+  },
+  "verdict": {
+    "rule": "keep default-on memory iff overall gain > 0 AND memory_wins >= control_wins (registered before the run)",
+    "overall_gain": -0.1464,
+    "keeps_default_on": false
+  }
+}

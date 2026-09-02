@@ -1,0 +1,44 @@
+{
+  "name": "comparator_simple",
+  "circuit_file": "circuits/comparator_simple/circuit.cir",
+  "design_vars": {
+    "R1": [
+      10000.0,
+      5000.0,
+      20000.0
+    ],
+    "R2": [
+      10000.0,
+      5000.0,
+      20000.0
+    ],
+    "RC": [
+      10000.0,
+      5000.0,
+      20000.0
+    ],
+    "Vref": [
+      2.5,
+      1.0,
+      4.0
+    ]
+  },
+  "specs": {
+    "vout_high": [
+      ">",
+      3.5
+    ],
+    "vout_low": [
+      "<",
+      1.0
+    ]
+  },
+  "metrics_patterns": {
+    "vout_high": "^\\s*vout_high\\s+=\\s+([\\-\\d\\.eE+]+)",
+    "vout_low": "^\\s*vout_low\\s+=\\s+([\\-\\d\\.eE+]+)"
+  },
+  "metrics_parser_type": "regex",
+  "objective": {
+    "type": "sum_violations"
+  }
+}

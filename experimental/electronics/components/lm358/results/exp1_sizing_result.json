@@ -1,0 +1,51 @@
+{
+  "experiment": "lm358_exp1_sizing",
+  "source": "SLOS068AB_LM358B.pdf.txt",
+  "sha256": "64C2626E109FDEADBC23E985268B24FEAA011722D5E91C98E9985467F3616B22",
+  "sha256_of": "transcription text file; original TI SLOS068AB PDF not bundled in repository",
+  "timestamp": 1788082751,
+  "tool_used": "analytical_fallback",
+  "oracle_agreement": 0.0,
+  "default_score": 88.1471,
+  "default_passed": false,
+  "specs": {
+    "gain": [
+      ">",
+      60
+    ],
+    "ugf": [
+      ">",
+      1000000.0
+    ],
+    "pm": [
+      ">",
+      60
+    ]
+  },
+  "benchmark": [
+    {
+      "strategy_name": "Random Search",
+      "best_fitness": 92.1385,
+      "generations_run": 1,
+      "evaluations_count": 60,
+      "duration_sec": 0.1312,
+      "target_met": true
+    },
+    {
+      "strategy_name": "Standard GA",
+      "best_fitness": 90.5045,
+      "generations_run": 6,
+      "evaluations_count": 60,
+      "duration_sec": 0.1607,
+      "target_met": true
+    },
+    {
+      "strategy_name": "Darwin-EvoLab (Speciation)",
+      "best_fitness": 96.0557,
+      "generations_run": 6,
+      "evaluations_count": 60,
+      "duration_sec": 0.171,
+      "target_met": true
+    }
+  ]
+}

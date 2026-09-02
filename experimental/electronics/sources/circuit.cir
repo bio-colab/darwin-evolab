@@ -1,0 +1,43 @@
+* NE555 Astable - Working Oscillator with Capacitor Initial Condition
+* دائرة تتذبذب مع شرط ابتدائي للمكثف
+
+.PARAM VCC=5
+.PARAM R1=10k
+.PARAM R2=10k
+.PARAM C1=100n
+
+VCC vcc 0 DC {VCC}
+
+* الطوبولوجيا الصحيحة
+R1 vcc pin7 {R1}
+R2 pin7 cap {R2}
+C1 cap 0 {C1} IC=0
+
+* Comparator Reset
+Ecomp_r comp_r 0 VALUE {limit((V(cap)-3.33)*50, 0, 1)}
+Rcr comp_r 0 1k
+
+* Comparator Set
+Ecomp_s comp_s 0 VALUE {limit((1.67-V(cap))*50, 0, 1)}
+Rcs comp_s 0 1k
+
+* SR Latch - latch يبدأ بـ 1 ثم يتغير
+Elatch latch 0 VALUE {V(comp_s) + V(latch)*(1-V(comp_r))}
+Clatch latch 0 10p IC=1
+Rlatch latch 0 1G
+
+* Discharge - يفرغ عندما comp_r=1
+Gdisch pin7 0 VALUE {V(comp_r) * V(pin7) * 0.1}
+
+* Output
+Eout out 0 VALUE {V(latch) * {VCC}}
+
+.TRAN 0.01m 30m
+.OPTIONS ITL4=200 RELTOL=0.02 METHOD=GEAR
+
+.MEAS TRAN vmax MAX V(out)
+.MEAS TRAN vmin MIN V(out)
+.MEAS TRAN t1 TRIG V(out) VAL=2.5 RISE=1 TARG V(out) VAL=2.5 FALL=1
+.MEAS TRAN t2 TRIG V(out) VAL=2.5 FALL=1 TARG V(out) VAL=2.5 RISE=2
+
+.END

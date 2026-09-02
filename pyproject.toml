@@ -1,0 +1,87 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evolab"
+version = "0.5.0"
+description = "Evidence-first evolutionary code experimentation workbench"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "bio-colab", email = "contact@bio-colab.org" }]
+keywords = ["genetic-algorithm", "evolutionary-computation", "ast", "code-evolution", "sandbox"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Testing",
+]
+
+dependencies = []
+
+[project.scripts]
+evolab = "evolab.cli:main"
+
+[project.entry-points.pytest11]
+evolab = "evolab.pytest_plugin"
+
+[project.urls]
+Homepage = "https://github.com/bio-colab/darwin-evolab"
+Repository = "https://github.com/bio-colab/darwin-evolab"
+Issues = "https://github.com/bio-colab/darwin-evolab/issues"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+]
+cst = [
+    "libcst>=1.0",
+]
+quantum = [
+    "numpy>=1.22",
+]
+full = [
+    "numpy>=1.22",
+    "scipy>=1.9",
+    "pyyaml>=5.4",
+    "libcst>=1.0",
+    "z3-solver>=4.8",
+]
+electronics = [
+    "numpy>=1.22",
+    "z3-solver>=4.8",
+]
+llm = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "UP",
+]
+ignore = [
+    "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"src/evolab/engine.py" = ["F401"]
+

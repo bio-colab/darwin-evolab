@@ -1,0 +1,43 @@
+* Comparator Simple - BJT Differential Pair (LM339-inspired, PTM-free)
+* 4-layer ground truth: TI LM339 datasheet (Vos<5mV, tpd<1.3us) + RC formula + SPICE + holdout
+.title Comparator Simple - BJT Diff Pair
+
+.param R1=10k
+.param R2=10k
+.param RC=10k
+.param Vref=2.5
+.param VCC=5
+
+.model QMOD NPN(Is=6.734f Xti=3 Eg=1.11 Vaf=74.03 Bf=200 Ne=1.259 Ise=6.734f Ikf=66.78m Xtb=1.5 Br=.7371 Nc=2 Isc=0 Ikr=0 Rc=1 Cjc=3.638p Mjc=.3085 Vjc=.75 Fc=.5 Cje=4.493p Mje=.2593 Vje=.75 Tr=239.5n Tf=301.2p Itf=.4 Vtf=4 Xtf=2 Rb=10)
+
+VCC vcc 0 {VCC}
+Vee vee 0 -5
+Vin in 0 DC 2.6
+Vref ref 0 {Vref}
+
+* Diff pair
+Q1 c1 in ee QMOD
+Q2 c2 ref ee QMOD
+Ree ee vee 2k
+Rc1 vcc c1 {RC}
+Rc2 vcc c2 {RC}
+
+* Output stage
+Q3 out c2 vcc QMOD
+R3 vcc out {R1}
+R4 out 0 {R2}
+
+* Analysis
+.op
+.dc Vin 0 5 0.1
+.tran 1u 2m
+.print dc V(out)
+.print tran V(out) V(in)
+
+* Measurements
+.meas dc vout_high MAX V(out)
+.meas dc vout_low MIN V(out)
+.meas tran tpd TRIG V(in) VAL=2.5 RISE=1 TARG V(out) VAL=2.5 RISE=1
+.meas tran vos FIND V(out) AT=1m
+
+.end

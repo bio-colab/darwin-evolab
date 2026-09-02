@@ -1,0 +1,61 @@
+{
+  "part_number": "LM358B",
+  "datasheet_id": "TI-SLOS068AB",
+  "datasheet_rev": "AB-Oct2024",
+  "source_pdf": "source/SLOS068AB_LM358B.pdf.txt",
+  "source_sha256": "64C2626E109FDEADBC23E985268B24FEAA011722D5E91C98E9985467F3616B22",
+  "source_sha256_note": "SHA256 of the transcription text file above (computed 2026-08-30). The original TI SLOS068AB PDF is NOT bundled in this repository; these specs are an unverified transcription pending re-verification against the official TI datasheet.",
+  "family_comparison": {
+    "LM358B_BA": {"supply_V": "3 to 36", "vos_max_mv_25C": 3, "vos_BA_max_mv": 2, "ib_typ_nA": 10, "ib_max_nA": 35, "gbw_MHz": 1.2, "iq_uA_per_ch_typ": 300, "esd_HBM_V": 2000, "temp_C": "-40 to 85"},
+    "LM358_A": {"supply_V": "3 to 30", "vos_max_mv": 7, "gbw_MHz": 0.7, "iq_uA": 350}
+  },
+  "absolute_max": {
+    "Vs_V": "±20 or 40",
+    "Vid_V": "±32",
+    "Vi_V": "-0.3 to 40",
+    "TA_C": "-40 to 85",
+    "TJ_C": 150
+  },
+  "recommended": {
+    "Vs_V": "3 to 36",
+    "VCM_V": "V- to V+-1.5 (3-36V), V- to V+-2 (-40..85)",
+    "TA_C": "-40 to 85"
+  },
+  "electrical_LM358B_25C_Vs5to36_VCM_Vout_VsDiv2_RL10k": {
+    "VOS_mV": {"typ": 0.3, "max_B": 3.0, "max_BA": 2.0, "max_B_minus40to85": 4.0, "max_BA_minus40to85": 2.5},
+    "dVOS_dT_uV_per_C": {"typ": 3.5, "max": 11},
+    "PSRR_uV_per_V": {"typ": 2, "max": 15},
+    "VCM_V": {"range_3to36": "V- to V+-1.5", "range_minus40to85": "V- to V+-2"},
+    "CMRR_uV_per_V": {"typ_20_max100_at_3to36": {"typ": 20, "max": 100}, "typ25_max316_at_minus40to85": {"typ": 25, "max": 316}},
+    "IB_nA": {"typ": -10, "max_25C": -35, "max_minus40to85": -50},
+    "IOS_nA": {"typ": 0.5, "max_25C": 4, "max_minus40to85": 5},
+    "En_uVpp_0p1to10Hz": 3,
+    "en_nV_per_sqrtHz_1kHz": 40,
+    "ZID_MOhm_pF": "10 || 0.1",
+    "ZIC_GOhm_pF": "4 || 1.5",
+    "AOL_V_per_mV": {"min_25C": 70, "typ_25C": 140, "min_minus40to85": 35, "test": "Vs=15V VO 1-11V RL>=10k"},
+    "GBW_MHz": 1.2,
+    "SR_V_per_us": 0.5,
+    "PhaseMargin_deg": {"typ": 56, "test": "G=1 RL10k CL20p"},
+    "tOR_us": 10,
+    "ts_us_to_0p1pct": 4,
+    "THD_N_percent": 0.001,
+    "VO_pos_from_rail_V": {"at_50uA": 1.35, "at_1mA": 1.4, "at_5mA": 1.5},
+    "VO_neg_from_rail_mV": {"at_50uA": 100, "at_1mA": 750, "at_5V_RL10k_minus40to85": "5-20"},
+    "IO_mA": {"source_min": -20, "source_typ": -30, "sink_min": 10, "sink_typ": 20, "at_200mV_uA": "60-100"},
+    "ISC_mA": {"typ": 40, "max": 60, "test": "Vs=20V V+=10 V-=-10 VO=0"},
+    "CLOAD_pF": 100,
+    "RO_Ohm_1MHz": 300,
+    "IQ_uA_per_amp": {"typ_5V": 300, "max_5V": 460, "max_5V_minus40to85": 460, "max_36V": 800}
+  },
+  "pin_config_D_SOIC8": {
+    "OUT1": 1, "IN1-": 2, "IN1+": 3, "V-": 4, "IN2+": 5, "IN2-": 6, "OUT2": 7, "V+": 8
+  },
+  "experiment_targets": {
+    "gbw_MHz": {"min": 1.0, "typ": 1.2},
+    "vos_max_mV": 3.0,
+    "iq_uA_per_ch_max": 460,
+    "phase_margin_deg_min": 45,
+    "slew_rate_V_per_us_min": 0.3
+  }
+}

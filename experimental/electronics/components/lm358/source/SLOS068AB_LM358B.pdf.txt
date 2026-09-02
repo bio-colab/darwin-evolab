@@ -1,0 +1,32 @@
+﻿TI SLOS068AB - LM358B/LM358BA Dual Op Amp - Full Extracted Source Text (from user PDF)
+================================================================================
+Features:
+- Supply 3V to 36V (B,BA), Iq 300uA/ch typ, GBW 1.2MHz (B,BA), Vos 3mV max (B) /2mV (BA) at 25C
+- Common-mode includes ground, Internal RF/EMI filter (B,BA)
+Applications: power supplies, motor control, desktop PC, air conditioners, inverters, UPS
+Description: LM358B/LM2904B next-gen of LM358/LM2904, 36V, low offset 300uV typ, high ESD 2kV HBM
+
+Family Comparison (B/BA vs others):
+Supply: B/BA 3-36V, Offset max ±3 (B) ±2 (BA) mV, Ib typ 10 / max 35 nA, GBW 1.2 MHz, Iq 0.3mA/ch, ESD 2000V, Temp -40 to 85C (B) / -40 to125 (2904B)
+
+Absolute Max: Vs ±20/40V (B), Vid ±32V, VI -0.3 to 40V, TA -40 to85 (B)
+
+Recommended: Vs 3-36V B/BA, VCM V- to V+-2V, TA -40 to85
+
+Electrical LM358B/BA (Vs=5-36V, TA=25C, VCM=Vout=Vs/2, RL=10k):
+- VOS: B ±0.3 typ ±3.0 max (4mV -40..85), BA ±2.0 max (2.5mV -40..85)
+- dVOS/dT ±3.5 typ 11 max uV/C
+- PSRR ±2 typ 15 max uV/V, Channel sep ±1 uV/V
+- VCM: (V-) to (V+)-1.5 (3-36V), -40..85: (V-)-(V+)-2
+- CMRR: 20 typ 100 max uV/V (V- to V+-1.5), 25 typ 316 max (V- to V+-2, -40..85)
+- IB: -10 typ -35 max nA (-50 -40..85), IOS 0.5 typ 4 max (5 -40..85)
+- En 3uVpp 0.1-10Hz, en 40nV/rtHz @1kHz
+- ZID 10M||0.1pF, ZIC 4G||1.5pF
+- AOL 70 min 140 typ V/mV @15V VO 1-11V RL10k (35 min -40..85)
+- GBW 1.2MHz, SR 0.5V/us (G=1), Phase margin 56deg (G=1, RL10k, CL20p), tOR 10us, ts 4us, THD+N 0.001%
+- VO swing pos: 1.35V @50uA,1.4@1mA,1.5@5mA from rail; neg: 100mV @50uA,0.75V@1mA (5-10mV at 5V RL10k)
+- IO source -20 min -30 typ mA, sink 10 min 20 typ mA, ISC ±40 typ ±60 max @±10V, CLOAD 100pF, Ro 300Ω @1MHz
+- IQ 300 typ 460 max uA @5V (800 max @36V) per amp
+
+... (full PDF text truncated, see original PDF for Typical Characteristics, Pin Config, etc.)
+(Note: the original TI SLOS068AB PDF is not bundled in the repository. The SHA256 of this transcription text file is recorded in extracted_specs.json; verify these specs against the official TI datasheet before relying on them.)

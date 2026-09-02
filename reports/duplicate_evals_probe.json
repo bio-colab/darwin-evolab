@@ -1,0 +1,516 @@
+{
+  "protocol": {
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "generations": 8,
+    "population": 12,
+    "prior": "disabled (pure baseline behavior, v1 control-arm equivalent)",
+    "identity": "sha256 of materialized program source (ground truth)"
+  },
+  "results": [
+    {
+      "scenario": "click_cli_parser",
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "total_evals": 970,
+      "pooled_within_run_duplicate_evals": 706,
+      "within_run_duplicate_rate": 0.7278,
+      "within_run_rate_wilson_lb": 0.699,
+      "cross_run_saved_evals": 893,
+      "cross_run_savings_rate": 0.9206,
+      "distinct_programs_all_runs": 77,
+      "store_rows": 970,
+      "probe_hashes": 970,
+      "store_probe_aligned": true,
+      "proxy_colliding_keys": 0,
+      "proxy_colliding_programs": 0,
+      "per_seed": [
+        {
+          "seed": 1,
+          "evals": 97,
+          "unique_programs": 25,
+          "duplicate_evals": 72,
+          "duplicate_rate": 0.7423,
+          "max_multiplicity": 51,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 2,
+          "evals": 97,
+          "unique_programs": 28,
+          "duplicate_evals": 69,
+          "duplicate_rate": 0.7113,
+          "max_multiplicity": 25,
+          "programs_seen_more_than_twice": 11
+        },
+        {
+          "seed": 3,
+          "evals": 97,
+          "unique_programs": 26,
+          "duplicate_evals": 71,
+          "duplicate_rate": 0.732,
+          "max_multiplicity": 30,
+          "programs_seen_more_than_twice": 11
+        },
+        {
+          "seed": 4,
+          "evals": 97,
+          "unique_programs": 29,
+          "duplicate_evals": 68,
+          "duplicate_rate": 0.701,
+          "max_multiplicity": 35,
+          "programs_seen_more_than_twice": 10
+        },
+        {
+          "seed": 5,
+          "evals": 97,
+          "unique_programs": 26,
+          "duplicate_evals": 71,
+          "duplicate_rate": 0.732,
+          "max_multiplicity": 44,
+          "programs_seen_more_than_twice": 9
+        },
+        {
+          "seed": 6,
+          "evals": 97,
+          "unique_programs": 30,
+          "duplicate_evals": 67,
+          "duplicate_rate": 0.6907,
+          "max_multiplicity": 39,
+          "programs_seen_more_than_twice": 9
+        },
+        {
+          "seed": 7,
+          "evals": 97,
+          "unique_programs": 26,
+          "duplicate_evals": 71,
+          "duplicate_rate": 0.732,
+          "max_multiplicity": 46,
+          "programs_seen_more_than_twice": 7
+        },
+        {
+          "seed": 8,
+          "evals": 97,
+          "unique_programs": 26,
+          "duplicate_evals": 71,
+          "duplicate_rate": 0.732,
+          "max_multiplicity": 31,
+          "programs_seen_more_than_twice": 10
+        },
+        {
+          "seed": 9,
+          "evals": 97,
+          "unique_programs": 25,
+          "duplicate_evals": 72,
+          "duplicate_rate": 0.7423,
+          "max_multiplicity": 35,
+          "programs_seen_more_than_twice": 12
+        },
+        {
+          "seed": 10,
+          "evals": 97,
+          "unique_programs": 23,
+          "duplicate_evals": 74,
+          "duplicate_rate": 0.7629,
+          "max_multiplicity": 37,
+          "programs_seen_more_than_twice": 9
+        }
+      ]
+    },
+    {
+      "scenario": "requests_http_helper",
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "total_evals": 970,
+      "pooled_within_run_duplicate_evals": 892,
+      "within_run_duplicate_rate": 0.9196,
+      "within_run_rate_wilson_lb": 0.9008,
+      "cross_run_saved_evals": 962,
+      "cross_run_savings_rate": 0.9918,
+      "distinct_programs_all_runs": 8,
+      "store_rows": 970,
+      "probe_hashes": 970,
+      "store_probe_aligned": true,
+      "proxy_colliding_keys": 0,
+      "proxy_colliding_programs": 0,
+      "per_seed": [
+        {
+          "seed": 1,
+          "evals": 97,
+          "unique_programs": 7,
+          "duplicate_evals": 90,
+          "duplicate_rate": 0.9278,
+          "max_multiplicity": 73,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 2,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 66,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 3,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 68,
+          "programs_seen_more_than_twice": 7
+        },
+        {
+          "seed": 4,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 72,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 5,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 69,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 6,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 70,
+          "programs_seen_more_than_twice": 5
+        },
+        {
+          "seed": 7,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 69,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 8,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 69,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 9,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 67,
+          "programs_seen_more_than_twice": 7
+        },
+        {
+          "seed": 10,
+          "evals": 97,
+          "unique_programs": 7,
+          "duplicate_evals": 90,
+          "duplicate_rate": 0.9278,
+          "max_multiplicity": 69,
+          "programs_seen_more_than_twice": 6
+        }
+      ]
+    },
+    {
+      "scenario": "lru_cache_logic",
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "total_evals": 970,
+      "pooled_within_run_duplicate_evals": 894,
+      "within_run_duplicate_rate": 0.9216,
+      "within_run_rate_wilson_lb": 0.903,
+      "cross_run_saved_evals": 962,
+      "cross_run_savings_rate": 0.9918,
+      "distinct_programs_all_runs": 8,
+      "store_rows": 970,
+      "probe_hashes": 970,
+      "store_probe_aligned": true,
+      "proxy_colliding_keys": 0,
+      "proxy_colliding_programs": 0,
+      "per_seed": [
+        {
+          "seed": 1,
+          "evals": 97,
+          "unique_programs": 7,
+          "duplicate_evals": 90,
+          "duplicate_rate": 0.9278,
+          "max_multiplicity": 73,
+          "programs_seen_more_than_twice": 5
+        },
+        {
+          "seed": 2,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 71,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 3,
+          "evals": 97,
+          "unique_programs": 7,
+          "duplicate_evals": 90,
+          "duplicate_rate": 0.9278,
+          "max_multiplicity": 70,
+          "programs_seen_more_than_twice": 5
+        },
+        {
+          "seed": 4,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 67,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 5,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 71,
+          "programs_seen_more_than_twice": 5
+        },
+        {
+          "seed": 6,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 72,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 7,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 69,
+          "programs_seen_more_than_twice": 5
+        },
+        {
+          "seed": 8,
+          "evals": 97,
+          "unique_programs": 6,
+          "duplicate_evals": 91,
+          "duplicate_rate": 0.9381,
+          "max_multiplicity": 72,
+          "programs_seen_more_than_twice": 3
+        },
+        {
+          "seed": 9,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 69,
+          "programs_seen_more_than_twice": 6
+        },
+        {
+          "seed": 10,
+          "evals": 97,
+          "unique_programs": 8,
+          "duplicate_evals": 89,
+          "duplicate_rate": 0.9175,
+          "max_multiplicity": 67,
+          "programs_seen_more_than_twice": 7
+        }
+      ]
+    },
+    {
+      "scenario": "multi_file_config",
+      "seeds": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "total_evals": 970,
+      "pooled_within_run_duplicate_evals": 930,
+      "within_run_duplicate_rate": 0.9588,
+      "within_run_rate_wilson_lb": 0.9443,
+      "cross_run_saved_evals": 966,
+      "cross_run_savings_rate": 0.9959,
+      "distinct_programs_all_runs": 4,
+      "store_rows": 970,
+      "probe_hashes": 970,
+      "store_probe_aligned": true,
+      "proxy_colliding_keys": 0,
+      "proxy_colliding_programs": 0,
+      "per_seed": [
+        {
+          "seed": 1,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 83,
+          "programs_seen_more_than_twice": 3
+        },
+        {
+          "seed": 2,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 82,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 3,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 82,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 4,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 82,
+          "programs_seen_more_than_twice": 3
+        },
+        {
+          "seed": 5,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 82,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 6,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 83,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 7,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 83,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 8,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 81,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 9,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 83,
+          "programs_seen_more_than_twice": 4
+        },
+        {
+          "seed": 10,
+          "evals": 97,
+          "unique_programs": 4,
+          "duplicate_evals": 93,
+          "duplicate_rate": 0.9588,
+          "max_multiplicity": 84,
+          "programs_seen_more_than_twice": 4
+        }
+      ]
+    }
+  ],
+  "decision": {
+    "thresholds_registered": {
+      "build_eval_cache_if_within_run_rate_ge": 0.05,
+      "build_eval_cache_if_wilson_lb_ge": 0.03,
+      "consider_cross_run_cache_if_cross_rate_ge": 0.05,
+      "proxy_key_allowed_only_if_zero_collisions": true
+    },
+    "observed": {
+      "total_evals": 3880,
+      "within_run_duplicate_rate": 0.882,
+      "within_run_rate_wilson_lb": 0.8714,
+      "cross_run_savings_rate": 0.975,
+      "proxy_colliding_keys": 0
+    },
+    "build_eval_cache": true,
+    "consider_cross_run_cache": true,
+    "proxy_key_safe_for_cache": true
+  }
+}

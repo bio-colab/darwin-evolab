@@ -1,0 +1,85 @@
+* Timer 555 Astable - Minimal Behavioral Model (FIXED)
+* Level B: True Transient Benchmark
+* Working oscillator with proper SR latch behavior using voltage-controlled switches
+
+.title NE555 Astable - Behavioral Oscillator (Fixed)
+
+.param R1=10k
+.param R2=10k
+.param C1=100n
+.param VCC=5
+.param VTH_HIGH={2*VCC/3}
+.param VTH_LOW={VCC/3}
+
+VCC vcc 0 {VCC}
+
+* Standard 555 astable topology
+R1_res vcc 7 {R1}
+R2_res 7 2 {R2}
+C_timing 2 0 {C1}
+
+* Discharge transistor (NPN-like behavior)
+Qdisch 7 discharge_ctrl 0 NPN555
+.model NPN555 NPN(Bf=100 Br=1 Is=1e-15 Vaf=100)
+
+* Comparator 1: Output HIGH when V(2) < VTH_LOW (SET)
+* Using voltage-controlled switch with hysteresis
+Bcmp1 set_node 0 V='VCC/(1+exp(60*(V(2)-VTH_LOW)))'
+Eset set 0 set_node 0 1
+
+* Comparator 2: Output HIGH when V(2) > VTH_HIGH (RESET)
+Bcmp2 reset_node 0 V='VCC/(1+exp(-60*(V(2)-VTH_HIGH)))'
+Ereset reset 0 reset_node 0 1
+
+* SR Latch built from cross-coupled NOR gates
+* NOR gate 1: output = NOT(set OR Q_bar)
+* NOR gate 2: output = NOT(reset OR Q)
+
+* Node for Q and Q_bar
+Rq q 0 1Meg
+Rq_bar q_bar 0 1Meg
+Cq q 0 1p
+Cq_bar q_bar 0 1p
+
+* NOR gate implementation using voltage-controlled switches and pull-ups/pull-downs
+* Q = NOR(RESET, Q_bar)
+
+* Pull-up resistor for Q
+Rpu_q vcc q 1k
+* Switch to ground when RESET is HIGH
+Sreset_q q 0 reset 0 SWNOR
+.model SWNOR SW(Ron=1 Roff=1Meg Vt=2.5 Vh=0.5)
+* Switch to ground when Q_bar is HIGH  
+Sqbar_q q 0 q_bar 0 SWNOR
+
+* Q_bar = NOR(SET, Q)
+* Pull-up resistor for Q_bar
+Rpu_q_bar vcc q_bar 1k
+* Switch to ground when SET is HIGH
+Sset_q_bar q_bar 0 set 0 SWNOR
+* Switch to ground when Q is HIGH
+Sq_q_bar q_bar 0 q 0 SWNOR
+
+* Initial state: Q=HIGH, Q_bar=LOW
+.ic V(q)=5 V(q_bar)=0
+
+* Output buffer
+Eout out 0 q 0 1
+
+* Discharge control: discharge when Q=LOW
+Edisch discharge_ctrl 0 q_bar 0 1
+
+.options method=gear itl4=100
+.tran 5u 50m uic
+
+.print tran V(2) V(out) V(q) V(q_bar) V(7) V(set) V(reset)
+
+.meas tran t_period TRIG V(2) VAL={VTH_LOW} RISE=1 TARG V(2) VAL={VTH_LOW} RISE=2
+.meas tran freq PARAM '1/t_period' WHEN t_period > 0
+.meas tran vout_high MAX V(out) FROM=0.1m TO=50m
+.meas tran vout_low MIN V(out) FROM=0.1m TO=50m
+.meas tran t_high TRIG V(out) VAL={VCC/2} RISE=1 TARG V(out) VAL={VCC/2} FALL=1
+.meas tran t_low TRIG V(out) VAL={VCC/2} FALL=1 TARG V(out) VAL={VCC/2} RISE=2
+.meas tran duty_cycle PARAM 't_high/(t_high+t_low)' WHEN t_high>0 & t_low>0
+
+.end

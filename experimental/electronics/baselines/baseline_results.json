@@ -1,0 +1,57 @@
+{
+  "_meta": {
+    "description": "Default-point baselines for circuits whose netlists ARE bundled under experimental/electronics/circuits/. Every value is produced by the current committed evaluator code.",
+    "regenerate": "PYTHONPATH=src python scripts/regen_baselines.py",
+    "evaluated_at": "2026-08-30T10:03:12+00:00",
+    "evaluator": "experimental.electronics.evaluators.spice_evaluator.CircuitConfigEvaluator",
+    "eval_point": "evaluator defaults (ev.defaults)"
+  },
+  "ptm180nm_opamp": {
+    "vars": 19,
+    "objective": 0.13446666666666668,
+    "score": 88.1471,
+    "meets_holdout": false,
+    "tool_used": "analytical_fallback",
+    "metric_source": {
+      "gain": "analytical_model",
+      "ugf": "analytical_model",
+      "pm": "analytical_model",
+      "gain_db": "analytical_model"
+    },
+    "unmeasured_specs": [],
+    "metrics": {
+      "gain_db": 52.04
+    },
+    "circuit": "/home/z/my-project/darwin-evolab/experimental/electronics/circuits/ptm180nm_opamp/circuit.cir"
+  },
+  "chargepump": {
+    "vars": 7,
+    "objective": 0.16669666666666666,
+    "score": 85.7121,
+    "meets_holdout": false,
+    "tool_used": "analytical_fallback",
+    "metric_source": {
+      "vout": "model_estimate"
+    },
+    "unmeasured_specs": [],
+    "metrics": {
+      "vout": 2.5
+    },
+    "circuit": "/home/z/my-project/darwin-evolab/experimental/electronics/circuits/chargepump/circuit.cir"
+  },
+  "bjt_ce_amp": {
+    "vars": 5,
+    "objective": 0.0,
+    "score": 100.0,
+    "meets_holdout": false,
+    "tool_used": "analytical_fallback",
+    "metric_source": {
+      "vout": "model_estimate"
+    },
+    "unmeasured_specs": [],
+    "metrics": {
+      "vout": 10.0
+    },
+    "circuit": "/home/z/my-project/darwin-evolab/experimental/electronics/circuits/bjt_ce_amp/circuit.cir"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "_meta": {
+    "provenance": "EXTERNAL REFERENCE \u2014 NOT REPRODUCIBLE IN THIS REPOSITORY. These entries were found in the original baseline_results.json but reference netlists that are NOT bundled anywhere in this repo (sky130_* and gh_autockt_opamp / ota_iitb). The obj/meets_specs format is produced by no committed code; numbers were evidently imported from the external opensource-analog-circuits benchmark. Kept verbatim for reference only \u2014 never compare them against in-repo results as if they were measured here.",
+    "moved_at": "2026-08-30T10:03:12+00:00"
+  },
+  "gh_autockt_opamp": {
+    "vars": 10,
+    "obj": 2001.0667595,
+    "meets_specs": false,
+    "time": 0.03,
+    "metrics": {
+      "gain": -4.00557
+    }
+  },
+  "ota_iitb": {
+    "vars": 13,
+    "obj": 2001.2687175,
+    "meets_specs": false,
+    "time": 0.03,
+    "metrics": {
+      "gain": -10.7487
+    }
+  },
+  "sky130_bgr": {
+    "vars": 15,
+    "obj": 0.0,
+    "meets_specs": true,
+    "time": 17.2,
+    "metrics": {
+      "vref": 0.738317
+    }
+  },
+  "sky130_ldo": {
+    "vars": 4,
+    "obj": 0.3333333333333333,
+    "meets_specs": false,
+    "time": 16.85,
+    "metrics": {
+      "vout": 2.0
+    }
+  },
+  "sky130_lp_opamp": {
+    "vars": 6,
+    "obj": 0.0,
+    "meets_specs": true,
+    "time": 16.87,
+    "metrics": {
+      "gain": 72.76753,
+      "ugf": 843977807.1855339,
+      "pm": 179.85514974070907
+    }
+  },
+  "sky130_por": {
+    "vars": 4,
+    "obj": 0.0,
+    "meets_specs": true,
+    "time": 16.77,
+    "metrics": {
+      "trip_point": 1.0
+    }
+  },
+  "sky130_vco": {
+    "vars": 7,
+    "obj": 0.0,
+    "meets_specs": true,
+    "time": 16.92,
+    "metrics": {
+      "ymax": 1.89343,
+      "ymin": 0.0278986
+    }
+  }
+}

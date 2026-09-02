@@ -1,0 +1,17 @@
+{
+  "timestamp": 1787967568,
+  "hc74xx": {
+    "passed": false,
+    "score": 83.4789
+  },
+  "lm358": {
+    "passed": false,
+    "score": 76.9231
+  },
+  "comparator": {
+    "passed": true
+  },
+  "timer": {
+    "passed": false
+  }
+}

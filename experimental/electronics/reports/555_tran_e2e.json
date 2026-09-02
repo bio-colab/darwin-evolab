@@ -1,0 +1,14 @@
+{
+  "pipeline": "BJT astable (555-class RC) \u2192 ngspice-44.2 .tran \u2192 TransientArtifact \u2192 measure_waveform \u2192 Timer555TranEvaluator \u2192 GA pop=4 gens=3",
+  "default_point": {
+    "score": 61.2076,
+    "frequency_hz": 13.79,
+    "vpp": 4.97,
+    "n_samples": 21048,
+    "tool_used": "ngspice",
+    "physical_claim": true
+  },
+  "ga_best_fitness": 100.0,
+  "ngspice": "/tmp/ngspice-root/usr/bin/ngspice",
+  "netlist": "circuits/timer_555_astable/astable_tran.cir"
+}

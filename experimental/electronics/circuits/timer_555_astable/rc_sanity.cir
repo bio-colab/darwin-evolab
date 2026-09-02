@@ -1,0 +1,42 @@
+* RC Sanity Check for 555 Astable
+* Verifies voltage levels stay within [0, VCC] during charge/discharge cycles
+.title NE555 RC Voltage Sanity Check
+.param R1=10k
+.param R2=10k
+.param C1=100n
+.param VCC=5
+
+VCC vcc 0 {VCC}
+
+* Simplified RC charging circuit mimicking 555 behavior
+* Pin 7 (Discharge) switches between open and ground
+* Capacitor charges through R1+R2, discharges through R2 only
+
+Rcharge vcc cap_node {R1}
+Rdisch cap_node out_node {R2}
+C1 out_node 0 {C1}
+
+* Ideal switch to simulate discharge transistor behavior
+* Controlled by capacitor voltage (threshold at 2/3 VCC and 1/3 VCC)
+* For sanity check, we just verify the RC time constants are reasonable
+
+.model SW SW(Ron=1 Roff=1Meg Vt=0.5 Vh=0.25)
+
+* Simple square wave generator to toggle the switch
+Vctrl ctrl 0 PULSE(0 {VCC} 0 1u 1u 1m 2m)
+Sdisch cap_node 0 ctrl 0 SW
+
+* Initial condition: capacitor starts at 1/3 VCC
+.ic v(out_node)=1.67
+
+* Transient analysis for 10ms
+.tran 10u 10m
+
+* Measure voltage extremes
+.meas tran vmax MAX v(out_node)
+.meas tran vmin MIN v(out_node)
+.meas tran vpp PARAM vmax-vmin
+
+.print tran v(out_node) v(cap_node)
+
+.end

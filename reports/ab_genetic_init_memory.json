@@ -1,0 +1,2777 @@
+{
+  "protocol": {
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "teachers": 3,
+    "teacher_seeds": [
+      9901,
+      9902,
+      9903
+    ],
+    "generations": 8,
+    "population": 12,
+    "arms": {
+      "control": "avoid=None, redraws=0, prior disabled (legacy behavior)",
+      "redraw_once": "avoid=None, redraws=1 (mechanism-free init perturbation)",
+      "avoid_f2": "avoid=avoidance_set(min_failures=2), prior disabled",
+      "avoid_f3": "avoid=avoidance_set(min_failures=3), prior disabled"
+    },
+    "dead_door_definition": "(file, lineno, col_offset, kind) mined from SINGLE-edit experiences with >= min_failures attempts and ZERO holdout successes; multi-edit rows never mined; one success rescues a door forever",
+    "primary_metric": "holdout successes within budget (censoring-free count)",
+    "secondary_metric": "median evals-to-first-success among successes",
+    "analysis": "unpaired across arms (any mechanism consuming the RNG stream differently diverges trajectories \u2014 documented v1 weakness)",
+    "statistics": "two-sided Fisher exact on pooled 2x2, alpha=0.05"
+  },
+  "results": [
+    {
+      "scenario": "click_cli_parser",
+      "difficulty": "medium",
+      "teacher_experiences": 291,
+      "avoidance_memory": {
+        "avoid_f2": {
+          "size": 7,
+          "no_single_edit_data": false,
+          "doors": [
+            "cli_parser.py:2:37:bool_flip",
+            "cli_parser.py:4:11:compare_flip",
+            "cli_parser.py:5:30:bool_flip",
+            "cli_parser.py:7:12:int_wrap",
+            "cli_parser.py:7:29:index_flip",
+            "cli_parser.py:9:12:int_wrap",
+            "cli_parser.py:9:29:index_flip"
+          ]
+        },
+        "avoid_f3": {
+          "size": 7,
+          "no_single_edit_data": false,
+          "doors": [
+            "cli_parser.py:2:37:bool_flip",
+            "cli_parser.py:4:11:compare_flip",
+            "cli_parser.py:5:30:bool_flip",
+            "cli_parser.py:7:12:int_wrap",
+            "cli_parser.py:7:29:index_flip",
+            "cli_parser.py:9:12:int_wrap",
+            "cli_parser.py:9:29:index_flip"
+          ]
+        }
+      },
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 5,
+          "median_evals_among_successes": 19,
+          "mean_censored_cost": 84.23
+        },
+        "redraw_once": {
+          "runs": 30,
+          "successes_within_budget": 3,
+          "median_evals_among_successes": 15,
+          "mean_censored_cost": 88.93
+        },
+        "avoid_f2": {
+          "runs": 30,
+          "successes_within_budget": 4,
+          "median_evals_among_successes": 14.0,
+          "mean_censored_cost": 85.97
+        },
+        "avoid_f3": {
+          "runs": 30,
+          "successes_within_budget": 4,
+          "median_evals_among_successes": 14.0,
+          "mean_censored_cost": 85.97
+        }
+      },
+      "success_deltas_vs_control": {
+        "redraw_once": -2,
+        "avoid_f2": -1,
+        "avoid_f3": -1
+      },
+      "runs": {
+        "control": [
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 28,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        ],
+        "redraw_once": [
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 60.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        ],
+        "avoid_f2": [
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 60.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        ],
+        "avoid_f3": [
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 60.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "requests_http_helper",
+      "difficulty": "easy",
+      "teacher_experiences": 291,
+      "avoidance_memory": {
+        "avoid_f2": {
+          "size": 3,
+          "no_single_edit_data": false,
+          "doors": [
+            "http_helpers.py:2:13:auth_prefix",
+            "http_helpers.py:3:13:auth_prefix",
+            "http_helpers.py:4:12:string_sep"
+          ]
+        },
+        "avoid_f3": {
+          "size": 3,
+          "no_single_edit_data": false,
+          "doors": [
+            "http_helpers.py:2:13:auth_prefix",
+            "http_helpers.py:3:13:auth_prefix",
+            "http_helpers.py:4:12:string_sep"
+          ]
+        }
+      },
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 15.97
+        },
+        "redraw_once": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 16.17
+        },
+        "avoid_f2": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.5,
+          "mean_censored_cost": 16.23
+        },
+        "avoid_f3": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.5,
+          "mean_censored_cost": 16.23
+        }
+      },
+      "success_deltas_vs_control": {
+        "redraw_once": 0,
+        "avoid_f2": 0,
+        "avoid_f3": 0
+      },
+      "runs": {
+        "control": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ],
+        "redraw_once": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ],
+        "avoid_f2": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ],
+        "avoid_f3": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "lru_cache_logic",
+      "difficulty": "medium",
+      "teacher_experiences": 291,
+      "avoidance_memory": {
+        "avoid_f2": {
+          "size": 3,
+          "no_single_edit_data": false,
+          "doors": [
+            "lru_store.py:5:12:hit_move_to_end",
+            "lru_store.py:6:13:compare_flip",
+            "lru_store.py:7:12:pop_to_front"
+          ]
+        },
+        "avoid_f3": {
+          "size": 3,
+          "no_single_edit_data": false,
+          "doors": [
+            "lru_store.py:5:12:hit_move_to_end",
+            "lru_store.py:6:13:compare_flip",
+            "lru_store.py:7:12:pop_to_front"
+          ]
+        }
+      },
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 27,
+          "median_evals_among_successes": 18,
+          "mean_censored_cost": 26.2
+        },
+        "redraw_once": {
+          "runs": 30,
+          "successes_within_budget": 24,
+          "median_evals_among_successes": 16.0,
+          "mean_censored_cost": 33.43
+        },
+        "avoid_f2": {
+          "runs": 30,
+          "successes_within_budget": 25,
+          "median_evals_among_successes": 18,
+          "mean_censored_cost": 34.4
+        },
+        "avoid_f3": {
+          "runs": 30,
+          "successes_within_budget": 25,
+          "median_evals_among_successes": 18,
+          "mean_censored_cost": 34.4
+        }
+      },
+      "success_deltas_vs_control": {
+        "redraw_once": -3,
+        "avoid_f2": -2,
+        "avoid_f3": -2
+      },
+      "runs": {
+        "control": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 27,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          }
+        ],
+        "redraw_once": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 39,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          }
+        ],
+        "avoid_f2": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 89,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 32,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          }
+        ],
+        "avoid_f3": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 89,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 32,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": null,
+            "first_success_score": null
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "first_success_score": 100.0
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "multi_file_config",
+      "difficulty": "hard",
+      "teacher_experiences": 291,
+      "avoidance_memory": {
+        "avoid_f2": {
+          "size": 3,
+          "no_single_edit_data": false,
+          "doors": [
+            "config_loader.py:4:15:swap_int_args",
+            "config_loader.py:5:15:compare_flip",
+            "validator.py:2:11:compare_flip"
+          ]
+        },
+        "avoid_f3": {
+          "size": 3,
+          "no_single_edit_data": false,
+          "doors": [
+            "config_loader.py:4:15:swap_int_args",
+            "config_loader.py:5:15:compare_flip",
+            "validator.py:2:11:compare_flip"
+          ]
+        }
+      },
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 14.0,
+          "mean_censored_cost": 14.73
+        },
+        "redraw_once": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 15.07
+        },
+        "avoid_f2": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 15.23
+        },
+        "avoid_f3": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 15.23
+        }
+      },
+      "success_deltas_vs_control": {
+        "redraw_once": 0,
+        "avoid_f2": 0,
+        "avoid_f3": 0
+      },
+      "runs": {
+        "control": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          }
+        ],
+        "redraw_once": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ],
+        "avoid_f2": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ],
+        "avoid_f3": [
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "first_success_score": 100.0
+          },
+          {
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "first_success_score": 100.0
+          }
+        ]
+      }
+    }
+  ],
+  "verdict": {
+    "rules_registered": [
+      "R1'': promising/harmful iff Fisher p<0.05 AND sign-consistent in >=3/4 scenarios",
+      "R2'': if redraw_once (mechanism-free init perturbation) is detectable, memory verdicts are drawn vs redraw_once",
+      "R3'': 'promising' only registers a follow-up tuning experiment; default stays off",
+      "R4'': if avoid_f2 and avoid_f3 disagree, verdict is dose-sensitive \u2014 no default either way"
+    ],
+    "redraw_detectable": false,
+    "dose_sensitive": false,
+    "pooled": {
+      "redraw_once": {
+        "successes_within_budget": 87,
+        "vs_control_delta": -5,
+        "fisher_p": 0.55338,
+        "per_scenario_deltas": [
+          -2,
+          0,
+          -3,
+          0
+        ],
+        "classification_vs_control": "no_detectable_effect"
+      },
+      "avoid_f2": {
+        "successes_within_budget": 89,
+        "vs_control_delta": -3,
+        "fisher_p": 0.76449,
+        "per_scenario_deltas": [
+          -1,
+          0,
+          -2,
+          0
+        ],
+        "classification_vs_control": "no_detectable_effect"
+      },
+      "avoid_f3": {
+        "successes_within_budget": 89,
+        "vs_control_delta": -3,
+        "fisher_p": 0.76449,
+        "per_scenario_deltas": [
+          -1,
+          0,
+          -2,
+          0
+        ],
+        "classification_vs_control": "no_detectable_effect"
+      }
+    }
+  }
+}

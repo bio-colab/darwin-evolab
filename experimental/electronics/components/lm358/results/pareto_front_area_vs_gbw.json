@@ -1,0 +1,33 @@
+{
+  "experiment": "lm358_pareto_front_area_vs_gbw",
+  "timestamp": 1787977540,
+  "timestamp_iso": "2026-08-29T07:25:40",
+  "model_version": "ngspice_v47_real_sim",
+  "pareto_front": [
+    {
+      "area_um2": 0.55,
+      "bandwidth_mhz": 12.5,
+      "gain_db": -28.8863,
+      "phase_margin_deg": 62.0,
+      "score": 40.2902,
+      "passed": false
+    },
+    {
+      "area_um2": 0.77,
+      "bandwidth_mhz": 51.46180130551113,
+      "gain_db": 48.60639,
+      "phase_margin_deg": 180.65596119901895,
+      "score": 83.9865,
+      "passed": false
+    },
+    {
+      "area_um2": 1.4,
+      "bandwidth_mhz": 78.36167133974955,
+      "gain_db": 3.435862,
+      "phase_margin_deg": 179.27990671325009,
+      "score": 51.4368,
+      "passed": false
+    }
+  ],
+  "all_evaluated": 200
+}

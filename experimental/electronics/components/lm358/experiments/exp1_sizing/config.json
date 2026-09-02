@@ -1,0 +1,17 @@
+{
+  "experiment": "lm358_exp1_sizing",
+  "source_datasheet": "../source/SLOS068AB_LM358B.pdf.txt",
+  "source_sha256": "64C2626E109FDEADBC23E985268B24FEAA011722D5E91C98E9985467F3616B22",
+  "source_sha256_note": "Hash of the transcription text file; original TI SLOS068AB PDF not bundled.",
+  "circuit": "circuits/ptm180nm_opamp/circuit.cir",
+  "specs_from_datasheet": {
+    "gbw_MHz_min": 1.0,
+    "vos_max_mV": 3.0,
+    "iq_uA_max": 460,
+    "pm_deg_min": 45,
+    "sr_V_per_us_min": 0.3
+  },
+  "holdout_corners": ["Nominal_5V_25C", "Slow_4.5V_85C", "Fast_5.5V_-40C"],
+  "budget_evals": 60,
+  "seed": 42
+}

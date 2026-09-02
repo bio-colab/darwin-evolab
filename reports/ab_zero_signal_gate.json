@@ -1,0 +1,3086 @@
+{
+  "protocol": {
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "teachers": 3,
+    "teacher_seeds": [
+      9901,
+      9902,
+      9903
+    ],
+    "generations": 8,
+    "population": 12,
+    "arms": {
+      "control": "prior disabled (records only)",
+      "ungated_s05": "kind prior strength=0.5, zero_signal_gate=False, frozen teacher snapshot (cache_ttl=1e9)",
+      "gated_s05": "kind prior strength=0.5, zero_signal_gate=True, frozen teacher snapshot (cache_ttl=1e9)"
+    },
+    "primary_metric": "byte-identity of full per-generation history + evals_total + first_success_eval (sha256 digest), gated vs control per (scenario, seed)",
+    "guard_metric": "pooled holdout successes within budget, Fisher exact",
+    "harness_lineage": "identical budget/teachers/metrics to v2/M7/M8 harnesses"
+  },
+  "results": [
+    {
+      "scenario": "click_cli_parser",
+      "difficulty": "medium",
+      "teacher_experiences": 291,
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 5,
+          "median_evals_among_successes": 19,
+          "mean_censored_cost": 84.23
+        },
+        "ungated_s05": {
+          "runs": 30,
+          "successes_within_budget": 9,
+          "median_evals_among_successes": 26,
+          "mean_censored_cost": 77.4
+        },
+        "gated_s05": {
+          "runs": 30,
+          "successes_within_budget": 5,
+          "median_evals_among_successes": 19,
+          "mean_censored_cost": 84.23
+        }
+      },
+      "runs": {
+        "control": [
+          {
+            "seed": 1,
+            "digest": "ebd450c0a6c0a615bd2c605294c73f2a2dcadd61917c1c40943382c2b4bc6b2b",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 2,
+            "digest": "2bc1bb89c28c26f57579a206726e9a619b115e6ab47ee3bd545cbdb6a90e6df8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 3,
+            "digest": "270d845f0f271595a715d9037fc8adb72f98b59dbfe60e83b42ea23900d01212",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "34b0ca0bcceb9e1b1981bba6d869d8c6602a6103ec4bd73e3604d29cddd58ae9",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 5,
+            "digest": "a098155dec58a7c5a455eefc3feae397453877a5742e61e8a0d3ea19fc6e8db8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 6,
+            "digest": "0b45930b186e8ce01d90ce02d988f61b99b049ce9304434893779d269ca2a59b",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 7,
+            "digest": "64dad0438fda5fc973534fbfcf652ef2a6bc64289064f0e16fd3da58b1d4f4b3",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 8,
+            "digest": "7cad573ac6b54141cdfe7fcd5ef42d5896756118c6cfef92cfa381cf55438bea",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 9,
+            "digest": "6741227180f3ad41853e0206d29de1a791de601bd44949e11a3f78f48c0caa4e",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 10,
+            "digest": "6594819aeb506e5c9c9b60afa218661891812b925293e42d2a78bc6711baac24",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "1e511f1ac514eeec2d25a9d39300b984344f950f1da88716aa1372f4cdadf2a9",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 12,
+            "digest": "2d2460a6cf685a75fcdfc71033a3d274b18802844c2c88b0c75711155b8b8a5a",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 13,
+            "digest": "47cd3324e5eabbf6ae4c549e2800fa4e7d1cf9318b93a695fd60443d63ad45d8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 14,
+            "digest": "9bad796c69017e89a1239d2829b8f5a6722cc9788ff5d0e509b73b324ef28d82",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 15,
+            "digest": "688107eb723da52f6b4a939b67c5b5d31808adf2e0aa2ba2f6e48a2350dab4b5",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 16,
+            "digest": "92e896e693328a7e5d3799201e9c4e6b13b8c4fd6b1bfc5d3f0fe247429d3575",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 17,
+            "digest": "1835e69d43a16eac8e4ebba17ae4981fcbf24eb6fc78c971b8ff9eeaabc7c780",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 18,
+            "digest": "55fdf2bc50f6bd45737e8888af95319bc26b37f0a617c4133b1ad57873b3e9e2",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "18f75b559bd771d49881ed24df2317b2cea4bb4ce7604cae12e295b7911d4ec4",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 20,
+            "digest": "9bfed56bf95d34440381bb453baac67e43b6bace19a6bf64abdd834c740603fc",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 21,
+            "digest": "f4239ce514f433f89044bb6094e64c5579ff3011dacc40da3c3b21e7510c7bc2",
+            "evals_total": 97,
+            "first_success_eval": 28,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "e5db8d5b8978a271cacf95003a7d424aee974b5a2200b87ca2f4c7dcd19e1a0b",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "dac3fb73172013f2af165f26bc5dd7fce862f2dd8d3ad994cbbcb8c54a2cbf7e",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 24,
+            "digest": "13ce60dfeeedf2d09bdc8c1c467c550e15be1db262da918355ef778f42645373",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 25,
+            "digest": "437ed997214015b0bce462ae8a72fb36661162e2b84c063cb00073abd0c71541",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 26,
+            "digest": "2baa955ead80418e90a8d08d96f0d0cf2c1c887e5a6759cae84407ec1dcf5645",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 27,
+            "digest": "07344327166d537472ae69336ec1d1017bab6b849bc6018b473b1d57810edb22",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 28,
+            "digest": "4149b778f706618810f6533fb78575f03e256dfdd7a9c25ac7b03aebe834c6da",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 29,
+            "digest": "816e48f35931430404bbb011fc5a03dec260bcea8d1886fceed72ebab9942a5f",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 30,
+            "digest": "b3a170f9e3a8f24c1ee6aeb4f0ed54e6faf436b99d4ec57e4dba54c210457676",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          }
+        ],
+        "ungated_s05": [
+          {
+            "seed": 1,
+            "digest": "90edd14534bd2d31498d1c3329988cda71de91fc868987f68c69689f32782a0f",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 2,
+            "digest": "2bc1bb89c28c26f57579a206726e9a619b115e6ab47ee3bd545cbdb6a90e6df8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 3,
+            "digest": "d229dd147ff201e32c47fc8dc0f0b5951213b417a8e07bc84ce3c3b5915ed274",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 4,
+            "digest": "c9d58a0849dfc025d4c6d6f99087dfdcc9a48b0c0a042a8dd52957e27e2c2319",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 5,
+            "digest": "31e4b58d67b43fc6abf5501e50da49cafa4517af5c5a3bc294fd5074c2f8e9f6",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 6,
+            "digest": "80b01cec9f307dc91acfa79c20106b7795e8413cab7cbb437eaceb0e41d46eff",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 7,
+            "digest": "5bbce1723076e927d39b0ab1199e613a109ca984df60ce6f5836236cae34e7b6",
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "3127d527f4a3942861d373b95ad4efccf0f2699775dc8efb6d44421f784c9041",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 9,
+            "digest": "bc5b27189f32fe27adf7d8e142a7a1e7c8b2208fa524c85568549875378cffee",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 10,
+            "digest": "9814a0b218ef87a7a4e8e3c2d9f7d76ccfb63665390cf4dddc562cf9cab39cfc",
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "705be376d884183733b4c6139a2448f50b99c5c5813a0701b6dd250b98b82360",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 12,
+            "digest": "f9ae5d3509ad2176d53d476a97bf3f2e90ef00bab58a7cce24246e6e05fe07f7",
+            "evals_total": 97,
+            "first_success_eval": 39,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 13,
+            "digest": "1aecfeeb78419f63d4590198f292fb99ab38ad9937f0d260c17882d8d9338f92",
+            "evals_total": 97,
+            "first_success_eval": 29,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "81c41807df4fd9db357aa46e1ea0ec130aeb64b21eafd63d8a1ad43c1c3871f2",
+            "evals_total": 97,
+            "first_success_eval": 56,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "f372d50df7e016b5ea805236814b4e10f9ec371cccae42bef56321173136bab1",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 16,
+            "digest": "155d3d26866a9792b8776f24745129314a2c0f4cd335d0bc804f095660375f74",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 17,
+            "digest": "5f2b4bfe9e7351ed9157d0821437591cb102e15b0e8706782209dcd41c83872a",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 18,
+            "digest": "148df67f91dd31dac814a8cf65996061764ed35d6ca7f58708d7bd19840f71ba",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 19,
+            "digest": "9e3da1f2f4c3aca061233e31652d93714f14c2aa354b69fe6c58e43028683b7d",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "11ca5b5687e9d52fc28c372658ce2daa27fd915c37fde11791854a34b1028fe6",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 21,
+            "digest": "2ca8e08671e533c6f2fdce1e0cbbd9a4cea8c19ad91bd2439416b644b4b0def2",
+            "evals_total": 97,
+            "first_success_eval": 26,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "128df079d74b91c1197c75ef785ce8dcd0d518ad3716581171904d18bf3524cd",
+            "evals_total": 97,
+            "first_success_eval": 51,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "0dc985bdc45132e32147beefcd6f87d0cda13bf101fb1538c64761b427270dae",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 24,
+            "digest": "e4cb3dc5f8cb6d1e6ea606570920b176a4a1de5fceeea76fca81b6b3021e854c",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 25,
+            "digest": "18dbf48d89dfb8a7472635f1cc6642b5654919561d6aa29c93fe076719c5b312",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 26,
+            "digest": "a14abc77968725064a826d13199097c0096535dc8379be5142432be7502aa727",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 27,
+            "digest": "2a7aef50ffe2db99bfa51104ec12fec6168b4534e98a5e88e261923a36ea50af",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 28,
+            "digest": "5854ee187a8d82e6f21982a37ef369acd1d64f88dd6a2ab45530e9335c5f2f06",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 29,
+            "digest": "816e48f35931430404bbb011fc5a03dec260bcea8d1886fceed72ebab9942a5f",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 30,
+            "digest": "190297feadff859c5add4bb3323e2c1033d2d8ed8ab1ddb5e74473639a33867f",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          }
+        ],
+        "gated_s05": [
+          {
+            "seed": 1,
+            "digest": "ebd450c0a6c0a615bd2c605294c73f2a2dcadd61917c1c40943382c2b4bc6b2b",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 2,
+            "digest": "2bc1bb89c28c26f57579a206726e9a619b115e6ab47ee3bd545cbdb6a90e6df8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 3,
+            "digest": "270d845f0f271595a715d9037fc8adb72f98b59dbfe60e83b42ea23900d01212",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "34b0ca0bcceb9e1b1981bba6d869d8c6602a6103ec4bd73e3604d29cddd58ae9",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 5,
+            "digest": "a098155dec58a7c5a455eefc3feae397453877a5742e61e8a0d3ea19fc6e8db8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 6,
+            "digest": "0b45930b186e8ce01d90ce02d988f61b99b049ce9304434893779d269ca2a59b",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 7,
+            "digest": "64dad0438fda5fc973534fbfcf652ef2a6bc64289064f0e16fd3da58b1d4f4b3",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 8,
+            "digest": "7cad573ac6b54141cdfe7fcd5ef42d5896756118c6cfef92cfa381cf55438bea",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 9,
+            "digest": "6741227180f3ad41853e0206d29de1a791de601bd44949e11a3f78f48c0caa4e",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 10,
+            "digest": "6594819aeb506e5c9c9b60afa218661891812b925293e42d2a78bc6711baac24",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "1e511f1ac514eeec2d25a9d39300b984344f950f1da88716aa1372f4cdadf2a9",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 12,
+            "digest": "2d2460a6cf685a75fcdfc71033a3d274b18802844c2c88b0c75711155b8b8a5a",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 13,
+            "digest": "47cd3324e5eabbf6ae4c549e2800fa4e7d1cf9318b93a695fd60443d63ad45d8",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 14,
+            "digest": "9bad796c69017e89a1239d2829b8f5a6722cc9788ff5d0e509b73b324ef28d82",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 15,
+            "digest": "688107eb723da52f6b4a939b67c5b5d31808adf2e0aa2ba2f6e48a2350dab4b5",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 16,
+            "digest": "92e896e693328a7e5d3799201e9c4e6b13b8c4fd6b1bfc5d3f0fe247429d3575",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 17,
+            "digest": "1835e69d43a16eac8e4ebba17ae4981fcbf24eb6fc78c971b8ff9eeaabc7c780",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 18,
+            "digest": "55fdf2bc50f6bd45737e8888af95319bc26b37f0a617c4133b1ad57873b3e9e2",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "18f75b559bd771d49881ed24df2317b2cea4bb4ce7604cae12e295b7911d4ec4",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 20,
+            "digest": "9bfed56bf95d34440381bb453baac67e43b6bace19a6bf64abdd834c740603fc",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 21,
+            "digest": "f4239ce514f433f89044bb6094e64c5579ff3011dacc40da3c3b21e7510c7bc2",
+            "evals_total": 97,
+            "first_success_eval": 28,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "e5db8d5b8978a271cacf95003a7d424aee974b5a2200b87ca2f4c7dcd19e1a0b",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "dac3fb73172013f2af165f26bc5dd7fce862f2dd8d3ad994cbbcb8c54a2cbf7e",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 24,
+            "digest": "13ce60dfeeedf2d09bdc8c1c467c550e15be1db262da918355ef778f42645373",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 25,
+            "digest": "437ed997214015b0bce462ae8a72fb36661162e2b84c063cb00073abd0c71541",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 26,
+            "digest": "2baa955ead80418e90a8d08d96f0d0cf2c1c887e5a6759cae84407ec1dcf5645",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 27,
+            "digest": "07344327166d537472ae69336ec1d1017bab6b849bc6018b473b1d57810edb22",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 28,
+            "digest": "4149b778f706618810f6533fb78575f03e256dfdd7a9c25ac7b03aebe834c6da",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 60.0
+          },
+          {
+            "seed": 29,
+            "digest": "816e48f35931430404bbb011fc5a03dec260bcea8d1886fceed72ebab9942a5f",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          },
+          {
+            "seed": 30,
+            "digest": "b3a170f9e3a8f24c1ee6aeb4f0ed54e6faf436b99d4ec57e4dba54c210457676",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 80.0
+          }
+        ]
+      },
+      "byte_identity": {
+        "identical_pairs": 30,
+        "total_pairs": 30
+      },
+      "ungated_divergent_pairs": 28,
+      "_divergent_details": []
+    },
+    {
+      "scenario": "requests_http_helper",
+      "difficulty": "easy",
+      "teacher_experiences": 291,
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 15.97
+        },
+        "ungated_s05": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 16.57
+        },
+        "gated_s05": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 15.0,
+          "mean_censored_cost": 15.97
+        }
+      },
+      "runs": {
+        "control": [
+          {
+            "seed": 1,
+            "digest": "11647c0370cd99bc1661ccd492cf5c1436903611a79ee1d34e50f5a113a05d48",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "a79d0db8de752631e3f0618aeb7fffc88efc257f648138a268a534c1c35ff33b",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "d5ab3567293745740eee6e767d6d338f795d67d3b71eac4265a6182b7b2b3855",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "8f065cd2dde2cd3f537b94a220273803cb728367da8c1e6068946a3d55df2ced",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "a3e44e570ffae7165536da916a354eb064e73abdfd6298b7c224e4c5a72cdff3",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "0dd8ec636bd727c8d0bb9f8a28996eacf743170402cb39b7dd5fd723b14cc11a",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "ed4b6a9cc66d800f56658040fa23ce34f948a76da999943eed4936ae0b405f72",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "5cad418ca56d56aa7be397d5a8c41a3eaf82dc3e0d31ea47bd883dd4166b07be",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "56c347cf6ab2de5b469c2de321e01fc1a1f10d0cd3e897cc62f7f9c7c20526a6",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "c8d658cbc4f9c84843c27dc86d7e6f1ab183bcdfaa3ecdcc413e9405714c16f6",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "47a30d452a58130982fb788cff62bc4f6bc9e1fa249d9ad220f61d47c57c67a7",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "96ef07b4fefd2e3e5e58dedd2de8c671f4ae0c84624690437093d4a49fd97973",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "057d632ff0ad4c06cae2fe9448efca104779b7df6e4a4863cc8c5f70f35b4c46",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "66bf143ea9ed6f7b6e4cfef11045dc7dbc6e07701d73c4424a95a74bbb0d2af8",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "16dad49e0e5348d1cea7573813edd290ef94f29bcf1f384b9a2891babb8bf526",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "44a0a9c01af29eee54a230bd05729ff5ea313169748f2e4539416f6128064e2d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "2842fce9915344e863f2dacbaa2386df11fcbdbbc15f114ae84d07009d0acca3",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "6095c60fbf76adf0791499b98c0a30ffc9633051925c92fbbc7030a2db681c46",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "c0b357ee8e1c69b6fa006c69524d71fec86d51f61fcf977eff1398bf3077b90d",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "4731ccbb16a8a4e315c78400cb9fa683bc311d1f116101646bc67a98ed871ed2",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "c8cf6d34deaa0710b829d912bfc25e2c6ce4e84cd9c4dc6004fd74c21099ed02",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "700bab0b215dc099146cfa09ca79e389ff74ac5ea2803e95e5a1408ec2b36a38",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "4e772a811c7f0da391fecbdb7f54f8f3af818753e3fbaf00ae78835dcbf89bb9",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "6b929482b987e59b144a7c1a8b20f5dd4ff35c715558b0850522031aafc519d4",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "596a6a7071b8b2492c91f5a3f9d3f234a8403ea8942158b45a6799858410051d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "2d0345c502a67e32ac656716a0c5c446aa0379b75a7bed0f2f476e58c733f5b4",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "efc32a1370be07d7d12b5fb937ce2bab96f520dc1a1b741fbacad0620e4fe400",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "ba4b9ba42a576a1e321171e4527d4d603d06a5ca6d326517bec1b6d1ded75b10",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 29,
+            "digest": "d4ef6740fff5b4cc26c01c80a74ad686555e7cf36b395795760fc43cb783d5fa",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "f1c580ccfd4fde6f5fb8e0f0a36adc967158403c44baf4d81d7c7564ae610559",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          }
+        ],
+        "ungated_s05": [
+          {
+            "seed": 1,
+            "digest": "37306513e4f71edf9b83f562ee669d4ff21c4022f6a3f3800bdfabd53f344bdb",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "257f6fac1485e1738f0a7aecaa87aba31aa7d32f79bb3c49c63da79d4d8ba20e",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "3fa8daedc60c24bb41ac166fc0f9f8ffe111a88f20d202361c655f1192514d84",
+            "evals_total": 97,
+            "first_success_eval": 28,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "ec10e92133419f073f96be1a8dbea4b3699724414cbef995759a80f4cbb6155e",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "61d50ef47bda79a73f2525c2d6220a9bcb789ce3355fef735aeed79cbabd6ea7",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "b29b47f37556ded903d661754a41d2c532a86035a135d445fe4e638f82adb307",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "6e4a77263440d39ef4749378d058655e6a6efea006a08db3ed746b02a74eebee",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "92f3858f743185a16a5eed407a3556250ad75c8036137ebef0f3be1e06de68aa",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "df414b35813591b5f0d965c428828479e9d1cbcb2536e13b5e4edfcb5d3f0036",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "2b065866b54bb0d630dbc3bab3de79d5c33266bfbb765aef2d4dc3d2ebfa8248",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "6578fec06b5663b17e4bd7b975251260f08e959932dd81d3b6d930f3a2d65380",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "23c0b7e92617c83c488ba974d78d1f9bfaa7d55f030ad5eda9f2d496d1c63642",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "fb56215ec675c417d57b569e0b4776276aa1c8cc21962961e37ca5bcd100f8cc",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "830072c28407815b949b90ba441d63bc4073a0ee5b32da7db2ee140805cb02cf",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "16dad49e0e5348d1cea7573813edd290ef94f29bcf1f384b9a2891babb8bf526",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "464c5c980a30fd4e4d0366712184eac8d5d415a8a9e297d699f76c98c9115897",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "2ae0ba681e8db00ee5473c7e832900a5b297bc7cbaf48cae73226887d3bc4e47",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "6d18644919b3481f2a67e7090b56d532da33c2036cf86f639e321a411e95183b",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "8bb7100a7b52f73a9d944beedad3e5158d5eab8b33ce26f4506b6d822f8e8e49",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "b11032a56f091c992c80ada3d4b3c18a01679d93be20316f951cdf00f3bf560b",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "88e0299079c5f18d4c413e02ec79d33817c9091c389736d83ba333cb4dd10705",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "7272106de456f1d34187da9b018c872324f83952c341e299317a648b38aecd2c",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "7b9689b4f91fdae6ce5dd08c9651c93b6ab9dee97811190e081c66e5a3a0db0f",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "34188d398ae8db5711679d88ba072b0c4766394fac9377a36e5d3ce1dab0c083",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "d76e3da732bf8441e2e29acf6979d6a6aa2d2cfe1ce5eba1ee43a48b0b7eb527",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "84fa3815dfa7f3130ec529199178c7c5b4859ec835743688873010a5fee06387",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "d1a1be3ddbdeaadc4d3cce77f861444029e53f0f05596ed34535a1d8f566fb7c",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "b262fe0f68b504d08c15f230dfb2607df040ee1e3111d7aa7e766665a6c60a9c",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 29,
+            "digest": "3234a487e9236bf8767cc51752847493d882b848808b58b27ccd3844779b18a0",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "2c35aaadba97d7b7875212f800bc8fd3fa86feda176418afd874dd12d10a26aa",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          }
+        ],
+        "gated_s05": [
+          {
+            "seed": 1,
+            "digest": "11647c0370cd99bc1661ccd492cf5c1436903611a79ee1d34e50f5a113a05d48",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "a79d0db8de752631e3f0618aeb7fffc88efc257f648138a268a534c1c35ff33b",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "d5ab3567293745740eee6e767d6d338f795d67d3b71eac4265a6182b7b2b3855",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "8f065cd2dde2cd3f537b94a220273803cb728367da8c1e6068946a3d55df2ced",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "a3e44e570ffae7165536da916a354eb064e73abdfd6298b7c224e4c5a72cdff3",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "0dd8ec636bd727c8d0bb9f8a28996eacf743170402cb39b7dd5fd723b14cc11a",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "ed4b6a9cc66d800f56658040fa23ce34f948a76da999943eed4936ae0b405f72",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "5cad418ca56d56aa7be397d5a8c41a3eaf82dc3e0d31ea47bd883dd4166b07be",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "56c347cf6ab2de5b469c2de321e01fc1a1f10d0cd3e897cc62f7f9c7c20526a6",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "c8d658cbc4f9c84843c27dc86d7e6f1ab183bcdfaa3ecdcc413e9405714c16f6",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "47a30d452a58130982fb788cff62bc4f6bc9e1fa249d9ad220f61d47c57c67a7",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "96ef07b4fefd2e3e5e58dedd2de8c671f4ae0c84624690437093d4a49fd97973",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "057d632ff0ad4c06cae2fe9448efca104779b7df6e4a4863cc8c5f70f35b4c46",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "66bf143ea9ed6f7b6e4cfef11045dc7dbc6e07701d73c4424a95a74bbb0d2af8",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "16dad49e0e5348d1cea7573813edd290ef94f29bcf1f384b9a2891babb8bf526",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "44a0a9c01af29eee54a230bd05729ff5ea313169748f2e4539416f6128064e2d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "2842fce9915344e863f2dacbaa2386df11fcbdbbc15f114ae84d07009d0acca3",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "6095c60fbf76adf0791499b98c0a30ffc9633051925c92fbbc7030a2db681c46",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "c0b357ee8e1c69b6fa006c69524d71fec86d51f61fcf977eff1398bf3077b90d",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "4731ccbb16a8a4e315c78400cb9fa683bc311d1f116101646bc67a98ed871ed2",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "c8cf6d34deaa0710b829d912bfc25e2c6ce4e84cd9c4dc6004fd74c21099ed02",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "700bab0b215dc099146cfa09ca79e389ff74ac5ea2803e95e5a1408ec2b36a38",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "4e772a811c7f0da391fecbdb7f54f8f3af818753e3fbaf00ae78835dcbf89bb9",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "6b929482b987e59b144a7c1a8b20f5dd4ff35c715558b0850522031aafc519d4",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "596a6a7071b8b2492c91f5a3f9d3f234a8403ea8942158b45a6799858410051d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "2d0345c502a67e32ac656716a0c5c446aa0379b75a7bed0f2f476e58c733f5b4",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "efc32a1370be07d7d12b5fb937ce2bab96f520dc1a1b741fbacad0620e4fe400",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "ba4b9ba42a576a1e321171e4527d4d603d06a5ca6d326517bec1b6d1ded75b10",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 29,
+            "digest": "d4ef6740fff5b4cc26c01c80a74ad686555e7cf36b395795760fc43cb783d5fa",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "f1c580ccfd4fde6f5fb8e0f0a36adc967158403c44baf4d81d7c7564ae610559",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          }
+        ]
+      },
+      "byte_identity": {
+        "identical_pairs": 30,
+        "total_pairs": 30
+      },
+      "ungated_divergent_pairs": 29,
+      "_divergent_details": []
+    },
+    {
+      "scenario": "lru_cache_logic",
+      "difficulty": "medium",
+      "teacher_experiences": 291,
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 27,
+          "median_evals_among_successes": 18,
+          "mean_censored_cost": 26.2
+        },
+        "ungated_s05": {
+          "runs": 30,
+          "successes_within_budget": 24,
+          "median_evals_among_successes": 19.5,
+          "mean_censored_cost": 36.57
+        },
+        "gated_s05": {
+          "runs": 30,
+          "successes_within_budget": 26,
+          "median_evals_among_successes": 17.0,
+          "mean_censored_cost": 28.33
+        }
+      },
+      "runs": {
+        "control": [
+          {
+            "seed": 1,
+            "digest": "ae67fee5fcc996abd60f648a050b696ceb8ff025a4bfcd96f4ba9cbe4117b722",
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "617c393af040d109fd6dbc21d689f701bbfb11939ec74676f0b457e1a13027a0",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "fe55bfa211ccb6fe57f84f3709044b8ead8699554c1259c23a2ed0c2d3c92231",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "6f2b429052ded86d1be4dc21f305594aa4be757021b60d9834261fc5889f81cb",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "523d1e9d40881f70547e6c15d8e15ac2be496d3cc3dba85a29a7bef75f2c80c6",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "710007042c159ff1afec6613291965e2adee9858be0e65844f60ed5f29a684f1",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "88369aa56547ebed1cf3131d430094a63fbaf4d8e06686303fb12ab56bfcf6e9",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "a1fdcfc97c192c3e0baebbd429a50024c58ebfe4654cb72f93971787c2c79979",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 9,
+            "digest": "c9054df25ebe79a794c4edb970be99b0a5c53cede26a65b80137d51df6981c3a",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "854bf9e982c83fddda97b9b188397b570a88d68d03761e5878340064ab72a1e0",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "48b9b83f647e4f0f04ab8422a7667628b3cd520bd744248ee61dc22b13f5801d",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "dbe1353c94a5da93361f54182f3dc2af674bb978c8fe4540c1eaa40a60cb9c4c",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "989a9558f10c8d4f75c6d68a7428d658a313db12723186893849c5a882f93894",
+            "evals_total": 97,
+            "first_success_eval": 27,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "575a91cc15cded9af1e06fbee8f1434b58cf690a786e015d0bdb8b0627b97d7b",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "88dc43a1b0dadc45563fcd0940a90b0b97fdb7de64662e9d1b67910fbaf3e475",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "5016e9029d944917650d8f4835ce3d018cd3a9db38e2f8f5a07171a36e4c60ff",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "48b9b83f647e4f0f04ab8422a7667628b3cd520bd744248ee61dc22b13f5801d",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "71e7432e57c33a2bcfb173dbe7b148b00bac5b2fc9e60630e6354a7c16d47c3d",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "8fb7dab82a754edbb4a0d829a3cae21b1d906ae2942ca338892e96a4b1d3c7ab",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 20,
+            "digest": "be89113bd106524fc0fe6870c61bcd701add27f434802ffb2a75eb1864058e99",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "3eca45a5f2d1ab430e6d84e0153411de549f3295a221512f31e7697772b855e2",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "fb79dacca7d15404499cfa2299534adeb4c29390c6105aa9619c073322a45659",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "81340e4300bf42e2765dc590f99824e25dafa42120c00c0bd7695258a119003b",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "887cc0d791f2830c3a00b5c3b86217b46a6762fa34b9d1919531298938b19253",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "bd770230e249e94268cdd4e613265b6d6015311a32a7069d50bb47e9b5cf1b12",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "f08c573a9a84fbfa6bd59e8666e32ec51806296af2725022bf21067cd6324de1",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "ff18e59098a0664a02ff23459d1204f48a040780b013315b1236b8fe9d0d1181",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "8fb7dab82a754edbb4a0d829a3cae21b1d906ae2942ca338892e96a4b1d3c7ab",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 29,
+            "digest": "5259b903ee3d0f1a9d9a8dfe303561856f7a0dd3989140c453489822440b9b30",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "caf974c4d47b66dd120e9ade75f19aa7ed249078f7abfccc4608c2b3ba5d0c93",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          }
+        ],
+        "ungated_s05": [
+          {
+            "seed": 1,
+            "digest": "4d775c48cb2bed324bf4babeacdf3fbd712ee320794ac6ae04d6bb5f010fb320",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "617c393af040d109fd6dbc21d689f701bbfb11939ec74676f0b457e1a13027a0",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "7d95794ba827fc9998a4ffc4445b381e3f723a69f5591d98c013ea9f94f9bce6",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 4,
+            "digest": "663580f40c55ca3eff48d56ee295eb51bd155a2d4fa1475588525e6bc58b06c7",
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "f6c09fa9a8b400206c209a4277287913784e0390e8cb8aed01f6ffa81efc145c",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "40a01c3e2158818affac82337e3e08888b3f0a39a40b864285b0f92c06cd59ba",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 7,
+            "digest": "e5b7867e62e00ec56af5766579d43cb12ee7ddac8539e6d176f6a2e92e38abe8",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "71e7432e57c33a2bcfb173dbe7b148b00bac5b2fc9e60630e6354a7c16d47c3d",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "59f2312f2de250b03d593e3e07f837661a39b4c25f30b79e9b47691af4bcfe5d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "73b84b867cf7159ecb6238a4912f7042fbc6faac25f1ea744db1847318e9cf16",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 11,
+            "digest": "66555ed2c364d1aac820e3265c4ab45632440f9b8ea6ae4be9ef9237e33bc050",
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "4b12a284a46d6b9c552bc6d55c7468aeff90e752b36486ba301f638b0495813d",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "9bfd682e1996380d3a9e7f6bf2fd07f0f9ac0ddababcb70a5d2b013eb2a72d07",
+            "evals_total": 97,
+            "first_success_eval": 72,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "6d058695e19fbfe0489c195a4f0e9adc235517166ecd273ad683ea6756e87d5b",
+            "evals_total": 97,
+            "first_success_eval": 24,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "bdc04e8b439fc54a47dd6b30ab7b114ca2c6b8d000851e3cbce09b24ffdbdb09",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "726e287acbb72b0f742201c1c1891866189904020833552a57fde21fad756316",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "63b899d964d9a6cec7dbae1692cc1c16e76b5295374d6d5188980da79f9a29a7",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "9a79ad965670fb9e3305ed61974ef0fc3157b5ca1be6481a1fae0ba1b850d9ee",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "9f02c824e8cd5d83984f6dfa705950ca2867799883258d7da973bbb7cb81542d",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "48b9b83f647e4f0f04ab8422a7667628b3cd520bd744248ee61dc22b13f5801d",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "73b84b867cf7159ecb6238a4912f7042fbc6faac25f1ea744db1847318e9cf16",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 22,
+            "digest": "40a01c3e2158818affac82337e3e08888b3f0a39a40b864285b0f92c06cd59ba",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 23,
+            "digest": "5d8450fcda6fb789a3759107e0348a480f8523c55e3121ddd0bf00bc050be664",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "439c232a614ac6c2d25f7549c7eba5f2c49adf051b96554873062de8099dc856",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "59c68641d0782e12a2567779a32b6abea1aeb31c3ee485b36f317ef9302e6f64",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "cbe84c50c628ec1681bf79767200152067ca88425bd2d28d87a02ba02d58a25f",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "8238548caa57db94b735c72ce9404d9c4c60151cdfc815d1abceced68f9fb655",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "8fb7dab82a754edbb4a0d829a3cae21b1d906ae2942ca338892e96a4b1d3c7ab",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 29,
+            "digest": "719031a493f962b2db78337cda54c22ae7c1aa5c8acf38433381f7b88d49fcb0",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "5be90bcebcca345c376bb69b8cc8bb019af9789e79cd7c932ba230c11352f59d",
+            "evals_total": 97,
+            "first_success_eval": 38,
+            "best_fitness": 100.0
+          }
+        ],
+        "gated_s05": [
+          {
+            "seed": 1,
+            "digest": "ae67fee5fcc996abd60f648a050b696ceb8ff025a4bfcd96f4ba9cbe4117b722",
+            "evals_total": 97,
+            "first_success_eval": 22,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "6cdf589a52307919bcd2c9a3c8e43312b66d380c6029c911ee11137d55d8c726",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "7d95794ba827fc9998a4ffc4445b381e3f723a69f5591d98c013ea9f94f9bce6",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 4,
+            "digest": "3198b5fa9b5090859be9cc8d769dfaf708ea697570bc1fc2136d26d1cd6d7f10",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "934e3a7769bd69852eb5cf48e59463254829b1025a5b40218444fb3c78b7731a",
+            "evals_total": 97,
+            "first_success_eval": 23,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "40a01c3e2158818affac82337e3e08888b3f0a39a40b864285b0f92c06cd59ba",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 7,
+            "digest": "acea61b83db84a95b02606e7dc8cdd373cafe79602d2cb24bded509b0a7b8a39",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "a1fdcfc97c192c3e0baebbd429a50024c58ebfe4654cb72f93971787c2c79979",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 9,
+            "digest": "869b5b752c99e9a78b786312c9c6fa054b665cdd74321c2b93617167237f6229",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "f89fe5f4a86f740b659a11bafd4937d0458f1ebd7f3828a8d212aeaff2bd0943",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "48b9b83f647e4f0f04ab8422a7667628b3cd520bd744248ee61dc22b13f5801d",
+            "evals_total": 97,
+            "first_success_eval": 21,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "e5b7867e62e00ec56af5766579d43cb12ee7ddac8539e6d176f6a2e92e38abe8",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "6bfd7f229fbd8b466b55d97323afca92be1bb82c9953703eac0ffc83a61028df",
+            "evals_total": 97,
+            "first_success_eval": 27,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "575a91cc15cded9af1e06fbee8f1434b58cf690a786e015d0bdb8b0627b97d7b",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "bdc04e8b439fc54a47dd6b30ab7b114ca2c6b8d000851e3cbce09b24ffdbdb09",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "81a6e718dbda4f3edb5ba242f39044b2effec352779885c51b86d0a2b600c4d1",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "be89113bd106524fc0fe6870c61bcd701add27f434802ffb2a75eb1864058e99",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "e45c489edb057c8de0bf3f598bab808aa2a1d760dba635b0889467620ae589e7",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "38c608bc0177b3887130712cdfbf528a0e32d0ee409127728f0cf03e73225ef7",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "cb17a6ce0a4bca5674164f14c0f16eb06a03bdf2c9c39cc9b2835066cc84a22c",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "3eca45a5f2d1ab430e6d84e0153411de549f3295a221512f31e7697772b855e2",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "c10cf048983db8aeb8c8f3c6ad529b3a906f5cbfc9694811f856e9f208c7329a",
+            "evals_total": 97,
+            "first_success_eval": 20,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "59f2312f2de250b03d593e3e07f837661a39b4c25f30b79e9b47691af4bcfe5d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "bcd66220439c6a086a3f6370639c8ed65e38691825b2151e737fab66a9d36672",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "7bf81799bbd5b33dfcf5be0d0ee9aa79152edf7b6065134247d54e27ec7d3f61",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "cbe84c50c628ec1681bf79767200152067ca88425bd2d28d87a02ba02d58a25f",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "ff18e59098a0664a02ff23459d1204f48a040780b013315b1236b8fe9d0d1181",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "8fb7dab82a754edbb4a0d829a3cae21b1d906ae2942ca338892e96a4b1d3c7ab",
+            "evals_total": 97,
+            "first_success_eval": null,
+            "best_fitness": 52.0
+          },
+          {
+            "seed": 29,
+            "digest": "3bc8b29f43d411487eeb20d9843710ffd3376916f4c38a659d374228ae6874ce",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "caf974c4d47b66dd120e9ade75f19aa7ed249078f7abfccc4608c2b3ba5d0c93",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          }
+        ]
+      },
+      "byte_identity": {
+        "identical_pairs": 8,
+        "total_pairs": 30
+      },
+      "ungated_divergent_pairs": 28,
+      "_divergent_details": [
+        {
+          "seed": 2,
+          "control_history": [
+            {
+              "generation": 1,
+              "best_fitness": 52.0,
+              "mean_fitness": 46.67,
+              "std_fitness": 7.54,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_01_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 2,
+              "best_fitness": 100.0,
+              "mean_fitness": 42.67,
+              "std_fitness": 17.84,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_02_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 3,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_03_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 4,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_04_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 5,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_05_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 6,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_06_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 7,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_07_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 8,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_08_ind_00",
+              "active_species": 1
+            }
+          ],
+          "gated_history": [
+            {
+              "generation": 1,
+              "best_fitness": 52.0,
+              "mean_fitness": 46.67,
+              "std_fitness": 7.54,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_01_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 2,
+              "best_fitness": 100.0,
+              "mean_fitness": 48.0,
+              "std_fitness": 23.66,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_02_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 3,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_03_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 4,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_04_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 5,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_05_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 6,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_06_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 7,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_07_ind_00",
+              "active_species": 1
+            },
+            {
+              "generation": 8,
+              "best_fitness": 100.0,
+              "mean_fitness": 41.33,
+              "std_fitness": 17.69,
+              "dominant_species_share": 1.0,
+              "best_id": "gen_08_ind_00",
+              "active_species": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "multi_file_config",
+      "difficulty": "hard",
+      "teacher_experiences": 291,
+      "per_arm": {
+        "control": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 14.0,
+          "mean_censored_cost": 14.73
+        },
+        "ungated_s05": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 14.0,
+          "mean_censored_cost": 14.97
+        },
+        "gated_s05": {
+          "runs": 30,
+          "successes_within_budget": 30,
+          "median_evals_among_successes": 14.0,
+          "mean_censored_cost": 14.73
+        }
+      },
+      "runs": {
+        "control": [
+          {
+            "seed": 1,
+            "digest": "f602c4e25d03aab5fd36ed32f1d20bed316c21f82d4484d8ec635262761e9b28",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "cf0c201ae886afa1fcb200ecd8523c98d2d799e02744040615529162a418f798",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "3c354bc6d1928fb6697e720800cd748410a78ac1cc4b927f564fa1e4f5ec85b3",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "8df7ca0fb492c8e76f41a7e2e54c472969fa65554432caa6a24cedd8ed3e8d1f",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "1f246f47b1f4659d35dbcbbd1ce784d691a4f4bcdf008765087123583f8d9c05",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "850e15148df22e1293b4ca5fa84b03938df6e632ba1d83ed6716a5284b8c031b",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "8c90a6292a25173d2c2549bc66d06c9172cc106b775270fd56653ccb09455bb9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "4e43b5cab5bec3553a151f664bf44e6d918edbd77c5898d280db50e1262b8ef4",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "a0babd1782b18d8d92e8408385c478c399b4aaad091d2deaf9249683556d7c7c",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "0a77e7b19722c80cb24746790b459c8d680fab19220bdf42e2700e700468950c",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "538bdcd223e9aee84911a38c609b409fcf58241919edbc7123ba93a3dd5c7e93",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "7800c3bdde3688b65a209dbb07f79cc4ad21c28f0359f621a7881cd0e3e3ed49",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "f3e10c9d6018c90771747a7409681a788d94d53c2230b08cb0fbf07c6f38ed73",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "85e9910ca62e23f9029bfd95007a1f7b1f05dcea293de946789a0b56dbefad97",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "8565e039934d2e4cbe6d2ca4699614d68f57fb776ff120a2cce7eec9d39b54d9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "c1b0394059b5eba38d585e3b80fb8bae197134d925140bdb4c1bcb75a68c4ab9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "796fae5d9f9871ebe2adcdcbc65cbbf4c24c7b492ea54497765f1cc3faa2f9ac",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "26e6284cc2d25b4bcadd3164c03e0bb5ba1c3fc73e2850bba30cdbe1ff0749f2",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "5d4423c7f8b387ba9540f235d97cb9d9575068ab004d52573df82342064b8d64",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "d57b4c044b1724c128370c3bde919a12b8962581c402046a0f0b773bb824f093",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "cd23ea99f38df07d88c6336c05333581013c1c984f5b64f7ef6c7e08df8e8cca",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "d176cca52737c2b126b8f82ce0eb97fa42e59f6dd7f2b1791cbbd6a12b9d064d",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "f3f2c45186363bc17fa2c17412b7c944e18b45966190d19b7de914a0a93daac9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "47aaddcd951e80cca0464e07e0c470b93f7e26b499164d16e92b81ca77320f1f",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "cd23ea99f38df07d88c6336c05333581013c1c984f5b64f7ef6c7e08df8e8cca",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "386f4688de5758b2da04d055c49dc34745c795433351ef711b260b1e02d064c3",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "5651d03797fb49efe2885bf03faff9452bb306b64b3bb616081a270e6db1b22d",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "f7a7fb4744b26be1c6734a1b8db825ddb5c2c2ff87948117ca887f6541c2e8b5",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 29,
+            "digest": "717f8889df93769437b682307b13b585d06413e210ae03f4dadfca06f91fdd0c",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "743dbb9b478631b0ef489760d8678c784b767de0b52e19af317a096c6a89256e",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          }
+        ],
+        "ungated_s05": [
+          {
+            "seed": 1,
+            "digest": "c88afdfa89b26df0d3783ad5e5d2c443349d5766f3f288886233cfb13d365a3b",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "16c793f22d7b035c769251ea6b603d2d1d7f41d1452df3247fc965ee0a894de7",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "435c7ad308715c7f779e54f43eeaee30a3a47045606058db1fef408da0332f83",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "746ceaff6e1738515bfe5c2210a88d388a629c60fe7f6630fa18dd579c3ae6d6",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "5002ec6f6c7b3fc6bbfec8a5e8ad6fc5d46bb6dd5caf8e155f49bcd056a3d72c",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "3614d45e84d2fe228a1408dcb98225195f4c4d969e9ec2310d4c2e20fc98497f",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "850e15148df22e1293b4ca5fa84b03938df6e632ba1d83ed6716a5284b8c031b",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "c49a1d58ad56f12f12f0aac47d003d072341c93a303d1241d8955577b90fd6af",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "507d4d9d2c7609b572ed583ac617fa64e3813d80e54537325a5465be27a320fe",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "1809237e56b90e58a9d0449d4d34e8d7311edbb2d5d864cd0185035c44500104",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "86c4e1bdeae9d3531688b20cacb63d7651c973ab2f71a167f11893de412adce7",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "f223cfada28f5eccb28092ce9c2c58bb47ccbb3428fa0b0a7acde2aeaad2ec06",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "3bf48722d893991fccfa1dff5135dc0eaf9b28786a02b1eb582ea87d26a24210",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "53b75fb81778cd1bd0a6d09e8fdd9c1b03d8298c73f825152e67b423f3613481",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "d8c3270fd705084039c2a3ae45c7171f37212a2b4be2745a0c196f1e9936d864",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "ed05a1ed13f036a927230d2e4f3cb471dcfad6b879974b096f77c21230444e70",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "717f8889df93769437b682307b13b585d06413e210ae03f4dadfca06f91fdd0c",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "86c4e1bdeae9d3531688b20cacb63d7651c973ab2f71a167f11893de412adce7",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "5a588760688092c438fd90981b378ce589d5b7d56d818d80b1bea052d5838cae",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "59683ee7968ae359d07ab11005935ae528e8a3c53a0282ccac9cec5ea8d494a5",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "cd23ea99f38df07d88c6336c05333581013c1c984f5b64f7ef6c7e08df8e8cca",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "3c354bc6d1928fb6697e720800cd748410a78ac1cc4b927f564fa1e4f5ec85b3",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "cce406e84eb9aa8a226609b19588ef48c8a072e8442ce3bfeaf997df3fa71d3e",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "c95e1c4901372e8928117cfc558b3d584c36638d1dcfa50258498fd2b2aeb0e1",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "ca1a79f7eae31bbc59e01af234baed59fde87658a4ac73172267dff760f04c22",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "542dc69038ead70715da10bb69f4c15572d012be1bcd0df0d678227f38a42c02",
+            "evals_total": 97,
+            "first_success_eval": 19,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "1751109584c80e17267d7562298fc1c335468db2d15ff78a147b1b1402969c02",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "d98b9fddaccbcfca37ad7ee05c3667850b70b6d11c19798b147470333ec1607e",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 29,
+            "digest": "f17a2de4316a2800ba5d9e464bd23b53571d6d262e827fd11f07f22b1e556e3d",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "1fcd800d9bcb2771171fcf5354643ce797b7966807827ecc193f6299e0fc38e8",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          }
+        ],
+        "gated_s05": [
+          {
+            "seed": 1,
+            "digest": "f602c4e25d03aab5fd36ed32f1d20bed316c21f82d4484d8ec635262761e9b28",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 2,
+            "digest": "cf0c201ae886afa1fcb200ecd8523c98d2d799e02744040615529162a418f798",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 3,
+            "digest": "3c354bc6d1928fb6697e720800cd748410a78ac1cc4b927f564fa1e4f5ec85b3",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 4,
+            "digest": "8df7ca0fb492c8e76f41a7e2e54c472969fa65554432caa6a24cedd8ed3e8d1f",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 5,
+            "digest": "1f246f47b1f4659d35dbcbbd1ce784d691a4f4bcdf008765087123583f8d9c05",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 6,
+            "digest": "850e15148df22e1293b4ca5fa84b03938df6e632ba1d83ed6716a5284b8c031b",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 7,
+            "digest": "8c90a6292a25173d2c2549bc66d06c9172cc106b775270fd56653ccb09455bb9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 8,
+            "digest": "4e43b5cab5bec3553a151f664bf44e6d918edbd77c5898d280db50e1262b8ef4",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 9,
+            "digest": "a0babd1782b18d8d92e8408385c478c399b4aaad091d2deaf9249683556d7c7c",
+            "evals_total": 97,
+            "first_success_eval": 18,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 10,
+            "digest": "0a77e7b19722c80cb24746790b459c8d680fab19220bdf42e2700e700468950c",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 11,
+            "digest": "538bdcd223e9aee84911a38c609b409fcf58241919edbc7123ba93a3dd5c7e93",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 12,
+            "digest": "7800c3bdde3688b65a209dbb07f79cc4ad21c28f0359f621a7881cd0e3e3ed49",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 13,
+            "digest": "f3e10c9d6018c90771747a7409681a788d94d53c2230b08cb0fbf07c6f38ed73",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 14,
+            "digest": "85e9910ca62e23f9029bfd95007a1f7b1f05dcea293de946789a0b56dbefad97",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 15,
+            "digest": "8565e039934d2e4cbe6d2ca4699614d68f57fb776ff120a2cce7eec9d39b54d9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 16,
+            "digest": "c1b0394059b5eba38d585e3b80fb8bae197134d925140bdb4c1bcb75a68c4ab9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 17,
+            "digest": "796fae5d9f9871ebe2adcdcbc65cbbf4c24c7b492ea54497765f1cc3faa2f9ac",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 18,
+            "digest": "26e6284cc2d25b4bcadd3164c03e0bb5ba1c3fc73e2850bba30cdbe1ff0749f2",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 19,
+            "digest": "5d4423c7f8b387ba9540f235d97cb9d9575068ab004d52573df82342064b8d64",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 20,
+            "digest": "d57b4c044b1724c128370c3bde919a12b8962581c402046a0f0b773bb824f093",
+            "evals_total": 97,
+            "first_success_eval": 16,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 21,
+            "digest": "cd23ea99f38df07d88c6336c05333581013c1c984f5b64f7ef6c7e08df8e8cca",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 22,
+            "digest": "d176cca52737c2b126b8f82ce0eb97fa42e59f6dd7f2b1791cbbd6a12b9d064d",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 23,
+            "digest": "f3f2c45186363bc17fa2c17412b7c944e18b45966190d19b7de914a0a93daac9",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 24,
+            "digest": "47aaddcd951e80cca0464e07e0c470b93f7e26b499164d16e92b81ca77320f1f",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 25,
+            "digest": "cd23ea99f38df07d88c6336c05333581013c1c984f5b64f7ef6c7e08df8e8cca",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 26,
+            "digest": "386f4688de5758b2da04d055c49dc34745c795433351ef711b260b1e02d064c3",
+            "evals_total": 97,
+            "first_success_eval": 17,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 27,
+            "digest": "5651d03797fb49efe2885bf03faff9452bb306b64b3bb616081a270e6db1b22d",
+            "evals_total": 97,
+            "first_success_eval": 15,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 28,
+            "digest": "f7a7fb4744b26be1c6734a1b8db825ddb5c2c2ff87948117ca887f6541c2e8b5",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 29,
+            "digest": "717f8889df93769437b682307b13b585d06413e210ae03f4dadfca06f91fdd0c",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          },
+          {
+            "seed": 30,
+            "digest": "743dbb9b478631b0ef489760d8678c784b767de0b52e19af317a096c6a89256e",
+            "evals_total": 97,
+            "first_success_eval": 14,
+            "best_fitness": 100.0
+          }
+        ]
+      },
+      "byte_identity": {
+        "identical_pairs": 30,
+        "total_pairs": 30
+      },
+      "ungated_divergent_pairs": 29,
+      "_divergent_details": []
+    }
+  ],
+  "verdict": {
+    "rules_registered": [
+      "R1''': PRIMARY claim = transparency, success iff gated==control byte-identical on ALL pairs",
+      "R2''': any gated-vs-control divergence is a falsifier: dump, investigate, no success claim",
+      "R3''': guard: gated-vs-control Fisher must show no detectable difference (identity implies it)",
+      "R4''': ungated-vs-control is descriptive (v2 replication + perturbation quantification)",
+      "R5''': defaults unchanged by any outcome: the prior stays opt-in/off",
+      "R6''': teachers/budget/metrics byte-comparable with v2/M7/M8 harnesses"
+    ],
+    "pre_registered_prediction": "120/120 byte-identical pairs (v2 envelope + M8 audit)",
+    "byte_identity": {
+      "identical_pairs": 98,
+      "total_pairs": 120,
+      "success": false
+    },
+    "falsifier_dump": [
+      {
+        "scenario": "lru_cache_logic",
+        "seed": 2,
+        "control_history": [
+          {
+            "generation": 1,
+            "best_fitness": 52.0,
+            "mean_fitness": 46.67,
+            "std_fitness": 7.54,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_01_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 2,
+            "best_fitness": 100.0,
+            "mean_fitness": 42.67,
+            "std_fitness": 17.84,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_02_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 3,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_03_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 4,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_04_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 5,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_05_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 6,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_06_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 7,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_07_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 8,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_08_ind_00",
+            "active_species": 1
+          }
+        ],
+        "gated_history": [
+          {
+            "generation": 1,
+            "best_fitness": 52.0,
+            "mean_fitness": 46.67,
+            "std_fitness": 7.54,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_01_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 2,
+            "best_fitness": 100.0,
+            "mean_fitness": 48.0,
+            "std_fitness": 23.66,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_02_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 3,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_03_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 4,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_04_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 5,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_05_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 6,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_06_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 7,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_07_ind_00",
+            "active_species": 1
+          },
+          {
+            "generation": 8,
+            "best_fitness": 100.0,
+            "mean_fitness": 41.33,
+            "std_fitness": 17.69,
+            "dominant_species_share": 1.0,
+            "best_id": "gen_08_ind_00",
+            "active_species": 1
+          }
+        ]
+      }
+    ],
+    "ungated_divergence": {
+      "divergent_pairs": 114,
+      "total_pairs": 120,
+      "reading": "the RNG-stream perturbation the M6 gate removes"
+    },
+    "guard_and_descriptive_fisher": {
+      "control": {
+        "successes_within_budget": 92
+      },
+      "ungated_s05": {
+        "successes_within_budget": 93,
+        "vs_control_delta": 1,
+        "fisher_p": 1.0,
+        "per_scenario_deltas": [
+          4,
+          0,
+          -3,
+          0
+        ],
+        "classification_vs_control": "no_detectable_effect"
+      },
+      "gated_s05": {
+        "successes_within_budget": 91,
+        "vs_control_delta": -1,
+        "fisher_p": 1.0,
+        "per_scenario_deltas": [
+          0,
+          0,
+          -1,
+          0
+        ],
+        "classification_vs_control": "no_detectable_effect"
+      }
+    }
+  }
+}

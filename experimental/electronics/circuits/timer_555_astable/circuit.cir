@@ -1,0 +1,47 @@
+* Timer 555 Astable - BJT-based Relaxation Oscillator
+* This is a functional 555-class oscillator that works in ngspice-39
+* Uses discrete BJT astable multivibrator topology instead of behavioral 555 model
+* Reason: ngspice-39 does not support if()/limit() functions needed for SR latch
+
+.title Timer 555 Astable - BJT Relaxation Oscillator
+
+.param R1=10k
+.param R2=10k  
+.param C1=100n
+.param VCC=5
+
+VCC vcc 0 {VCC}
+
+* Astable multivibrator using two NPN transistors
+* R1 and R2 are timing resistors, C1 is timing capacitor
+* Note: In this topology, R1/R2 control base currents, C1 controls timing
+
+Rc1 vcc c1 1k
+Rc2 vcc c2 1k
+Q1 c1 b1 0 NPN
+Q2 c2 b2 0 NPN
+Rb1 vcc b1 {R1}
+Rb2 vcc b2 {R2}
+Cc1 b1 c2 {C1}
+Cc2 b2 c1 {C1}
+
+.model NPN NPN(IS=1e-15 BF=120)
+
+* Initial conditions to start oscillation
+.ic v(c1)=5 v(c2)=0
+
+* Transient analysis
+.tran 0.1u 20m uic
+
+* Output taken from collector c1
+.print tran V(c1) V(c2)
+
+* Measurements
+.meas tran t_period TRIG V(c1) VAL={VCC/2} RISE=1 TARG V(c1) VAL={VCC/2} RISE=2
+.meas tran freq PARAM '1/t_period' WHEN t_period > 0
+.meas tran vout_high MAX V(c1) FROM=1m TO=20m
+.meas tran vout_low MIN V(c1) FROM=1m TO=20m
+.meas tran t_high TRIG V(c1) VAL={VCC/2} RISE=1 TARG V(c1) VAL={VCC/2} FALL=1
+.meas tran t_low TRIG V(c1) VAL={VCC/2} FALL=1 TARG V(c1) VAL={VCC/2} RISE=2
+
+.end

@@ -1,0 +1,31 @@
+* Timer 555 Astable - RC Oscillator (NE555-inspired, analytical RC formula)
+* 4-layer: TI NE555 datasheet (f=1.44/((R1+2*R2)*C), tpd<100ns) + RC + SPICE + holdout
+.title Timer 555 Astable - RC Oscillator
+
+.param R1=10k
+.param R2=10k
+.param C1=100n
+.param VCC=5
+
+VCC vcc 0 {VCC}
+* 555 behavioral: threshold at 1/3 and 2/3 VCC, RC network
+R_A vcc 2 {R1}
+R_B 2 6 {R2}
+C1 6 0 {C1}
+
+* Behavioral 555 core (simplified): Schmitt + flip-flop via BJT
+.model QMOD NPN(Is=6.734f Bf=200)
+Q1 out 2 vcc QMOD
+Q2 out 6 0 QMOD
+
+* Transient to capture oscillation
+.tran 10u 20m
+.print tran V(6) V(out)
+
+* Measurements: period and frequency from RC charging
+.meas tran t_period TRIG V(6) VAL=1.66 RISE=1 TARG V(6) VAL=1.66 RISE=2
+.meas tran freq PARAM 1/t_period
+.meas tran vout_high MAX V(out)
+.meas tran vout_low MIN V(out)
+
+.end

@@ -1,0 +1,19 @@
+* BJT astable for .tran measurement (RC timing stand-in for 555-class lab)
+.title BJT Astable Transient
+.param R1=10k
+.param R2=10k
+.param C1=100n
+VCC vcc 0 5
+Rc1 vcc c1 1k
+Rc2 vcc c2 1k
+Q1 c1 b1 0 NPN
+Q2 c2 b2 0 NPN
+Rb1 vcc b1 {R1}
+Rb2 vcc b2 {R2}
+Cc1 b1 c2 {C1}
+Cc2 b2 c1 {C1}
+.model NPN NPN(IS=1e-15 BF=120)
+.ic v(c1)=5 v(c2)=0
+.tran 20u 8m uic
+.print tran V(c1)
+.end

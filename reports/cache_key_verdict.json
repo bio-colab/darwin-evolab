@@ -1,0 +1,89 @@
+{
+  "baseline": "reports/cache_key_baseline.json",
+  "after": "reports/cache_key_after.json",
+  "verdict": {
+    "C1": {
+      "click_cli_parser": {
+        "all_seeds_identical": true,
+        "failing_seeds": []
+      },
+      "requests_http_helper": {
+        "all_seeds_identical": true,
+        "failing_seeds": []
+      },
+      "lru_cache_logic": {
+        "all_seeds_identical": true,
+        "failing_seeds": []
+      },
+      "multi_file_config": {
+        "all_seeds_identical": true,
+        "failing_seeds": []
+      }
+    },
+    "C2": {
+      "per_scenario": {
+        "click_cli_parser": {
+          "old_realized": 0.548,
+          "new_realized": 0.7278,
+          "floor_registered": 0.7,
+          "ok": true
+        },
+        "requests_http_helper": {
+          "old_realized": 0.881,
+          "new_realized": 0.9196,
+          "floor_registered": 0.9,
+          "ok": true
+        },
+        "lru_cache_logic": {
+          "old_realized": 0.89,
+          "new_realized": 0.9216,
+          "floor_registered": 0.91,
+          "ok": true
+        },
+        "multi_file_config": {
+          "old_realized": 0.891,
+          "new_realized": 0.9258,
+          "floor_registered": 0.91,
+          "ok": true
+        }
+      },
+      "all_ok": true
+    },
+    "C3": {
+      "per_scenario": {
+        "click_cli_parser": {
+          "old_mean_wall": 0.2496,
+          "new_mean_wall": 0.2217,
+          "ratio": 0.8882,
+          "ok": true
+        },
+        "requests_http_helper": {
+          "old_mean_wall": 0.1644,
+          "new_mean_wall": 0.1602,
+          "ratio": 0.9745,
+          "ok": true
+        },
+        "lru_cache_logic": {
+          "old_mean_wall": 0.133,
+          "new_mean_wall": 0.1304,
+          "ratio": 0.9805,
+          "ok": true
+        },
+        "multi_file_config": {
+          "old_mean_wall": 0.1324,
+          "new_mean_wall": 0.1297,
+          "ratio": 0.9796,
+          "ok": true
+        }
+      },
+      "all_ok": true
+    },
+    "C4": {
+      "c1": true,
+      "c2": true,
+      "c3": true,
+      "adopt_swap_as_default": true,
+      "verdict": "swap adopted \u2014 materialized-sources identity: byte-identical trajectories, savings at registered floors, no overhead"
+    }
+  }
+}

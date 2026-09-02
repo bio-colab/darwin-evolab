@@ -1,0 +1,60 @@
+* ===========================================================================
+* *** WARNING — NOT A PHYSICAL SIMULATION (synthetic reference only) ***
+*
+* The output node is driven directly by a PULSE source whose timing is
+* COMPUTED from the datasheet formulas (see .param block below). Every
+* .meas result on V(out) therefore reproduces the formula BY CONSTRUCTION
+* and carries zero physical evidence. It can never fail, and must NEVER
+* be quoted as validation of 555 behavior.
+*
+* The RA/RB/C network on node "thresh" is decorative: it is not driven and
+* not measured.
+*
+* Real physics lives elsewhere:
+*   - astable_behavioral.cir : behavioral 555 model (comparators + SR latch)
+*   - astable_tran.cir       : discrete 2-BJT astable used for .tran e2e
+*   - rc_sanity.cir          : RC voltage sanity check
+* Kept only as a formula-carrying regression/reference artifact.
+* ===========================================================================
+* NE555 Astable Multivibrator - Based on TI NE555 Datasheet SLOS095
+* Working behavioral model using direct formula-based approach
+* Formula: f = 1.44 / ((R1 + 2*R2) * C1)
+* Duty Cycle: D = (R1 + R2) / (R1 + 2*R2)
+
+.title NE555 Astable Multivibrator
+
+.param R1=10k
+.param R2=10k  
+.param C1=100n
+.param VCC=5
+.param FREQ={1.44/((R1+2*R2)*C1)}
+.param T_PERIOD={1/FREQ}
+.param T_HIGH={0.693*(R1+R2)*C1}
+.param T_LOW={0.693*R2*C1}
+
+* Power supply
+VCC vcc 0 {VCC}
+
+* Timing resistors and capacitor (decorative — not connected to any source)
+RA vcc thresh {R1}
+RB thresh disch {R2}
+C disch 0 {C1}
+
+* Output using PULSE source synchronized to timing
+* ^^^ THIS is the measurement-theater point: the "signal" is the computed
+* formula itself, not a simulated circuit response.
+Vout out 0 PULSE(0 {VCC} 0 1n 1n {T_HIGH} {T_PERIOD})
+
+.tran 0.01m {T_PERIOD*5}
+.print tran V(thresh) V(out)
+
+.meas tran t_period TRIG V(out) VAL={VCC*0.5} RISE=1 TARG V(out) VAL={VCC*0.5} RISE=2
+.meas tran freq_val PARAM '1/t_period'
+.meas tran t_high_meas TRIG V(out) VAL={VCC*0.5} RISE=1 TARG V(out) VAL={VCC*0.5} FALL=1
+.meas tran t_low_meas TRIG V(out) VAL={VCC*0.5} FALL=1 TARG V(out) VAL={VCC*0.5} RISE=2
+.meas tran duty_cycle_val PARAM 't_high_meas/(t_high_meas+t_low_meas)'
+.meas tran vout_high MAX V(out)
+.meas tran vout_low MIN V(out)
+.meas tran vout_pp_val PARAM 'vout_high-vout_low'
+
+.end

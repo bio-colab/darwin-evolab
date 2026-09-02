@@ -1,0 +1,56 @@
+* NE555 Astable Multivibrator - Minimal Behavioral Model
+* Designed for stable transient simulation in ngspice-39
+* Uses B-sources with compatible syntax (no if() function)
+* Replaces switch with behavioral resistor for discharge
+
+.SUBCKT NE555_BEHAVIORAL 1 2 3 4 5 6 7 8
+* Pins: 1=GND, 2=TRIG, 3=OUT, 4=RST, 5=CTRL, 6=THR, 7=DIS, 8=VCC
+
+* Internal Voltage Divider (5k resistors equivalent)
+Rdiv1 8 5 5k
+Rdiv2 5 1 5k
+
+* Comparator 1 (Threshold): Output High when V(6) > V(5)
+Bcomp1 90 0 V=limit(1e6*(V(6)-V(5)), 0, 5)
+
+* Comparator 2 (Trigger): Output High when V(2) < V(5)/2
+Bcomp2 91 0 V=limit(1e6*(V(5)/2-V(2)), 0, 5)
+
+* SR Latch using capacitors and feedback for stability
+* Set when Comp2 is high, Reset when Comp1 is high
+Blatch 92 0 V=V(91)/(V(91)+V(90)+1m)*5
+Clatch 92 0 1p IC=0
+
+* Output Buffer
+Bout 3 0 V=V(92)
+
+* Discharge Transistor - Behavioral Resistor
+* Low resistance when latch is low, high resistance when latch is high
+Rdisch 7 1 1Meg
+Gdisch 7 1 VALUE {V(92)/10}
+
+.ENDS NE555_BEHAVIORAL
+
+* Main Circuit
+Vcc 8 0 DC 5
+R1 8 7 10k
+R2 7 6 10k
+C1 6 0 100n
+X1 1 2 3 4 5 6 7 8 NE555_BEHAVIORAL
+
+* Connect Threshold (6) and Trigger (2) to Capacitor
+* Connect Reset (4) to VCC
+* Connect Control (5) to GND via capacitor for stability (optional)
+Vrst 4 0 DC 5
+Cctrl 5 0 10n
+
+* Simulation Commands
+.TRAN 0.1m 20m UIC
+.PROBE V(3) V(6) V(2) V(7)
+.PRINT TRAN V(3) V(6) V(2) V(7)
+.MEAS TRAN t_high TRIG V(3) VAL=2.5 RISE=1 TARG V(3) VAL=2.5 FALL=1
+.MEAS TRAN t_low TRIG V(3) VAL=2.5 FALL=1 TARG V(3) VAL=2.5 RISE=2
+.MEAS TRAN t_period PARAM t_high+t_low
+.MEAS TRAN freq PARAM 1/t_period
+.MEAS TRAN duty PARAM t_high/t_period
+.END

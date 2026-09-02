@@ -1,0 +1,29 @@
+{
+  "clean": {
+    "f": 1000.0,
+    "cycles": 18,
+    "conf": 1.0
+  },
+  "formula_duty_floor": 0.5098039215686274,
+  "synthetic_80": {
+    "best": 15.7598,
+    "art": {
+      "tool_used": "synthetic",
+      "physical_claim": false,
+      "formula_freq_hz": 436.98160104916485,
+      "formula_duty": 0.5322562245390454,
+      "frequency_hz": 438.596491,
+      "vpp": 5.0,
+      "duty_cycle": 0.5445,
+      "cycles_used": 7,
+      "frequency_confidence": 0.875,
+      "R1": 3093.563632095602,
+      "R2": 22429.703934407222,
+      "C1": 6.872010529960148e-08
+    },
+    "gt20": 0,
+    "max": 15.7598,
+    "median": 0.0
+  },
+  "physics_15": null
+}

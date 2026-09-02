@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.ENV
+.ENV.*
+.venv/
+.venv.*
+
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variable files
+.env
+.env.local
+.env.*
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# MyPy
+.mypy_cache/
+
+# ngspice simulation artifacts (large binary dumps — never commit)
+*.raw
+*.op.raw
+*.decode
+
+# Local runtime outputs (CLI default report + MAP-Elites archive DB + experience store)
+/run_report.json
+/data/
+experimental/electronics/data/

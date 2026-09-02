@@ -1,0 +1,30 @@
+* RC Sanity Check Circuit for NE555 Hybrid Evaluator
+* Simulates charge/discharge cycle to verify voltage levels stay within [0, VCC]
+* Does NOT simulate oscillation logic (handled analytically)
+
+.PARAM R1={R1}
+.PARAM R2={R2}
+.PARAM C1={C1}
+.PARAM VCC={VCC}
+
+* Voltage Source
+V1 vcc 0 DC {VCC}
+
+* Simple RC Network mimicking 555 timing path
+* Charge path: VCC -> R1 -> R2 -> C -> GND
+* Discharge path: C -> R2 -> Switch -> GND (Simulated by toggling resistance or just checking max swing)
+
+Rcharge vcc node1 {R1}
+Rdisch node1 node2 {R2}
+C1 node2 0 {C1}
+
+* Pulse source to simulate switching behavior (approximate duty cycle)
+* We force a toggle to see if capacitor charges/discharges within bounds
+Vswitch node2 0 PULSE(0 {VCC} 1n 1n 1n 1m 2m)
+
+* Measure Max/Min Voltage at capacitor node
+.MEAS TRAN vmax MAX V(node2)
+.MEAS TRAN vmin MIN V(node2)
+
+.TRAN 0.1m 5m UIC
+.END

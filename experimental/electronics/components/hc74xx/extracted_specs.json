@@ -1,0 +1,510 @@
+{
+  "74HC00": {
+    "part_number": "74HC00",
+    "datasheet_id": "TI-SCLS081E",
+    "pin_count": 14,
+    "vcc_pin": 14,
+    "gnd_pin": 7,
+    "electrical": {
+      "icc_quiescent_max_ua": 20.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 9.0,
+      "tpd_max_ns_at_4_5v_25c": 18.0,
+      "tpd_max_ns_at_4_5v_industrial": 23.0,
+      "tpd_max_ns_at_2_0v_25c": 90.0,
+      "tpd_max_ns_at_6_0v_25c": 15.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "NAND",
+        "input_pins": [
+          1,
+          2
+        ],
+        "output_pins": [
+          3
+        ]
+      },
+      {
+        "unit_id": 2,
+        "logic_fn": "NAND",
+        "input_pins": [
+          4,
+          5
+        ],
+        "output_pins": [
+          6
+        ]
+      },
+      {
+        "unit_id": 3,
+        "logic_fn": "NAND",
+        "input_pins": [
+          9,
+          10
+        ],
+        "output_pins": [
+          8
+        ]
+      },
+      {
+        "unit_id": 4,
+        "logic_fn": "NAND",
+        "input_pins": [
+          12,
+          13
+        ],
+        "output_pins": [
+          11
+        ]
+      }
+    ]
+  },
+  "74HC02": {
+    "part_number": "74HC02",
+    "datasheet_id": "TI-SCLS083D",
+    "pin_count": 14,
+    "vcc_pin": 14,
+    "gnd_pin": 7,
+    "electrical": {
+      "icc_quiescent_max_ua": 20.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 9.0,
+      "tpd_max_ns_at_4_5v_25c": 19.0,
+      "tpd_max_ns_at_4_5v_industrial": 24.0,
+      "tpd_max_ns_at_2_0v_25c": 95.0,
+      "tpd_max_ns_at_6_0v_25c": 16.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "NOR",
+        "input_pins": [
+          2,
+          3
+        ],
+        "output_pins": [
+          1
+        ]
+      },
+      {
+        "unit_id": 2,
+        "logic_fn": "NOR",
+        "input_pins": [
+          5,
+          6
+        ],
+        "output_pins": [
+          4
+        ]
+      },
+      {
+        "unit_id": 3,
+        "logic_fn": "NOR",
+        "input_pins": [
+          8,
+          9
+        ],
+        "output_pins": [
+          10
+        ]
+      },
+      {
+        "unit_id": 4,
+        "logic_fn": "NOR",
+        "input_pins": [
+          11,
+          12
+        ],
+        "output_pins": [
+          13
+        ]
+      }
+    ]
+  },
+  "74HC04": {
+    "part_number": "74HC04",
+    "datasheet_id": "TI-SCLS085E",
+    "pin_count": 14,
+    "vcc_pin": 14,
+    "gnd_pin": 7,
+    "electrical": {
+      "icc_quiescent_max_ua": 20.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 7.0,
+      "tpd_max_ns_at_4_5v_25c": 15.0,
+      "tpd_max_ns_at_4_5v_industrial": 19.0,
+      "tpd_max_ns_at_2_0v_25c": 85.0,
+      "tpd_max_ns_at_6_0v_25c": 14.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "NOT",
+        "input_pins": [
+          1
+        ],
+        "output_pins": [
+          2
+        ]
+      },
+      {
+        "unit_id": 2,
+        "logic_fn": "NOT",
+        "input_pins": [
+          3
+        ],
+        "output_pins": [
+          4
+        ]
+      },
+      {
+        "unit_id": 3,
+        "logic_fn": "NOT",
+        "input_pins": [
+          5
+        ],
+        "output_pins": [
+          6
+        ]
+      },
+      {
+        "unit_id": 4,
+        "logic_fn": "NOT",
+        "input_pins": [
+          9
+        ],
+        "output_pins": [
+          8
+        ]
+      },
+      {
+        "unit_id": 5,
+        "logic_fn": "NOT",
+        "input_pins": [
+          11
+        ],
+        "output_pins": [
+          10
+        ]
+      },
+      {
+        "unit_id": 6,
+        "logic_fn": "NOT",
+        "input_pins": [
+          13
+        ],
+        "output_pins": [
+          12
+        ]
+      }
+    ]
+  },
+  "74HC08": {
+    "part_number": "74HC08",
+    "datasheet_id": "TI-SCLS089D",
+    "pin_count": 14,
+    "vcc_pin": 14,
+    "gnd_pin": 7,
+    "electrical": {
+      "icc_quiescent_max_ua": 20.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 10.0,
+      "tpd_max_ns_at_4_5v_25c": 20.0,
+      "tpd_max_ns_at_4_5v_industrial": 25.0,
+      "tpd_max_ns_at_2_0v_25c": 100.0,
+      "tpd_max_ns_at_6_0v_25c": 17.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "AND",
+        "input_pins": [
+          1,
+          2
+        ],
+        "output_pins": [
+          3
+        ]
+      },
+      {
+        "unit_id": 2,
+        "logic_fn": "AND",
+        "input_pins": [
+          4,
+          5
+        ],
+        "output_pins": [
+          6
+        ]
+      },
+      {
+        "unit_id": 3,
+        "logic_fn": "AND",
+        "input_pins": [
+          9,
+          10
+        ],
+        "output_pins": [
+          8
+        ]
+      },
+      {
+        "unit_id": 4,
+        "logic_fn": "AND",
+        "input_pins": [
+          12,
+          13
+        ],
+        "output_pins": [
+          11
+        ]
+      }
+    ]
+  },
+  "74HC32": {
+    "part_number": "74HC32",
+    "datasheet_id": "TI-SCLS093D",
+    "pin_count": 14,
+    "vcc_pin": 14,
+    "gnd_pin": 7,
+    "electrical": {
+      "icc_quiescent_max_ua": 20.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 10.0,
+      "tpd_max_ns_at_4_5v_25c": 20.0,
+      "tpd_max_ns_at_4_5v_industrial": 25.0,
+      "tpd_max_ns_at_2_0v_25c": 100.0,
+      "tpd_max_ns_at_6_0v_25c": 17.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "OR",
+        "input_pins": [
+          1,
+          2
+        ],
+        "output_pins": [
+          3
+        ]
+      },
+      {
+        "unit_id": 2,
+        "logic_fn": "OR",
+        "input_pins": [
+          4,
+          5
+        ],
+        "output_pins": [
+          6
+        ]
+      },
+      {
+        "unit_id": 3,
+        "logic_fn": "OR",
+        "input_pins": [
+          9,
+          10
+        ],
+        "output_pins": [
+          8
+        ]
+      },
+      {
+        "unit_id": 4,
+        "logic_fn": "OR",
+        "input_pins": [
+          12,
+          13
+        ],
+        "output_pins": [
+          11
+        ]
+      }
+    ]
+  },
+  "74HC86": {
+    "part_number": "74HC86",
+    "datasheet_id": "TI-SCLS099E",
+    "pin_count": 14,
+    "vcc_pin": 14,
+    "gnd_pin": 7,
+    "electrical": {
+      "icc_quiescent_max_ua": 20.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 11.0,
+      "tpd_max_ns_at_4_5v_25c": 22.0,
+      "tpd_max_ns_at_4_5v_industrial": 28.0,
+      "tpd_max_ns_at_2_0v_25c": 115.0,
+      "tpd_max_ns_at_6_0v_25c": 19.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "XOR",
+        "input_pins": [
+          1,
+          2
+        ],
+        "output_pins": [
+          3
+        ]
+      },
+      {
+        "unit_id": 2,
+        "logic_fn": "XOR",
+        "input_pins": [
+          4,
+          5
+        ],
+        "output_pins": [
+          6
+        ]
+      },
+      {
+        "unit_id": 3,
+        "logic_fn": "XOR",
+        "input_pins": [
+          9,
+          10
+        ],
+        "output_pins": [
+          8
+        ]
+      },
+      {
+        "unit_id": 4,
+        "logic_fn": "XOR",
+        "input_pins": [
+          12,
+          13
+        ],
+        "output_pins": [
+          11
+        ]
+      }
+    ]
+  },
+  "74HC138": {
+    "part_number": "74HC138",
+    "datasheet_id": "TI-SCLS134D",
+    "pin_count": 16,
+    "vcc_pin": 16,
+    "gnd_pin": 8,
+    "electrical": {
+      "icc_quiescent_max_ua": 80.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 15.0,
+      "tpd_max_ns_at_4_5v_25c": 30.0,
+      "tpd_max_ns_at_4_5v_industrial": 38.0,
+      "tpd_max_ns_at_2_0v_25c": 150.0,
+      "tpd_max_ns_at_6_0v_25c": 26.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "DECODER_3TO8",
+        "input_pins": [
+          1,
+          2,
+          3
+        ],
+        "output_pins": [
+          15,
+          14,
+          13,
+          12,
+          11,
+          10,
+          9,
+          7
+        ]
+      }
+    ]
+  },
+  "74HC151": {
+    "part_number": "74HC151",
+    "datasheet_id": "TI-SCLS139C",
+    "pin_count": 16,
+    "vcc_pin": 16,
+    "gnd_pin": 8,
+    "electrical": {
+      "icc_quiescent_max_ua": 80.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 14.0,
+      "tpd_max_ns_at_4_5v_25c": 28.0,
+      "tpd_max_ns_at_4_5v_industrial": 35.0,
+      "tpd_max_ns_at_2_0v_25c": 140.0,
+      "tpd_max_ns_at_6_0v_25c": 24.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "MUX_8TO1",
+        "input_pins": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9
+        ],
+        "output_pins": [
+          5
+        ]
+      }
+    ]
+  },
+  "74HC283": {
+    "part_number": "74HC283",
+    "datasheet_id": "TI-SCLS149C",
+    "pin_count": 16,
+    "vcc_pin": 16,
+    "gnd_pin": 8,
+    "electrical": {
+      "icc_quiescent_max_ua": 80.0
+    },
+    "timing": {
+      "tpd_typ_ns_at_4_5v": 18.0,
+      "tpd_max_ns_at_4_5v_25c": 36.0,
+      "tpd_max_ns_at_4_5v_industrial": 45.0,
+      "tpd_max_ns_at_2_0v_25c": 180.0,
+      "tpd_max_ns_at_6_0v_25c": 30.0
+    },
+    "gates": [
+      {
+        "unit_id": 1,
+        "logic_fn": "ADDER_4BIT",
+        "input_pins": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9
+        ],
+        "output_pins": [
+          10,
+          11,
+          12,
+          13,
+          14
+        ]
+      }
+    ]
+  }
+}
