@@ -538,7 +538,7 @@ class LowPowerALUEvaluator:
         
         # 1. Primary Objective: Functional Correctness
         if not metrics.is_fully_functional:
-            return metrics.truth_table_accuracy * 70.0 - (metrics.active_gate_count * 0.05)
+            return max(0.0, metrics.truth_table_accuracy * 70.0 - (metrics.active_gate_count * 0.05))
 
         # 2. Secondary Objectives: Area, Delay, and Low-Power Switching Activity
         area_bonus = self.area_weight / (1.0 + metrics.active_gate_count)

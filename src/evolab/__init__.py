@@ -1,7 +1,6 @@
-"""evolab — evolutionary code lab.
+"""evolab — Universal Evolutionary Optimization & Synthesis Kernel across Software, Silicon, Discrete Logic, and Mathematics.
 
-Importing this package loads only the run core. Side representations
-(CGP, quantum, assembly, CST, LLM, instrumentation) resolve on first use.
+Importing this package loads the core evolutionary kernel and domain adapter contracts.
 """
 from __future__ import annotations
 
@@ -9,6 +8,16 @@ from typing import Any
 
 __version__ = "0.5.0"
 
+from .adapters import (
+    DomainAdapter,
+    ElectronicsAdapter,
+    DiscreteLogicAdapter,
+    NumericalMathAdapter,
+    SoftwareRepairAdapter,
+    get_domain_adapter,
+    list_domain_adapters,
+    register_domain_adapter,
+)
 from .analyzer import summarize
 from .code_fixtures import (
     SCENARIO_REGISTRY,
@@ -330,4 +339,6 @@ __all__ = [
     "SuspicionMap", "SuspiciousNode", "LineCoverageTracer", "build_suspicion_map",
     "NodeAnchor", "AnchoredHunk", "AnchoredPatchGenome", "apply_anchored_hunk", "AnchoredPatchApplyError",
     "SearchStrategy", "GeneticAlgorithmStrategy", "GreedySearchStrategy", "get_search_strategy",
+    "DomainAdapter", "SoftwareRepairAdapter", "DiscreteLogicAdapter", "NumericalMathAdapter", "ElectronicsAdapter",
+    "register_domain_adapter", "get_domain_adapter", "list_domain_adapters",
 ]
