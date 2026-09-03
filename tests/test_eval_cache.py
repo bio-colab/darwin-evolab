@@ -349,3 +349,4 @@ def test_recorder_sees_every_call_with_cache_inside():
         cache = wired.raw
         assert cache.hits > 0
         assert metrics["evals_total"] == cache.hits + cache.misses
+        wired.close()

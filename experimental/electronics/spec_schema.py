@@ -8,7 +8,16 @@ from typing import Any
 from .models.logic import PARTS_FOR_FUNCTION
 from .scenarios import list_electronics_scenarios
 
-ALLOWED_ACTIONS = frozenset({"run_scenario", "digital", "analog_sizing"})
+ALLOWED_ACTIONS = frozenset({
+    "run_scenario",
+    "digital",
+    "analog_sizing",
+    "boolean_expression",
+    "verilog_rtl",
+    "analog_filter",
+    "analog_amplifier",
+    "waveform_matching",
+})
 ALLOWED_ENGINES = frozenset({"ga", "greedy"})
 
 
@@ -21,6 +30,10 @@ class CircuitSpec:
     num_outputs: int | None = None
     engine: str = "ga"
     notes: tuple[str, ...] = ()
+    expressions: dict[str, str] | None = None
+    verilog_code: str | None = None
+    objective: str | None = None
+    waveform_csv: str | None = None
 
 
 def validate_spec(data: dict[str, Any]) -> list[str]:
@@ -33,6 +46,16 @@ def validate_spec(data: dict[str, Any]) -> list[str]:
         "num_outputs",
         "engine",
         "notes",
+        "expressions",
+        "verilog_code",
+        "verilog_file",
+        "objective",
+        "filter_type",
+        "cutoff_hz",
+        "stopband_attenuation_db",
+        "gain_db",
+        "bandwidth_mhz",
+        "waveform_csv",
     }
     if extra:
         errors.append(f"unknown_fields:{sorted(extra)}")
@@ -82,6 +105,10 @@ def spec_from_dict(data: dict[str, Any]) -> tuple[CircuitSpec | None, list[str]]
             num_outputs=None if data.get("num_outputs") is None else int(data["num_outputs"]),
             engine=str(data.get("engine", "ga")),
             notes=tuple(notes),
+            expressions=data.get("expressions"),
+            verilog_code=data.get("verilog_code"),
+            objective=data.get("objective"),
+            waveform_csv=data.get("waveform_csv"),
         ),
         [],
     )

@@ -274,6 +274,8 @@ def test_engine_run_with_zero_signal_store_matches_control_history():
             initial = make_code_population(scenario, 6, random.Random(7))
             report = engine.run(generations=3, initial_population=initial)
             histories[name] = report["history"]
+            if hasattr(wired, "close"):
+                wired.close()
 
     assert histories["off"] == histories["on"]
 
@@ -324,3 +326,5 @@ def test_gate_never_blocks_real_signal_in_engine_run():
         w = proxy_prior.kind_weights([favored, other])
         assert w is not None          # real signal survives the gate
         assert w[favored] > w[other]  # and still points the right way
+        if hasattr(wired, "close"):
+            wired.close()

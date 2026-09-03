@@ -323,25 +323,63 @@ def main():
             return
 
         # Mode 2: Test cases execution
+        def _unpack_sb_case(case):
+            if len(case) == 3:
+                return list(case[0]), dict(case[1]), case[2]
+            if len(case) == 2:
+                raw_args, expected = case
+                if isinstance(raw_args, (list, tuple)) and len(raw_args) == 2 and isinstance(raw_args[1], dict):
+                    return list(raw_args[0]), dict(raw_args[1]), expected
+                return list(raw_args), {}, expected
+            return list(case), {}, None
+
         passed = 0
         details = []
-        for args, expected in test_cases:
-            try:
-                res = func(*args)
-                if res == expected:
-                    passed += 1
-                else:
-                    details.append(f"Expected {expected}, got {res} for args {args}")
-            except Exception as e:
-                details.append(f"Exception {type(e).__name__}: {e}")
+        for case in test_cases:
+            args, kwargs, expected = _unpack_sb_case(case)
+            exp_exc = None
+            if isinstance(expected, str) and expected.startswith("raises:"):
+                exp_exc = expected.split(":", 1)[1].strip()
+
+            if exp_exc:
+                try:
+                    res = func(*args, **kwargs)
+                    details.append(f"Expected exception {exp_exc}, got return value {res!r}")
+                except Exception as e:
+                    if type(e).__name__ == exp_exc:
+                        passed += 1
+                    else:
+                        details.append(f"Expected exception {exp_exc}, got {type(e).__name__}: {e}")
+            else:
+                try:
+                    res = func(*args, **kwargs)
+                    if res == expected:
+                        passed += 1
+                    else:
+                        details.append(f"Expected {expected}, got {res} for args {args}")
+                except Exception as e:
+                    details.append(f"Exception {type(e).__name__}: {e}")
 
         # Holdout cases
         holdout_passed = True
         if holdout_cases:
             h_passed = 0
-            for args, expected in holdout_cases:
+            for case in holdout_cases:
+                args, kwargs, expected = _unpack_sb_case(case)
+                exp_exc = None
+                if isinstance(expected, str) and expected.startswith("raises:"):
+                    exp_exc = expected.split(":", 1)[1].strip()
+
                 try:
-                    if func(*args) == expected:
+                    if exp_exc:
+                        try:
+                            func(*args, **kwargs)
+                            ok = False
+                        except Exception as e:
+                            ok = (type(e).__name__ == exp_exc)
+                    else:
+                        ok = (func(*args, **kwargs) == expected)
+                    if ok:
                         h_passed += 1
                 except Exception:
                     pass

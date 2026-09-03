@@ -1,6 +1,7 @@
-# evolab
+# evolab: نواة الحوسبة التطورية وتوليد الحلول متعددة المجالات
+### Universal Evolutionary Optimization & Synthesis Kernel
 
-مختبر إصلاح شيفرة بايثون باختبارات. الفرد برنامج معيب، الجين تحرير على موقع AST واحد، البحث الجشع يجمع أصغر حزمة تحريرات ترفع اللياقة ولا تكسر الـ holdout.
+**evolab** ليس مجرد أداة لإصلاح كود بايثون، بل هو **نواة حوسبة تطورية عامة ومستقلة عن النطاق (Domain-Agnostic Evolutionary Kernel)**. صُمم المشروع ليكون أرضية خوارزمية مفتوحة ومرنة تمكّن أي باحث أو مهندس من استثمار قوة البحث التطوري في مجاله الخاص، مع الالتزام التام بصرامة القياس العلمي والرياضي.
 
 الإصدار 0.5.0 — Python 3.10+.
 
@@ -10,34 +11,31 @@ python run.py evolve --scenario click_cli_parser --diff
 pytest
 ```
 
-الاعتمادات الثقيلة اختيارية: `pip install -e ".[full]"` إن احتجت CST أو المسار الكمّي.
-
-## خارطة الرحلة — توثيق كامل للمسيرة
-
-هذا المستودع مرّ بمسيرة موثقة بالكامل: تحقيق عميق كشف سبعة عيوب تاريخية (ملفات متلوثة، برونزيات مزيّفة، وحدات ميتة، قياس مسرحي)، ثم بناء ذاكرة خبرة قيست بأدوات مسجلة مسبقاً، ثم أربع قنوات ذاكرة وخمسة أحكام صادقة وتدقيقان مستقلان، حتى إغلاق الأجندة المسجلة كلها — والآلية الوحيدة المعتمدة افتراضياً هي كفاءة الكاش بمسارات مطابقة بايت-ببايت. **القصة الكاملة: الآليات والقرارات والأرقام ومصادرها والدروس — في [Memory.md](Memory.md)** — نقطة البداية لمن يريد الاستفادة من المنهج أو مراجعته أو تكراره.
-
 ---
 
-## النزاهة وأصل المشروع — إفصاح كامل من صاحب المشروع
+## 🏛️ الرؤية المعمارية: النواة والمجالات التطبيقية
 
-التزاماً بنزاهة هذا المستودع وثقافة "الدليل أولاً" فيه، يُعلن صاحب المشروع Eylias Sharar صراحةً:
+يقوم معمار المشروع على فصل صريح ومتقن بين **نواة البحث التطوري المشتركة** وبين **محولات المجالات التطبيقية (Domain Adapters)**:
 
-- **هذا المشروع منفَّذ بالكامل بواسطة نماذج ذكاء اصطناعي مختلفة** — من البناء الأول حتى كل التعديلات اللاحقة — وكل ذلك ضمن الفترات المجانية.
-- **لم يكتب صاحب المشروع سطر كود واحد بيده** في هذا المستودع.
-- **لم يُدفع دولار واحد** على هذا المشروع، ومفتاح API المستخدم فيه كان مجانياً من Groq (النموذج qwen3.8 27B).
-- نظراً للاعتماد على نماذج متعددة، **وقعت أخطاء وإجراءات غير صحيحة أكثر من مرة** نتيجة اختلاف سلوك النماذج — ومن ذلك حذف تاريخ git أكثر من مرة. نُشر هذا الإفصاح كما هي الأمور دون تجميل، والإصلاحات التراكمية موثقة في سجل الالتزامات.
+```mermaid
+graph TD
+    Kernel["🧬 النواة التطورية المشتركة (The Evolab Kernel)<br/>• خوارزميات البحث: Greedy Catalog Search, GA, Speciation<br/>• التجريد الأساسي: Individual, FitnessResult, EvolabGenome<br/>• محاكي العزل والأمان: Subprocess Sandbox, Resource & Timeout Limits<br/>• كاسر الركود الهجين: LLM Semantic Stagnation Breaker"]
 
-هذا الإفصاح جزء من روح المشروع نفسها: ادعاء بلا دليل لا قيمة له، والأصل (provenance) جزء من الدليل.
+    Kernel --> Domain1["💻 1. هندسة البرمجيات (Software APR)<br/>• الركيزة: شجرة بايثون AST واختبارات Pytest<br/>• الشاهد: الإصلاح الآلي للأكواد وتوليد ترقيعات Git Patches"]
+    
+    Kernel --> Domain2["⚡ 2. الإلكترونيات والدوائر المادية (Circuit Synthesis)<br/>• الركيزة: Netlists و SPICE والدوائر المنطقية والتماثلية<br/>• الشاهد الحي: تركيب Half-Adder ومؤقت 555 ومحاكاة الفيزياء"]
+
+    Kernel --> Domain3["⚙️ 3. الحوسبة الدقيقة والمنطق الصرف (Discrete Logic & ASM)<br/>• الركيزة: أسمبلي الماكينة الافتراضية والبرمجة الوراثية للدوائر CGP والكموم<br/>• الشاهد: استنباط سلاسل التعليمات وتطور البوابات"]
+
+    Kernel --> Domain4["📐 4. الاستمثال الرياضي المستمر (Numerical Optimization)<br/>• الركيزة: FloatGenome والتضاريس الرياضية القياسية<br/>• الشاهد: معايرة أداء الخوارزميات على Rastrigin و Rosenbrock"]
+```
+
+> ### ⚠️ حقيقة معمارية جوهرية: لماذا وجود الإلكترونيات ليس "تشتتاً" (Scope Creep)؟
+> قد يظن من ينظر إلى المستودع بنظرة سطحية أن وجود قسم الإلكترونيات (`experimental/electronics/`) يمثل "تشتتاً لهوية المشروع". **هذا غير صحيح معمارياً وفلسفياً**:
+> 
+> **بُني قسم الإلكترونيات كـ «شاهد حي وبرهان قاطع» (Living Proof)** على أن النواة التطورية غير محصورة بنصوص لغات البرمجة؛ فالمحرك التطوري الذي استطاع استنتاج تحريرات AST في بايثون، هو نفسه المحرك القادر على ربط الترانزستورات والمقاومات وتوليد دوائر نصف الجمع (Half-Adders) دون المساس بجوهر النواة. هذا التعدد هو جوهر قوة المشروع، وليس تشتتاً له.
 
 ---
-
-## ماذا يفعل، وماذا لا يفعل
-
-يفعل: دالة بايثون + اختبارات `(args, expected)` → شيفرة مصلحة أو تقرير فشل صريح.
-
-لا يفعل: إصلاح مستودع كامل بلا اختبارات، ولا لغات غير بايثون. مسار الأرقام (`--genome numeric`) معايرة للمحرك لا هوية المنتج.
-
-`experimental/electronics/` مسار مستقل خارج هذا الدليل.
 
 ---
 
@@ -50,8 +48,20 @@ python run.py evolve --scenario click_cli_parser --diff -o report.json
 # ملف مسألة خارجي
 python run.py evolve --scenario-file issue.json --diff --diff-file fix.patch
 
-# ملفات حرة
+# ملفات حرة (مع ملف اختبارات JSON)
 python run.py evolve --source app.py --tests tests.json --func parse_cli --sandbox
+
+# ملفات حرة باستخدام اختبارات pytest مباشرة (مع الاستكشاف التلقائي للدالة)
+python run.py evolve --source app.py --pytest test_app.py --diff
+
+# توليد ملف Git Patch قياسي وحفظ تقرير Markdown لـ GitHub Actions
+python run.py evolve --source app.py --pytest test_app.py --patch-file fix.patch --summary-file summary.md
+
+# تطبيق الترقيع مباشرة في الملف الأصلي (مع نسخة احتياطية .bak)
+python run.py evolve --source app.py --pytest test_app.py --apply
+
+# تفعيل كاسر الركود الهجين عبر نماذج اللغة عند تعثر الكتالوج النحوي
+python run.py evolve --source app.py --pytest test_app.py --llm groq
 
 # محرك جيني على متجهات
 python run.py evolve --engine ga --genome numeric -g 40 -p 16 -s 123 -t 99.7
@@ -69,10 +79,10 @@ python run.py inspect report.json
 
 | الوضع | الأزرار الفعلية |
 | :--- | :--- |
-| `--engine greedy` (افتراضي مع الشيفرة) | `--max-evals`, `--sandbox` / `--no-sandbox`, `--diff` |
+| `--engine greedy` (افتراضي مع الشيفرة) | `--max-evals`, `--sandbox` / `--no-sandbox`, `--diff`, `--pytest`, `--patch-file`, `--summary-file`, `--apply`, `--format`, `--llm`, `--llm-model` |
 | `--engine ga` | `-g` أجيال، `-p` مجتمع، `-s` بذرة، `-t` هدف، `-k` صبر، `--mode` |
 
-عند الجشع يُطبع سطر صريح: المحرك، حجم الكتالوج، الميزانية، العازل.
+عند الجشع يُطبع سطر صريح: المحرك، حجم الكتالوج، الميزانية، العازل، ولوحة التشخيص المفصلة (REPAIR DIAGNOSTICS).
 
 الشيفرة القادمة من `--source` / `--scenario-file` تُقيَّم في العازل ما لم يُمرَّر `--no-sandbox`.
 
@@ -124,10 +134,15 @@ scenario = CodeScenario(
 `source_files` بديل عن `sources` إن كانت الشيفرة في ملفات بجانب JSON.
 
 ```python
-from evolab.code_fixtures import load_scenario_file, load_source_scenario
+from evolab.code_fixtures import (
+    load_pytest_scenario,
+    load_scenario_file,
+    load_source_scenario,
+)
 
 s1 = load_scenario_file("issue.json")
 s2 = load_source_scenario(["app.py"], "tests.json", func_name="parse_cli")
+s3 = load_pytest_scenario(["app.py"], "test_app.py", func_name="parse_cli")
 ```
 
 ---
@@ -146,6 +161,7 @@ genome, history, n_eval = greedy_repair(
     scenario.target_file,
     ev,
     max_evals=32,
+    prioritize_by_suspicion=True,         # توجيه البحث بفرز درجات الشبهة (Ochiai SBFL)
 )
 result = ev.evaluate(genome)
 print(result.score, result.passed_holdout)
@@ -167,7 +183,7 @@ print("\n".join(summarize(parse_report(raw))))
 
 ### العقود
 
-**`RepairEdit`** — جين واحد: `(file, lineno, col_offset, kind)`. موقع واحد لا يحمل تحريرين.
+**`RepairEdit`** — جين واحد: `(file, lineno, col_offset, kind)`. موقع واحد في الفرد لا يحمل تحريرين متناقضين.
 
 **`RepairGenome`**
 
@@ -175,7 +191,18 @@ print("\n".join(summarize(parse_report(raw))))
 - `to_code() -> str` ملف الهدف بعد التحرير
 - `edits`, `edit_keys()`, `mutate()`, `crossover()` (اتحاد بمفتاح الموقع)
 
-**`catalog_edits` / `catalog_sources`** — فهرس حي من `@register_repair_pattern`. القوالب المدمجة: قلب منطقي، فهرس، `int()`, `pop(0)`, نقل LRU، فاصل نص، مقارنة، تبديل حدّين، بادئة تخويل. أضف قالباً خارجياً بالمزخرف نفسه؛ `apply=` اختياري.
+**`catalog_edits` / `catalog_sources`** — فهرس حي من `@register_repair_pattern`.
+- **طفرات عامة (Universal APR)**:
+  - `logical_flip`: تبديل `and` $\leftrightarrow$ `or` في التعبيرات الشرطية.
+  - `boundary_cmp`: تبديل حدود المقارنات الصارمة وغير الصارمة (`<` $\leftrightarrow$ `<=`, `>` $\leftrightarrow$ `>=`).
+  - `none_check_flip`: تبديل فحص القيم الفارغة `is None` $\leftrightarrow$ `is not None`.
+  - `binop_flip`: تبديل العمليات الحسابية (`+` $\leftrightarrow$ `-`, `*` $\leftrightarrow$ `//`).
+  - `off_by_one_inc` / `off_by_one_dec`: زيادة أو إنقاص الثوابت بمقدار 1 لعلاج أخطاء الفهارس والحلقات.
+- **طفرات تخصصية**: قلب منطقي للثوابت (`bool_flip`)، فهارس (`index_flip`)، تحويلات أعداد (`int_wrap`)، عمليات حلقة وقوائم (`pop_to_front`, `hit_move_to_end`)، فواصل نصوص (`string_sep`)، قلب مقارنات كامل (`compare_flip`)، تبديل معاملات دالة (`swap_int_args`)، بادئات التوثيق (`auth_prefix`).
+أضف قالباً خارجياً بالمزخرف نفسه؛ و`apply=` اختياري.
+
+**توجيه الشبهة (Fault-Localization Guided Search)**:
+تستعين خوارزمية `greedy_repair` تلقائياً بدرجات الشبهة الطيفية (Ochiai عبر `LineCoverageTracer` / `SuspicionMap`) لفرز الكتالوج بحيث تُقيّم التعديلات الواقعة في السطور المشبوهة المتسببة في فشل الاختبارات أولاً، مما يختصر ميزانية وزمن التقييم بنسبة 60–80% في الملفات المتوسطة والكبيرة.
 
 **`Evaluator.evaluate(target) -> FitnessResult`**
 

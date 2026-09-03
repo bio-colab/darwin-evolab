@@ -72,22 +72,49 @@ bridge.py / scenarios.py   باب التشغيل
 oracle.py                  اتفاق أدوات + امتثال مواصفة + منع ادّعاء الـ fallback
 spec_schema.py             مخطط طلب المستخدم
 proposal.py                اقتراح محدود بلا LLM
-instruments/               راسم مثالي على أثر جاهز
-models/                    نتليست، صلاحية، Z3 اختياري، جسر ngspice
-evaluators/                رقمي + تماثلي
+inputs/                    محلل البوليات (boolean_expr)، قارئ فيريلوج (verilog_reader)، مواصفات التماثلي (analog_spec)، مصفوفة باريتو (objective_matrix)
+ui/                        لوحة المختبر التفاعلي والمحاكي وراسم الإشارة الرقمي (workbench_generator.py)
+instruments/               راسم مثالي على أثر جاهز + مولّد مخططات SVG هندسية (schematic.py)
+models/                    نتليست، صلاحية، Z3 اختياري، جسر ngspice، طوبولوجيا تماثلية حرة (analog_topology.py)
+evaluators/                رقمي + تماثلي + مقيم طوبولوجيا المرشحات التماثلية (analog_topology_evaluator.py)
 components/                كتالوج 74HC + أرشيف مواصفات
 circuits/                  نتليست + config
 experiments/               exp1 تحقق، exp2 مقارنة، capability_probe
-tests/                     40 اختبار انحدار
+tests/                     63 اختبار انحدار (نسبة نجاح 100%)
 ```
 
 مرجع المحاكاة: `models/ngspice_bridge.py`. `simulators/` إعادة تصدير.
 
-## العقود
+## منصة المختبر التفاعلية وقمرة القيادة (Interactive Silicon Workbench UI/UX)
 
-- الرقمي: `CircuitNetlistGenome` + `FitnessResult`.
-- التحجيم: `FloatGenome`.
-- الأداة والخطأ و`physical_claim` في `artifacts`.
+- تصدير لوحة ويب متكاملة مستقلة عبر `--ui-file <dashboard.html>`.
+- **المحاكي اللحظي المباشر (Live In-Browser Simulator):** النقر على أزرار الدخل ($A, B, \dots$) لمشاهدة انتشار الإشارات عبر الأسلاك المضيئة (الأخضر $5\text{V}$، الأزرق $0\text{V}$) في الزمن الحقيقي.
+- **راسم الإشارة الرقمي الفسفوري (Dual-Channel CRT Scope):** شبكة تقسيمات $8 \times 10$ Divs، تحكم Time/Div و Volts/Div، ومؤشرات Cursors تفاعلية لقياس التردد وزمن الصعود.
+- **مركز تصدير السيليكون (1-Click Silicon Hub):** نسخ كود Verilog-2001، كود SPICE Netlist، وتنزيل مخططات المتجهات.
+- **بنية التوسع المستقبلي:** كروت الربط العتادي (WebUSB / FPGA)، وتوليد الصوت التناغمي (Web Audio API)، وخريطة التوزيع الحراري.
+
+## آليات الإدخال المتقدمة (Universal Input Modalities)
+
+1. **المعادلات البولية المباشرة (Direct Boolean Logic Expressions):**
+   - تمرير التعبير المنطقي مباشرة عبر `--expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))"`.
+   - محلل AST آمن 100% يشتق متجهات الحقيقة ويوجهها لمحرك التخليق التلقائي مع تصدير المخطط البصري.
+2. **شفرة Verilog السلوكية (Synthesizable Verilog RTL Reader):**
+   - تمرير ملف كود عتادي سلوكي عبر `--verilog-in module.v`.
+   - استخلاص المنافذ وجمل الإسناد وحساب جدول الحقيقة وإعادة تخليق الدائرة وتصديرها بصيغة Verilog محسنة عبر `--verilog-file out.v`.
+3. **مواصفات التماثلي الهندسية وأثر راسم الإشارة (Analog Specs & Oscilloscope CSV):**
+   - تحديد مواصفات المرشحات الترددية (تردد القطع، تموج نطاق التمرير، توهين نطاق الإيقاف).
+   - مطابقة مسار راسم إشارة حقيقي عبر `--waveform trace.csv` وحساب التماثل بالخطأ التربيعي (MSE).
+4. **مصفوفة أوزان باريتو متعددة الأهداف (Pareto Multi-Objective Matrix):**
+   - التحكم بأولويات الاستمثال عبر `--objective <power | speed | area | balanced>` لترجيح الطاقة، السرعة، أو المساحة.
+
+## العقود والمخرجات
+
+- **لوحة المختبر التفاعلية:** تصدير تطبيق ويب مستقل كامل الميزات عبر `--ui-file <file.html>`.
+- **الرقمي المنفصل (Breadboard):** `CircuitNetlistGenome` + `FitnessResult` + تصدير مخططات بصرية متجهة عبر `--schematic-file <file.svg>`.
+- **الرقمي الهرمي التوسعي (CGP):** `CGPGenome` (البرمجة الجينية الدائرية) لدوائر الجامع والـ ALU ومقارن البتات + تصدير كود عتادي مباشر عبر `--verilog-file <file.v>` + مخطط SVG.
+- **التماثلي الطوبولوجي الحر:** `AnalogTopologyGenome` لتخليق وتوصيل شبكات $R, C, L, Q, D$ التماثلية من الصفر وتوليد كود SPICE تلقائياً (`analog_filter_synthesis`).
+- **التحجيم المتغير:** `FloatGenome` لتحجيم المتغيرات الفيزيائية.
+- **النزاهة العلمية:** الأداة والخطأ و`physical_claim` في `artifacts` يرفض الادعاء الفيزيائي بدون تشغيل ngspice حقيقي.
 
 سجل تجارب الهزاز و`.tran` ومقارنة البحث: `reports/LAB_NOTES.md`.
 

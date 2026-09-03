@@ -6,6 +6,7 @@ Inspired by opensource-analog-circuits Benchmark (parse_ac_metrics + regex).
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 from pathlib import Path
 import re
 import shutil
@@ -196,19 +197,21 @@ class NGSpiceBridge:
     """Subprocess interface to ngspice for analog parameter sizing and transient simulation."""
 
     def __init__(self, ngspice_path: str | None = None) -> None:
-        extra = [
-            Path(__file__).resolve().parents[1] / "tools" / "ngspice",
+        extra: list[Path] = []
+        # tools/ngspice is an ELF binary; do not probe on Windows
+        if os.name != "nt":
+            extra.append(Path(__file__).resolve().parents[1] / "tools" / "ngspice")
+
+        candidates = [
+            ngspice_path,
+            shutil.which("ngspice_con"),
+            shutil.which("ngspice"),
+            shutil.which("ngspice.EXE"),
+            shutil.which("ngspice.exe"),
+            *(str(p) for p in extra if p.exists()),
         ]
-        self.ngspice_path = (
-            ngspice_path
-            or shutil.which("ngspice_con")
-            or shutil.which("ngspice")
-            or next((str(p) for p in extra if p.exists()), None)
-            or shutil.which("ngspice.EXE")
-            or shutil.which("ngspice.exe")
-        )
-        # Force common Windows install locations
-        if not self.ngspice_path:
+
+        if os.name == "nt":
             common_paths = [
                 r"C:\ngspice\Spice64\bin\ngspice_con.exe",
                 r"C:\ngspice\Spice64\bin\ngspice.exe",
@@ -217,10 +220,22 @@ class NGSpiceBridge:
                 r"C:\Program Files (x86)\ngspice\bin\ngspice_con.exe",
                 r"C:\Program Files (x86)\ngspice\bin\ngspice.exe",
             ]
-            for p in common_paths:
-                if Path(p).exists():
-                    self.ngspice_path = p
-                    break
+            candidates.extend(common_paths)
+
+        resolved_path = None
+        for c in candidates:
+            if c and Path(c).is_file():
+                if os.name == "nt" and Path(c).suffix.lower() not in (".exe", ".cmd", ".bat"):
+                    continue
+                try:
+                    res = subprocess.run([str(c), "-v"], capture_output=True, timeout=2.0)
+                    if res.returncode == 0 or b"ngspice" in (res.stdout + res.stderr).lower():
+                        resolved_path = str(c)
+                        break
+                except Exception:
+                    continue
+
+        self.ngspice_path = resolved_path
 
     def is_ngspice_available(self) -> bool:
         return self.ngspice_path is not None

@@ -324,7 +324,11 @@ def discretize_code_context(
     """Discretizes code context (ASTGenome / PatchGenome) for causal learning."""
     if hasattr(genome, "describe"):
         desc = genome.describe()
-        complexity = "complex" if desc.get("max_depth", 1) > 4 or desc.get("hunk_count", 0) > 2 else "simple"
+        complexity = (
+            "complex"
+            if isinstance(desc, dict) and (desc.get("max_depth", 1) > 4 or desc.get("hunk_count", 0) > 2)
+            else "simple"
+        )
     else:
         complexity = "simple"
 

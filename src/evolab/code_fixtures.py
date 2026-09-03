@@ -287,6 +287,108 @@ def load_source_scenario(
     )
 
 
+def auto_detect_target_function(sources: dict[str, str], pytest_source: str) -> tuple[str, str] | None:
+    """Auto-detect (func_name, target_file) by analyzing definitions in sources and calls in pytest_source."""
+    import ast
+    from collections import Counter
+
+    source_funcs: dict[str, str] = {}
+    for filename, code in sources.items():
+        try:
+            tree = ast.parse(code)
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    source_funcs[node.name] = filename
+        except Exception:
+            continue
+
+    if not source_funcs:
+        return None
+
+    try:
+        py_tree = ast.parse(pytest_source)
+        call_counts: Counter[str] = Counter()
+        for node in ast.walk(py_tree):
+            if isinstance(node, ast.Call):
+                name = None
+                if isinstance(node.func, ast.Name):
+                    name = node.func.id
+                elif isinstance(node.func, ast.Attribute):
+                    name = node.func.attr
+                if name and name in source_funcs:
+                    call_counts[name] += 1
+
+        if call_counts:
+            best_func, _ = call_counts.most_common(1)[0]
+            return best_func, source_funcs[best_func]
+    except Exception:
+        pass
+
+    first_func = next(iter(source_funcs))
+    return first_func, source_funcs[first_func]
+
+
+def load_pytest_scenario(
+    source_paths: list[str | Path],
+    pytest_path: str | Path,
+    func_name: str | None = None,
+    target_file: str | None = None,
+) -> CodeScenario:
+    import ast
+    from .pytest_plugin import extract_literal_cases
+
+    sources: dict[str, str] = {}
+    for raw in source_paths:
+        fp = Path(raw)
+        sources[fp.name] = fp.read_text(encoding="utf-8")
+    if not sources:
+        raise ValueError("no source files")
+
+    pytest_file = Path(pytest_path)
+    pytest_source = pytest_file.read_text(encoding="utf-8")
+
+    if not func_name or not isinstance(func_name, str):
+        detected = auto_detect_target_function(sources, pytest_source)
+        if detected:
+            func_name, detected_file = detected
+            if not target_file:
+                target_file = detected_file
+        else:
+            raise ValueError("could not auto-detect target function name; please specify --func")
+
+    target = target_file or next(iter(sources))
+
+    tree = ast.parse(pytest_source)
+    cases: list[tuple[tuple[Any, ...], Any]] = []
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            found = extract_literal_cases(pytest_source, node.name, func_name)
+            cases.extend(found)
+
+    if not cases:
+        raise ValueError(
+            f"no extractable test cases for function {func_name!r} found in {pytest_path}"
+        )
+
+    if len(cases) >= 3:
+        test_cases = cases[:-1]
+        holdout_cases = cases[-1:]
+    else:
+        test_cases = cases
+        holdout_cases = []
+
+    return CodeScenario(
+        name=pytest_file.stem,
+        description=f"Pytest scenario extracted from {pytest_path}",
+        sources=sources,
+        target_file=target,
+        func_name=func_name,
+        test_cases=test_cases,
+        holdout_cases=holdout_cases,
+        difficulty="custom",
+    )
+
+
 def make_code_population(
     scenario: CodeScenario,
     size: int,

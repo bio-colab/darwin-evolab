@@ -14,6 +14,7 @@ from .code_fixtures import (
     SCENARIO_REGISTRY,
     CodeScenario,
     get_all_scenarios,
+    load_pytest_scenario,
     load_scenario_file,
     load_source_scenario,
     make_code_population,
@@ -48,6 +49,12 @@ from .repair import (
     list_repair_patterns,
     register_repair_pattern,
     unregister_repair_pattern,
+)
+from .reporters import (
+    apply_in_place,
+    format_git_patch,
+    format_markdown_summary,
+    format_terminal_diagnostics,
 )
 from .schema import Issue, RunReport, parse_report, save_report
 
@@ -224,6 +231,10 @@ _LAZY: dict[str, tuple[str, str]] = {
     "PermutationSymmetricInputSummary": (".instrumentation", "PermutationSymmetricInputSummary"),
     "BehavioralSecurityDescriptor": (".instrumentation", "BehavioralSecurityDescriptor"),
     "TransferableBehavioralMotif": (".instrumentation", "TransferableBehavioralMotif"),
+    "SearchStrategy": (".strategies", "SearchStrategy"),
+    "GeneticAlgorithmStrategy": (".strategies", "GeneticAlgorithmStrategy"),
+    "GreedySearchStrategy": (".strategies", "GreedySearchStrategy"),
+    "get_search_strategy": (".strategies", "get_search_strategy"),
 }
 
 
@@ -318,4 +329,5 @@ __all__ = [
     "ASTSemanticGuard", "is_ast_change_safe",
     "SuspicionMap", "SuspiciousNode", "LineCoverageTracer", "build_suspicion_map",
     "NodeAnchor", "AnchoredHunk", "AnchoredPatchGenome", "apply_anchored_hunk", "AnchoredPatchApplyError",
+    "SearchStrategy", "GeneticAlgorithmStrategy", "GreedySearchStrategy", "get_search_strategy",
 ]

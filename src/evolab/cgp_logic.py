@@ -133,6 +133,12 @@ class CGPGenome(EvolabGenome):
             GateType.NAND, GateType.NOR, GateType.AND, GateType.OR, GateType.XOR, GateType.NOT
         ]
 
+    def __len__(self) -> int:
+        return len(self.nodes)
+
+    def __iter__(self):
+        return iter(self.nodes)
+
     def clone(self) -> CGPGenome:
         return CGPGenome(
             num_inputs=self.num_inputs,
@@ -349,6 +355,10 @@ class CGPGenome(EvolabGenome):
             "active_nodes": list(self.get_active_nodes()),
             "output_connections": list(self.output_connections),
             "node_count": len(self.nodes),
+            "nodes": [
+                {"gate_type": n.gate_type.value, "input_a": n.input_a, "input_b": n.input_b}
+                for n in self.nodes
+            ],
         }
 
     def describe(self) -> dict[str, Any]:

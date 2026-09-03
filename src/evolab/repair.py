@@ -60,6 +60,25 @@ _COMPARE_FLIP = {
     ast.NotEq: ast.Eq,
 }
 
+_BOUNDARY_FLIP = {
+    ast.Lt: ast.LtE,
+    ast.LtE: ast.Lt,
+    ast.Gt: ast.GtE,
+    ast.GtE: ast.Gt,
+}
+
+_NONE_CMP_FLIP = {
+    ast.Is: ast.IsNot,
+    ast.IsNot: ast.Is,
+}
+
+_BINOP_FLIP = {
+    ast.Add: ast.Sub,
+    ast.Sub: ast.Add,
+    ast.Mult: ast.FloorDiv,
+    ast.FloorDiv: ast.Mult,
+}
+
 _SEP_FLIP = {",": "&", "&": ",", " ": ","}
 
 _PATTERN_REGISTRY: dict[str, dict[str, Any]] = {}
@@ -110,16 +129,16 @@ def make_edit(kind: str, node: ast.AST, file: str = "", **payload: Any) -> Repai
 
 
 def catalog_edits(source: str, file: str = "") -> list[RepairEdit]:
-    """Edits from the live pattern registry; one candidate per AST locus."""
+    """Edits from the live pattern registry."""
     tree = ast.parse(source)
-    by_locus: dict[tuple[str, int, int], RepairEdit] = {}
+    by_locus_kind: dict[tuple[tuple[str, int, int], str], RepairEdit] = {}
     for spec in _PATTERN_REGISTRY.values():
         finder = spec.get("find")
         if finder is None:
             continue
         for edit in finder(tree, file) or []:
-            by_locus.setdefault(edit.locus(), edit)
-    return list(by_locus.values())
+            by_locus_kind.setdefault((edit.locus(), edit.kind), edit)
+    return list(by_locus_kind.values())
 
 
 def catalog_sources(sources: dict[str, str]) -> list[RepairEdit]:
@@ -316,6 +335,114 @@ def find_auth_prefix(tree: ast.AST, file: str = "") -> list[RepairEdit]:
     for node in ast.walk(tree):
         if isinstance(node, ast.JoinedStr) and node.values:
             edit = make_edit("auth_prefix", node, file)
+            if edit:
+                out.append(edit)
+    return out
+
+
+def _apply_logical_flip(node, edit, tree, parents) -> None:
+    if isinstance(node, ast.BoolOp):
+        if isinstance(node.op, ast.And):
+            node.op = ast.Or()
+        elif isinstance(node.op, ast.Or):
+            node.op = ast.And()
+
+
+@register_repair_pattern("logical_flip", apply=_apply_logical_flip)
+def find_logical_flip(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.BoolOp) and isinstance(node.op, (ast.And, ast.Or)):
+            edit = make_edit("logical_flip", node, file)
+            if edit:
+                out.append(edit)
+    return out
+
+
+def _apply_boundary_cmp(node, edit, tree, parents) -> None:
+    if isinstance(node, ast.Compare) and node.ops:
+        op_t = type(node.ops[0])
+        if op_t in _BOUNDARY_FLIP:
+            node.ops[0] = _BOUNDARY_FLIP[op_t]()
+
+
+@register_repair_pattern("boundary_cmp", apply=_apply_boundary_cmp)
+def find_boundary_cmp(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Compare) and node.ops and type(node.ops[0]) in _BOUNDARY_FLIP:
+            edit = make_edit("boundary_cmp", node, file)
+            if edit:
+                out.append(edit)
+    return out
+
+
+def _apply_none_check_flip(node, edit, tree, parents) -> None:
+    if isinstance(node, ast.Compare) and node.ops:
+        op_t = type(node.ops[0])
+        if op_t in _NONE_CMP_FLIP:
+            node.ops[0] = _NONE_CMP_FLIP[op_t]()
+
+
+@register_repair_pattern("none_check_flip", apply=_apply_none_check_flip)
+def find_none_check_flip(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Compare)
+            and node.ops
+            and type(node.ops[0]) in _NONE_CMP_FLIP
+            and node.comparators
+            and isinstance(node.comparators[0], ast.Constant)
+            and node.comparators[0].value is None
+        ):
+            edit = make_edit("none_check_flip", node, file)
+            if edit:
+                out.append(edit)
+    return out
+
+
+def _apply_binop_flip(node, edit, tree, parents) -> None:
+    if isinstance(node, ast.BinOp):
+        op_t = type(node.op)
+        if op_t in _BINOP_FLIP:
+            node.op = _BINOP_FLIP[op_t]()
+
+
+@register_repair_pattern("binop_flip", apply=_apply_binop_flip)
+def find_binop_flip(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.BinOp) and type(node.op) in _BINOP_FLIP:
+            edit = make_edit("binop_flip", node, file)
+            if edit:
+                out.append(edit)
+    return out
+
+
+def _apply_off_by_one(node, edit, tree, parents) -> None:
+    if isinstance(node, ast.Constant) and type(node.value) is int:
+        delta = int(edit.payload_dict().get("delta", 1))
+        node.value += delta
+
+
+@register_repair_pattern("off_by_one_inc", apply=_apply_off_by_one)
+def find_off_by_one_inc(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and type(node.value) is int:
+            edit = make_edit("off_by_one_inc", node, file, delta=1)
+            if edit:
+                out.append(edit)
+    return out
+
+
+@register_repair_pattern("off_by_one_dec", apply=_apply_off_by_one)
+def find_off_by_one_dec(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and type(node.value) is int:
+            edit = make_edit("off_by_one_dec", node, file, delta=-1)
             if edit:
                 out.append(edit)
     return out
@@ -522,6 +649,7 @@ def greedy_repair(
     target_file: str,
     evaluator: Any,
     max_evals: int | None = None,
+    prioritize_by_suspicion: bool = True,
 ) -> tuple[RepairGenome, list[dict[str, Any]], int]:
     """Forward greedy: add a gene only if it raises score and does not fail holdout."""
     catalog = catalog_sources(sources)
@@ -535,6 +663,14 @@ def greedy_repair(
     }]
     evaluations = 1
     taken = set(current.edit_keys())
+
+    if prioritize_by_suspicion:
+        suspicion_map = getattr(evaluator, "last_suspicion_map", None)
+        if suspicion_map is not None and getattr(suspicion_map, "line_scores", None):
+            def _sbfl_key(e: RepairEdit):
+                score = suspicion_map.line_scores.get(e.lineno, 0.0)
+                return (-score, e.file, e.lineno, e.col_offset, e.kind)
+            catalog = sorted(catalog, key=_sbfl_key)
 
     improved = True
     gen = 1
@@ -593,11 +729,16 @@ def greedy_run_report(
     evaluator: Any,
     scenario_name: str = "",
     max_evals: int | None = None,
+    prioritize_by_suspicion: bool = True,
 ) -> dict[str, Any]:
     from datetime import datetime, timezone
 
     genome, history, evaluations = greedy_repair(
-        sources, target_file, evaluator, max_evals=max_evals
+        sources,
+        target_file,
+        evaluator,
+        max_evals=max_evals,
+        prioritize_by_suspicion=prioritize_by_suspicion,
     )
     score, hold = _score(evaluator, genome)
     evaluations += 1

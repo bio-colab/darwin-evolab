@@ -119,6 +119,61 @@ class CircuitNetlistGenomeCodec(GenomeCodec):
         )
 
 
+class AnalogTopologyGenomeCodec:
+    """Codec for serializing AnalogTopologyGenome to/from JSON."""
+
+    name = "AnalogTopologyGenome"
+
+    def to_json(self, genome: Any) -> dict:
+        return genome.serialize()
+
+    def from_json(self, data: dict) -> Any:
+        from experimental.electronics.models.analog_topology import (
+            AnalogComponent,
+            AnalogComponentKind,
+            AnalogTopologyGenome,
+        )
+
+        comps = [
+            AnalogComponent(
+                kind=AnalogComponentKind(c["kind"]),
+                name=c["name"],
+                nodes=tuple(c["nodes"]),
+                value=float(c["value"]),
+                model=c.get("model", ""),
+            )
+            for c in data.get("components", [])
+        ]
+        return AnalogTopologyGenome(
+            components=comps,
+            input_node=data.get("input_node", "in"),
+            output_node=data.get("output_node", "out"),
+        )
+
+
+class CGPGenomeCodec:
+    """Codec for serializing CGPGenome to/from JSON."""
+
+    name = "CGPGenome"
+
+    def to_json(self, genome: Any) -> dict:
+        return genome.serialize()
+
+    def from_json(self, data: dict) -> Any:
+        from evolab.cgp_logic import CGPGenome, CGPNode, GateType
+
+        nodes = [
+            CGPNode(GateType(n["gate_type"]), int(n["input_a"]), int(n["input_b"]))
+            for n in data.get("nodes", [])
+        ]
+        return CGPGenome(
+            num_inputs=int(data["num_inputs"]),
+            num_outputs=int(data["num_outputs"]),
+            nodes=nodes,
+            output_connections=[int(x) for x in data.get("output_connections", [])],
+        )
+
+
 _CODECS_BY_TYPE: dict[type, GenomeCodec] = {}
 _CODECS_BY_NAME: dict[str, GenomeCodec] = {}
 
@@ -155,6 +210,18 @@ def _register_builtin_codecs() -> None:
         from experimental.electronics.models.circuit_netlist import CircuitNetlistGenome
 
         register_codec(CircuitNetlistGenome, CircuitNetlistGenomeCodec())
+    except ImportError:
+        pass
+    try:
+        from experimental.electronics.models.analog_topology import AnalogTopologyGenome
+
+        register_codec(AnalogTopologyGenome, AnalogTopologyGenomeCodec())
+    except ImportError:
+        pass
+    try:
+        from evolab.cgp_logic import CGPGenome
+
+        register_codec(CGPGenome, CGPGenomeCodec())
     except ImportError:
         pass
 
@@ -445,7 +512,7 @@ class EvidenceCapture:
     def __call__(self, individual: Any) -> float:
         res = self.evaluator.evaluate(individual)
         self.last = res if hasattr(res, "artifacts") else None
-        return float(res.score)
+        return float(res.score if hasattr(res, "score") else res)
 
 
 class ArchivedEvaluatorProxy:

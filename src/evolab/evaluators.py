@@ -177,31 +177,74 @@ class FunctionTestEvaluator(Evaluator):
     def cost_estimate(self) -> str:
         return "cheap"
 
+    @staticmethod
+    def _unpack_case(case: Any) -> tuple[tuple[Any, ...], dict[str, Any], Any]:
+        """Unpack (args, expected) or (args, kwargs, expected) or ((args, kwargs), expected)."""
+        if len(case) == 3:
+            return tuple(case[0]), dict(case[1]), case[2]
+        if len(case) == 2:
+            raw_args, expected = case
+            if isinstance(raw_args, (tuple, list)) and len(raw_args) == 2 and isinstance(raw_args[1], dict):
+                return tuple(raw_args[0]), dict(raw_args[1]), expected
+            return tuple(raw_args), {}, expected
+        raise ValueError(f"Invalid test case structure: {case}")
+
     def _run_cases(
-        self, func: Callable, cases: list[tuple[tuple[Any, ...], Any]]
+        self, func: Callable, cases: list[Any]
     ) -> tuple[int, int, list[str]]:
         passed = 0
         details = []
-        for args, expected in cases:
-            try:
-                res = func(*args)
-                if res == expected:
-                    passed += 1
-                else:
-                    details.append(f"Expected {expected}, got {res} for args {args}")
-            except Exception as e:
-                details.append(f"Exception {type(e).__name__}: {e} for args {args}")
+        for case in cases:
+            args, kwargs, expected = self._unpack_case(case)
+            exp_exc = None
+            if isinstance(expected, type) and issubclass(expected, BaseException):
+                exp_exc = expected.__name__
+            elif isinstance(expected, str) and expected.startswith("raises:"):
+                exp_exc = expected.split(":", 1)[1].strip()
+
+            if exp_exc:
+                try:
+                    res = func(*args, **kwargs)
+                    details.append(f"Expected exception {exp_exc}, got return value {res!r} for args={args} kwargs={kwargs}")
+                except Exception as e:
+                    if type(e).__name__ == exp_exc:
+                        passed += 1
+                    else:
+                        details.append(f"Expected exception {exp_exc}, got {type(e).__name__}: {e} for args={args} kwargs={kwargs}")
+            else:
+                try:
+                    res = func(*args, **kwargs)
+                    if res == expected:
+                        passed += 1
+                    else:
+                        details.append(f"Expected {expected!r}, got {res!r} for args={args} kwargs={kwargs}")
+                except Exception as e:
+                    details.append(f"Exception {type(e).__name__}: {e} for args={args} kwargs={kwargs}")
         return passed, len(cases), details
 
     def _refresh_suspicion(self, code: str, func: Callable) -> None:
         try:
             from .suspicion import LineCoverageTracer, build_suspicion_map
             runs = []
-            for args, expected in self.test_cases:
+            for case in self.test_cases:
+                args, kwargs, expected = self._unpack_case(case)
                 tracer = LineCoverageTracer(self.target_file)
+                exp_exc = None
+                if isinstance(expected, type) and issubclass(expected, BaseException):
+                    exp_exc = expected.__name__
+                elif isinstance(expected, str) and expected.startswith("raises:"):
+                    exp_exc = expected.split(":", 1)[1].strip()
+
                 with tracer:
                     try:
-                        ok = func(*args) == expected
+                        if exp_exc:
+                            try:
+                                func(*args, **kwargs)
+                                ok = False
+                            except Exception as e:
+                                ok = (type(e).__name__ == exp_exc)
+                        else:
+                            ok = (func(*args, **kwargs) == expected)
                     except Exception:
                         ok = False
                 runs.append((set(tracer.executed_lines), bool(ok)))

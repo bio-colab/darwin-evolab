@@ -490,8 +490,17 @@ class ExperienceStore:
     def close(self) -> None:
         try:
             self._conn.close()
-        except sqlite3.Error:
+        except (sqlite3.Error, AttributeError):
             pass
+
+    def __enter__(self) -> ExperienceStore:
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        self.close()
+
+    def __del__(self) -> None:
+        self.close()
 
 
 def function_summaries(
@@ -1185,6 +1194,21 @@ class ExperienceRecorderProxy:
     @property
     def cost_estimate(self) -> str:
         return getattr(self.raw, "cost_estimate", "cheap")
+
+    def close(self) -> None:
+        if hasattr(self.store, "close"):
+            self.store.close()
+        if hasattr(self.raw, "close"):
+            self.raw.close()
+
+    def __enter__(self) -> ExperienceRecorderProxy:
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        self.close()
+
+    def __del__(self) -> None:
+        self.close()
 
     def __getattr__(self, attr: str) -> Any:
         return getattr(self.raw, attr)

@@ -129,6 +129,31 @@ class MockLLMClient:
         t0 = time.perf_counter()
 
         # 1. Check if structured JSON is requested
+        if "Digital Hardware Circuit Synthesis" in prompt or "Available IC Packages" in prompt:
+            circuit_data = {
+                "ic_packages": ["74HC86", "74HC08"],
+                "connections": [
+                    {"src_ic": -1, "src_pin": 0, "dst_ic": 0, "dst_pin": 1},
+                    {"src_ic": -1, "src_pin": 1, "dst_ic": 0, "dst_pin": 2},
+                    {"src_ic": -1, "src_pin": 0, "dst_ic": 1, "dst_pin": 1},
+                    {"src_ic": -1, "src_pin": 1, "dst_ic": 1, "dst_pin": 2},
+                    {"src_ic": 0, "src_pin": 3, "dst_ic": -1, "dst_pin": 100},
+                    {"src_ic": 1, "src_pin": 3, "dst_ic": -1, "dst_pin": 101},
+                ],
+            }
+            output = f"```json\n{json.dumps(circuit_data, indent=2)}\n```"
+            latency = time.perf_counter() - t0
+            return LLMResponse(
+                content=output,
+                prompt_tokens=max(len(prompt.split()), 10),
+                completion_tokens=max(len(output.split()), 10),
+                total_tokens=max(len(prompt.split()) + len(output.split()), 20),
+                latency_sec=latency,
+                model=self.model_name,
+                success=True,
+                mode="json",
+            )
+
         if (system_prompt and "JSON" in system_prompt) or "Return ONLY a JSON object" in prompt:
             if "return x - 10" in prompt:
                 hunk_data = {
@@ -699,3 +724,59 @@ class LLMSemanticMutator:
                 resp.success = False
                 resp.error_message = f"Failed to create patch from diff: {e}"
         return genome.clone(), resp
+
+    def mutate_circuit_netlist(
+        self,
+        current_topology: str,
+        truth_table_specs: str,
+        current_fitness: float | None = None,
+        available_parts: list[str] | None = None,
+    ) -> tuple[dict[str, Any] | None, LLMResponse]:
+        """Surgically mutates or redesigns circuit IC connections using domain-aware LLM prompts."""
+        parts_str = ", ".join(available_parts) if available_parts else "74HC00, 74HC08, 74HC32, 74HC86"
+        prompt_parts = [
+            "Domain: Digital Hardware Circuit Synthesis (74xx CMOS Logic ICs)",
+            f"Available IC Packages: {parts_str}",
+            f"Target Truth Table / Requirements:\n{truth_table_specs}",
+            f"Current Circuit Topology / Netlist:\n```\n{current_topology}\n```",
+        ]
+        if current_fitness is not None:
+            prompt_parts.append(f"Current Fitness Score: {current_fitness:.2f}%")
+
+        prompt_parts.append(
+            "\nAnalyze why the circuit fails the truth table or timing. Propose an updated wiring topology.\n"
+            "Return ONLY a JSON object in this format:\n"
+            "```json\n"
+            "{\n"
+            '  "ic_packages": ["74HC86", "74HC08"],\n'
+            '  "connections": [\n'
+            '    {"src_ic": -1, "src_pin": 0, "dst_ic": 0, "dst_pin": 1},\n'
+            '    {"src_ic": 0, "src_pin": 3, "dst_ic": -1, "dst_pin": 100}\n'
+            "  ]\n"
+            "}\n"
+            "```\n"
+            "Note: src_ic=-1 means primary circuit input pins (0, 1...).\n"
+            "dst_ic=-1 with dst_pin >= 100 means primary circuit output pins (100 is out0, 101 is out1)."
+        )
+        prompt = "\n".join(prompt_parts)
+        system_prompt = (
+            "You are an expert digital electronics and hardware logic synthesis engineer. "
+            "Design digital circuits using standard 74HC ICs. Output ONLY the valid JSON circuit specification."
+        )
+        resp = self.client.complete(prompt, system_prompt=system_prompt)
+        self.cost_tracker.record(resp)
+
+        if not resp.success or not resp.content.strip():
+            return None, resp
+
+        try:
+            raw = resp.content
+            match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", raw, re.DOTALL)
+            json_str = match.group(1) if match else raw.strip()
+            data = json.loads(json_str)
+            if "ic_packages" in data and "connections" in data:
+                return data, resp
+        except Exception as e:
+            resp.error_message = f"Failed to parse circuit JSON: {e}"
+
+        return None, resp

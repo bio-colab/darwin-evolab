@@ -42,30 +42,83 @@ def _call_name(node: ast.AST) -> str | None:
     return None
 
 
-def extract_literal_cases(source: str, test_name: str, func_name: str) -> list[tuple[tuple[Any, ...], Any]]:
+def extract_literal_cases(source: str, test_name: str, func_name: str) -> list[Any]:
     tree = ast.parse(source)
-    cases: list[tuple[tuple[Any, ...], Any]] = []
+    cases: list[Any] = []
     for fn in tree.body:
         if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
             continue
         if fn.name != test_name:
             continue
         for node in ast.walk(fn):
-            if not isinstance(node, ast.Assert) or not isinstance(node.test, ast.Compare):
+            # Support: with pytest.raises(Exc): func(...)
+            if isinstance(node, ast.With):
+                for item in node.items:
+                    ctx = item.context_expr
+                    if isinstance(ctx, ast.Call) and _call_name(ctx.func) == "raises":
+                        exc_name = "Exception"
+                        if ctx.args:
+                            if isinstance(ctx.args[0], ast.Name):
+                                exc_name = ctx.args[0].id
+                            elif isinstance(ctx.args[0], ast.Attribute):
+                                exc_name = ctx.args[0].attr
+                        for body_node in ast.walk(node):
+                            if isinstance(body_node, ast.Call) and _call_name(body_node.func) == func_name:
+                                try:
+                                    args = tuple(ast.literal_eval(a) for a in body_node.args)
+                                    kwargs = {kw.arg: ast.literal_eval(kw.value) for kw in body_node.keywords if kw.arg is not None}
+                                    case_args = (args, kwargs) if kwargs else args
+                                    cases.append((case_args, f"raises:{exc_name}"))
+                                except Exception:
+                                    continue
+
+            if not isinstance(node, ast.Assert):
+                continue
+
+            # Support: assert func(...)
+            if isinstance(node.test, ast.Call) and _call_name(node.test.func) == func_name:
+                try:
+                    args = tuple(ast.literal_eval(a) for a in node.test.args)
+                    kwargs = {kw.arg: ast.literal_eval(kw.value) for kw in node.test.keywords if kw.arg is not None}
+                    case_args = (args, kwargs) if kwargs else args
+                    cases.append((case_args, True))
+                except Exception:
+                    continue
+            # Support: assert not func(...)
+            elif (
+                isinstance(node.test, ast.UnaryOp)
+                and isinstance(node.test.op, ast.Not)
+                and isinstance(node.test.operand, ast.Call)
+                and _call_name(node.test.operand.func) == func_name
+            ):
+                try:
+                    args = tuple(ast.literal_eval(a) for a in node.test.operand.args)
+                    kwargs = {kw.arg: ast.literal_eval(kw.value) for kw in node.test.operand.keywords if kw.arg is not None}
+                    case_args = (args, kwargs) if kwargs else args
+                    cases.append((case_args, False))
+                except Exception:
+                    continue
+
+            # Support: assert func(...) == expected / is ...
+            if not isinstance(node.test, ast.Compare):
                 continue
             cmp = node.test
-            if not cmp.ops or not isinstance(cmp.ops[0], ast.Eq):
-                continue
-            if not isinstance(cmp.left, ast.Call):
+            if not cmp.ops or not isinstance(cmp.left, ast.Call):
                 continue
             if _call_name(cmp.left.func) != func_name:
                 continue
+
             try:
                 args = tuple(ast.literal_eval(a) for a in cmp.left.args)
+                kwargs = {kw.arg: ast.literal_eval(kw.value) for kw in cmp.left.keywords if kw.arg is not None}
+                case_args = (args, kwargs) if kwargs else args
+                op = cmp.ops[0]
                 expected = ast.literal_eval(cmp.comparators[0])
+                if isinstance(op, (ast.Eq, ast.Is)):
+                    cases.append((case_args, expected))
             except Exception:
                 continue
-            cases.append((args, expected))
+
     return cases
 
 
