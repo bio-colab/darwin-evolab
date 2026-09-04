@@ -4,7 +4,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-534%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-546%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -78,11 +78,30 @@ python run.py evolve --engine nsga2 --expr "S = A ^ B; C = A & B" -g 10 -p 16 --
 ```
 
 #### Silicon Hardware Synthesis & Interactive Web Workbench
-Synthesize a logic circuit from a Boolean equation, generate synthesizable Verilog, and export an interactive single-page dashboard:
+Synthesize a logic circuit from a Boolean equation, target a specific physical FPGA architecture, generate synthesizable Verilog + constraints, and export an interactive single-page dashboard:
 ```bash
-python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --verilog-file adder.v --ui-file workbench.html
+python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v --ui-file workbench.html
 ```
-Open `workbench.html` in any browser to interact with the live circuit simulator, toggle inputs, observe glowing signal paths, and measure waveforms on the virtual dual-channel oscilloscope.
+
+#### Hardware-in-the-Loop WebUSB Programmer
+Serve the interactive workbench locally on a secure origin (`http://localhost`) to directly flash physical FPGAs (FTDI FT2232H, TinyFPGA BX, RP2040 pico-ice) or test with the in-browser Virtual Loopback Engine:
+```bash
+python run.py serve-workbench workbench.html --port 8080
+```
+Open `http://localhost:8080` in Chrome/Edge, navigate to the **WebUSB FPGA Programmer** tab, pair your USB dev board, stream bitstreams with real-time transfer telemetry, and test roundtrip HIL latency on live hardware.
+
+#### Genesis Foundational Model Evolutionary Kernel Bridge
+Connect the universal evolutionary engine to large-scale physics or multimodal foundation models via tensor/GNN graph serialization and vectorized reward streaming:
+```python
+from evolab import GenesisBridge, MockGenesisSimulator, serialize_for_foundation_model
+
+# Bidirectional bridge with batched rollouts and resilience fallback
+bridge = GenesisBridge(environment=MockGenesisSimulator())
+fitness_fn = bridge.attach_to_engine(engine, objective_channel="primary")
+
+# Convert any genome (CGP silicon, AST code, float tensor) to GNN graph format
+graph_repr = serialize_for_foundation_model(best_individual)
+```
 
 #### Continuous Math Optimization
 Run phased genetic optimization on continuous non-convex functions:

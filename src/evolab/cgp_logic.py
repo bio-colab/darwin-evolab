@@ -694,6 +694,172 @@ class HierarchicalAdder8Bit:
         return "\n".join(lines)
 
 
+@dataclass(frozen=True)
+class FPGABoardSpec:
+    """Hardware specification and physical resource budget for an FPGA board."""
+    preset_name: str
+    board_name: str
+    vendor: str
+    family: str
+    part: str
+    total_luts: int
+    total_ffs: int
+    total_brams: int
+    total_ios: int
+    lut_input_size: int = 4
+    core_voltage: float = 1.2
+    typical_gate_delay_ns: float = 0.55
+    interconnect_delay_factor: float = 1.3
+
+
+FPGA_PRESETS: dict[str, FPGABoardSpec] = {
+    "ice40_hx1k": FPGABoardSpec(
+        preset_name="ice40_hx1k",
+        board_name="Lattice iCEstick (iCE40-HX1K)",
+        vendor="Lattice",
+        family="iCE40-HX",
+        part="iCE40HX1K-TQ144",
+        total_luts=1280,
+        total_ffs=1280,
+        total_brams=16,
+        total_ios=96,
+        lut_input_size=4,
+        core_voltage=1.2,
+        typical_gate_delay_ns=0.55,
+    ),
+    "ice40_up5k": FPGABoardSpec(
+        preset_name="ice40_up5k",
+        board_name="iCEBreaker / Lattice iCE40-UP5K",
+        vendor="Lattice",
+        family="iCE40-UltraPlus",
+        part="iCE40UP5K-SG48",
+        total_luts=5280,
+        total_ffs=5280,
+        total_brams=30,
+        total_ios=39,
+        lut_input_size=4,
+        core_voltage=1.2,
+        typical_gate_delay_ns=0.50,
+    ),
+    "ecp5_25k": FPGABoardSpec(
+        preset_name="ecp5_25k",
+        board_name="Colorlight 5A-75B / Lattice ECP5-25F",
+        vendor="Lattice",
+        family="ECP5",
+        part="LFE5U-25F-6BG381C",
+        total_luts=24192,
+        total_ffs=24192,
+        total_brams=56,
+        total_ios=197,
+        lut_input_size=4,
+        core_voltage=1.1,
+        typical_gate_delay_ns=0.35,
+    ),
+    "artix7_35t": FPGABoardSpec(
+        preset_name="artix7_35t",
+        board_name="Digilent Basys 3 / AMD Artix-7 35T",
+        vendor="AMD/Xilinx",
+        family="Artix-7",
+        part="XC7A35T-1CPG236C",
+        total_luts=20800,
+        total_ffs=41600,
+        total_brams=50,
+        total_ios=106,
+        lut_input_size=6,
+        core_voltage=1.0,
+        typical_gate_delay_ns=0.22,
+    ),
+}
+
+
+@dataclass
+class FPGAResourceReport:
+    """Static pre-synthesis hardware resource and timing estimation report."""
+    target_preset: str
+    board_name: str
+    vendor: str
+    estimated_luts: int
+    total_luts: int
+    lut_utilization_pct: float
+    estimated_ffs: int
+    total_ffs: int
+    total_pins_used: int
+    total_ios_available: int
+    pin_utilization_pct: float
+    critical_path_depth: int
+    estimated_delay_ns: float
+    estimated_fmax_mhz: float
+    estimated_dynamic_power_uw: float
+    fits_on_target: bool
+
+
+def estimate_fpga_resources(
+    genome: CGPGenome,
+    target: str | FPGABoardSpec = "ice40_hx1k",
+) -> FPGAResourceReport:
+    """Computes static FPGA resource utilization, timing, and dynamic power estimates."""
+    if isinstance(target, str):
+        board = FPGA_PRESETS.get(target.lower())
+        if board is None:
+            board = FPGA_PRESETS.get("ice40_hx1k")
+    else:
+        board = target
+
+    assert board is not None
+
+    active_nodes = sorted(genome.get_active_nodes())
+    active_gates = 0
+    lut_reduction = 0.65 if board.lut_input_size >= 6 else 0.85
+
+    node_depths = [0] * (genome.num_inputs + len(genome.nodes))
+    for idx in active_nodes:
+        node = genome.nodes[idx - genome.num_inputs]
+        if node.gate_type != GateType.WIRE:
+            active_gates += 1
+        d_in = max(node_depths[node.input_a], node_depths[node.input_b])
+        depth = d_in + (0 if node.gate_type == GateType.WIRE else 1)
+        node_depths[idx] = depth
+
+    max_depth = max((node_depths[out] for out in genome.output_connections), default=1)
+    max_depth = max(max_depth, 1)
+
+    estimated_luts = max(1, int(round(active_gates * lut_reduction))) if active_gates > 0 else 0
+    total_pins_used = genome.num_inputs + genome.num_outputs
+
+    delay_per_stage_ns = board.typical_gate_delay_ns * board.interconnect_delay_factor
+    io_pad_delay_ns = 1.2
+    est_delay_ns = round(max_depth * delay_per_stage_ns + io_pad_delay_ns, 2)
+    est_fmax_mhz = round(min(1000.0 / max(est_delay_ns, 0.1), 400.0), 1)
+
+    c_eff_pf = 1.5
+    voltage = board.core_voltage
+    activity = 0.125
+    power_uw = round(c_eff_pf * (voltage ** 2) * (est_fmax_mhz * 1e6) * max(estimated_luts, 1) * activity * 1e-6, 2)
+
+    lut_util = round((estimated_luts / max(board.total_luts, 1)) * 100.0, 3)
+    pin_util = round((total_pins_used / max(board.total_ios, 1)) * 100.0, 3)
+    fits = (estimated_luts <= board.total_luts) and (total_pins_used <= board.total_ios)
+
+    return FPGAResourceReport(
+        target_preset=board.preset_name,
+        board_name=board.board_name,
+        vendor=board.vendor,
+        estimated_luts=estimated_luts,
+        total_luts=board.total_luts,
+        lut_utilization_pct=lut_util,
+        estimated_ffs=0,
+        total_ffs=board.total_ffs,
+        total_pins_used=total_pins_used,
+        total_ios_available=board.total_ios,
+        pin_utilization_pct=pin_util,
+        critical_path_depth=max_depth,
+        estimated_delay_ns=est_delay_ns,
+        estimated_fmax_mhz=est_fmax_mhz,
+        estimated_dynamic_power_uw=power_uw,
+        fits_on_target=fits,
+    )
+
+
 @dataclass
 class EDABundleReport:
     """Artifact and compilation metadata produced by the open-source EDA packager."""
@@ -708,13 +874,36 @@ class EDABundleReport:
     synthesis_stdout: str = ""
     lut_count: int | None = None
     wire_count: int | None = None
+    resource_estimate: FPGAResourceReport | None = None
 
 
 class EDAPackager:
     """Generates complete open-source EDA synthesis bundles (Yosys + nextpnr) for FPGA deployment."""
 
     def __init__(self, target_fpga: str = "ice40", package: str = "hx1k-tq144"):
-        self.target_fpga = target_fpga
+        self.raw_target = target_fpga
+        # Resolve target architecture family
+        lower = target_fpga.lower()
+        if lower in FPGA_PRESETS:
+            self.board_spec: FPGABoardSpec | None = FPGA_PRESETS[lower]
+            if "ice40" in lower:
+                self.target_fpga = "ice40"
+            elif "ecp5" in lower:
+                self.target_fpga = "ecp5"
+            elif "artix" in lower:
+                self.target_fpga = "xilinx"
+            else:
+                self.target_fpga = "ice40"
+        elif "ecp5" in lower:
+            self.board_spec = FPGA_PRESETS.get("ecp5_25k")
+            self.target_fpga = "ecp5"
+        elif "xilinx" in lower or "artix" in lower:
+            self.board_spec = FPGA_PRESETS.get("artix7_35t")
+            self.target_fpga = "xilinx"
+        else:
+            self.board_spec = FPGA_PRESETS.get("ice40_hx1k")
+            self.target_fpga = "ice40"
+
         self.package = package
 
     def is_yosys_available(self) -> bool:
@@ -723,22 +912,23 @@ class EDAPackager:
 
     def generate_yosys_script(self, verilog_filename: str, top_module: str, json_output: str) -> str:
         """Generates standard TCL synthesis script for Yosys."""
+        synth_cmd = f"synth_{self.target_fpga} -top {top_module} -json {json_output}"
         return (
             f"# Yosys Open-Source Synthesis Script for {top_module}\n"
-            f"# Target Architecture: Lattice {self.target_fpga.upper()}\n"
+            f"# Target Architecture: {self.target_fpga.upper()}\n"
             f"read_verilog {verilog_filename}\n"
             f"hierarchy -check -top {top_module}\n"
             f"proc; opt; fsm; opt; memory; opt\n"
             f"techmap; opt\n"
-            f"synth_{self.target_fpga} -top {top_module} -json {json_output}\n"
+            f"{synth_cmd}\n"
             f"stat\n"
         )
 
     def generate_pcf_constraints(self, top_module: str, num_inputs: int, num_outputs: int) -> str:
-        """Generates Physical Constraint File (.pcf) for Lattice iCE40 8-pin / 144-pin packages."""
+        """Generates Physical Constraint File (.pcf) for Lattice iCE40 development boards."""
         lines = [
             f"# Physical Pin Constraints for {top_module}",
-            "# Compatible with Lattice iCE40-HX1K development boards (e.g. iCEstick / Arduino MKR Vidor)",
+            "# Compatible with Lattice iCE40 packages (e.g. iCEstick / iCEBreaker)",
             "",
         ]
         for i in range(num_inputs):
@@ -749,6 +939,43 @@ class EDAPackager:
             lines.append(f"set_io out[{o}] {pin_num}")
         return "\n".join(lines)
 
+    def generate_lpf_constraints(self, top_module: str, num_inputs: int, num_outputs: int) -> str:
+        """Generates Logical Preference File (.lpf) for Lattice ECP5 development boards."""
+        lines = [
+            f"# Physical Pin Constraints for {top_module}",
+            "# Compatible with Lattice ECP5 boards (e.g. Colorlight 5A-75B)",
+            "",
+        ]
+        for i in range(num_inputs):
+            lines.append(f'LOCATE COMP "in[{i}]" SITE "P{i + 1}";')
+            lines.append(f'IOBUF PORT "in[{i}]" IO_TYPE=LVCMOS33;')
+        for o in range(num_outputs):
+            lines.append(f'LOCATE COMP "out[{o}]" SITE "T{o + 1}";')
+            lines.append(f'IOBUF PORT "out[{o}]" IO_TYPE=LVCMOS33;')
+        return "\n".join(lines)
+
+    def generate_xdc_constraints(self, top_module: str, num_inputs: int, num_outputs: int) -> str:
+        """Generates Xilinx Design Constraints (.xdc) for AMD/Xilinx Artix-7 boards."""
+        lines = [
+            f"# Physical Pin Constraints for {top_module}",
+            "# Compatible with AMD Artix-7 boards (e.g. Basys 3)",
+            "",
+        ]
+        for i in range(num_inputs):
+            lines.append(f"set_property -dict {{ PACKAGE_PIN V{17 - i} IOSTANDARD LVCMOS33 }} [get_ports {{ in[{i}] }}];")
+        for o in range(num_outputs):
+            lines.append(f"set_property -dict {{ PACKAGE_PIN U{16 - o} IOSTANDARD LVCMOS33 }} [get_ports {{ out[{o}] }}];")
+        return "\n".join(lines)
+
+    def generate_constraints(self, top_module: str, num_inputs: int, num_outputs: int) -> tuple[str, str]:
+        """Returns constraint filename and content tailored to target architecture."""
+        if self.target_fpga == "ecp5":
+            return f"{top_module}.lpf", self.generate_lpf_constraints(top_module, num_inputs, num_outputs)
+        elif self.target_fpga == "xilinx":
+            return f"{top_module}.xdc", self.generate_xdc_constraints(top_module, num_inputs, num_outputs)
+        else:
+            return f"{top_module}.pcf", self.generate_pcf_constraints(top_module, num_inputs, num_outputs)
+
     def package_bundle(
         self,
         verilog_code: str,
@@ -757,6 +984,7 @@ class EDAPackager:
         num_outputs: int,
         output_dir: str | Path,
         run_synthesis_if_available: bool = True,
+        genome: CGPGenome | None = None,
     ) -> EDABundleReport:
         """Creates complete synthesis bundle files and optionally runs Yosys logic synthesis."""
         out_path = Path(output_dir)
@@ -764,15 +992,15 @@ class EDAPackager:
 
         v_file = out_path / f"{top_module}.v"
         ys_file = out_path / f"synth_{self.target_fpga}.ys"
-        pcf_file = out_path / f"{top_module}.pcf"
+        c_filename, c_content = self.generate_constraints(top_module, num_inputs, num_outputs)
+        constraints_file = out_path / c_filename
         bat_file = out_path / "run_synth.bat"
         sh_file = out_path / "run_synth.sh"
 
         v_file.write_text(verilog_code, encoding="utf-8")
         yosys_script = self.generate_yosys_script(v_file.name, top_module, f"{top_module}.json")
         ys_file.write_text(yosys_script, encoding="utf-8")
-        pcf_content = self.generate_pcf_constraints(top_module, num_inputs, num_outputs)
-        pcf_file.write_text(pcf_content, encoding="utf-8")
+        constraints_file.write_text(c_content, encoding="utf-8")
         bat_file.write_text(f"@echo off\nyosys -s {ys_file.name}\n", encoding="utf-8")
         sh_file.write_text(f"#!/usr/bin/env bash\nyosys -s {ys_file.name}\n", encoding="utf-8")
 
@@ -794,7 +1022,7 @@ class EDAPackager:
                 stdout_result = proc.stdout
                 synthesis_executed = (proc.returncode == 0)
                 for line in stdout_result.splitlines():
-                    if "SB_LUT4" in line or "Number of cells:" in line:
+                    if "SB_LUT4" in line or "LUT4" in line or "LUT6" in line or "Number of cells:" in line:
                         parts = line.strip().split()
                         if parts and parts[-1].isdigit():
                             luts = int(parts[-1])
@@ -805,17 +1033,23 @@ class EDAPackager:
             except Exception as e:
                 stdout_result = f"Synthesis execution failed: {e}"
 
+        resource_est = None
+        if genome is not None and self.board_spec is not None:
+            resource_est = estimate_fpga_resources(genome, self.board_spec)
+
         return EDABundleReport(
             target_fpga=self.target_fpga,
             top_module=top_module,
             bundle_directory=str(out_path),
             verilog_file=str(v_file),
             yosys_script_file=str(ys_file),
-            constraints_file=str(pcf_file),
+            constraints_file=str(constraints_file),
             yosys_installed=yosys_installed,
             synthesis_executed=synthesis_executed,
             synthesis_stdout=stdout_result,
             lut_count=luts,
             wire_count=wires,
+            resource_estimate=resource_est,
         )
+
 

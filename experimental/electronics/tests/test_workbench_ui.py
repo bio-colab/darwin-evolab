@@ -64,3 +64,36 @@ def test_cli_ui_file_flag(tmp_path):
     content = html_file.read_text(encoding="utf-8")
     assert "Live Circuit Simulator" in content
     assert "Dual-Channel Oscilloscope" in content
+
+
+def test_workbench_webusb_and_fpga_integration():
+    """Verifies that WebUSB flasher profiles, loopback mock engine, and FPGA specs are properly embedded."""
+    rng = random.Random(42)
+    genome = create_random_cgp_genome(num_inputs=2, num_outputs=2, num_nodes=6, rng=rng)
+    meta = {
+        "scenario": "full_adder",
+        "fitness": 99.2,
+        "fpga_target": "artix7_35t",
+    }
+    html = generate_workbench_html(genome, metadata=meta, title="Artix-7 WebUSB Workbench")
+
+    # 1. Verify FPGA specs embedded in datasheet
+    assert "Artix-7" in html
+    assert "AMD/Xilinx" in html
+    assert "Fmax" in html
+    assert "Dynamic Power" in html
+
+    # 2. Verify WebUSB programmer controls & terminal
+    assert "usb-terminal" in html
+    assert "usb-progress-bar" in html
+    assert "btn-usb-connect" in html
+    assert "btn-usb-flash" in html
+    assert "btn-usb-loopback" in html
+
+    # 3. Verify WebUSB JS profiles
+    assert "FTDI FT2232H" in html
+    assert "TinyFPGA BX" in html
+    assert "Raspberry Pi Pico" in html
+    assert "navigator.usb.requestDevice" in html
+    assert "runHardwareLoopback" in html
+

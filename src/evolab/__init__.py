@@ -228,6 +228,10 @@ _LAZY: dict[str, tuple[str, str]] = {
     "LowPowerALUEvaluator": (".cgp_logic", "LowPowerALUEvaluator"),
     "EDABundleReport": (".cgp_logic", "EDABundleReport"),
     "EDAPackager": (".cgp_logic", "EDAPackager"),
+    "FPGABoardSpec": (".cgp_logic", "FPGABoardSpec"),
+    "FPGA_PRESETS": (".cgp_logic", "FPGA_PRESETS"),
+    "FPGAResourceReport": (".cgp_logic", "FPGAResourceReport"),
+    "estimate_fpga_resources": (".cgp_logic", "estimate_fpga_resources"),
     "FaultCategory": (".instrumentation", "FaultCategory"),
     "classify_fault": (".instrumentation", "classify_fault"),
     "Target": (".instrumentation", "Target"),
@@ -258,6 +262,13 @@ _LAZY: dict[str, tuple[str, str]] = {
     "GeneticAlgorithmStrategy": (".strategies", "GeneticAlgorithmStrategy"),
     "GreedySearchStrategy": (".strategies", "GreedySearchStrategy"),
     "get_search_strategy": (".strategies", "get_search_strategy"),
+    "GenesisBridge": (".genesis_bridge", "GenesisBridge"),
+    "GenesisRewardVector": (".genesis_bridge", "GenesisRewardVector"),
+    "GenesisEnvironment": (".genesis_bridge", "GenesisEnvironment"),
+    "MockGenesisSimulator": (".genesis_bridge", "MockGenesisSimulator"),
+    "serialize_for_foundation_model": (".genesis_bridge", "serialize_for_foundation_model"),
+    "deserialize_from_tensor": (".genesis_bridge", "deserialize_from_tensor"),
+    "FoundationModelPrior": (".genesis_bridge", "FoundationModelPrior"),
 }
 
 
@@ -357,4 +368,6 @@ __all__ = [
     "register_domain_adapter", "get_domain_adapter", "list_domain_adapters",
     "NSGA2Engine", "fast_non_dominated_sort", "calculate_crowding_distance", "Objective", "MultiObjectiveResult",
     "build_silicon_multiobjective_evaluator", "SWEBenchAdapter", "SWEBenchInstance", "SWEBenchResolution",
+    "GenesisBridge", "GenesisRewardVector", "GenesisEnvironment", "MockGenesisSimulator",
+    "serialize_for_foundation_model", "deserialize_from_tensor", "FoundationModelPrior",
 ]

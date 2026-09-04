@@ -427,6 +427,24 @@ def cmd_evolve(args) -> int:
         except Exception as err:
             print(f"[Hybrid LLM] Stagnation breaker error: {err}")
 
+    if is_electronics and "engine" in locals() and engine is not None:
+        best_g = getattr(engine, "best_ever", None)
+        if best_g and hasattr(best_g.genome, "get_active_nodes"):
+            from evolab.cgp_logic import estimate_fpga_resources
+            fpga_target = getattr(args, "fpga_target", "ice40_hx1k")
+            fpga_rep = estimate_fpga_resources(best_g.genome, fpga_target)
+            result["fpga_resources"] = {
+                "target": fpga_rep.target_preset,
+                "board": fpga_rep.board_name,
+                "vendor": fpga_rep.vendor,
+                "estimated_luts": fpga_rep.estimated_luts,
+                "total_luts": fpga_rep.total_luts,
+                "lut_utilization_pct": fpga_rep.lut_utilization_pct,
+                "pins_used": fpga_rep.total_pins_used,
+                "fmax_mhz": fpga_rep.estimated_fmax_mhz,
+                "fits": fpga_rep.fits_on_target,
+            }
+
     out_path = Path(args.output)
     if out_path.parent and str(out_path.parent):
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -515,14 +533,31 @@ def cmd_evolve(args) -> int:
         best_g = getattr(engine, "best_ever", None)
         if best_g:
             from experimental.electronics.ui.workbench_generator import save_workbench_html
+            fpga_target = getattr(args, "fpga_target", "ice40_hx1k")
             meta = {
                 "scenario": result.get("config", {}).get("scenario", "synthesized_logic"),
                 "fitness": (result.get("best_individual") or {}).get("fitness", 100.0),
                 "generations": result.get("total_generations", args.generations),
                 "candidates": result.get("total_candidates_evaluated", 0),
+                "fpga_target": fpga_target,
             }
             save_workbench_html(best_g.genome, args.ui_file, metadata=meta)
             print(f"Workbench UI saved: {args.ui_file}")
+
+            if hasattr(best_g.genome, "get_active_nodes"):
+                from evolab.cgp_logic import estimate_fpga_resources
+                fpga_rep = estimate_fpga_resources(best_g.genome, fpga_target)
+                result["fpga_resources"] = {
+                    "target": fpga_rep.target_preset,
+                    "board": fpga_rep.board_name,
+                    "vendor": fpga_rep.vendor,
+                    "estimated_luts": fpga_rep.estimated_luts,
+                    "total_luts": fpga_rep.total_luts,
+                    "lut_utilization_pct": fpga_rep.lut_utilization_pct,
+                    "pins_used": fpga_rep.total_pins_used,
+                    "fmax_mhz": fpga_rep.estimated_fmax_mhz,
+                    "fits": fpga_rep.fits_on_target,
+                }
 
     if getattr(args, "apply", False) and scenario is not None and _hit(result, args.target):
         file_mapping = {Path(raw).name: Path(raw) for raw in (args.source or [])}
@@ -565,6 +600,43 @@ def cmd_evolve(args) -> int:
     return 0 if _hit(result, args.target) else 1
 
 
+def cmd_serve_workbench(args) -> int:
+    import http.server
+    import socketserver
+    import webbrowser
+
+    target_file = Path(args.file)
+    if not target_file.is_file():
+        print(f"error: workbench file not found: {target_file}")
+        return 2
+
+    port = args.port
+    host = args.host
+    serve_dir = target_file.parent.resolve()
+    rel_name = target_file.name
+
+    class Handler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *a, **kw):
+            super().__init__(*a, directory=str(serve_dir), **kw)
+
+    url = f"http://{host}:{port}/{rel_name}"
+    print(f"[Silicon Workbench Server] Serving on {url}")
+    print(f"[WebUSB Secure Context] WebUSB API is enabled on http://localhost:{port}")
+    if not getattr(args, "no_browser", False):
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
+
+    try:
+        with socketserver.TCPServer((host, port), Handler) as httpd:
+            print("[Silicon Workbench Server] Press Ctrl+C to terminate server.")
+            httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[Silicon Workbench Server] Stopped.")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="evolab", description="Evolutionary experimentation lab"
@@ -574,6 +646,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_inspect = sub.add_parser("inspect", help="validate and analyze a report file")
     p_inspect.add_argument("file", nargs="?", default=None, help="report JSON path")
     p_inspect.set_defaults(func=cmd_inspect)
+
+    p_serve = sub.add_parser("serve-workbench", help="launch local HTTP server for interactive Silicon Workbench with WebUSB enabled")
+    p_serve.add_argument("file", help="path to HTML workbench file")
+    p_serve.add_argument("--port", type=int, default=8080, help="HTTP port (default: 8080)")
+    p_serve.add_argument("--host", default="127.0.0.1", help="bind host (default: 127.0.0.1)")
+    p_serve.add_argument("--no-browser", action="store_true", help="do not auto-open browser")
+    p_serve.set_defaults(func=cmd_serve_workbench)
 
     p_evo = sub.add_parser("evolve", help="run a new evolution experiment")
     p_evo.add_argument("--engine", choices=["auto", "greedy", "ga", "nsga2"], default="auto",
@@ -612,6 +691,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_evo.add_argument("--expr", default=None, help="Boolean logic equation string to synthesize (e.g. 'S = A ^ B; C = A & B')")
     p_evo.add_argument("--verilog-in", default=None, help="path to synthesizable Verilog RTL module file (.v)")
     p_evo.add_argument("--waveform", default=None, help="path to target oscilloscope waveform CSV file (time, voltage)")
+    p_evo.add_argument("--fpga-target", choices=["ice40_hx1k", "ice40_up5k", "ecp5_25k", "artix7_35t"],
+                       default="ice40_hx1k", help="target FPGA board preset for synthesis and resource estimation")
     p_evo.add_argument("--objective", choices=["power", "speed", "area", "balanced"], default="balanced",
                        help="multi-objective optimization priority for circuit synthesis")
     p_evo.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console",
@@ -636,6 +717,8 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if getattr(args, "command", None) == "inspect":
         return cmd_inspect(args)
+    if getattr(args, "command", None) == "serve-workbench":
+        return cmd_serve_workbench(args)
     if getattr(args, "command", None) == "evolve":
         return cmd_evolve(args)
     if hasattr(args, "func") and callable(args.func):

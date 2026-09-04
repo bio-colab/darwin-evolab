@@ -160,3 +160,39 @@ def test_cli_electronics_hybrid_llm_breaker(tmp_path):
     result = json.loads(report_path.read_text(encoding="utf-8"))
     history = result.get("history", [])
     assert any("llm_circuit" in str(h) for h in history) or result["total_candidates_evaluated"] >= 2
+
+
+def test_cli_fpga_target_and_serve_workbench(tmp_path):
+    """Verifies that --fpga-target correctly embeds hardware estimates in reports and workbench HTML."""
+    report_path = tmp_path / "rep_fpga.json"
+    ui_path = tmp_path / "workbench_fpga.html"
+    cmd = [
+        "evolve",
+        "--expr", "S = A ^ B",
+        "-g", "1",
+        "-p", "4",
+        "--fpga-target", "ecp5_25k",
+        "--ui-file", str(ui_path),
+        "-o", str(report_path),
+    ]
+    ret = main(cmd)
+    assert ret in (0, 1)
+    assert report_path.is_file()
+    assert ui_path.is_file()
+
+    # 1. Verify report contains FPGA static resources
+    rep_data = json.loads(report_path.read_text(encoding="utf-8"))
+    assert "fpga_resources" in rep_data
+    assert rep_data["fpga_resources"]["target"] == "ecp5_25k"
+    assert rep_data["fpga_resources"]["vendor"] == "Lattice"
+    assert rep_data["fpga_resources"]["total_luts"] == 24192
+
+    # 2. Verify UI contains WebUSB programmer and ECP5 metrics
+    ui_text = ui_path.read_text(encoding="utf-8")
+    assert "ECP5" in ui_text
+    assert "WebUSB / FPGA Programmer" in ui_text
+    assert "usb-terminal" in ui_text
+
+    # 3. Test serve-workbench command with missing file error handling
+    ret_err = main(["serve-workbench", str(tmp_path / "nonexistent.html")])
+    assert ret_err == 2

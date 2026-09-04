@@ -68,10 +68,13 @@ python run.py evolve --source app.py --pytest test_app.py --llm groq
 # محرك جيني على متجهات
 python run.py evolve --engine ga --genome numeric -g 40 -p 16 -s 123 -t 99.7
 
-# المسار التجريبي للإلكترونيات (التفاصيل في experimental/electronics/README.md)
-python run.py evolve --genome electronics --scenario half_adder -g 4 -p 6
+# المسار التجريبي للإلكترونيات وتوليد منصة العمل التفاعلية وقيود FPGA المادية
+python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v --ui-file workbench.html
 
+# تشغيل خادم محلي آمن (Secure Context) لبرمجة شرائح FPGA مباشرة عبر WebUSB
+python run.py serve-workbench workbench.html --port 8080
 
+# فحص تقرير التشغيل
 python run.py inspect report.json
 ```
 
