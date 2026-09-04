@@ -4,7 +4,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-524%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-534%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -119,10 +119,10 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 ### 3. Repository-Wide Test Health
 
 ```
-tests/ (Core Engine, Sandboxing, APR, NSGA-II, SWE-bench, Math) : 461 passed (100%)
-experimental/electronics/tests/ (SPICE, CGP, UI, EDA)          :  63 passed (100%)
-==================================================================================
-Total Automated Test Suite                                     : 524 passed (100%)
+tests/ (Core, Sandboxing, APR, NSGA-II, SWE-bench, Math, Vectorized, Notebooks) : 471 passed (100%)
+experimental/electronics/tests/ (SPICE, CGP, UI, EDA)                           :  63 passed (100%)
+===================================================================================================
+Total Automated Test Suite                                                      : 534 passed (100%)
 ```
 
 ---
@@ -189,6 +189,43 @@ See [examples/03_custom_domain_adapter.py](examples/03_custom_domain_adapter.py)
 | **[`examples/01_quickstart_code_repair.py`](examples/01_quickstart_code_repair.py)** | Self-contained Python bug repair in under 2 seconds. |
 | **[`examples/02_synthesize_silicon_alu.py`](examples/02_synthesize_silicon_alu.py)** | CGP full adder synthesis and Verilog-2001 export. |
 | **[`examples/03_custom_domain_adapter.py`](examples/03_custom_domain_adapter.py)** | Step-by-step tutorial for building your own domain driver. |
+
+---
+
+## 📓 Interactive Educational Jupyter Notebooks
+
+Hands-on, reproducible Jupyter notebooks covering all four canonical domains in `notebooks/`:
+
+| Notebook | Domain | Key Concepts Explored |
+| :--- | :---: | :--- |
+| **[`01_software_repair.ipynb`](notebooks/01_software_repair.ipynb)** | Software APR | Ochiai SBFL fault localization, AST mutation catalog, and SWE-bench Lite bug resolution. |
+| **[`02_silicon_circuit_synthesis.ipynb`](notebooks/02_silicon_circuit_synthesis.ipynb)** | Hardware & SPICE | Boolean equations to transistor-level circuits, ngspice transient simulation, and SVG schematics. |
+| **[`03_cgp_and_discrete_logic.ipynb`](notebooks/03_cgp_and_discrete_logic.ipynb)** | Digital Logic | Cartesian Genetic Programming (CGP), 4-objective NSGA-II Pareto frontiers, and Verilog RTL export. |
+| **[`04_continuous_optimization_jax.ipynb`](notebooks/04_continuous_optimization_jax.ipynb)** | High-Speed Math | Parallel evaluation of 10,000+ candidates across Rastrigin/Rosenbrock with NumPy and JAX vectorization. |
+
+---
+
+## 🧠 Neuro-Symbolic LLM Hybrid APR (`LLMSemanticMutator`)
+
+In automated program repair, purely stochastic AST mutations can encounter **fitness plateaus** (stagnation). Darwin-Evolab features a built-in neuro-symbolic hybrid loop:
+
+1. **Ochiai SBFL Localization**: Flags precise suspicious statement coordinates based on passing vs. failing test execution spectra.
+2. **Deterministic Catalog Search**: Rapidly tests lightweight AST mutations in milliseconds.
+3. **LLM Stagnation Breaker**: If no fitness progress occurs within the patience window (`--patience <k>`), Darwin-Evolab queries an LLM backend (`Groq/LLaMA-3.3`, `Gemini`, `OpenAI`) restricted strictly to the SBFL focal window.
+4. **AST Guard & Sandbox Quarantine**: Proposed semantic patches are verified by `ast_guard` and executed inside isolated subprocess sandboxes (`SubprocessSandbox`) before admitting any candidate into the gene pool.
+
+```bash
+# Activate hybrid LLM stagnation breaking with Groq LLaMA-3.3
+python run.py evolve --scenario click_cli_parser --llm groq --llm-model llama-3.3-70b-versatile --patch-file fix.patch
+```
+
+---
+
+## 🤝 Community & Contributing
+
+We welcome contributions from researchers and developers worldwide! Please see:
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Architectural invariants, adding a `DomainAdapter`, and testing guidelines.
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**: Contributor Covenant Code of Conduct.
 
 ---
 

@@ -360,6 +360,11 @@ class NumericalMathAdapter(DomainAdapter):
         chosen_fn = fn_map.get(spec.target_function.lower(), rastrigin)
         return NumericEvaluator(fn=chosen_fn, name=f"numeric_{spec.target_function}")
 
+    def build_vectorized_evaluator(self, spec: NumericalMathSpec, use_jax: bool = False):
+        """Build high-performance vectorized evaluator supporting batch evaluation on SIMD/GPU."""
+        from .vectorized import VectorizedLandscapeEvaluator
+        return VectorizedLandscapeEvaluator(landscape=spec.target_function, use_jax=use_jax)
+
     def export_solution(
         self,
         individual: Individual,

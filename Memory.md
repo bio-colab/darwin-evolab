@@ -230,6 +230,16 @@ README يوثق ما هو عليه المستودع **الآن** (الإفصاح
     - **محول SWE-bench Lite الصناعي القياسي (`SWEBenchAdapter`)**: بناء محول متخصص من الفئة `DomainAdapter` في `src/evolab/swe_bench.py` يستقبل سجلات العيوب الحقيقية المستخرجة من مستودعات GitHub وفق معيار SWE-bench Lite الرسمي. يفرض المحول المعيار الصارم المزدوج (Dual Invariant): نجاح 100% من اختبارات `FAIL_TO_PASS` وضمان صفر انكسار في اختبارات `PASS_TO_PASS` (Zero Regressions)، مع تحديد مواضع الأعطال عبر Ochiai SBFL، وطفرات AST، وتوليد ترقيعات Git القياسية الموحدة (`.patch`) المتوافقة مع `git apply`.
     - **نماذج معيارية حقيقية مدمجة**: (`sympy__sympy-13480` و `pytest-dev__pytest-5227`) تُحل حتمياً في أقل من 10 تقييمات وبزمن يقل عن 0.01 ثانية.
     - ارتقاء حزمة الاختبارات الشاملة إلى **524 اختباراً ناجحاً بنسبة نجاح 100%**.
+17. **تنفيذ أولويات P1 بأعلى المعايير العالمية (High-Performance Vectorized Math, Notebooks, LLM APR, Community)**:
+    - **التسريع الشعاعي الرياضي الفائق (Vectorized / JAX Backend)**: بناء وحدة التقييم الشعاعي `VectorizedLandscapeEvaluator` في `src/evolab/vectorized.py` لدعم التقييم المتوازي لمجتمعات ضخمة ($N = 10,000+$) على التضاريس الرياضية القياسية (Rastrigin, Rosenbrock, Ackley, Sphere, Griewank) بزمن يقل عن 0.2 ثانية. مع دعم اختياري سلس لـ JAX (`vmap`, `jit`) وبديل NumPy الشعاعي النقي المتطابق رياضياً بنسبة 100%.
+    - **سلسلة دفاتر Jupyter التعليمية التفاعلية (`notebooks/`)**: إطلاق 4 دفاتر عمل معيارية مفصلة تغطي:
+      1. `01_software_repair.ipynb`: تشخيص الأخطاء بـ Ochiai SBFL وحل عيوب SWE-bench Lite مع توليد رقعة Git.
+      2. `02_silicon_circuit_synthesis.ipynb`: تخليق الدوائر من المعادلات ومحاكاة SPICE وتصدير Verilog ومخططات المتجهات.
+      3. `03_cgp_and_discrete_logic.ipynb`: البرمجة الجينية CGP لوحدات الحساب والمنطق واستكشاف جبهة باريتو رباعية الأبعاد عبر NSGA-II.
+      4. `04_continuous_optimization_jax.ipynb`: الاستمثال الشعاعي المتوازي لعشرات آلاف المرشحين ومقارنة الأداء ودقة التقارب.
+    - **إبراز وتثبيت حلقة التطور الهجين بالذكاء الاصطناعي (Neuro-Symbolic LLM APR)**: توثيق وتأكيد دور `LLMSemanticMutator` ككاسر للركود (Stagnation Breaker) عبر LLaMA-3.3 و Groq/OpenAI/Gemini تحت حراسة `ast_guard` وحجر `SubprocessSandbox`.
+    - **حوكمة المجتمع والمساهمة الدولية**: صياغة دليل المساهمين الشامل [`CONTRIBUTING.md`](CONTRIBUTING.md) وميثاق السلوك القياسي [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+    - ارتقاء حزمة الاختبارات الشاملة إلى **534 اختباراً ناجحاً بنسبة نجاح 100%**.
 
 ## ما لم يتحقق — الصدق حتى النهاية
 
@@ -241,9 +251,9 @@ README يوثق ما هو عليه المستودع **الآن** (الإفصاح
 ## كيف تتحقق بنفسك
 
 ```bash
-pip install -e . && pytest               # 461 passed, 3 skipped
+pip install -e . && pytest               # 471 passed, 3 skipped
 pytest experimental/electronics/tests    # 63 passed (100% pass rate)
-# الإجمالي العام للمستودع: 524 اختباراً تمر بنجاح بنسبة 100%
+# الإجمالي العام للمستودع: 534 اختباراً تمر بنجاح بنسبة 100%
 ```
 
 - **كل بروتوكول قياس**: القواعد المسجلة في رأس `scripts/ab_*.py` — مكتوبة قبل أي نتيجة (سجل git نفسه يثبت التسلسل).

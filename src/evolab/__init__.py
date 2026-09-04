@@ -31,6 +31,7 @@ from .swe_bench import (
     SWEBenchInstance,
     SWEBenchResolution,
 )
+from .vectorized import VectorizedLandscapeEvaluator
 from .analyzer import summarize
 from .code_fixtures import (
     SCENARIO_REGISTRY,

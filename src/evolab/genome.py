@@ -66,6 +66,19 @@ class FloatGenome(EvolabGenome):
     def clone(self) -> FloatGenome:
         return FloatGenome(values=list(self.values))
 
+    def to_numpy(self) -> Any:
+        """Convert float genome to a NumPy 1D array."""
+        import numpy as np
+        return np.asarray(self.values, dtype=float)
+
+    def to_jax(self) -> Any:
+        """Convert float genome to a JAX 1D array if JAX is installed, else raises ImportError."""
+        try:
+            import jax.numpy as jnp
+            return jnp.asarray(self.values, dtype=float)
+        except ImportError:
+            raise ImportError("JAX is not installed. Run `pip install jax jaxlib` to enable JAX GPU acceleration.")
+
     def fingerprint(self) -> str:
         raw = json.dumps([round(float(v), 6) for v in self.values])
         return hashlib.sha256(raw.encode()).hexdigest()[:16]
