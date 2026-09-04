@@ -1,0 +1,106 @@
+[
+  {
+    "benchmark": "CktBench_LowPower",
+    "cold_start": {
+      "converged_gen": "> 15",
+      "all_satisfied": false,
+      "best_gain_db": 106.25,
+      "best_gbw_mhz": 15.19,
+      "best_pm_deg": 64.82,
+      "best_power_uw": 522.6,
+      "pvt_pass_rate": "0%",
+      "sim_calls": 67,
+      "latency_ms": 42.0
+    },
+    "spec2ckt_darwin": {
+      "converged_gen": 0,
+      "all_satisfied": true,
+      "best_gain_db": 88.88,
+      "best_gbw_mhz": 8.42,
+      "best_pm_deg": 66.51,
+      "best_power_uw": 260.37,
+      "pvt_pass_rate": "100%",
+      "sim_calls": 50,
+      "latency_ms": 21.2
+    },
+    "speedup_sim_saving": "25.4%"
+  },
+  {
+    "benchmark": "CktBench_Balanced",
+    "cold_start": {
+      "converged_gen": "> 15",
+      "all_satisfied": false,
+      "best_gain_db": 115.13,
+      "best_gbw_mhz": 35.53,
+      "best_pm_deg": 0.0,
+      "best_power_uw": 266.09,
+      "pvt_pass_rate": "0%",
+      "sim_calls": 78,
+      "latency_ms": 44.9
+    },
+    "spec2ckt_darwin": {
+      "converged_gen": 0,
+      "all_satisfied": true,
+      "best_gain_db": 93.97,
+      "best_gbw_mhz": 12.09,
+      "best_pm_deg": 63.06,
+      "best_power_uw": 288.0,
+      "pvt_pass_rate": "100%",
+      "sim_calls": 49,
+      "latency_ms": 21.5
+    },
+    "speedup_sim_saving": "37.2%"
+  },
+  {
+    "benchmark": "CktBench_HighGain",
+    "cold_start": {
+      "converged_gen": 0,
+      "all_satisfied": true,
+      "best_gain_db": 110.61,
+      "best_gbw_mhz": 36.04,
+      "best_pm_deg": 55.27,
+      "best_power_uw": 552.27,
+      "pvt_pass_rate": "100%",
+      "sim_calls": 32,
+      "latency_ms": 10.2
+    },
+    "spec2ckt_darwin": {
+      "converged_gen": 0,
+      "all_satisfied": true,
+      "best_gain_db": 107.02,
+      "best_gbw_mhz": 15.06,
+      "best_pm_deg": 62.95,
+      "best_power_uw": 288.0,
+      "pvt_pass_rate": "100%",
+      "sim_calls": 46,
+      "latency_ms": 20.6
+    },
+    "speedup_sim_saving": "0.0%"
+  },
+  {
+    "benchmark": "CktBench_HighSpeed",
+    "cold_start": {
+      "converged_gen": "> 15",
+      "all_satisfied": false,
+      "best_gain_db": 124.06,
+      "best_gbw_mhz": 36.52,
+      "best_pm_deg": 0.0,
+      "best_power_uw": 219.53,
+      "pvt_pass_rate": "0%",
+      "sim_calls": 77,
+      "latency_ms": 44.8
+    },
+    "spec2ckt_darwin": {
+      "converged_gen": 0,
+      "all_satisfied": true,
+      "best_gain_db": 96.38,
+      "best_gbw_mhz": 22.21,
+      "best_pm_deg": 53.82,
+      "best_power_uw": 288.0,
+      "pvt_pass_rate": "100%",
+      "sim_calls": 46,
+      "latency_ms": 22.2
+    },
+    "speedup_sim_saving": "40.3%"
+  }
+]
