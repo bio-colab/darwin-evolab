@@ -448,6 +448,32 @@ def find_off_by_one_dec(tree: ast.AST, file: str = "") -> list[RepairEdit]:
     return out
 
 
+def _apply_unary_not_flip(node, edit, tree, parents) -> None:
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+        parent = parents.get(id(node))
+        if parent:
+            for field_name, val in ast.iter_fields(parent):
+                if val is node:
+                    setattr(parent, field_name, node.operand)
+                    return
+                elif isinstance(val, list):
+                    for idx, item in enumerate(val):
+                        if item is node:
+                            val[idx] = node.operand
+                            return
+
+
+@register_repair_pattern("unary_not_flip", apply=_apply_unary_not_flip)
+def find_unary_not_flip(tree: ast.AST, file: str = "") -> list[RepairEdit]:
+    out = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+            edit = make_edit("unary_not_flip", node, file)
+            if edit:
+                out.append(edit)
+    return out
+
+
 def apply_edits(source: str, edits: list[RepairEdit]) -> str:
     if not edits:
         return source

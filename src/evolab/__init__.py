@@ -18,6 +18,19 @@ from .adapters import (
     list_domain_adapters,
     register_domain_adapter,
 )
+from .pareto import (
+    NSGA2Engine,
+    Objective,
+    MultiObjectiveResult,
+    fast_non_dominated_sort,
+    calculate_crowding_distance,
+    build_silicon_multiobjective_evaluator,
+)
+from .swe_bench import (
+    SWEBenchAdapter,
+    SWEBenchInstance,
+    SWEBenchResolution,
+)
 from .analyzer import summarize
 from .code_fixtures import (
     SCENARIO_REGISTRY,
@@ -341,4 +354,6 @@ __all__ = [
     "SearchStrategy", "GeneticAlgorithmStrategy", "GreedySearchStrategy", "get_search_strategy",
     "DomainAdapter", "SoftwareRepairAdapter", "DiscreteLogicAdapter", "NumericalMathAdapter", "ElectronicsAdapter",
     "register_domain_adapter", "get_domain_adapter", "list_domain_adapters",
+    "NSGA2Engine", "fast_non_dominated_sort", "calculate_crowding_distance", "Objective", "MultiObjectiveResult",
+    "build_silicon_multiobjective_evaluator", "SWEBenchAdapter", "SWEBenchInstance", "SWEBenchResolution",
 ]

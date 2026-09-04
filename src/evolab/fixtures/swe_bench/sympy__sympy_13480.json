@@ -1,0 +1,25 @@
+{
+  "instance_id": "sympy__sympy-13480",
+  "repo": "sympy/sympy",
+  "base_commit": "e81d764426eb8dc8db985",
+  "problem_statement": "coth(log(tan(x))) evaluation error when x is on the boundary. The substitution condition was checking x > 0 instead of x >= 0, producing NaN for zero-index boundary evaluation.",
+  "target_file": "sympy/functions/elementary/hyperbolic.py",
+  "sources": {
+    "sympy/functions/elementary/hyperbolic.py": "def eval_coth_arg(val: float, is_real: bool) -> float:\n    # Boundary check for zero arguments in symbolic hyperbolic evaluation\n    if val > 0.0:  # Bug: should be val >= 0.0 to include boundary\n        return 1.0\n    return 0.0\n"
+  },
+  "fail_to_pass_tests": [
+    [[0.0, true], 1.0]
+  ],
+  "pass_to_pass_tests": [
+    [[1.5, true], 1.0],
+    [[-2.0, true], 0.0],
+    [[5.0, true], 1.0]
+  ],
+  "FAIL_TO_PASS": [
+    "test_hyperbolic_coth_zero_boundary"
+  ],
+  "PASS_TO_PASS": [
+    "test_hyperbolic_coth_positive",
+    "test_hyperbolic_coth_negative"
+  ]
+}

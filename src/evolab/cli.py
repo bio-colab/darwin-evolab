@@ -121,6 +121,38 @@ def cmd_evolve(args) -> int:
         or bool(getattr(args, "verilog_in", None))
         or bool(getattr(args, "waveform", None))
     )
+
+    if getattr(args, "swe_bench", None):
+        from .swe_bench import SWEBenchAdapter
+        adapter = SWEBenchAdapter()
+        spec = adapter.parse_spec(args.swe_bench)
+        print(f"SWE-bench Issue    : {spec.instance_id} ({spec.repo})")
+        print(f"Problem Summary    : {spec.problem_statement[:80]}...")
+        print(f"Target File        : {spec.target_file}")
+        print(f"FAIL_TO_PASS Tests : {len(spec.fail_to_pass_tests)}")
+        print(f"PASS_TO_PASS Tests : {len(spec.pass_to_pass_tests)}")
+        
+        resolution = adapter.solve_instance(spec, max_evals=args.max_evals or 32)
+        print(f"\n[SWE-bench Resolution Verdict]")
+        print(f"Resolved           : {'YES (100% Green)' if resolution.resolved else 'NO'}")
+        print(f"FAIL_TO_PASS       : {'PASS' if resolution.fail_to_pass_passed else 'FAIL'}")
+        print(f"PASS_TO_PASS       : {'CLEAN (Zero Regressions)' if resolution.pass_to_pass_clean else 'BROKEN'}")
+        print(f"Evaluations Used   : {resolution.evaluations_used}")
+        print(f"Execution Time     : {resolution.execution_time_seconds}s")
+        
+        if getattr(args, "patch_file", None):
+            Path(args.patch_file).write_text(resolution.generated_patch, encoding="utf-8")
+            print(f"Git Patch saved    : {args.patch_file}")
+
+        out_path = Path(args.output)
+        out_path.write_text(json.dumps({
+            "instance_id": resolution.instance_id,
+            "resolved": resolution.resolved,
+            "evaluations": resolution.evaluations_used,
+            "execution_time_seconds": resolution.execution_time_seconds,
+            "patch": resolution.generated_patch,
+        }, indent=2) + "\n", encoding="utf-8")
+        return 0 if resolution.resolved else 1
     if is_electronics:
         import sys
         root = Path(__file__).resolve().parents[2]
@@ -174,6 +206,42 @@ def cmd_evolve(args) -> int:
         # are topology-aware, so for netlists this is descriptive
         # bookkeeping — never a numeric constraint.
         genome_size = len(pop[0].genome)
+        if engine_kind == "nsga2":
+            from .pareto import NSGA2Engine, build_silicon_multiobjective_evaluator
+            from .genome import Individual
+            import random
+
+            expr_target = getattr(args, "expr", None) or "Sum = A ^ B; Cout = A & B"
+            from experimental.electronics.inputs.boolean_expr import parse_boolean_spec
+            from .cgp_logic import create_random_cgp_genome
+
+            b_spec = parse_boolean_spec(expr_target)
+            objs, eval_vec = build_silicon_multiobjective_evaluator(b_spec.truth_table)
+            rng = random.Random(args.seed or 42)
+            pop = [
+                Individual(
+                    create_random_cgp_genome(b_spec.num_inputs, b_spec.num_outputs, max(12, b_spec.num_inputs * 4), rng=rng),
+                    species="spec_logic",
+                )
+                for _ in range(args.population)
+            ]
+            engine = NSGA2Engine(
+                objectives=objs,
+                evaluate_vector_fn=eval_vec,
+                population_size=args.population,
+                generations=args.generations,
+                seed=args.seed,
+            )
+            nsga_res = engine.run(initial_population=pop, generations=args.generations)
+            print(f"Engine: NSGA-II | Multi-Objective Pareto Frontier Discovered")
+            print(f"Pareto Front Size: {len(nsga_res['front_0'])} non-dominated solutions")
+            for i, sol in enumerate(nsga_res['front_0'][:5]):
+                print(f"  Pareto #{i+1}: {sol['scores']}")
+            if getattr(args, "pareto_export", None):
+                engine.export_pareto_front(args.pareto_export)
+                print(f"Pareto Front saved: {args.pareto_export}")
+            return 0
+
         engine = _build_engine(args, fitness_fn=evaluator, genome_size=genome_size)
         result = engine.run(args.generations, initial_population=pop)
         result.setdefault("config", {})
@@ -508,8 +576,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_inspect.set_defaults(func=cmd_inspect)
 
     p_evo = sub.add_parser("evolve", help="run a new evolution experiment")
-    p_evo.add_argument("--engine", choices=["auto", "greedy", "ga"], default="auto",
-                       help="auto: greedy for code, ga for numeric")
+    p_evo.add_argument("--engine", choices=["auto", "greedy", "ga", "nsga2"], default="auto",
+                       help="search engine: auto, greedy (code), ga, nsga2 (Pareto)")
+    p_evo.add_argument("--swe-bench", default=None, help="path to official SWE-bench Lite instance JSON file")
+    p_evo.add_argument("--pareto-export", default=None, help="write non-dominated Pareto front JSON to file")
     p_evo.add_argument("--max-evals", type=int, default=None,
                        help="greedy evaluation budget")
     p_evo.add_argument("-g", "--generations", type=int, default=30)
@@ -546,7 +616,7 @@ def build_parser() -> argparse.ArgumentParser:
                        help="multi-objective optimization priority for circuit synthesis")
     p_evo.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console",
                        help="primary stdout format")
-    p_evo.add_argument("--patch-file", default=None, help="write git-apply compatible patch to file")
+    p_evo.add_argument("--patch-file", "--patch-out", default=None, help="write git-apply compatible patch to file")
     p_evo.add_argument("--summary-file", default=None, help="write GitHub Markdown summary to file")
     p_evo.add_argument("--schematic-file", default=None, help="write synthesized circuit SVG schematic to file")
     p_evo.add_argument("--verilog-file", default=None, help="write synthesized digital circuit Verilog netlist to file")

@@ -1,6 +1,7 @@
 """Genome representation: EvolabGenome contract, FloatGenome, and Individual."""
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import random
@@ -239,6 +240,20 @@ class Individual:
         elif hasattr(self.genome, "values"):
             return self.genome.values
         return []
+
+    def clone(self) -> Individual:
+        """Create a deep copy of the Individual with cloned genome."""
+        copied_genome = self.genome.clone() if hasattr(self.genome, "clone") else copy.deepcopy(self.genome)
+        return Individual(
+            genome=copied_genome,
+            species=self.species,
+            fitness=self.fitness,
+            adjusted_fitness=self.adjusted_fitness,
+            lineage=dict(self.lineage),
+            last_evaluated_gen=self.last_evaluated_gen,
+            _generation=self._generation,
+            _index=self._index,
+        )
 
 
 Genome = FloatGenome

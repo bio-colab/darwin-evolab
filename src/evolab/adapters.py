@@ -469,12 +469,18 @@ class ElectronicsAdapter(DomainAdapter):
 # Central Domain Adapter Registry
 # =========================================================================== #
 
-_ADAPTER_REGISTRY: dict[str, DomainAdapter] = {
-    "software_repair": SoftwareRepairAdapter(),
-    "discrete_logic": DiscreteLogicAdapter(),
-    "numerical_math": NumericalMathAdapter(),
-    "electronics": ElectronicsAdapter(),
-}
+def _init_registry() -> dict[str, DomainAdapter]:
+    from .swe_bench import SWEBenchAdapter
+
+    return {
+        "software_repair": SoftwareRepairAdapter(),
+        "discrete_logic": DiscreteLogicAdapter(),
+        "numerical_math": NumericalMathAdapter(),
+        "electronics": ElectronicsAdapter(),
+        "swe_bench": SWEBenchAdapter(),
+    }
+
+_ADAPTER_REGISTRY: dict[str, DomainAdapter] = _init_registry()
 
 
 def register_domain_adapter(name: str, adapter: DomainAdapter) -> None:
