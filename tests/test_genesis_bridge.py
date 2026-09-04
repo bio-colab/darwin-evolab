@@ -161,3 +161,78 @@ def test_genesis_bridge_resilience_fallback():
     assert res.task_success is False
     assert bridge.total_fallbacks == 1
     assert "Remote Genesis simulator unreachable" in res.metrics.get("error", "")
+
+
+def test_remote_genesis_environment_live_http_server():
+    """Verifies that RemoteGenesisEnvironment performs real HTTP POST requests to an endpoint."""
+    import http.server
+    import json
+    import threading
+
+    # Spin up an ephemeral in-process HTTP server
+    class MockGenesisHTTPHandler(http.server.BaseHTTPRequestHandler):
+        def do_POST(self):
+            content_length = int(self.headers.get("Content-Length", 0))
+            body = self.rfile.read(content_length).decode("utf-8")
+            data = json.loads(body)
+
+            if self.path == "/evaluate":
+                response_data = {
+                    "primary_fitness": 88.5,
+                    "task_success": True,
+                    "channel_rewards": {"torque_eff": 90.0, "stability": 87.0},
+                    "metrics": {"server": "remote_genesis_node_1"},
+                    "simulation_steps": 120,
+                }
+            elif self.path == "/evaluate_batch":
+                count = len(data.get("candidates", []))
+                response_data = {
+                    "results": [
+                        {
+                            "primary_fitness": 80.0 + i,
+                            "task_success": True,
+                            "channel_rewards": {"score": 80.0 + i},
+                            "simulation_steps": 100,
+                        }
+                        for i in range(count)
+                    ]
+                }
+            elif self.path == "/reset":
+                response_data = {"status": "RESET_OK", "domain": "genesis_remote"}
+            else:
+                response_data = {"error": "not found"}
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(response_data).encode("utf-8"))
+
+        def log_message(self, format, *args):
+            pass  # Suppress console logging during tests
+
+    server = http.server.HTTPServer(("127.0.0.1", 0), MockGenesisHTTPHandler)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+
+    endpoint = f"http://127.0.0.1:{port}"
+    bridge = GenesisBridge(remote_endpoint=endpoint)
+    assert bridge.environment.__class__.__name__ == "RemoteGenesisEnvironment"
+
+    # 1. Single candidate evaluation over real HTTP
+    ind = Individual(genome=FloatGenome(values=[0.1, 0.2]), species="spec_remote")
+    res = bridge.evaluate_candidate(ind)
+    assert res.primary_fitness == 88.5
+    assert res.task_success is True
+    assert res.channel_rewards["torque_eff"] == 90.0
+    assert res.metrics["server"] == "remote_genesis_node_1"
+    assert res.simulation_steps == 120
+
+    # 2. Batch evaluation over real HTTP
+    pop = [ind, Individual(genome=FloatGenome(values=[0.3, 0.4]), species="spec_remote")]
+    batch_res = bridge.evaluate_population(pop)
+    assert len(batch_res) == 2
+    assert batch_res[0].primary_fitness == 80.0
+    assert batch_res[1].primary_fitness == 81.0
+
+    server.shutdown()

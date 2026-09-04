@@ -111,3 +111,17 @@ def test_sky130_opamp_adapter_workflow():
     exported = adapter.export_solution(best, spec)
     assert isinstance(exported, dict)
     assert "gain_db" in exported
+
+
+def test_sky130_opamp_adapter_pvt_and_mutator():
+    adapter = Sky130OpAmpAdapter()
+    spec = adapter.parse_spec({"enable_pvt": True, "target_gain_db": 65.0})
+    assert spec["enable_pvt"] is True
+
+    ev = adapter.build_evaluator(spec)
+    from evolab.silicon.pvt_evaluator import PVTAwareOpAmpEvaluator
+    assert isinstance(ev, PVTAwareOpAmpEvaluator)
+
+    mut = adapter.build_mutator(spec)
+    from evolab.silicon.physics_mutator import PhysicsInformedOpAmpMutator
+    assert isinstance(mut, PhysicsInformedOpAmpMutator)

@@ -37,6 +37,51 @@ from .yosys_bridge import (
     YosysComparisonReport,
     YosysSynthesisBridge,
 )
+from .grammar_guard import (
+    GrammarCheckResult,
+    PhysicalGrammarGuard,
+)
+from .spec_conditioned_prior import (
+    BENCHMARK_SPECS,
+    CKTBENCH_BALANCED,
+    CKTBENCH_HIGH_GAIN,
+    CKTBENCH_HIGH_SPEED,
+    CKTBENCH_LOW_POWER,
+    AnalyticalSpecInverter,
+    SpecConditionedGenerator,
+    SpecConditionedPrior,
+    SpecTolerance,
+    TargetCircuitSpec,
+)
+from .bandit_latent_optimizer import (
+    BanditArm,
+    BanditLatentOptimizer,
+)
+from .pvt_evaluator import (
+    ConservativeHindsightReplay,
+    HindsightExperience,
+    MultiCornerEvaluationResult,
+    PVTAwareOpAmpEvaluator,
+)
+from .physics_mutator import (
+    CircuitDiagnosis,
+    PhysicsInformedOpAmpMutator,
+)
+from .modular_circuit import (
+    ActiveLoadBlock,
+    ActiveLoadType,
+    BiasBlock,
+    BiasType,
+    CompensationBlock,
+    CompensationType,
+    DiffPairBlock,
+    DiffPairType,
+    ModularOpAmpCircuit,
+    OutputStageBlock,
+    OutputStageType,
+    TailCurrentBlock,
+    TailCurrentType,
+)
 
 __all__ = [
     # SkyWater 130nm PDK
@@ -64,4 +109,43 @@ __all__ = [
     "YosysCellReport",
     "YosysComparisonReport",
     "YosysSynthesisBridge",
+    # ARCS Physical Grammar Guard
+    "PhysicalGrammarGuard",
+    "GrammarCheckResult",
+    # CktGen Spec-Conditioned Generative Prior
+    "TargetCircuitSpec",
+    "SpecTolerance",
+    "AnalyticalSpecInverter",
+    "SpecConditionedGenerator",
+    "SpecConditionedPrior",
+    "BENCHMARK_SPECS",
+    "CKTBENCH_LOW_POWER",
+    "CKTBENCH_BALANCED",
+    "CKTBENCH_HIGH_GAIN",
+    "CKTBENCH_HIGH_SPEED",
+    # Test-Time Bandit Latent Optimizer
+    "BanditArm",
+    "BanditLatentOptimizer",
+    # PPAAS Distillation: Multi-Corner PVT & Hindsight Replay
+    "PVTAwareOpAmpEvaluator",
+    "MultiCornerEvaluationResult",
+    "ConservativeHindsightReplay",
+    "HindsightExperience",
+    # AnalogCoder-Pro Distillation: Physics-Informed Mutator
+    "PhysicsInformedOpAmpMutator",
+    "CircuitDiagnosis",
+    # CircuitGenome Distillation: Modular Blocks & Topologies
+    "ModularOpAmpCircuit",
+    "DiffPairBlock",
+    "DiffPairType",
+    "ActiveLoadBlock",
+    "ActiveLoadType",
+    "TailCurrentBlock",
+    "TailCurrentType",
+    "CompensationBlock",
+    "CompensationType",
+    "OutputStageBlock",
+    "OutputStageType",
+    "BiasBlock",
+    "BiasType",
 ]

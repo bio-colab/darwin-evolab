@@ -2,8 +2,8 @@
 
 Implements structural and physical validity enforcement by construction:
 1. Saturation margin and operating point checks.
-2. High-frequency pole-splitting stability guards (p2 > GBW).
-3. Lithographic PDK aspect ratio and sizing bounds.
+2. High-frequency pole-splitting stability guards (p2 > 2.5 * GBW).
+3. Lithographic PDK aspect ratio and sizing bounds (W/L >= 1.5).
 4. Smooth projection operator to map violating vectors back to the physically feasible manifold.
 """
 from __future__ import annotations
@@ -12,8 +12,8 @@ import math
 from dataclasses import dataclass, field
 from typing import Any, Sequence
 
-from evolab.silicon.opamp_benchmark import OpAmpSizing, evaluate_opamp_analytical
-from evolab.silicon.sky130_pdk import Sky130Corner
+from .opamp_benchmark import OpAmpSizing, evaluate_opamp_analytical
+from .sky130_pdk import Sky130Corner
 
 
 @dataclass
@@ -97,8 +97,10 @@ class PhysicalGrammarGuard:
 
     def repair_and_project(self, sizing: OpAmpSizing) -> OpAmpSizing:
         """Projects any candidate sizing onto the physically valid and stable manifold."""
-        repairs = []
+        return self.repair(sizing)
 
+    def repair(self, sizing: OpAmpSizing) -> OpAmpSizing:
+        """Projects any candidate sizing onto the physically valid and stable manifold."""
         def _clamp(v: float, low: float, high: float) -> float:
             return max(low, min(v, high))
 
@@ -138,14 +140,11 @@ class PhysicalGrammarGuard:
             w5 = round(1.5 * ratio_8 * l5, 2)
             w5 = _clamp(w5, 2.0, 60.0)
 
-        # Driver sink ratio M7/M8 >= 1.5
         if (w7 / l7) < 1.5 * ratio_8:
             w7 = round(2.0 * ratio_8 * l7, 2)
             w7 = _clamp(w7, 2.0, 80.0)
 
         # 4. Enforce driver M6 transconductance to maintain high-frequency pole-splitting:
-        # gm6 is proportional to sqrt(W6/L6 * I7). If W6 is too small relative to W1,
-        # second pole p2 collapses into GBW causing phase margin collapse.
         if w6 < 1.5 * w1:
             w6 = round(max(w6, 2.0 * w1), 2)
             w6 = _clamp(w6, 5.0, 120.0)

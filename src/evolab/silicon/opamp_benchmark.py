@@ -400,6 +400,8 @@ class Sky130OpAmpAdapter(DomainAdapter):
             "target_pm_deg": float(d.get("target_pm_deg", 60.0)),
             "target_max_power_uw": float(d.get("target_max_power_uw", 600.0)),
             "corner": str(d.get("corner", self.corner.value)),
+            "enable_pvt": bool(d.get("enable_pvt", False)),
+            "skip_on_fail": bool(d.get("skip_on_fail", True)),
         }
 
     def build_population(
@@ -407,6 +409,35 @@ class Sky130OpAmpAdapter(DomainAdapter):
     ) -> list[Individual]:
         import random
         r = rng or random.Random(42)
+
+        # Check if spec requests spec-conditioned generation or has specific targets
+        has_targets = any(
+            k in spec
+            for k in (
+                "target_gain_db",
+                "target_gbw_mhz",
+                "target_pm_deg",
+                "target_max_power_uw",
+                "spec_conditioned",
+            )
+        )
+        use_spec_cond = spec.get("spec_conditioned", has_targets)
+
+        if use_spec_cond and has_targets:
+            try:
+                from .spec_conditioned_prior import SpecConditionedPrior, TargetCircuitSpec
+
+                target_spec = TargetCircuitSpec(
+                    gain_db=float(spec.get("target_gain_db", 60.0)),
+                    gbw_mhz=float(spec.get("target_gbw_mhz", 10.0)),
+                    pm_deg=float(spec.get("target_pm_deg", 60.0)),
+                    max_power_uw=float(spec.get("target_max_power_uw", 600.0)),
+                )
+                prior = SpecConditionedPrior(target_spec=target_spec)
+                return prior.sample_seed_population(count=size, species="sky130_opamp")
+            except Exception:
+                pass  # Graceful fallback to default baseline
+
         pop: list[Individual] = []
 
         # Seed with a realistic baseline design
@@ -435,6 +466,15 @@ class Sky130OpAmpAdapter(DomainAdapter):
         return pop
 
     def build_evaluator(self, spec: dict[str, Any]) -> Evaluator:
+        if spec.get("enable_pvt", False):
+            from .pvt_evaluator import PVTAwareOpAmpEvaluator
+            return PVTAwareOpAmpEvaluator(
+                target_gain_db=float(spec.get("target_gain_db", 60.0)),
+                target_gbw_mhz=float(spec.get("target_gbw_mhz", 10.0)),
+                target_pm_deg=float(spec.get("target_pm_deg", 60.0)),
+                target_max_power_uw=float(spec.get("target_max_power_uw", 600.0)),
+                skip_on_fail=bool(spec.get("skip_on_fail", True)),
+            )
         c = Sky130Corner(spec.get("corner", self.corner.value))
         return TwoStageMillerOpAmpEvaluator(
             target_gain_db=float(spec.get("target_gain_db", 60.0)),
@@ -442,6 +482,17 @@ class Sky130OpAmpAdapter(DomainAdapter):
             target_pm_deg=float(spec.get("target_pm_deg", 60.0)),
             target_max_power_uw=float(spec.get("target_max_power_uw", 600.0)),
             corner=c,
+        )
+
+    def build_mutator(self, spec: dict[str, Any] | None = None) -> Any:
+        """Returns PhysicsInformedOpAmpMutator matching the specification targets."""
+        d = spec or {}
+        from .physics_mutator import PhysicsInformedOpAmpMutator
+        return PhysicsInformedOpAmpMutator(
+            target_gain_db=float(d.get("target_gain_db", 60.0)),
+            target_gbw_mhz=float(d.get("target_gbw_mhz", 10.0)),
+            target_pm_deg=float(d.get("target_pm_deg", 60.0)),
+            target_max_power_uw=float(d.get("target_max_power_uw", 600.0)),
         )
 
     def export_solution(
