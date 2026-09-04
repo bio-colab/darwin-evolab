@@ -269,6 +269,21 @@ _LAZY: dict[str, tuple[str, str]] = {
     "serialize_for_foundation_model": (".genesis_bridge", "serialize_for_foundation_model"),
     "deserialize_from_tensor": (".genesis_bridge", "deserialize_from_tensor"),
     "FoundationModelPrior": (".genesis_bridge", "FoundationModelPrior"),
+    "Sky130Corner": (".silicon", "Sky130Corner"),
+    "SKY130_PARAMS": (".silicon", "SKY130_PARAMS"),
+    "compute_transistor_operating_point": (".silicon", "compute_transistor_operating_point"),
+    "generate_sky130_spice_header": (".silicon", "generate_sky130_spice_header"),
+    "OpAmpSizing": (".silicon", "OpAmpSizing"),
+    "OpAmpPerformanceMetrics": (".silicon", "OpAmpPerformanceMetrics"),
+    "evaluate_opamp_analytical": (".silicon", "evaluate_opamp_analytical"),
+    "generate_opamp_spice_netlist": (".silicon", "generate_opamp_spice_netlist"),
+    "TwoStageMillerOpAmpEvaluator": (".silicon", "TwoStageMillerOpAmpEvaluator"),
+    "Sky130OpAmpAdapter": (".silicon", "Sky130OpAmpAdapter"),
+    "SpiceNeuralSurrogate": (".silicon", "SpiceNeuralSurrogate"),
+    "ActiveSpiceSurrogateEvaluator": (".silicon", "ActiveSpiceSurrogateEvaluator"),
+    "YosysCellReport": (".silicon", "YosysCellReport"),
+    "YosysComparisonReport": (".silicon", "YosysComparisonReport"),
+    "YosysSynthesisBridge": (".silicon", "YosysSynthesisBridge"),
 }
 
 
@@ -370,4 +385,9 @@ __all__ = [
     "build_silicon_multiobjective_evaluator", "SWEBenchAdapter", "SWEBenchInstance", "SWEBenchResolution",
     "GenesisBridge", "GenesisRewardVector", "GenesisEnvironment", "MockGenesisSimulator",
     "serialize_for_foundation_model", "deserialize_from_tensor", "FoundationModelPrior",
+    "Sky130Corner", "SKY130_PARAMS", "compute_transistor_operating_point", "generate_sky130_spice_header",
+    "OpAmpSizing", "OpAmpPerformanceMetrics", "evaluate_opamp_analytical", "generate_opamp_spice_netlist",
+    "TwoStageMillerOpAmpEvaluator", "Sky130OpAmpAdapter",
+    "SpiceNeuralSurrogate", "ActiveSpiceSurrogateEvaluator",
+    "YosysCellReport", "YosysComparisonReport", "YosysSynthesisBridge",
 ]

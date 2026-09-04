@@ -498,11 +498,15 @@ def register_domain_adapter(name: str, adapter: DomainAdapter) -> None:
 def get_domain_adapter(name: str) -> DomainAdapter:
     """Retrieves a registered domain adapter by name."""
     key = name.lower().strip()
+    if key in ("sky130_opamp", "sky130"):
+        from .silicon.opamp_benchmark import Sky130OpAmpAdapter
+        return Sky130OpAmpAdapter()
     if key not in _ADAPTER_REGISTRY:
-        raise KeyError(f"Unknown domain adapter {name!r}. Available: {list(_ADAPTER_REGISTRY.keys())}")
+        raise KeyError(f"Unknown domain adapter {name!r}. Available: {list_domain_adapters()}")
     return _ADAPTER_REGISTRY[key]
 
 
 def list_domain_adapters() -> list[str]:
     """Returns the list of all registered domain adapter names."""
-    return sorted(_ADAPTER_REGISTRY.keys())
+    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp"})
+

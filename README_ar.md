@@ -25,7 +25,7 @@ graph TD
 
     Kernel --> Domain1["💻 1. هندسة البرمجيات (Software APR)<br/>• الركيزة: شجرة بايثون AST واختبارات Pytest<br/>• الشاهد: الإصلاح الآلي للأكواد وتوليد ترقيعات Git Patches"]
     
-    Kernel --> Domain2["⚡ 2. الإلكترونيات والدوائر المادية (Circuit Synthesis)<br/>• الركيزة: Netlists و SPICE والدوائر المنطقية والتماثلية<br/>• الشاهد الحي: تركيب Half-Adder ومؤقت 555 ومحاكاة الفيزياء"]
+    Kernel --> Domain2["⚡ 2. هندسة السيليكون والدوائر (Silicon & sky130)<br/>• الركيزة: SkyWater 130nm PDK ومضخم Miller OpAmp ومعيار NSGA-II<br/>• الشاهد الحي: النموذج البديل العصبي SPICE Surrogate وحلقة Yosys ومبرمج WebUSB"]
 
     Kernel --> Domain3["⚙️ 3. الحوسبة الدقيقة والمنطق الصرف (Discrete Logic & ASM)<br/>• الركيزة: أسمبلي الماكينة الافتراضية والبرمجة الوراثية للدوائر CGP والكموم<br/>• الشاهد: استنباط سلاسل التعليمات وتطور البوابات"]
 

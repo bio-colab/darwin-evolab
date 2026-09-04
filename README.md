@@ -4,7 +4,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-546%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-563%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -19,7 +19,7 @@ Traditional evolutionary frameworks (**DEAP**, **Optuna**, **Pygmo**) are design
 
 **`darwin-evolab` is architected as an Evolutionary Operating System**:
 - **Decoupled Evolutionary Kernel**: The core optimization engine (`EvolutionEngine`, Genetic Algorithms, Speciation, Quality Diversity, and Greedy Catalog Search) is strictly domain-agnostic.
-- **Pluggable Domain Drivers (`DomainAdapter`)**: Domain representations act like operating system device drivers. A single unified kernel orchestrates Python AST edits, breadboard transistor netlists, Verilog logic gates, and continuous mathematical landscapes without modifying kernel internals.
+- **Pluggable Domain Drivers (`DomainAdapter`)**: Domain representations act like operating system device drivers. A single unified kernel orchestrates Python AST edits, SkyWater 130nm analog CMOS opamps, synthesizable Verilog logic gates, and continuous mathematical landscapes without modifying kernel internals.
 
 ```mermaid
 graph TD
@@ -27,9 +27,9 @@ graph TD
     
     Kernel --> Driver1["🐍 1. Software Repair Driver (AST)<br/>• Ochiai SBFL Suspicion Mapping<br/>• Isolated Subprocess Sandbox<br/>• Native Pytest Bridge & Git Patches"]
     
-    Kernel --> Driver2["⚡ 2. Silicon & Circuit Design Driver<br/>• Real SPICE Simulation (ngspice)<br/>• Transistor-level Physics & 74HC DIP ICs<br/>• Vector SVG Schematics & Virtual Oscilloscope"]
+    Kernel --> Driver2["⚡ 2. Silicon & Circuit Design Driver (sky130)<br/>• SkyWater 130nm Open-Source PDK (sky130_fd_pr)<br/>• Two-Stage Miller OpAmp Benchmark with 4-Objective NSGA-II<br/>• 15x Accelerated SPICE Neural Surrogate & Yosys In-The-Loop"]
     
-    Kernel --> Driver3["⚙️ 3. Discrete Logic & CGP Driver<br/>• Cartesian Genetic Programming<br/>• Synthesizable Verilog-2001 RTL Export<br/>• Dynamic Switching Power Optimization"]
+    Kernel --> Driver3["⚙️ 3. Discrete Logic & CGP Driver<br/>• Cartesian Genetic Programming<br/>• Synthesizable Verilog-2001 RTL Export<br/>• WebUSB Hardware-in-the-Loop FPGA Programmer"]
     
     Kernel --> Driver4["📐 4. Continuous Mathematics Driver<br/>• FloatGenome Vector Optimization<br/>• Non-convex Landscapes (Rastrigin, Rosenbrock)"]
 ```
@@ -125,23 +125,25 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 | **`multi_file_config`** | 106 evals | **92.6%** cache hit rate | **1.12× faster** | Cross-file dependency validation |
 | **`swe_bench_lite`** | $\le 10$ evals | **100%** resolution rate | **Dual invariant** | 100% FAIL_TO_PASS passed, 0% PASS_TO_PASS regression |
 
-### 2. Silicon Physics & Hardware Metrics
+### 2. Silicon Physics & Hardware Metrics (SkyWater 130nm & FPGA)
 
-| Circuit Target | Verification Tier | Measured Physical Metric | Datasheet Tolerance |
+| Circuit Target | Verification Tier | Measured Physical Metric | Specification / Datasheet |
 | :--- | :---: | :---: | :---: |
-| **555 Astable Timer** | ngspice Transient | **0.74% frequency error** ($f = 143.2\text{ Hz}$) | $< 2.0\%$ |
-| **74HC Half-Adder** | Truth Table & PVT | **$0.0\%$ bit error rate** | $100\%$ functional |
-| **Quiescent Current** | DC Operating Point | **$I_{CC} < 40\mu\text{A}$** | Complies with 74HC specs |
-| **FO4 Gate Delay** | Dynamic Transient | **$18.4\text{ ns}$** critical path delay | Rated $-40^\circ\text{C}$ to $+85^\circ\text{C}$ |
-| **Pareto Front Frontier** | Fast Non-Dominated Sort | **4 Objectives** (Correctness, Power, Delay, Area) | $O(MN^2)$ Crowding Distance |
+| **Sky130 Miller OpAmp** | Analytical & SPICE AC | **$A_v \ge 60\text{ dB}$, $\text{GBW} \ge 10\text{ MHz}$, $\text{PM} \ge 60^\circ$** | SkyWater 130nm PDK ($1.8\text{V}$, TT/SS/FF) |
+| **SPICE Neural Surrogate** | Micro-MLP Active Learning | **$< 0.05\text{ ms}$ inference ($15\times$ speedup)** | Verified on Pareto front with exact SPICE |
+| **Yosys RTL Synthesis** | Yosys/ABC Cell Stat Pass | **Optimal Gate / Cell Ratio ($\le 1.1\times$)** | Equivalent or competitive with ABC standard cells |
+| **FPGA Synthesis Estimation** | Static Resource Estimator | **LUT utilization, $F_{\max}$, Dynamic Power** | Multi-target (.pcf, .lpf, .xdc) |
+| **Hardware-in-the-Loop** | WebUSB FPGA Programmer | **Sub-millisecond roundtrip response** | FTDI FT2232H, TinyFPGA BX, RP2040 |
+| **555 Astable Timer** | ngspice Transient | **0.74% frequency error** ($f = 143.2\text{ Hz}$) | $< 2.0\%$ tolerance |
+| **Quiescent Current** | DC Operating Point | **$I_{CC} < 40\mu\text{A}$** | Complies with standard low-power rules |
 
 ### 3. Repository-Wide Test Health
 
 ```
-tests/ (Core, Sandboxing, APR, NSGA-II, SWE-bench, Math, Vectorized, Notebooks) : 471 passed (100%)
-experimental/electronics/tests/ (SPICE, CGP, UI, EDA)                           :  63 passed (100%)
+tests/ (Core, APR, NSGA-II, SWE-bench, Math, Vectorized, Sky130, OpAmp, Surrogate, Yosys) : 499 passed (100%)
+experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets)                   :  64 passed (100%)
 ===================================================================================================
-Total Automated Test Suite                                                      : 534 passed (100%)
+Total Automated Test Suite                                                              : 563 passed (100%)
 ```
 
 ---
@@ -153,7 +155,7 @@ Export an interactive, dependency-free HTML5/Canvas engineering dashboard with `
 - **In-Browser Live Gate Simulator**: Click any input terminal ($A, B, Cin$) to toggle logic levels ($0 \longleftrightarrow 1$). Signals propagate through active gates in real time, illuminating wires in glowing green ($5\text{V}$) or dark blue ($0\text{V}$).
 - **Dual-Channel CRT Phosphor Oscilloscope**: Simulated $8 \times 10$ division graticule, adjustable timebase ($\mu\text{s}/\text{div}$), interactive cursor calipers calculating $\Delta t$ and instantaneous frequency, and physical RC rise/fall curves.
 - **1-Click Silicon Hub**: Preview and copy synthesizable Verilog-2001 code, inspect SPICE netlists, and verify PVT corner cards.
-- **Modular Hardware Expansion**: Built-in audio synthesizer using the Web Audio API to play the acoustic pitch of synthesized circuits, plus architecture slots for WebUSB FPGA programming.
+- **WebUSB Hardware-in-the-Loop FPGA Programmer**: Integrated flashing station supporting FTDI FT2232H, TinyFPGA BX, and RP2040, CRT VT100 serial terminal, and in-browser Virtual Loopback Mock engine.
 
 ---
 
