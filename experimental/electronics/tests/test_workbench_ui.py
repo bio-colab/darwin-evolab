@@ -97,3 +97,78 @@ def test_workbench_webusb_and_fpga_integration():
     assert "navigator.usb.requestDevice" in html
     assert "runHardwareLoopback" in html
 
+
+def test_workbench_analog_opamp_mode():
+    """Verifies that an OpAmpSizing circuit automatically enables analog workbench mode with all interactive controls."""
+    from evolab.silicon.opamp_benchmark import OpAmpSizing
+
+    sizing = OpAmpSizing(
+        w1_um=15.0,
+        l1_um=0.36,
+        w3_um=30.0,
+        l3_um=0.36,
+        w5_um=20.0,
+        l5_um=0.36,
+        w6_um=60.0,
+        l6_um=0.36,
+        w7_um=30.0,
+        l7_um=0.36,
+        w8_um=8.0,
+        l8_um=0.72,
+        cc_pf=3.5,
+        ibias_ua=15.0,
+    )
+    meta = {
+        "scenario": "two_stage_opamp_sky130",
+        "tech_node": "skywater130",
+        "fitness": 96.4,
+    }
+    html = generate_workbench_html(sizing, metadata=meta, title="Sky130 Analog OpAmp Studio")
+
+    # 1. Verify Mode is set to analog by default
+    assert 'data-initial-mode="analog"' in html
+    assert "btn-mode-analog" in html
+    assert "btn-mode-digital" in html
+
+    # 2. Verify Analog sections
+    assert "Live AC Bode Plot (Frequency Response)" in html
+    assert "Sky130 Transistor Sizing Lab" in html
+    assert "Non-Dominated Pareto Frontier (Gain vs Power)" in html
+    assert "CircuitGenome Modular Blocks" in html
+
+    # 3. Verify Interactive Sizing Sliders
+    assert 'id="slider-w1"' in html
+    assert 'id="slider-l1"' in html
+    assert 'id="slider-w6"' in html
+    assert 'id="slider-cc"' in html
+    assert 'id="slider-ibias"' in html
+    assert 'id="btn-physics-repair"' in html
+
+    # 4. Verify PVT Corner Switchers
+    assert 'id="btn-corner-tt"' in html
+    assert 'id="btn-corner-ss"' in html
+    assert 'id="btn-corner-ff"' in html
+
+    # 5. Verify In-Browser JavaScript Physics Engine
+    assert "computeTransistorOP" in html
+    assert "renderBodePlot" in html
+    assert "renderPareto" in html
+    assert "updateAnalogUI" in html
+
+
+def test_workbench_modular_circuit_mode():
+    """Verifies that a ModularOpAmpCircuit object generates valid dual-mode HTML with modular blocks."""
+    from evolab.silicon.modular_circuit import ModularOpAmpCircuit
+
+    circuit = ModularOpAmpCircuit()
+    html = generate_workbench_html(circuit, metadata={"scenario": "modular_opamp"})
+
+    assert 'data-initial-mode="analog"' in html
+    assert "Differential Input Pair" in html
+    assert "Active Current Mirror Load" in html
+    assert "Common-Source Driver Stage" in html
+    assert "Miller Compensation Network" in html
+    assert "Sol-A" in html
+    assert "Sol-E" in html
+
+
