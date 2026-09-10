@@ -265,7 +265,12 @@ class MemoryInjector:
                 weakest = min(range(len(population)),
                               key=lambda i: population[i].fitness)
                 target = population[weakest]
-                target.genome = entry.genome.clone() if hasattr(entry.genome, "clone") else list(entry.genome)
+                if hasattr(target.genome, "values") and hasattr(target.genome, "clone"):
+                    target.genome = type(target.genome)(values=list(entry.genome))
+                elif hasattr(entry.genome, "clone"):
+                    target.genome = entry.genome.clone()
+                else:
+                    target.genome = list(entry.genome)
                 target.fitness = float(score)
                 target.last_evaluated_gen = generation
                 entry.successes += 1

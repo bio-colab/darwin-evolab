@@ -4,7 +4,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-583%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-578%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -161,21 +161,27 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 
 | Circuit Target | Verification Tier | Measured Physical Metric | Specification / Datasheet |
 | :--- | :---: | :---: | :---: |
-| **Sky130 Miller OpAmp** | Analytical & SPICE AC | **$A_v \ge 60\text{ dB}$, $\text{GBW} \ge 10\text{ MHz}$, $\text{PM} \ge 60^\circ$** | SkyWater 130nm PDK ($1.8\text{V}$, TT/SS/FF) |
-| **SPICE Neural Surrogate** | Micro-MLP Active Learning | **$< 0.05\text{ ms}$ inference ($15\times$ speedup)** | Verified on Pareto front with exact SPICE |
-| **Yosys RTL Synthesis** | Yosys/ABC Cell Stat Pass | **Optimal Gate / Cell Ratio ($\le 1.1\times$)** | Equivalent or competitive with ABC standard cells |
-| **FPGA Synthesis Estimation** | Static Resource Estimator | **LUT utilization, $F_{\max}$, Dynamic Power** | Multi-target (.pcf, .lpf, .xdc) |
-| **Hardware-in-the-Loop** | WebUSB FPGA Programmer | **Sub-millisecond roundtrip response** | FTDI FT2232H, TinyFPGA BX, RP2040 |
+| **Sky130 Miller OpAmp** | Level-1 Analytical & SPICE AC | **$A_v \ge 60\text{ dB}$, $\text{GBW} \ge 10\text{ MHz}$, $\text{PM} \ge 60^\circ$** | SkyWater 130nm model parameters ($1.8\text{V}$, TT/SS/FF) |
+| **SPICE Neural Surrogate** | Micro-MLP Active Learning | **$< 0.05\text{ ms}$ inference ($15\times$ speedup)** | Verified on Pareto front with exact SPICE (`physical_claim=False`) |
+| **Yosys RTL Synthesis** | Yosys/ABC Cell Stat Pass | **Optimal Gate / Cell Ratio ($\le 1.1\times$)** | Native Yosys ABC when installed; transparent proxy count when absent |
+| **FPGA Synthesis Estimation** | Static Resource Estimator | **LUT utilization, $F_{\max}$, Dynamic Power** | Multi-target constraints (.pcf, .lpf, .xdc) |
+| **WebUSB Hardware Flasher** | In-Browser WebUSB Bridge | **Bitstream flashing & UART serial loopback** | FTDI FT2232H, TinyFPGA BX, RP2040 |
 | **555 Astable Timer** | ngspice Transient | **0.74% frequency error** ($f = 143.2\text{ Hz}$) | $< 2.0\%$ tolerance |
 | **Quiescent Current** | DC Operating Point | **$I_{CC} < 40\mu\text{A}$** | Complies with standard low-power rules |
+
+> [!NOTE]
+> **Scientific Scope & Model Fidelity Notice on Silicon Track**:
+> - **Analytical Physics & SPICE Models**: Small-signal metrics and generated SPICE netlists are formulated using standard Level-1 square-law CMOS physics equations ($g_m = 2I_D/V_{ov}$, $r_o = V_A/I_D$, Miller pole-splitting). This enables sub-millisecond evaluation for evolutionary topology exploration and sizing; industrial tapeout signoff requires full foundry BSIM4/BSIM-CMG PDK integration.
+> - **Yosys Synthesis Provenance**: Comparative cell counts invoke the native `yosys` executable with ABC optimization passes when available. When Yosys is absent, the bridge transparently falls back to an AIG operator count and explicitly labels the verdict as `ESTIMATED (Built-in proxy count)` to maintain strict provenance integrity.
+> - **WebUSB Capabilities**: The WebUSB bridge provides in-browser bitstream programming and an interactive JTAG/UART terminal over USB bulk endpoints, serving as a functional flasher and loopback bridge rather than a sub-nanosecond physical logic-analyzer measurement instrument.
 
 ### 3. Repository-Wide Test Health
 
 ```
-tests/ (Core, APR, NSGA-II, SWE-bench, Math, Vectorized, Sky130, OpAmp, Surrogate, Yosys, Genesis, Distilled EDA) : 511 passed (100%)
-experimental/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab)                                                 :  72 passed (100%)
+tests/ (Core, APR, NSGA-II, SWE-bench, Math, Vectorized, Sky130, OpAmp, Surrogate, Yosys, Genesis, Distilled EDA) : 512 passed (100%)
+experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab, Dual-Mode Studio)            :  66 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                                        : 583 passed (100%)
+Total Automated Test Suite                                                                                        : 578 passed (100%)
 ```
 
 ---

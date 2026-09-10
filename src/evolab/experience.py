@@ -1051,6 +1051,8 @@ def attach_eval_cache(
     flag = os.environ.get("EVOLAB_EVAL_CACHE", "1").strip().lower()
     if flag in ("0", "false", "no", "off"):
         return evaluator
+    if isinstance(evaluator, EvaluationCache):
+        return evaluator
     if not getattr(evaluator, "deterministic", False):
         return evaluator
     try:

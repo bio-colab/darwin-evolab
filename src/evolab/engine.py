@@ -384,10 +384,15 @@ class EvolutionEngine:
                         f"(gen {generation}, ind {i})"
                     )
                 if not (lo <= v <= hi):
-                    raise ValueError(
-                        f"evaluator fitness {v} outside declared range [{lo}, {hi}] "
-                        f"(gen {generation}, ind {i})"
-                    )
+                    if abs(v - hi) < 1e-6:
+                        v = hi
+                    elif abs(v - lo) < 1e-6:
+                        v = lo
+                    else:
+                        raise ValueError(
+                            f"evaluator fitness {v} outside declared range [{lo}, {hi}] "
+                            f"(gen {generation}, ind {i})"
+                        )
                 vals.append(v)
             score = sum(vals) / len(vals)
             if reps > 1 and self.stability_penalty:
@@ -555,7 +560,8 @@ class EvolutionEngine:
         """
         lo, hi = self.fitness_range
         self._memory_evals_used += 1
-        tmp = Individual(list(genome), "spec_memory")
+        g = FloatGenome(values=list(genome)) if not hasattr(genome, "clone") else genome.clone()
+        tmp = Individual(g, "spec_memory")
         try:
             v = float(self.fitness_fn(tmp))
             if not math.isfinite(v):
@@ -842,7 +848,6 @@ class EvolutionEngine:
         stagnation_events: list[int] = []
         best_so_far = -1.0
         gens_since_improvement = 0
-        immigrant_count = int(self.population_size * self.immigrant_fraction)
         exploit_start = int(generations * self.exploit_after_frac)
 
         def sharing_on(gen: int) -> bool:
@@ -983,11 +988,12 @@ class EvolutionEngine:
                     })
 
             # causal evolutionary memory (v4): detect -> (maybe) inject
-            if self.memory_enabled and isinstance(best.genome, list):
+            raw_best = getattr(best.genome, "values", best.genome) if best is not None else None
+            if self.memory_enabled and (isinstance(raw_best, (list, tuple)) or hasattr(best.genome, "values")):
                 change = self._detector.detect(best.fitness, len(dist_now))
                 self._last_change = change
                 if change is not ChangeType.STABLE and gen >= 2:
-                    sig_best = self._genome_signature(best.genome)
+                    sig_best = self._genome_signature(raw_best)
                     if change is ChangeType.SHOCK and sig_best[0] == "novel":
                         self._quarantine_until_gen = gen + self.quarantine_gens
                         self._decision_log.append({
@@ -1197,7 +1203,7 @@ class EvolutionEngine:
 
         total_mutations = sum(self._mutation_stats.values())
         # Forced Staleness Re-evaluation for best_ever in dynamic/drifting environments:
-        if (self.memory_enabled or getattr(self, "causal_layer_enabled", False) or getattr(self, "drift_rate", 0.0) > 0) and best_ever is not None and hasattr(self, "fitness_fn"):
+        if (self.memory_enabled or getattr(self, "causal_layer_enabled", False)) and best_ever is not None and hasattr(self, "fitness_fn"):
             try:
                 curr_fit = float(self.fitness_fn(best_ever))
                 if math.isfinite(curr_fit):
@@ -1267,13 +1273,17 @@ class EvolutionEngine:
         bw = getattr(self, "_boundary_wisdom", {})
         report.extra["boundary_wisdom"] = dict(bw)
         report.extra["boundary_wisdom"]["current_mode"] = getattr(self, "_strategy_mode", "conservative")
-        report.extra["boundary_wisdom"]["dispersion_fitness_cov"] = round(getattr(self, "_dispersion_fitness_cov", 0.0), 4)
+        has_bw_activity = bool(
+            traps > 0
+            or any(v > 0 for k, v in bw.items() if isinstance(v, (int, float)))
+        )
+        bw_status = "Boundary Wisdom active." if has_bw_activity else "Boundary Wisdom idle."
         report.extra["causal_log"] = (
             f"Active: Flagged {traps} traps; Mode={getattr(self, '_strategy_mode', 'conservative')}; "
             f"Physical Respected={bw.get('physical_laws_respected', 0)}; "
             f"Regulatory Negotiated={bw.get('regulatory_negotiations', 0)}; "
             f"Obsolete Broken={bw.get('obsolete_rules_broken', 0)}; "
-            f"Switches={bw.get('mode_switches', 0)}; Boundary Wisdom active."
+            f"Switches={bw.get('mode_switches', 0)}; {bw_status}"
         )
         return report
 

@@ -125,3 +125,31 @@ def test_sky130_opamp_adapter_pvt_and_mutator():
     mut = adapter.build_mutator(spec)
     from evolab.silicon.physics_mutator import PhysicsInformedOpAmpMutator
     assert isinstance(mut, PhysicsInformedOpAmpMutator)
+
+
+def test_sky130_opamp_adapter_bandit_and_surrogate():
+    adapter = Sky130OpAmpAdapter()
+    spec = adapter.parse_spec({
+        "target_gain_db": 70.0,
+        "target_pm_deg": 65.0,
+        "use_bandit": True,
+        "use_surrogate": True,
+    })
+    assert spec["use_bandit"] is True
+    assert spec["use_surrogate"] is True
+
+    # Population built with bandit test-time optimization
+    pop = adapter.build_population(spec, size=4)
+    assert len(pop) == 4
+    assert all(isinstance(ind.genome, FloatGenome) for ind in pop)
+
+    # Evaluator wrapped with active neural surrogate
+    ev = adapter.build_evaluator(spec)
+    from evolab.silicon.surrogate import ActiveSpiceSurrogateEvaluator
+    assert isinstance(ev, ActiveSpiceSurrogateEvaluator)
+
+    # Evaluation passes through surrogate and caches
+    res = ev.evaluate(pop[0])
+    assert res.score > 0.0
+    assert res.artifacts.get("surrogate") is True
+

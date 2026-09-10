@@ -193,53 +193,18 @@ class ModularOpAmpCircuit:
     def generate_spice_netlist(self, corner: Sky130Corner = Sky130Corner.TT) -> str:
         """Emits modular, fully-annotated SPICE netlist reflecting the block hierarchy."""
         sizing = self.to_sizing()
-        header = generate_sky130_spice_header(corner)
-
-        comp_net = (
-            f"Cc d2 out {sizing.cc_pf}p"
-            if self.compensation.topology == CompensationType.MILLER_CAP
-            else f"Cc d2 net_z {sizing.cc_pf}p\nRz net_z out {self.compensation.rz_kohm}k"
+        rz = (
+            self.compensation.rz_kohm
+            if self.compensation.topology == CompensationType.MILLER_RC
+            else 0.0
         )
-
-        return f"""* Modular CircuitGenome CMOS OpAmp for SkyWater 130nm
-* Topology: {self.diff_pair.topology.value} + {self.active_load.topology.value} + {self.compensation.topology.value}
-{header}
-
-* Power Supplies
-Vdd vdd 0 DC 1.80
-Vss vss 0 DC 0
-
-* Inputs
-Vin_p inp 0 DC 0.9 AC 1 0
-Vin_n inn 0 DC 0.9 AC 0 0
-
-* === BLOCK 1: Differential Pair [{self.diff_pair.topology.value}] ===
-XM1 d1 inp tail vss sky130_fd_pr__nfet_01v8 W={self.diff_pair.w_um}u L={self.diff_pair.l_um}u
-XM2 d2 inn tail vss sky130_fd_pr__nfet_01v8 W={self.diff_pair.w_um}u L={self.diff_pair.l_um}u
-
-* === BLOCK 2: Active Load [{self.active_load.topology.value}] ===
-XM3 d1 d1 vdd vdd sky130_fd_pr__pfet_01v8 W={self.active_load.w_um}u L={self.active_load.l_um}u
-XM4 d2 d1 vdd vdd sky130_fd_pr__pfet_01v8 W={self.active_load.w_um}u L={self.active_load.l_um}u
-
-* === BLOCK 3: Tail Current [{self.tail_current.topology.value}] ===
-XM5 tail bias vss vss sky130_fd_pr__nfet_01v8 W={self.tail_current.w_um}u L={self.tail_current.l_um}u
-
-* === BLOCK 4: Output Driver [{self.output_stage.topology.value}] ===
-XM6 out d2 vdd vdd sky130_fd_pr__pfet_01v8 W={self.output_stage.w_driver_um}u L={self.output_stage.l_driver_um}u
-XM7 out bias vss vss sky130_fd_pr__nfet_01v8 W={self.output_stage.w_sink_um}u L={self.output_stage.l_sink_um}u
-
-* === BLOCK 5: Bias Generator [{self.bias.topology.value}] ===
-XM8 bias bias vss vss sky130_fd_pr__nfet_01v8 W={self.bias.w_bias_um}u L={self.bias.l_bias_um}u
-Iref vdd bias DC {self.bias.ibias_ua}u
-
-* === BLOCK 6: Compensation & Load [{self.compensation.topology.value}] ===
-{comp_net}
-CL out vss {self.cl_pf}p
-
-.op
-.ac dec 10 1 10G
-.meas ac max_gain max vdb(out)
-.meas ac gbw when vdb(out)=0
-.meas ac pm find vp(out) when vdb(out)=0
-.end
-"""
+        title = (
+            f"* Modular CircuitGenome CMOS OpAmp for SkyWater 130nm\n"
+            f"* Topology: {self.diff_pair.topology.value} + {self.active_load.topology.value} + {self.compensation.topology.value}"
+        )
+        return generate_opamp_spice_netlist(
+            sizing=sizing,
+            corner=corner,
+            rz_kohm=rz,
+            title_comment=title,
+        )

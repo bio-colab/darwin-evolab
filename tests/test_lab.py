@@ -1526,3 +1526,19 @@ def test_package_version_consistency():
     assert evolab.__version__ == "0.5.0"
     assert ENGINE_VERSION == "evolab-engine/0.5.0"
 
+
+def test_memory_enabled_fires_with_float_genome():
+    """Verifies that EvolutionEngine with memory_enabled=True operates with FloatGenome."""
+    from evolab.engine import EvolutionEngine, EngineConfig
+    from evolab.genome import FloatGenome
+
+    cfg = EngineConfig(population_size=12, genome_size=4, seed=42, generations=6)
+    engine = EvolutionEngine(config=cfg, memory_enabled=True)
+    report = engine.run(6)
+
+    assert report["total_generations"] >= 1
+    assert "best_individual" in report
+    assert isinstance(engine.best_ever.genome, FloatGenome)
+    assert len(engine._memory_bank.entries) > 0
+
+

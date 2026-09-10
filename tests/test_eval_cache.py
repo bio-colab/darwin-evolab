@@ -350,3 +350,24 @@ def test_recorder_sees_every_call_with_cache_inside():
         assert cache.hits > 0
         assert metrics["evals_total"] == cache.hits + cache.misses
         wired.close()
+
+
+def test_greedy_repair_with_attach_eval_cache():
+    """Verify greedy_repair works seamlessly with attach_eval_cache while matching uncached trajectory."""
+    from evolab.repair import greedy_repair
+
+    scenario1 = SCENARIO_REGISTRY["requests_http_helper"]()
+    ev1 = attach_eval_cache(scenario1.create_evaluator())
+    genome_cached, hist_cached, n_cached = greedy_repair(
+        scenario1.sources, scenario1.target_file, ev1, max_evals=16
+    )
+
+    scenario2 = SCENARIO_REGISTRY["requests_http_helper"]()
+    ev2 = scenario2.create_evaluator()
+    genome_plain, hist_plain, n_plain = greedy_repair(
+        scenario2.sources, scenario2.target_file, ev2, max_evals=16
+    )
+
+    assert genome_cached.to_code() == genome_plain.to_code()
+    assert n_cached == n_plain
+    assert len(hist_cached) == len(hist_plain)

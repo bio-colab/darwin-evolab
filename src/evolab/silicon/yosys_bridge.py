@@ -110,7 +110,9 @@ class YosysSynthesisBridge:
         y_cells = max(yosys_rep.total_cells, 1)
         ratio = round(cgp_gates / y_cells, 2)
 
-        if ratio <= 1.05:
+        if not yosys_rep.is_yosys_native:
+            verdict = f"ESTIMATED (Built-in proxy count {ratio}x; Yosys binary not found for ABC synthesis)"
+        elif ratio <= 1.05:
             verdict = "OPTIMAL (Equivalent or Better than Yosys ABC)"
         elif ratio <= 1.35:
             verdict = "COMPETITIVE (Within 35% of Yosys ABC)"

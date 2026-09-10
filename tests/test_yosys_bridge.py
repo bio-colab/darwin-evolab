@@ -44,7 +44,7 @@ def test_yosys_bridge_cgp_comparison():
     assert comp.cgp_gate_count == 2
     assert comp.yosys_cell_count >= 2
     assert comp.area_ratio > 0.0
-    assert "OPTIMAL" in comp.efficiency_verdict or "COMPETITIVE" in comp.efficiency_verdict
+    assert "ESTIMATED" in comp.efficiency_verdict or "OPTIMAL" in comp.efficiency_verdict or "COMPETITIVE" in comp.efficiency_verdict
     assert comp.is_synthesizable is True
     assert "tool_used" in comp.to_dict()
 

@@ -172,3 +172,45 @@ def test_workbench_modular_circuit_mode():
     assert "Sol-E" in html
 
 
+def test_workbench_modular_templates_and_context():
+    """Verifies that extract_workbench_context and isolated template renderers operate modularly."""
+    from experimental.electronics.ui.workbench_generator import extract_workbench_context
+    from experimental.electronics.ui.workbench_templates import (
+        render_workbench_styles,
+        render_workbench_header,
+        render_analog_studio,
+        render_digital_studio,
+        render_client_scripts,
+    )
+    from evolab.silicon.modular_circuit import ModularOpAmpCircuit
+
+    circuit = ModularOpAmpCircuit()
+    ctx = extract_workbench_context(circuit, metadata={"scenario": "modular_test", "fitness": 99.1}, title="Custom Test Studio")
+
+    assert ctx["scenario_name"] == "modular_test"
+    assert ctx["fitness"] == 99.1
+    assert "cgp_json" in ctx
+    assert "analog_json" in ctx
+
+    styles = render_workbench_styles()
+    assert "<style>" in styles
+    assert "--scope-bg" in styles
+
+    header = render_workbench_header(ctx)
+    assert "Custom Test Studio" in header
+    assert "modular_test" in header
+
+    analog_html = render_analog_studio(ctx)
+    assert "view-analog" in analog_html
+    assert "bode-canvas" in analog_html
+
+    digital_html = render_digital_studio(ctx)
+    assert "view-digital" in digital_html
+    assert "circuit-canvas" in digital_html
+
+    scripts = render_client_scripts(ctx)
+    assert "<script>" in scripts
+    assert "const analogData =" in scripts
+
+
+

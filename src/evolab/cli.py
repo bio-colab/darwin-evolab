@@ -175,6 +175,9 @@ def cmd_evolve(args) -> int:
             getattr(args, "verilog_in", None),
             getattr(args, "waveform", None),
         ))
+        effective_seed = 42 if args.seed is None else args.seed
+        args.seed = effective_seed
+
         if has_custom_input:
             evaluator, pop, name = prepare_custom_electronics_run(
                 spec_path=getattr(args, "spec", None),
@@ -184,7 +187,7 @@ def cmd_evolve(args) -> int:
                 waveform_path=getattr(args, "waveform", None),
                 objective=getattr(args, "objective", None),
                 population_size=args.population,
-                seed=args.seed,
+                seed=effective_seed,
             )
         else:
             name = args.scenario if args.scenario in list_electronics_scenarios() else "half_adder"
@@ -192,11 +195,25 @@ def cmd_evolve(args) -> int:
                 print(f"error: unknown electronics scenario {args.scenario!r}")
                 print("hint: " + ", ".join(list_electronics_scenarios()))
                 return 2
-            evaluator, pop, name = prepare_electronics_run(name, args.population, args.seed)
+            evaluator, pop, name = prepare_electronics_run(name, args.population, effective_seed)
+
+        tool_name = "cgp_digital"
+        if hasattr(evaluator, "oracle"):
+            tool_name = getattr(evaluator.oracle, "tool_name", "ngspice")
+        elif hasattr(evaluator, "simulator"):
+            tool_name = getattr(getattr(evaluator, "simulator", None), "name", "ngspice")
+        elif "analog" in name.lower() or "waveform" in name.lower() or "filter" in name.lower():
+            try:
+                from experimental.electronics.models.ngspice_bridge import has_ngspice
+                tool_name = "ngspice" if has_ngspice() else "analytical_proxy"
+            except Exception:
+                tool_name = "analytical_proxy"
+        elif "boolean" in name.lower() or "verilog" in name.lower() or "adder" in name.lower():
+            tool_name = "cgp_logic"
 
         print(
-            f"Engine: GA | genome=electronics | scenario={name} "
-            f"| pop={args.population} gens={args.generations} seed={args.seed}"
+            f"Engine: GA | genome=electronics | scenario={name} | tool={tool_name} "
+            f"| pop={args.population} gens={args.generations} seed={effective_seed}"
         )
         # Thread the scenario's true genome size into the engine so the
         # printed config is truthful instead of the numeric default (16):
@@ -321,13 +338,15 @@ def cmd_evolve(args) -> int:
         except Exception:
             pass
 
-        result = greedy_run_report(
-            scenario.sources,
-            scenario.target_file,
-            evaluator,
+        from .strategies import get_search_strategy
+        strategy = get_search_strategy(
+            "greedy",
+            sources=scenario.sources,
+            target_file=scenario.target_file,
             scenario_name=scenario.name,
             max_evals=args.max_evals,
         )
+        result = strategy.search(evaluator)
 
     if getattr(args, "llm", None) and not _hit(result, args.target):
         bi = result.get("best_individual") or {}
