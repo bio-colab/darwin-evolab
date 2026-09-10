@@ -197,18 +197,14 @@ class NGSpiceBridge:
     """Subprocess interface to ngspice for analog parameter sizing and transient simulation."""
 
     def __init__(self, ngspice_path: str | None = None) -> None:
-        extra: list[Path] = []
-        # tools/ngspice is an ELF binary; do not probe on Windows
-        if os.name != "nt":
-            extra.append(Path(__file__).resolve().parents[1] / "tools" / "ngspice")
-
+        env_path = os.environ.get("NGSPICE_PATH")
         candidates = [
             ngspice_path,
+            env_path,
             shutil.which("ngspice_con"),
             shutil.which("ngspice"),
             shutil.which("ngspice.EXE"),
             shutil.which("ngspice.exe"),
-            *(str(p) for p in extra if p.exists()),
         ]
 
         if os.name == "nt":

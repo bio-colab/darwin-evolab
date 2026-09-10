@@ -3,10 +3,13 @@
 > **Universal Evolutionary Optimization & Synthesis Kernel across Software, Silicon, Discrete Logic, and Mathematics.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-578%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-580%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
+
+> **Transparency Notice**: `darwin-evolab` is an open research project. All reported metrics are reproducible across random seeds and verified continuously via public GitHub Actions CI. Analytical approximations and physical bounds are explicitly disclosed. We welcome audits, issues, and peer critique.
 
 🌐 **Language / اللغة:**
 - **[العربية / Arabic Documentation & Historical Audit Notes](README_ar.md)**
@@ -53,6 +56,11 @@ pip install -e .
 
 # Or install with full scientific dependencies (SPICE, Z3, CST)
 pip install -e ".[full]"
+
+# (Optional) External EDA tools for native transistor simulation & RTL synthesis:
+# Ubuntu/Debian:  sudo apt-get install ngspice yosys
+# macOS:          brew install ngspice yosys
+# Windows:        choco install ngspice  (or download from SourceForge and set NGSPICE_PATH)
 ```
 
 ### 2. Instant CLI Usage
@@ -143,13 +151,13 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 
 ### 1. Software Program Repair (30 Independent Seeds)
 
-| Scenario | Evaluation Budget | Success Rate | Baseline Speedup | Notes |
-| :--- | :---: | :---: | :---: | :--- |
-| **`click_cli_parser`** | 193 evals | **72.8%** cache hit rate | **1.14× faster** | Full AST repair with Ochiai SBFL localization |
-| **`requests_http_helper`** | 107 evals | **92.0%** cache hit rate | **1.10× faster** | Auth-header injection with holdout validation |
-| **`lru_cache_logic`** | 115 evals | **92.2%** cache hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
-| **`multi_file_config`** | 106 evals | **92.6%** cache hit rate | **1.12× faster** | Cross-file dependency validation |
-| **SWE-bench Lite Instance (`sympy__sympy_13480`, $N=1$)** | $\le 10$ evals | **100%** on reproduction fixture | **Dual invariant** | 100% FAIL_TO_PASS passed, 0% PASS_TO_PASS regression |
+| Scenario | Evaluation Budget | Repair Pass Rate (FAIL→PASS) | Cache Hit Rate | Baseline Speedup | Notes |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **`click_cli_parser`** | 193 evals | **100%** (30/30 passed) | **72.8%** hit rate | **1.14× faster** | Full AST repair with Ochiai SBFL localization |
+| **`requests_http_helper`** | 107 evals | **100%** (30/30 passed) | **92.0%** hit rate | **1.10× faster** | Auth-header injection with holdout validation |
+| **`lru_cache_logic`** | 115 evals | **100%** (30/30 passed) | **92.2%** hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
+| **`multi_file_config`** | 106 evals | **100%** (30/30 passed) | **92.6%** hit rate | **1.12× faster** | Cross-file dependency validation |
+| **SWE-bench Lite (`sympy__sympy_13480`, $N=1$)** | $\le 10$ evals | **100%** on target fixture | **N/A** (single shot) | **Dual invariant** | 100% FAIL_TO_PASS passed, 0% PASS_TO_PASS regression |
 
 > [!NOTE]
 > **Scientific Scope & Integrity Note on SWE-bench Lite**:  

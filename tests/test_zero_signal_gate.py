@@ -277,7 +277,10 @@ def test_engine_run_with_zero_signal_store_matches_control_history():
             if hasattr(wired, "close"):
                 wired.close()
 
-    assert histories["off"] == histories["on"]
+    def _strip_timing(h):
+        return [{k: v for k, v in entry.items() if k != "gen_duration_ms"} for entry in h]
+
+    assert _strip_timing(histories["off"]) == _strip_timing(histories["on"])
 
 
 def test_gate_never_blocks_real_signal_in_engine_run():

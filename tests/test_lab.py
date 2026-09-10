@@ -894,7 +894,7 @@ def test_a15_canonical_digest_api_matches_cli(tmp_path):
     def canonical(payload: dict) -> str:
         def norm(x):
             if isinstance(x, dict):
-                return {k: norm(v) for k, v in sorted(x.items()) if k != "timestamp_utc"}
+                return {k: norm(v) for k, v in sorted(x.items()) if k not in ("timestamp_utc", "gen_duration_ms")}
             if isinstance(x, list):
                 return [norm(v) for v in x]
             if isinstance(x, bool):

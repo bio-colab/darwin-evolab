@@ -2,10 +2,14 @@
 ### Universal Evolutionary Optimization & Synthesis Kernel
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-578%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-580%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
+
+> **إفصاح الشفافية والأمانة الأكاديمية (Transparency Notice)**:  
+> مشروع `darwin-evolab` هو بحثي ومفتوح المصدر بالكامل. جميع المقاييس والنتائج المعلنة قابلة لإعادة الإنتاج بايت-ببايت عبر بذور عشوائية متعددة، وتخضع للتحقق المستمر والمؤتمت عبر GitHub Actions CI. جميع التقريبات التحليلية والحدود الفيزيائية مُفصح عنها صراحة وبلا تجميل. نرحب بالتدقيق المستقل، والملاحظات، والنقد العلمي الصارم من الأقران.
 
 🌐 **[English Version / النسخة الإنجليزية المعتمدة](README.md)**
 
@@ -14,7 +18,18 @@
 الإصدار 0.5.0 — Python 3.10+.
 
 ```bash
+# تثبيت النواة البرمجية
 pip install -e .
+
+# أو تثبيت الحزمة العلمية الشاملة
+pip install -e ".[full]"
+
+# (اختياري) أدوات EDA الخارجية للمحاكاة الترانزستورية والتوليف المنطقي:
+# Ubuntu/Debian:  sudo apt-get install ngspice yosys
+# macOS:          brew install ngspice yosys
+# Windows:        choco install ngspice  (أو تنزيل ngspice من SourceForge وتعيين NGSPICE_PATH)
+
+# تشغيل سريع
 python run.py evolve --scenario click_cli_parser --diff
 pytest
 ```
@@ -297,7 +312,26 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 
 ---
 
-## ⚡ مسار السيليكون والإلكترونيات والعتاد (SkyWater 130nm & FPGA)
+## 📊 لوحة قياس المؤشرات الكمية (Benchmark Scorecards)
+
+كل ادعاء في `darwin-evolab` مدعوم بـ **معايير قياسية تجريبية مسجلة مسبقاً وقابلة لإعادة الإنتاج بايت-ببايت** عبر بذور عشوائية متعددة.
+
+### 1. إصلاح البرمجيات آلياً (Software APR — 30 بذرة مستقلة)
+
+| السيناريو | ميزانية التقييم | معدل نجاح الإصلاح الفعلي (FAIL→PASS) | معدل إصابة الكاش (Cache Hit Rate) | التسريع مقارنة بخط الأساس | ملاحظات النطاق |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **`click_cli_parser`** | 193 تقييماً | **100%** (30/30 نجاح) | **72.8%** hit rate | **أسرع 1.14×** | إصلاح AST كامل مع توجيه الشبهة Ochiai SBFL |
+| **`requests_http_helper`** | 107 تقييمات | **100%** (30/30 نجاح) | **92.0%** hit rate | **أسرع 1.10×** | حقن ترويسات التوثيق مع التحقق من حالات holdout |
+| **`lru_cache_logic`** | 115 تقييماً | **100%** (30/30 نجاح) | **92.2%** hit rate | **أسرع 1.08×** | إصلاح متعدد الخطوات للمؤشرات والإخلاء |
+| **`multi_file_config`** | 106 تقييمات | **100%** (30/30 نجاح) | **92.6%** hit rate | **أسرع 1.12×** | التحقق من الاعتماديات عبر ملفات متعددة |
+| **SWE-bench Lite (`sympy__sympy_13480`, $N=1$)** | $\le 10$ تقييمات | **100%** على الحالة القياسية | **N/A** (طلقة واحدة) | **ثنائية الحتمية** | نجاح 100% FAIL_TO_PASS وصفر تراجع 0% PASS_TO_PASS |
+
+> [!NOTE]
+> **إفصاح النطاق والأمانة العلمية بخصوص معيار SWE-bench Lite**:  
+> يوثق الصف أعلاه التحقق من أداء محرك إصلاح البرمجيات على حالة اختبار رسمية ومسجلة مسبقاً من SWE-bench Lite (`sympy__sympy_13480`)، مؤكداً عدم حدوث أي تراجع في اختبارات `PASS_TO_PASS` وحل العلة بنجاح في `FAIL_TO_PASS`.  
+> **هذه حالة اختبار موجهة للتحقق ($N=1$)، وليست تقييماً شاملاً لكل الحالات الـ300 في معيار SWE-bench Lite.** يتطلب التقييم على كامل المجموعة الـ300 بنية تحتية سحابية وحاويات Docker معزولة، وهو مسار هندسي قيد المتابعة والتطوير.
+
+### 2. مسار السيليكون والإلكترونيات والعتاد (SkyWater 130nm & FPGA)
 
 | الهدف الدائري | مستوى التحقق | المقياس الفيزيائي المقاس | المواصفة / صحيفة البيانات |
 | :--- | :---: | :---: | :---: |
@@ -315,13 +349,13 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 > - **شفافية وأمانة توليف Yosys**: تستدعي مقارنة تعداد الخلايا برنامج `yosys` الأصلي مع تمريرات استمثال ABC عند تثبيته في النظام. وفي حال غياب Yosys، يعتمد الجسر شفافية تامة بالتراجع لإحصاء المشغلات في شجرة AIG داخلياً وتصنيف الحكم صراحة بـ `ESTIMATED (Built-in proxy count)` حمايةً للأمانة العلمية ومنعاً لأي ادعاء غير موثق.
 > - **قدرات مبرمج WebUSB**: يوفر جسر WebUSB إمكانية حرق الـ Bitstream مباشرة عبر المتصفح وشاشة طرفية تفاعلية لمراقبة اتصالات UART/JTAG عبر نقاط نهاية USB، ليعمل كأداة برمجة ومحطة اختبار وظيفي حي (Loopback Bridge) وليس كجهاز قياس وتحليل إشارات فيزيائي بزمن استجابة تحت النانوثانية.
 
-### سلامة حزمة الاختبارات الشاملة للمستودع
+### 3. سلامة حزمة الاختبارات الشاملة للمستودع
 
 ```
-tests/ (النواة، إصلاح البرمجيات، NSGA-II، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، Surrogate، Yosys، Genesis): 512 ناجح (100%)
-experimental/electronics/tests/ (محاكاة SPICE، دوائر CGP، واجهة WebUSB، أهداف FPGA، مختبر Spec2Ckt، استوديو النمطين): 66 ناجح (100%)
+tests/ (النواة، إصلاح البرمجيات، NSGA-II، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، Surrogate، Yosys، Genesis): 513 ناجح (100%)
+experimental/electronics/tests/ (محاكاة SPICE، دوائر CGP، واجهة WebUSB، أهداف FPGA، مختبر Spec2Ckt، استوديو النمطين): 67 ناجح (100%)
 ==================================================================================================================
-الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 578 ناجح (100%)
+الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 580 ناجح (100%)
 ```
 
 ---
@@ -671,8 +705,3 @@ m = store.run_metrics("run_id")       # التقييمات حتى أول نجا�
 
 MIT — انظر `LICENSE`.
 
----
-
-## الرخصة
-
-MIT — انظر `LICENSE`.

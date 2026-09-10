@@ -137,8 +137,10 @@ def test_groq_client_execution():
         assert "GROQ_API_KEY is not set" in resp.error_message
     else:
         resp = client.complete("Return the single word: OK")
-        if not resp.success and ("401" in str(resp.error_message) or "Unauthorized" in str(resp.error_message)):
-            pytest.skip("GROQ_API_KEY in environment is invalid or unauthorized")
+        if not resp.success:
+            err = str(resp.error_message).lower()
+            if any(term in err for term in ("401", "unauthorized", "timed out", "timeout", "connection", "429")):
+                pytest.skip(f"Groq API live call skipped due to environment/network condition: {resp.error_message}")
         assert resp.success is True
         assert len(resp.content) > 0
 
