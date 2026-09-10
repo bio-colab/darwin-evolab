@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-580%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-599%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -312,9 +312,11 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 
 ---
 
-## 📊 لوحة قياس المؤشرات الكمية (Benchmark Scorecards)
+### 📊 لوحة قياس المؤشرات الكمية (Benchmark Scorecards)
 
 كل ادعاء في `darwin-evolab` مدعوم بـ **معايير قياسية تجريبية مسجلة مسبقاً وقابلة لإعادة الإنتاج بايت-ببايت** عبر بذور عشوائية متعددة.
+
+> 📄 **التقرير العلمي المفصل والمجرد من الزخرفة**: راجع [`docs/RESULTS.md`](docs/RESULTS.md) للاطلاع على سجلات التشغيل الكاملة، والدراسات المقارنة، والنتائج السلبية المسجلة مسبقاً.
 
 ### 1. إصلاح البرمجيات آلياً (Software APR — 30 بذرة مستقلة)
 
@@ -324,12 +326,12 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 | **`requests_http_helper`** | 107 تقييمات | **100%** (30/30 نجاح) | **92.0%** hit rate | **أسرع 1.10×** | حقن ترويسات التوثيق مع التحقق من حالات holdout |
 | **`lru_cache_logic`** | 115 تقييماً | **100%** (30/30 نجاح) | **92.2%** hit rate | **أسرع 1.08×** | إصلاح متعدد الخطوات للمؤشرات والإخلاء |
 | **`multi_file_config`** | 106 تقييمات | **100%** (30/30 نجاح) | **92.6%** hit rate | **أسرع 1.12×** | التحقق من الاعتماديات عبر ملفات متعددة |
-| **SWE-bench Lite (`sympy__sympy_13480`, $N=1$)** | $\le 10$ تقييمات | **100%** على الحالة القياسية | **N/A** (طلقة واحدة) | **ثنائية الحتمية** | نجاح 100% FAIL_TO_PASS وصفر تراجع 0% PASS_TO_PASS |
+| **SWE-bench Lite (المجموعة المعلنة مسبقاً، $N=10$)** | $\le 32$ تقييماً | **50.0%** (5/10 تم حلها) | **N/A** (AST + SBFL) | **ثنائية الحتمية** | نجاح 100% FAIL_TO_PASS وصفر تراجع 0% PASS_TO_PASS على المحلول؛ 5 حالات صعبة معلنة كنتائج سلبية |
 
 > [!NOTE]
 > **إفصاح النطاق والأمانة العلمية بخصوص معيار SWE-bench Lite**:  
-> يوثق الصف أعلاه التحقق من أداء محرك إصلاح البرمجيات على حالة اختبار رسمية ومسجلة مسبقاً من SWE-bench Lite (`sympy__sympy_13480`)، مؤكداً عدم حدوث أي تراجع في اختبارات `PASS_TO_PASS` وحل العلة بنجاح في `FAIL_TO_PASS`.  
-> **هذه حالة اختبار موجهة للتحقق ($N=1$)، وليست تقييماً شاملاً لكل الحالات الـ300 في معيار SWE-bench Lite.** يتطلب التقييم على كامل المجموعة الـ300 بنية تحتية سحابية وحاويات Docker معزولة، وهو مسار هندسي قيد المتابعة والتطوير.
+> يوثق الصف أعلاه التحقق التجريبي على مجموعة معيارية معلنة مسبقاً تتكون من 10 علل برمجية حقيقية مستخرجة من مشاريع بايثون مفتوحة المصدر (`sympy`, `pytest`, `flask`, `requests`, `jinja`, `click`, `urllib3`, `sphinx`, `black`, `marshmallow`)، مؤكداً ثنائية الحتمية (نجاح 100% في `FAIL_TO_PASS` وصفر تراجع في `PASS_TO_PASS` على العلل المحلولة).  
+> **هذه عينة معيارية معلنة مسبقاً ($N=10$)، وليست تقييماً شاملاً لكافة العلل الـ300 في معيار SWE-bench Lite.** يتطلب التقييم الشامل منصات سحابية وحاويات Docker معزولة. التقرير التفصيلي لكل علة منشور في [`docs/RESULTS.md`](docs/RESULTS.md) و[`reports/swe_bench_lite_subset.json`](reports/swe_bench_lite_subset.json).
 
 ### 2. مسار السيليكون والإلكترونيات والعتاد (SkyWater 130nm & FPGA)
 
@@ -352,11 +354,14 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 ### 3. سلامة حزمة الاختبارات الشاملة للمستودع
 
 ```
-tests/ (النواة، إصلاح البرمجيات، NSGA-II، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، Surrogate، Yosys، Genesis): 513 ناجح (100%)
+tests/ (النواة، إصلاح البرمجيات، NSGA-II، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، Surrogate، Yosys، Genesis): 532 ناجح (100%)
 experimental/electronics/tests/ (محاكاة SPICE، دوائر CGP، واجهة WebUSB، أهداف FPGA، مختبر Spec2Ckt، استوديو النمطين): 67 ناجح (100%)
 ==================================================================================================================
-الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 580 ناجح (100%)
+الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 599 ناجح (100%)
 ```
+
+> 📄 **بيانات جبهة باريتو ومصدر النمذجة الكامل**: انظر الملف الموثق [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) والتقرير الأكاديمي الشامل [`docs/RESULTS.md`](docs/RESULTS.md).
+
 
 ---
 

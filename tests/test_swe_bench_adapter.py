@@ -147,3 +147,22 @@ def test_cli_swe_bench_execution(tmp_path):
     content = patch_out.read_text(encoding="utf-8")
     assert "if val >= 0.0:" in content
 
+
+def test_swe_bench_subset_benchmark_execution(tmp_path):
+    from scripts.run_swe_bench_subset import run_benchmark_subset
+    out_json = tmp_path / "subset_report.json"
+    report = run_benchmark_subset(output_report_path=out_json, max_evals=16)
+
+    assert out_json.is_file()
+    assert report["total_instances"] == 10
+    assert report["resolved_count"] >= 5
+    assert report["pass_rate_percent"] >= 50.0
+    assert len(report["instances"]) == 10
+
+    # Verify that resolved instances satisfy dual invariant
+    for inst in report["instances"]:
+        if inst["resolved"]:
+            assert inst["fail_to_pass_passed"] is True
+            assert inst["pass_to_pass_clean"] is True
+
+

@@ -198,11 +198,11 @@ def extract_workbench_context(
             "FF": {"gain_db": ff_metrics.gain_db, "gbw_mhz": ff_metrics.gbw_mhz, "pm_deg": ff_metrics.pm_deg, "power_uw": ff_metrics.power_uw},
         },
         "pareto_solutions": [
-            {"id": "Sol-A", "label": "High Stability", "gain_db": 94.5, "gbw_mhz": 11.7, "pm_deg": 71.1, "power_uw": 281.6, "w1": 16.8, "l1": 0.36, "w6": 42.1, "cc": 3.3, "ibias": 14.3},
-            {"id": "Sol-B", "label": "High Speed", "gain_db": 89.2, "gbw_mhz": 14.3, "pm_deg": 63.7, "power_uw": 476.9, "w1": 22.4, "l1": 0.36, "w6": 58.2, "cc": 4.0, "ibias": 20.4},
-            {"id": "Sol-C", "label": "Balanced", "gain_db": 94.0, "gbw_mhz": 12.1, "pm_deg": 63.1, "power_uw": 288.0, "w1": 18.5, "l1": 0.36, "w6": 48.0, "cc": 3.5, "ibias": 20.0},
-            {"id": "Sol-D", "label": "Ultra-Low-Power", "gain_db": 103.0, "gbw_mhz": 26.8, "pm_deg": 50.9, "power_uw": 228.1, "w1": 14.2, "l1": 0.36, "w6": 36.5, "cc": 3.5, "ibias": 18.0},
-            {"id": "Sol-E", "label": "Maximum Gain", "gain_db": 104.4, "gbw_mhz": 16.4, "pm_deg": 48.8, "power_uw": 244.1, "w1": 12.1, "l1": 0.36, "w6": 32.0, "cc": 3.6, "ibias": 25.7},
+            {"id": "Sol-A", "label": "High Stability", "gain_db": 94.5, "gbw_mhz": 11.7, "pm_deg": 71.1, "power_uw": 281.6, "w1": 16.8, "l1": 0.36, "w6": 42.1, "cc": 3.3, "ibias": 14.3, "model": "level1_square_law_cmos", "uncertainty": "±6-10 dB vs BSIM4", "physical_claim": False},
+            {"id": "Sol-B", "label": "High Speed", "gain_db": 89.2, "gbw_mhz": 14.3, "pm_deg": 63.7, "power_uw": 476.9, "w1": 22.4, "l1": 0.36, "w6": 58.2, "cc": 4.0, "ibias": 20.4, "model": "level1_square_law_cmos", "uncertainty": "±6-10 dB vs BSIM4", "physical_claim": False},
+            {"id": "Sol-C", "label": "Balanced", "gain_db": 94.0, "gbw_mhz": 12.1, "pm_deg": 63.1, "power_uw": 288.0, "w1": 18.5, "l1": 0.36, "w6": 48.0, "cc": 3.5, "ibias": 20.0, "model": "level1_square_law_cmos", "uncertainty": "±6-10 dB vs BSIM4", "physical_claim": False},
+            {"id": "Sol-D", "label": "Ultra-Low-Power", "gain_db": 103.0, "gbw_mhz": 26.8, "pm_deg": 50.9, "power_uw": 228.1, "w1": 14.2, "l1": 0.36, "w6": 36.5, "cc": 3.5, "ibias": 18.0, "model": "level1_square_law_cmos", "uncertainty": "±6-10 dB vs BSIM4", "physical_claim": False},
+            {"id": "Sol-E", "label": "Maximum Gain", "gain_db": 104.4, "gbw_mhz": 16.4, "pm_deg": 48.8, "power_uw": 244.1, "w1": 12.1, "l1": 0.36, "w6": 32.0, "cc": 3.6, "ibias": 25.7, "model": "level1_square_law_cmos", "uncertainty": "±6-10 dB vs BSIM4", "physical_claim": False},
         ],
         "modular_blocks": {
             "diff_pair": {"name": "Differential Input Pair", "topology": mod_circuit.diff_pair.topology.value, "transistors": "M1, M2", "type": "NMOS", "w_um": analog_sizing.w1_um, "l_um": analog_sizing.l1_um},

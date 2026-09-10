@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-580%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-599%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -107,6 +107,11 @@ Differential Voltage Gain (dB)
 | **Sol-D (Ultra-Low-Power)**| **103.0 dB** | 26.8 MHz | $50.9^\circ$ | **228.1 µW** | $W_1=14.2\mu\text{m}, W_6=36.5\mu\text{m}, C_c=3.5\text{pF}, I_{\text{bias}}=18.0\mu\text{A}$ |
 | **Sol-E (Maximum Gain)** | **104.4 dB** | 16.4 MHz | $48.8^\circ$ | **244.1 µW** | $W_1=12.1\mu\text{m}, W_6=32.0\mu\text{m}, C_c=3.6\text{pF}, I_{\text{bias}}=25.7\mu\text{A}$ |
 
+> [!NOTE]
+> **Silicon Modeling Provenance & Accuracy Bounds**:  
+> - **Analytical Formulation**: Metrics are evaluated using CMOS Level-1 small-signal equations ($g_m = 2I_D/V_{ov}$, $r_o = V_A/I_D$, Miller pole-splitting). Small-signal gain values have an estimated $\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4 models. All analytical scores carry `physical_claim: false`.
+> - **Machine-Readable Provenance Artifact**: See [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) and [`docs/RESULTS.md`](docs/RESULTS.md) for complete breakdown.
+
 
 #### Silicon Hardware Synthesis & Interactive Web Workbench
 Synthesize a logic circuit from a Boolean equation, target a specific physical FPGA architecture, generate synthesizable Verilog + constraints, and export an interactive single-page dashboard:
@@ -149,6 +154,8 @@ python run.py evolve --engine ga --genome numeric -g 30 -p 16 -s 42
 
 Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte reproducible empirical benchmarks** across multiple random seeds.
 
+> 📄 **Detailed Unadorned Scientific Report**: See [`docs/RESULTS.md`](docs/RESULTS.md) for full telemetry, ablation studies, and pre-registered negative empirical results.
+
 ### 1. Software Program Repair (30 Independent Seeds)
 
 | Scenario | Evaluation Budget | Repair Pass Rate (FAIL→PASS) | Cache Hit Rate | Baseline Speedup | Notes |
@@ -157,12 +164,12 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 | **`requests_http_helper`** | 107 evals | **100%** (30/30 passed) | **92.0%** hit rate | **1.10× faster** | Auth-header injection with holdout validation |
 | **`lru_cache_logic`** | 115 evals | **100%** (30/30 passed) | **92.2%** hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
 | **`multi_file_config`** | 106 evals | **100%** (30/30 passed) | **92.6%** hit rate | **1.12× faster** | Cross-file dependency validation |
-| **SWE-bench Lite (`sympy__sympy_13480`, $N=1$)** | $\le 10$ evals | **100%** on target fixture | **N/A** (single shot) | **Dual invariant** | 100% FAIL_TO_PASS passed, 0% PASS_TO_PASS regression |
+| **SWE-bench Lite (Pre-registered subset, $N=10$)** | $\le 32$ evals | **50.0%** (5/10 resolved) | **N/A** (AST + SBFL) | **Dual invariant** | 100% FAIL_TO_PASS passed, 0% PASS_TO_PASS regression on resolved set; 5 honest hard unresolved cases |
 
 > [!NOTE]
 > **Scientific Scope & Integrity Note on SWE-bench Lite**:  
-> The row above validates the automated program repair driver on an official pre-registered SWE-bench Lite reproduction fixture (`sympy__sympy_13480`), confirming zero regressions on `PASS_TO_PASS` test suites and clean resolution on `FAIL_TO_PASS`.  
-> **This is a targeted reproduction fixture ($N=1$), NOT a full evaluation across all 300 instances of the SWE-bench Lite benchmark.** Full dataset evaluation across the complete 300-instance set requires large-scale containerized evaluation harnesses and is tracked as an ongoing engineering effort.
+> The row above reports empirical evaluation on an official pre-registered SWE-bench Lite subset of 10 real-world issue instances (`sympy`, `pytest`, `flask`, `requests`, `jinja`, `click`, `urllib3`, `sphinx`, `black`, `marshmallow`), confirming dual-invariant enforcement (100% pass on `FAIL_TO_PASS` and 0% regression on `PASS_TO_PASS` across resolved issues).  
+> **This is an evaluated 10-instance pre-registered benchmark subset ($N=10$), NOT a full evaluation across all 300 instances of SWE-bench Lite.** The complete dataset requires containerized execution harnesses. Full instance-by-instance breakdown is published in [`docs/RESULTS.md`](docs/RESULTS.md) and [`reports/swe_bench_lite_subset.json`](reports/swe_bench_lite_subset.json).
 
 
 ### 2. Silicon Physics & Hardware Metrics (SkyWater 130nm & FPGA)
@@ -186,10 +193,10 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 ### 3. Repository-Wide Test Health
 
 ```
-tests/ (Core, APR, NSGA-II, SWE-bench, Math, Vectorized, Sky130, OpAmp, Surrogate, Yosys, Genesis, Distilled EDA) : 512 passed (100%)
-experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab, Dual-Mode Studio)            :  66 passed (100%)
+tests/ (Core, APR, NSGA-II, SWE-bench, Math, Vectorized, Sky130, OpAmp, Surrogate, Yosys, Genesis, Distilled EDA) : 532 passed (100%)
+experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab, Dual-Mode Studio)            :  67 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                                        : 578 passed (100%)
+Total Automated Test Suite                                                                                        : 599 passed (100%)
 ```
 
 ---

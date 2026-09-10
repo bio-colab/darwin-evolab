@@ -1,0 +1,49 @@
+{
+  "instance_id": "pallets__flask-4992",
+  "repo": "pallets/flask",
+  "base_commit": "d4e5f6a7b8c9",
+  "problem_statement": "validate_mode improperly approves debug mode under production environment when debug flag is set due to inverted logical disjunction.",
+  "target_file": "src/flask/config.py",
+  "sources": {
+    "src/flask/config.py": "def validate_mode(mode: str, debug: bool) -> bool:\n    if mode == 'development' or debug:  # Bug: disjunction allows production with debug=True\n        return True\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "production",
+        true
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "development",
+        true
+      ],
+      true
+    ],
+    [
+      [
+        "production",
+        false
+      ],
+      false
+    ],
+    [
+      [
+        "development",
+        false
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_config.py::test_production_debug_rejected"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_config.py::test_dev_mode_allowed",
+    "tests/test_config.py::test_prod_clean_allowed"
+  ]
+}

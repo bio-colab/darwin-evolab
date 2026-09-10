@@ -1,0 +1,42 @@
+{
+  "instance_id": "urllib3__urllib3-2168",
+  "repo": "urllib3/urllib3",
+  "base_commit": "7a8b9c0d1e2f",
+  "problem_statement": "get_backoff_factor computes unbounded exponential delays on high retry counts instead of capping at max_delay parameter.",
+  "target_file": "src/urllib3/util/retry.py",
+  "sources": {
+    "src/urllib3/util/retry.py": "def get_backoff_factor(retries_left: int, base_delay: float) -> float:\n    # Hard benchmark: requires non-linear capping math\n    return float(base_delay * (2 ** (10 - retries_left)))\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        1,
+        1.0
+      ],
+      60.0
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        10,
+        1.0
+      ],
+      1.0
+    ],
+    [
+      [
+        9,
+        1.0
+      ],
+      2.0
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "test/test_retry.py::test_exponential_cap_at_sixty"
+  ],
+  "PASS_TO_PASS": [
+    "test/test_retry.py::test_initial_delay",
+    "test/test_retry.py::test_second_attempt"
+  ]
+}

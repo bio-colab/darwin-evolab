@@ -1,0 +1,133 @@
+{
+  "benchmark_suite": "SWE-bench Lite Pre-Registered Industrial Subset",
+  "benchmark_version": "1.0",
+  "timestamp_utc": "2026-09-10T16:33:36Z",
+  "total_instances": 10,
+  "resolved_count": 5,
+  "pass_rate_percent": 50.0,
+  "max_evals_budget": 32,
+  "total_evaluations_consumed": 50,
+  "total_runtime_seconds": 0.162,
+  "instances": [
+    {
+      "instance_id": "marshmallow-code__marshmallow-1343",
+      "repo": "marshmallow-code/marshmallow",
+      "problem_statement": "parse_poly_field fails to resolve polymorphic child schemas when type key is nested within metadata dictionary.",
+      "target_file": "src/marshmallow/fields.py",
+      "resolved": false,
+      "fail_to_pass_passed": false,
+      "pass_to_pass_clean": false,
+      "evaluations_used": 1,
+      "execution_time_seconds": 0.005,
+      "patch_preview": ""
+    },
+    {
+      "instance_id": "pallets__click-1608",
+      "repo": "pallets/click",
+      "problem_statement": "calculate_split_index introduces an off-by-one arithmetic error in pagination slicing.",
+      "target_file": "src/click/core.py",
+      "resolved": false,
+      "fail_to_pass_passed": true,
+      "pass_to_pass_clean": false,
+      "evaluations_used": 19,
+      "execution_time_seconds": 0.027,
+      "patch_preview": "From: darwin-evolab <repair@evolab.local>\nDate: Thu, 10 Sep 2026 16:33:36 +0000\nSubject: [PATCH] fix: automated repair by darwin-evolab\n\n---\n 1 file(s) changed\n\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -1,4 +1,4 @@\n def calculate_split_index(total_len: int, step: int) -> int:\n     if step "
+    },
+    {
+      "instance_id": "pallets__flask-4992",
+      "repo": "pallets/flask",
+      "problem_statement": "validate_mode improperly approves debug mode under production environment when debug flag is set due to inverted logical disjunction.",
+      "target_file": "src/flask/config.py",
+      "resolved": true,
+      "fail_to_pass_passed": true,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 5,
+      "execution_time_seconds": 0.008,
+      "patch_preview": "From: darwin-evolab <repair@evolab.local>\nDate: Thu, 10 Sep 2026 16:33:36 +0000\nSubject: [PATCH] fix: automated repair by darwin-evolab\n\n---\n 1 file(s) changed\n\n--- a/src/flask/config.py\n+++ b/src/flask/config.py\n@@ -1,4 +1,4 @@\n def validate_mode(mode: str, debug: bool) -> bool:\n-    if mode == 'de"
+    },
+    {
+      "instance_id": "pallets__jinja-1155",
+      "repo": "pallets/jinja",
+      "problem_statement": "filter_sequence boundary comparator inclusively admits boundary values when strict inequality was required by template specification.",
+      "target_file": "src/jinja2/filters.py",
+      "resolved": true,
+      "fail_to_pass_passed": true,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 3,
+      "execution_time_seconds": 0.006,
+      "patch_preview": "From: darwin-evolab <repair@evolab.local>\nDate: Thu, 10 Sep 2026 16:33:36 +0000\nSubject: [PATCH] fix: automated repair by darwin-evolab\n\n---\n 1 file(s) changed\n\n--- a/src/jinja2/filters.py\n+++ b/src/jinja2/filters.py\n@@ -1,2 +1,2 @@\n def filter_sequence(items: list[int], threshold: int) -> list[int]"
+    },
+    {
+      "instance_id": "psf__black-2964",
+      "repo": "psf/black",
+      "problem_statement": "format_bracket_line mishandles trailing comma placement across split parenthesis hierarchies.",
+      "target_file": "src/black/linegen.py",
+      "resolved": false,
+      "fail_to_pass_passed": false,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 2,
+      "execution_time_seconds": 0.003,
+      "patch_preview": ""
+    },
+    {
+      "instance_id": "psf__requests-3367",
+      "repo": "psf/requests",
+      "problem_statement": "should_bypass_proxies fails to handle None proxy bypass string properly due to an inverted None check.",
+      "target_file": "requests/utils.py",
+      "resolved": true,
+      "fail_to_pass_passed": true,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 4,
+      "execution_time_seconds": 0.009,
+      "patch_preview": "From: darwin-evolab <repair@evolab.local>\nDate: Thu, 10 Sep 2026 16:33:36 +0000\nSubject: [PATCH] fix: automated repair by darwin-evolab\n\n---\n 1 file(s) changed\n\n--- a/requests/utils.py\n+++ b/requests/utils.py\n@@ -1,4 +1,4 @@\n def should_bypass_proxies(url: str, no_proxy: str | None) -> bool:\n-    if"
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5227",
+      "repo": "pytest-dev/pytest",
+      "problem_statement": "logging default level in CLI output handler incorrectly overrides user-specified custom level due to an inverted boolean check in level resolution.",
+      "target_file": "_pytest/logging.py",
+      "resolved": true,
+      "fail_to_pass_passed": true,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 4,
+      "execution_time_seconds": 0.005,
+      "patch_preview": "From: darwin-evolab <repair@evolab.local>\nDate: Thu, 10 Sep 2026 16:33:36 +0000\nSubject: [PATCH] fix: automated repair by darwin-evolab\n\n---\n 1 file(s) changed\n\n--- a/_pytest/logging.py\n+++ b/_pytest/logging.py\n@@ -1,5 +1,4 @@\n def resolve_log_level(explicit_level: int, is_custom: bool) -> int:\n-   "
+    },
+    {
+      "instance_id": "sphinx-doc__sphinx-8721",
+      "repo": "sphinx-doc/sphinx",
+      "problem_statement": "make_viewcode_anchor generates invalid XHTML anchor names when tags contain hierarchical colon syntax, requiring string normalization pass.",
+      "target_file": "sphinx/ext/viewcode.py",
+      "resolved": false,
+      "fail_to_pass_passed": false,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 2,
+      "execution_time_seconds": 0.003,
+      "patch_preview": ""
+    },
+    {
+      "instance_id": "sympy__sympy-13480",
+      "repo": "sympy/sympy",
+      "problem_statement": "coth(log(tan(x))) evaluation error when x is on the boundary. The substitution condition was checking x > 0 instead of x >= 0, producing NaN for zero-index boundary evaluation.",
+      "target_file": "sympy/functions/elementary/hyperbolic.py",
+      "resolved": true,
+      "fail_to_pass_passed": true,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 3,
+      "execution_time_seconds": 0.006,
+      "patch_preview": "From: darwin-evolab <repair@evolab.local>\nDate: Thu, 10 Sep 2026 16:33:36 +0000\nSubject: [PATCH] fix: automated repair by darwin-evolab\n\n---\n 1 file(s) changed\n\n--- a/sympy/functions/elementary/hyperbolic.py\n+++ b/sympy/functions/elementary/hyperbolic.py\n@@ -1,5 +1,4 @@\n def eval_coth_arg(val: float"
+    },
+    {
+      "instance_id": "urllib3__urllib3-2168",
+      "repo": "urllib3/urllib3",
+      "problem_statement": "get_backoff_factor computes unbounded exponential delays on high retry counts instead of capping at max_delay parameter.",
+      "target_file": "src/urllib3/util/retry.py",
+      "resolved": false,
+      "fail_to_pass_passed": false,
+      "pass_to_pass_clean": true,
+      "evaluations_used": 7,
+      "execution_time_seconds": 0.013,
+      "patch_preview": ""
+    }
+  ]
+}
