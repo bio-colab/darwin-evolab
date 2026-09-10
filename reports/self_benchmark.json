@@ -1,0 +1,80 @@
+{
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "numeric": {
+    "baseline": [
+      81.09,
+      78.13,
+      83.72,
+      83.57,
+      86.01
+    ],
+    "candidate": [
+      81.09,
+      78.13,
+      83.72,
+      83.57,
+      86.01
+    ],
+    "mean_b": 82.504,
+    "mean_c": 82.504
+  },
+  "code_capability": {
+    "passes": {
+      "click_cli_parser": {
+        "pass": true,
+        "fitness": 100.0,
+        "holdout": true
+      },
+      "requests_http_helper": {
+        "pass": true,
+        "fitness": 100.0,
+        "holdout": true
+      },
+      "lru_cache_logic": {
+        "pass": true,
+        "fitness": 100.0,
+        "holdout": true
+      },
+      "multi_file_config": {
+        "pass": true,
+        "fitness": 100.0,
+        "holdout": true
+      }
+    },
+    "pass_rate": 1.0,
+    "ci_low": 0.5101,
+    "ci_high": 1.0
+  },
+  "self_report": {
+    "capability": {
+      "numeric_ga_mean": 82.5,
+      "code_apr_pass_rate": 1.0
+    },
+    "weakness": "long-horizon numeric search",
+    "intervention": "meta_mode=directed",
+    "confidence": 1.0
+  },
+  "governor_verdict": {
+    "decision": "REJECT",
+    "reasons": [
+      "mean_not_improved",
+      "median_not_improved"
+    ],
+    "mean_b": 82.504,
+    "mean_c": 82.504,
+    "median_b": 83.57,
+    "median_c": 83.57,
+    "worst_b": 78.13,
+    "worst_c": 78.13,
+    "regressions": 0,
+    "delta_mean": 0.0,
+    "delta_median": 0.0
+  },
+  "proposal": "SELF-MODIFICATION PROPOSAL #1\n\nChanged: meta_mode=directed\nBaseline: mean=82.504 median=83.57 worst=78.13\nCandidate: mean=82.504 median=83.57 worst=78.13\nDelta: mean=0.0 median=0.0\nRegressions: 0\nReasons: mean_not_improved, median_not_improved\n\nDecision: REJECT"
+}

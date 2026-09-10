@@ -115,7 +115,8 @@ def build_run_report(
 
     report: dict[str, Any] = {
         "total_generations": final_gen,
-        "total_candidates_evaluated": final_gen * engine.population_size,
+        # Phase 0: honest evaluation count (raw engine evals, not nominal).
+        "total_candidates_evaluated": int(getattr(engine, "_total_evals", final_gen * engine.population_size)),
         "best_individual": _best_payload(engine, best_ever, final_gen),
         "species_distribution": {
             k: v for k, v in sorted(species_distribution.items())
@@ -179,6 +180,11 @@ def build_run_report(
             ),
         },
         "pareto_front": {
+            # Phase 0 honesty label: this is a 2-objective heuristic
+            # (fitness vs compactness) for the single-objective GA report —
+            # NOT the NSGA-II non-dominated sort (see pareto.py / NSGA2Engine).
+            "method": "heuristic_fitness_vs_compactness",
+            "is_nsga2": False,
             "objectives": ["fitness_max", "genome_compactness_max"],
             "size": len(front),
             "members": [

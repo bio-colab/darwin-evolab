@@ -610,6 +610,67 @@ m = store.run_metrics("run_id")       # التقييمات حتى أول نجا�
 
 ---
 
+## Phase 0 — إصلاح المرآة (Telemetry Truth)
+
+قبل أي نموذج ذاتي، أُصلحت القياسات التي كانت تبدو حقيقية وهي مزروعة يدوياً:
+
+- `diversity` و`gen_duration_ms` في كل جيل وفي `GenerationEvaluatedEvent` أصبحا مقاسين فعلياً (متوسط المسافة الجينومية الزوجية، وزمن الجيل بالمللي ثانية) بدل `0.0` الثابتة — `src/evolab/engine.py`.
+- `total_candidates_evaluated` أصبح عدّاد تقييمات خام (`pop × eval_repeats`) بدل الناتج الاسمي — `src/evolab/report_builder.py`.
+- `pareto_front` في تقرير `GA` موسوم صراحة `method=heuristic_fitness_vs_compactness, is_nsga2=False` وتمييزه عن `NSGA2Engine` في `pareto.py`.
+- حقن المهاجرين أُحيي فعلياً بعدما كان `immigrant_count` يُحسب ولا يُستخدم أبداً: `immigrant_fraction=0.0` هو السلوك التراثي حرفياً، و`>0` يحقن أفراداً عشوائية حتمية البذرة في الذيل مع الحفاظ على النخبة — للمسار العددي فقط، ومسار الكود لا يمسه.
+- العقود مثبتة في `tests/test_self_model_phase0_phase1.py` (البوابات P0-C1..C5).
+
+## Phase 1 — مخزن النموذج الذاتي (Self-Model، مراقبة فقط)
+
+حقائق عن النظام نفسه — لا عن المسائل — في نفس ملف المخزن وجدولين منفصلين (`self_runs`, `self_capabilities`) داخل `src/evolab/experience.py`:
+
+- الكتابة صامتة بعد كل `run` عبر `record_engine_self_run` (استراتيجية الإعداد، البذرة، الأجيال، أفضل/متوسط لياقة، التقييمات، الركود، التنوع النهائي) ولا يقرؤها أي قرار بحثي في هذه المرحلة.
+- القدرة تُعاير بنسبة نجاح مع فترة Wilson ‏(`record_capability` تُرجع `pass_rate` مع `ci_low/ci_high`) — النسبة وحدها بدون عدم اليقين تُعد وعياً زائفاً.
+- `EVOLAB_SELF=0` مفتاح قتل، وأي خلل يتحول إلى لا-عمل صامت. القراءة عبر `self_summary()`.
+- العقود مثبتة في `tests/test_self_model_phase0_phase1.py` (البوابات P1-C1). أي متحكم ميتا مستقبلي يتطلب بروتوكول A/B مسجلاً يثبت `gain>0` قبل أي تفعيل.
+
+## Phase 2 — المقيّم الميتا (Meta-Evaluator، مرآة فقط)
+
+`diagnose_run(history, holdout_gap=None)` في `src/evolab/experience.py` تجيب «ماذا حدث لي؟» دون أن تأمر بشيء — دالة صرفة بلا DB ولا RNG ولا أثر بحثي:
+
+- العتبات مجمدة مسجلة مسبقاً: `diversity_low=0.05`، `plateau_gens=5`، `plateau_eps=0.01`، `std_low=0.5`، `overfit_gap=30.0`.
+- `premature_convergence` = هضبة + تنوع منهار + تشتت منخفض؛ `stagnation` = هضبة وحدها؛ `overfit_risk` = `None` بصدق عند غياب الفجوة (مجهول معلن، لا صفر مخترع).
+- التاريخ القصير (`<5` أجيال) يُرجع `insufficient_data` بدل حكم مخترع. تُرفق النتيجة في `report["extra"]["meta_evaluator"]` بعد انتهاء الحلقة — المسار ثابت قبله.
+- العقود في `tests/test_self_model_phase2_phase3.py` (البوابات P2-C1..C4).
+
+## Phase 3 — الناقد الذاتي (Self-Critic، مقاييس فقط)
+
+`self_critic_report(report)` في الملف نفسه — مقاييس عن عملية البحث لا عن المرشح:
+
+- `quality = best/100`، و`efficiency` = نقاط اللياقة المكتسبة لكل تقييم (`best-first/evals`)، و`novelty` = متوسط التنوع المقاس، و`generalization = None` عند غياب فجوة train/holdout (مجهول معلن).
+- تُرفق في `report["extra"]["self_critic"]` مع ملاحظة «مقاييس فقط». ممنوع على أي مسار بحثي التفرع عليها في هذه المرحلة — أثبت اختبارياً أن نفس البذرة تعطي نفس اللياقة مع المرآة وبدونها (`EVOLAB_SELF=0`).
+- العقود في نفس ملف الاختبار (البوابات P3-C1..C3).
+
+## Phase 4 — المتحكم الميتا (Meta-Controller، opt-in فقط)
+
+مؤثر واحد فقط — حقن مهاجرين تفاعلي — بدل سلة تدخلات غير مثبتة (`src/evolab/experience.py: meta_control_step`):
+
+- `directed` يحقن `max(1, 15% من السكان)` عند تشخيص ركود/تقارب مبكر فقط؛ `reshuffle` يحقن نفس العدد بجدول ثابت (`gen % 5 == 0`) لعزل ضجيج الحقن عن قيمة المشخّص (درس M7/M8). الجينومات الكودية لا تُمس أبداً.
+- الافتراضي مطفأ تماماً (`meta_mode=None` = التراث بايت-بايت)؛ التفعيل الصريح `meta_mode="directed"` أو `EVOLAB_META=1`. كل حقنة مسجلة في `decision_log` (`meta_controller_injection`) و`history.meta_injected`.
+- بروتوكول القياس مسجل مسبقاً في رأس `scripts/ab_meta_controller.py` (3 أذرع: control/directed/reshuffle، بذور 1..10، القبول بحكم الحاكم فقط). القياس الدخاني الحالي: directed مطابق للضابط (لا ركود يُتدخل فيه) وreshuffle أسوأ — **REJECT، والافتراضي يبقى مطفأ**.
+- العقود في `tests/test_self_model_phase4_phase5.py` (البوابات P4-C1..C3).
+
+## Phase 5 — الحاكم والمعيار الذاتي (Governor + Self-Benchmark)
+
+`govern_modification(baseline, candidate, regressions)` في الملف نفسه — دالة صرفة: `ACCEPT` iff ‏(`mean_c>mean_b` و`median_c>median_b` و`worst_c>=worst_b` و`regressions==0`)، وإلا `REJECT` معللاً. و`render_self_modification_proposal` تصدر كتلة `SELF-MODIFICATION PROPOSAL #N` الحتمية.
+
+- `scripts/self_benchmark.py` (قواعد R1..R5 في رأسه): جناح عددي (`pop=12, gens=12`، بذور 1..5، `--full` للثلاثين) + جناح APR كودي (السيناريوهات الأربعة، نجاح = `≥99.7` مع holdout، مع Wilson CI) + حكم الحاكم + `SELF REPORT`. يكتب `reports/self_benchmark.json`.
+- القياس الأول: `numeric_mean≈82.5` و`code_apr=4/4` والحكم `REJECT` — أي **لا تغيير افتراضي**. الحاكم أهم من الوعي نفسه.
+- العقود في نفس ملف الاختبار (البوابات P5-C1..C2).
+
+---
+
+## الرخصة
+
+MIT — انظر `LICENSE`.
+
+---
+
 ## الرخصة
 
 MIT — انظر `LICENSE`.

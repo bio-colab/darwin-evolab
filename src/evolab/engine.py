@@ -137,6 +137,7 @@ class EvolutionEngine:
         num_generations: int | None = None,
         generations: int | None = None,
         causal_layer_enabled: bool | None = None,
+        meta_mode: str | None = None,
     ) -> None:
         if isinstance(config, dict):
             cfg = EngineConfig()
@@ -210,6 +211,10 @@ class EvolutionEngine:
         self.me_scale_x = me_scale_x if me_scale_x is not None else cfg.qd.scale_x
         self.me_scale_y = me_scale_y if me_scale_y is not None else cfg.qd.scale_y
         self.qd_selection = qd_selection if qd_selection is not None else cfg.qd.active_selection
+        # Phase 4: meta-controller mode — None means exact legacy behavior.
+        # Explicit "directed"/"reshuffle" opts in; EVOLAB_META=1 resolves to
+        # "directed" (or the env's named mode). Default stays OFF.
+        self.meta_mode = meta_mode
         self._custom_distance = distance_fn
 
         # pluggable distance (audit A21 #2)
@@ -365,6 +370,11 @@ class EvolutionEngine:
     ) -> None:
         lo, hi = self.fitness_range
         reps = self.eval_repeats
+        # Phase 0: honest evaluation accounting (raw calls, before sharing).
+        try:
+            self._total_evals += len(pop) * max(int(reps), 1)
+        except Exception:
+            pass
         for i, ind in enumerate(pop):
             vals = []
             for _ in range(reps):
@@ -636,6 +646,36 @@ class EvolutionEngine:
             self._dist_cache[cache_key] = res_d
         return res_d
 
+    def population_diversity(self, pop: list[Individual]) -> float:
+        """Phase 0: honest mean pairwise genomic distance in [0, ~1].
+
+        Replaces the hardcoded ``diversity=0.0`` telemetry. Best-effort:
+        any distance failure falls back to normalized fitness spread, and an
+        empty/singleton population reports 0.0. Never raises.
+        """
+        try:
+            n = len(pop)
+            if n < 2:
+                return 0.0
+            # Cap O(n^2) cost: sample at most 16 individuals deterministically.
+            sample = pop[:16] if n > 16 else pop
+            total = 0.0
+            count = 0
+            for i in range(len(sample)):
+                for j in range(i + 1, len(sample)):
+                    try:
+                        total += float(self.distance(sample[i], sample[j]))
+                        count += 1
+                    except Exception:
+                        continue
+            if count:
+                return round(total / count, 4)
+            fits = [float(getattr(ind, "fitness", 0.0)) for ind in pop]
+            spread = max(fits) - min(fits) if fits else 0.0
+            return round(max(0.0, min(spread / 100.0, 1.0)), 4)
+        except Exception:
+            return 0.0
+
     def assign_species(self, child: Individual) -> Species:
         if not self.speciation_enabled:
             return child.species
@@ -752,6 +792,9 @@ class EvolutionEngine:
         self._dist_cache.clear()
         self.mutation_boost = 1.0
         self.rng = random.Random(self.seed)
+        # Phase 0 (telemetry truth): honest counters reset every run.
+        # _total_evals counts raw individual evaluations (pop × eval_repeats).
+        self._total_evals = 0
 
     def run(
         self,
@@ -869,6 +912,7 @@ class EvolutionEngine:
         })
 
         for gen in range(1, generations + 1):
+            _gen_t0 = time.perf_counter()
             if hasattr(self.fitness_fn, "update_environment"):
                 try:
                     self.fitness_fn.update_environment()
@@ -944,6 +988,9 @@ class EvolutionEngine:
             dominant_share = (
                 max(dist_now.values()) / self.population_size if dist_now else 0.0
             )
+            # Phase 0: honest per-generation telemetry (was hardcoded 0.0).
+            _diversity = self.population_diversity(population)
+            _gen_duration_ms = round((time.perf_counter() - _gen_t0) * 1000.0, 2)
             history.append(
                 {
                     "generation": gen,
@@ -955,6 +1002,10 @@ class EvolutionEngine:
                     "dominant_species_share": round(dominant_share, 3),
                     "best_id": f"gen_{gen:02d}_ind_{ranked.index(best):02d}",
                     "active_species": len(dist_now),
+                    "diversity": _diversity,
+                    "gen_duration_ms": _gen_duration_ms,
+                    "immigrants_injected": 0,
+                    "meta_injected": 0,
                 }
             )
             species_history.append(dict(sorted(dist_now.items())))
@@ -966,9 +1017,9 @@ class EvolutionEngine:
                         generation=gen,
                         best_fitness=float(best.fitness),
                         mean_fitness=round(statistics.mean(fit_vals), 2),
-                        diversity=0.0,
+                        diversity=_diversity,
                         active_species_count=len(dist_now),
-                        duration_ms=0.0,
+                        duration_ms=_gen_duration_ms,
                     )
                 )
 
@@ -1190,6 +1241,50 @@ class EvolutionEngine:
 
                 child.species = self.assign_species(child)
                 children.append(child)
+            # Phase 0: revive immigrant injection (was computed but never used).
+            # Default immigrant_fraction=0.0 → exact legacy behavior. Only for
+            # numeric (non-code) genomes; code track keeps its greedy lineage.
+            try:
+                _imm_n = int(self.population_size * float(self.immigrant_fraction or 0.0))
+            except Exception:
+                _imm_n = 0
+            _imm_injected = 0
+            if _imm_n > 0 and not bool(getattr(self, "_code_mode", False)):
+                from .genome import random_individual as _random_individual
+
+                _pool = list(SPECIES_POOL) if isinstance(SPECIES_POOL, dict) else list(SPECIES_POOL)
+                for _k in range(min(_imm_n, max(len(children) - self.elite_count, 0))):
+                    try:
+                        _sp = self.rng.choice(_pool) if _pool else "spec_0"
+                        _imm = _random_individual(_sp, size=self.genome_size, rng=self.rng)
+                        children[-(1 + _k)] = _imm
+                        _imm_injected += 1
+                    except Exception:
+                        break
+                if _imm_injected:
+                    self._decision_log.append({
+                        "at_generation": gen,
+                        "event": "immigrant_injection",
+                        "detail": f"injected={_imm_injected}",
+                    })
+            else:
+                _imm_n = 0
+            if history:
+                history[-1]["immigrants_injected"] = _imm_injected
+            # Phase 4: reactive meta-controller (opt-in only, default OFF →
+            # legacy trajectory byte-identical). Single effector: immigrant
+            # injection on diagnosed stagnation (directed) or fixed schedule
+            # (reshuffle control arm).
+            _meta_n = 0
+            try:
+                from .experience import _meta_enabled, _meta_resolve_mode, meta_control_step
+                if _meta_enabled(getattr(self, "meta_mode", None)):
+                    _mode = _meta_resolve_mode(getattr(self, "meta_mode", None))
+                    _meta_n = meta_control_step(self, children, history, gen, mode=_mode)
+            except Exception:
+                _meta_n = 0
+            if history:
+                history[-1]["meta_injected"] = _meta_n
             population = children
             # per-generation operator statistics (audit A16 observability P1)
             self._operator_history.append({
@@ -1236,7 +1331,7 @@ class EvolutionEngine:
             )
 
         from .report_builder import build_run_report
-        return build_run_report(
+        report = build_run_report(
             self,
             population=population,
             history=history,
@@ -1247,6 +1342,15 @@ class EvolutionEngine:
             exploit_start=exploit_start,
             final_gen=final_gen,
         )
+        # Phase 1: silent post-run self fact (observation only, never search).
+        # Phase 2+3: read-only mirror entries on the finished report.
+        try:
+            from .experience import attach_self_assessment, record_engine_self_run
+            record_engine_self_run(self, report)
+            attach_self_assessment(self, report)
+        except Exception:
+            pass
+        return report
 
     def evolve(self, num_generations: int | None = None) -> Any:
         gens = num_generations if num_generations is not None else (getattr(self, "num_generations", 150) or 150)

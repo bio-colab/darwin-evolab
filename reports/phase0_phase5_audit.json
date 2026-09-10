@@ -1,0 +1,57 @@
+{
+  "phase_tests_stdout_tail": [
+    ".............                                                            [100%]",
+    "13 passed in 0.59s"
+  ],
+  "phase_tests_pass": true,
+  "regression_stdout_tail": [
+    ".............................................                            [100%]",
+    "45 passed in 2.87s"
+  ],
+  "regression_pass": true,
+  "live_probe_24_checks": "ALL_TRUE True (phase_audit_probe.py, 24/24)",
+  "ab_meta_governor": {
+    "decision": "REJECT",
+    "reasons": [
+      "mean_not_improved",
+      "median_not_improved"
+    ],
+    "mean_b": 82.9467,
+    "mean_c": 82.9467,
+    "median_b": 83.0,
+    "median_c": 83.0,
+    "worst_b": 79.78,
+    "worst_c": 79.78,
+    "regressions": 0,
+    "delta_mean": 0.0,
+    "delta_median": 0.0
+  },
+  "ab_meta_default_eligible": false,
+  "self_benchmark_numeric_mean": 82.504,
+  "self_benchmark_code": 1.0,
+  "self_benchmark_governor": {
+    "decision": "REJECT",
+    "reasons": [
+      "mean_not_improved",
+      "median_not_improved"
+    ],
+    "mean_b": 82.504,
+    "mean_c": 82.504,
+    "median_b": 83.57,
+    "median_c": 83.57,
+    "worst_b": 78.13,
+    "worst_c": 78.13,
+    "regressions": 0,
+    "delta_mean": 0.0,
+    "delta_median": 0.0
+  },
+  "verdict_per_phase": {
+    "P0": "PASS - telemetry honest (evals/diversity/duration/pareto/immigrants), importance: mirror would lie without it",
+    "P1": "PASS - silent store + Wilson CI + kill-switch, importance: capability without uncertainty is false consciousness",
+    "P2": "PASS - collapse diagnosed, short history unknown, importance: asks what-happened-to-me without ordering action",
+    "P3": "PASS - bounded metrics, trajectory invariant with mirror on/off, importance: critic without power cannot harm search",
+    "P4": "PASS - default off legacy-identical, directed selective+d deterministic, reshuffle scheduled, importance: one effector + noise arm prevents M7/M8 repeat",
+    "P5": "PASS - governor ACCEPT only on mean+median+worst+zero-regression, importance: measured REJECT keeps defaults safe (directed==control, reshuffle worse)"
+  },
+  "overall": "Phase 0-5 CORRECT and WORTHWHILE as measurement+governance infrastructure; no default search change (all governors REJECT = discipline working)"
+}

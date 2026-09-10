@@ -301,3 +301,32 @@ pytest experimental/electronics/tests    # 66 passed (100% pass rate)
 - **كل رقم في هذا الملف**: مصدره تقارير خام في `reports/*.json` — افتحه وأعد الحساب بنفسك.
 - **التسلسل الزمني الكامل**: `git log --oneline` — 38 التزاماً من إصلاح `.gitignore` حتى إغلاق ترقية السيليكون، كل واحد بغرضه المعلن ورقمه الملتزم.
 
+## الفصل الجديد — Phase 0 و Phase 1 من النموذج الذاتي (تُلحق ولا تُعدَّل)
+
+التزاماً بقاعدة التسجيل append-only: لا يُعاد كتابة ما سبق، يُلحق فقط.
+
+- **Phase 0 (إصلاح المرآة):** كانت `diversity` و`duration_ms` في أحداث الأجيال `0.0` مزروعة يدوياً، و`total_candidates_evaluated` اسمياً (`final_gen × pop`)، و`pareto_front` في تقرير GA موهماً بأنه NSGA-II، و`immigrant_count` يُحسب ولا يُحقن أبداً. أُصلحت جميعها في `src/evolab/engine.py` و`src/evolab/report_builder.py` مع الحفاظ الحرفي على السلوك الافتراضي (`immigrant_fraction=0.0` = التراث). البوابات P0-C1..C5 في `tests/test_self_model_phase0_phase1.py` (5 passed).
+- **Phase 1 (مخزن النموذج الذاتي):** جدولا `self_runs` و`self_capabilities` داخل `src/evolab/experience.py` (نفس الملف، جداول منفصلة — لا وحدات موازية). الكتابة صامتة بعد كل run عبر `record_engine_self_run`، والقدرة بفترة Wilson عبر `record_capability`، والقراءة عبر `self_summary()`. لا قرار بحثي يقرؤها في هذه المرحلة (`observation only`)، ومفتاح القتل `EVOLAB_SELF=0`. البوابة P1-C1 في نفس ملف الاختبار.
+- **القاعدة المستمرة:** أي Meta-Controller مستقبلي (Phase 4) يتطلب بروتوكول A/B مسجلاً مسبقاً على الأداة المقواة يثبت `gain > 0` قبل أي تفعيل افتراضي — كما حكمت كل أجندة الذاكرة السابقة.
+
+## ملحق Phase 2 و Phase 3 (مرآة فقط — تُلحق ولا تُعدَّل)
+
+- **Phase 2 (المقيّم الميتا):** `diagnose_run` في `src/evolab/experience.py` — دالة صرفة بعتبات مجمدة (`diversity_low=0.05`, `plateau_gens=5`, `plateau_eps=0.01`, `std_low=0.5`, `overfit_gap=30.0`). الهضبة المنهارة تُشخّص `premature_convergence`، والهضبة وحدها `stagnation`، وغياب الفجوة يُرجع `overfit_risk=None` (مجهول معلن). التاريخ القصير يُرجع `insufficient_data`. تُرفق في `extra.meta_evaluator` بعد الحلقة. البوابات P2-C1..C4 في `tests/test_self_model_phase2_phase3.py`.
+- **Phase 3 (الناقد الذاتي):** `self_critic_report` — `quality` و`efficiency` (نقاط/تقييم) و`novelty` (متوسط التنوع) و`generalization=None` عند غياب القياس. تُرفق في `extra.self_critic` مع منع أي تفرع بحثي عليها. أُثبت أن نفس البذرة تعطي نفس اللياقة مع المرآة وبدونها (`EVOLAB_SELF=0`). البوابات P3-C1..C3 في نفس الملف.
+- **القاعدة المستمرة:** Phase 4 (أي تدخل) محظورة حتى بروتوكول A/B مسجل يثبت `gain > 0`.
+
+## ملحق Phase 4 و Phase 5 (التدخل المحكوم — تُلحق ولا تُعدَّل)
+
+- **Phase 4 (المتحكم الميتا):** مؤثر واحد فقط (`meta_control_step` في `src/evolab/experience.py` — حقن مهاجرين تفاعلي، `15%` من السكان). `directed` عند التشخيص فقط، و`reshuffle` بجدول ثابت (`gen % 5 == 0`) كذراع عزل للضجيج. الربط في `src/evolab/engine.py` عبر `meta_mode=None` افتراضياً (التراث بايت-بايت) و`EVOLAB_META=1` للتفعيل. البروتوكول في رأس `scripts/ab_meta_controller.py` (3 أذرع، بذور 1..10، الأهلية بحكم الحاكم فقط). القياس الدخاني: directed مطابق للضابط وreshuffle أسوأ — REJECT. البوابات P4-C1..C3.
+- **Phase 5 (الحاكم والمعيار الذاتي):** `govern_modification` (قبول باجتماع `mean` و`median` و`worst` وصفر انحدارات) و`render_self_modification_proposal` و`scripts/self_benchmark.py` (R1..R5: جناح عددي + جناح APR رباعي + Wilson + الحكم + `reports/self_benchmark.json`). القياس الأول: `numeric≈82.5` و`code 4/4` والحكم REJECT — لا تغيير افتراضي. البوابات P5-C1..C2.
+- **القاعدة الختامية للطبقات السبع:** المرآة (0-3) تعمل افتراضياً لأنها مراقبة صرفة؛ التدخل (4) والتعديل الذاتي (5+) يبقيان opt-in حتى بروتوكول جديد يثبت `gain > 0`.
+
+## تقييم Phase 0-5 — فحص وتجربة وإثبات (يُلحق ولا يُعدَّل)
+
+أُجري 2026-09-10 على الكود الفعلي (لا على الوثائق):
+
+- **الاختبارات:** `phase0/1 + phase2/3 + phase4/5` — 13 passed. والانحدار (`code_evolution/experience/eval_cache/events/strategies` + `experience_prior/reporters/sbfl`) — 64 passed. بلا كسر.
+- **المسبار الحي (24/24 true):** عدّاد التقييمات = `pop×gens`، والتنوع والزمن مقاسان (لا `0.0`)، وباريتو موسوم `heuristic/is_nsga2=False`، والمهاجرون `0` تراثياً و`2` عند التفعيل، والمخزن يكتب ويقرأ مع Wilson ومفتاح قتل، والانهيار يُشخّص والقصير `insufficient_data`، والناقد محدود والقيم `None` عند غياب القياس، والمرآة حاضرة وتُكبت بـ`EVOLAB_SELF=0` دون تغيير المسار، والمتحكم مطفأ افتراضياً ويحقن عند الهضبة فقط مع `reshuffle` مجدول، والحاكم يقبل الجيد ويرفض المتوسط/الأسوأ/الانحدار.
+- **البروتوكولات المجمدة:** `ab_meta_controller --tiny` — directed مطابق للضابط (لا ركود يستحق التدخل) وreshuffle أسوأ → REJECT. و`self_benchmark` — `numeric≈82.5` و`code 4/4 CI=[0.51,1.0]` → REJECT. التقرير الكامل ملتزم في `reports/phase0_phase5_audit.json` مع `reports/ab_meta_controller.json` و`reports/self_benchmark.json`.
+- **الأهمية:** P0 يمنع مرآة كاذبة (تنوع `0.0` كان سيعمي التشخيص). P1 يمنع ثقة مزيفة (نسبة بلا فترة). P2/P3 مرآة بلا سلطة (لا ضرر ممكن بالبناء). P4 مؤثر واحد + ذراع ضجيج (لا تكرار لخطأ M7/M8). P5 حاكم يرفض فعلاً (الافتراضيات آمنة لأن الحوكمة تعمل، لا لأن التدخل ناجح).
+- **الحكم:** المراحل صحيحة ومهمة كبنية قياس وحوكمة؛ وقيمتها الحالية أنها **منعت** تغييراً افتراضياً غير مثبت — وهذا نجاح الانضباط لا فشله.
