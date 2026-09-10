@@ -676,6 +676,45 @@ class EvolutionEngine:
         except Exception:
             return 0.0
 
+    def _cache_misses_total(self) -> int:
+        """Atom 1: best-effort cache-miss total through wrapper chains.
+
+        Walks ``fitness_fn → raw → raw …`` looking for EvaluationCache-style
+        ``misses`` or ``stats``. Unknown evaluators report 0 (honest unknown
+        is folded as zero misses with the raw eval counter authoritative).
+        Never raises.
+        """
+        try:
+            seen = set()
+            node = self.fitness_fn
+            for _ in range(6):
+                if node is None or id(node) in seen:
+                    break
+                seen.add(id(node))
+                try:
+                    misses = getattr(node, "misses", None)
+                    if isinstance(misses, int):
+                        return max(int(misses), 0)
+                except Exception:
+                    pass
+                try:
+                    stats = getattr(node, "stats", None)
+                    if callable(stats):
+                        st = stats()
+                    else:
+                        st = stats
+                    if isinstance(st, dict) and isinstance(st.get("misses"), int):
+                        return max(int(st["misses"]), 0)
+                except Exception:
+                    pass
+                try:
+                    node = getattr(node, "raw", None)
+                except Exception:
+                    break
+            return 0
+        except Exception:
+            return 0
+
     def assign_species(self, child: Individual) -> Species:
         if not self.speciation_enabled:
             return child.species
@@ -795,6 +834,13 @@ class EvolutionEngine:
         # Phase 0 (telemetry truth): honest counters reset every run.
         # _total_evals counts raw individual evaluations (pop × eval_repeats).
         self._total_evals = 0
+        # Atom 1 (energy metabolism): cumulative + per-gen baselines. Units
+        # are disclosed separately (evals vs memory sandbox evals vs cache
+        # misses) — never merged into one invented number.
+        self._energy_total = 0
+        self._energy_prev_evals = 0
+        self._energy_prev_mem = 0
+        self._energy_prev_cache_miss = 0
 
     def run(
         self,
@@ -913,6 +959,10 @@ class EvolutionEngine:
 
         for gen in range(1, generations + 1):
             _gen_t0 = time.perf_counter()
+            # Atom 1 baselines (energy spent THIS generation).
+            _e0 = int(getattr(self, "_total_evals", 0) or 0)
+            _m0 = int(getattr(self, "_memory_evals_used", 0) or 0)
+            _c0 = int(self._cache_misses_total())
             if hasattr(self.fitness_fn, "update_environment"):
                 try:
                     self.fitness_fn.update_environment()
@@ -1006,6 +1056,11 @@ class EvolutionEngine:
                     "gen_duration_ms": _gen_duration_ms,
                     "immigrants_injected": 0,
                     "meta_injected": 0,
+                    "energy_spent": 0,
+                    "energy_total": int(getattr(self, "_energy_total", 0) or 0),
+                    "energy_evals": 0,
+                    "energy_mem": 0,
+                    "energy_cache_miss": 0,
                 }
             )
             species_history.append(dict(sorted(dist_now.items())))
@@ -1066,6 +1121,27 @@ class EvolutionEngine:
                             "event": "memory_injection",
                             "detail": json.dumps(mem_stats, sort_keys=True),
                         })
+
+            # Atom 1: close the per-generation energy books (evaluate evals +
+            # memory sandbox evals this gen; cache misses best-effort). Units
+            # stay disclosed separately; energy_spent is their honest sum.
+            try:
+                _e1 = int(getattr(self, "_total_evals", 0) or 0)
+                _m1 = int(getattr(self, "_memory_evals_used", 0) or 0)
+                _c1 = int(self._cache_misses_total())
+                _de = max(_e1 - _e0, 0)
+                _dm = max(_m1 - _m0, 0)
+                _dc = max(_c1 - _c0, 0)
+                _spent = _de + _dm
+                self._energy_total = int(getattr(self, "_energy_total", 0) or 0) + _spent
+                if history:
+                    history[-1]["energy_evals"] = _de
+                    history[-1]["energy_mem"] = _dm
+                    history[-1]["energy_cache_miss"] = _dc
+                    history[-1]["energy_spent"] = _spent
+                    history[-1]["energy_total"] = int(self._energy_total)
+            except Exception:
+                pass
 
             if best.fitness > best_so_far + 0.01:
                 best_so_far = best.fitness

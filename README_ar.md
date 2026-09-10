@@ -618,7 +618,8 @@ m = store.run_metrics("run_id")       # التقييمات حتى أول نجا�
 - `total_candidates_evaluated` أصبح عدّاد تقييمات خام (`pop × eval_repeats`) بدل الناتج الاسمي — `src/evolab/report_builder.py`.
 - `pareto_front` في تقرير `GA` موسوم صراحة `method=heuristic_fitness_vs_compactness, is_nsga2=False` وتمييزه عن `NSGA2Engine` في `pareto.py`.
 - حقن المهاجرين أُحيي فعلياً بعدما كان `immigrant_count` يُحسب ولا يُستخدم أبداً: `immigrant_fraction=0.0` هو السلوك التراثي حرفياً، و`>0` يحقن أفراداً عشوائية حتمية البذرة في الذيل مع الحفاظ على النخبة — للمسار العددي فقط، ومسار الكود لا يمسه.
-- العقود مثبتة في `tests/test_self_model_phase0_phase1.py` (البوابات P0-C1..C5).
+- محاسبة الطاقة (الذرة 1): كل جيل يسجل `energy_spent` (تقييمات `pop × eval_repeats` + تقييمات sandbox الذاكرة) مع `energy_total` التراكمي، والوحدات معلنة منفصلة (`energy_evals`, `energy_mem`, `energy_cache_miss` best-effort بلا ازدواج عدّ) — `EVOLAB_SELF=0` لا يغير المسار.
+- العقود مثبتة في `tests/test_self_model_phase0_phase1.py` (البوابات P0-C1..C5 وA1-C1..C2).
 
 ## Phase 1 — مخزن النموذج الذاتي (Self-Model، مراقبة فقط)
 
@@ -636,7 +637,8 @@ m = store.run_metrics("run_id")       # التقييمات حتى أول نجا�
 - العتبات مجمدة مسجلة مسبقاً: `diversity_low=0.05`، `plateau_gens=5`، `plateau_eps=0.01`، `std_low=0.5`، `overfit_gap=30.0`.
 - `premature_convergence` = هضبة + تنوع منهار + تشتت منخفض؛ `stagnation` = هضبة وحدها؛ `overfit_risk` = `None` بصدق عند غياب الفجوة (مجهول معلن، لا صفر مخترع).
 - التاريخ القصير (`<5` أجيال) يُرجع `insufficient_data` بدل حكم مخترع. تُرفق النتيجة في `report["extra"]["meta_evaluator"]` بعد انتهاء الحلقة — المسار ثابت قبله.
-- العقود في `tests/test_self_model_phase2_phase3.py` (البوابات P2-C1..C4).
+- الذرة 2 (فصل الحواس): المخرجات نفسها مع قسمين صريحين — `inner` (هضبة، تنوع، تشتت، وحرق طاقة `energy_burn_per_eval` من الذرة 1) و`outer` (فجوة holdout وحالة التوطين `bad_localization`)؛ القاعدة: الانهيار المبكر حكم داخلي والفرط حكم خارجي، ولا يستنتج أحدهما من الآخر أبداً. التواريخ التراثية بلا حقول طاقة تُرجع `burn=None` دون كسر.
+- العقود في `tests/test_self_model_phase2_phase3.py` (البوابات P2-C1..C4 وA2-C1..C3).
 
 ## Phase 3 — الناقد الذاتي (Self-Critic، مقاييس فقط)
 

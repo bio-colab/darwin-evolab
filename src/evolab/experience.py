@@ -126,12 +126,21 @@ META_OVERFIT_GAP = 30.0
 def diagnose_run(
     history: list[dict[str, Any]] | None,
     holdout_gap: float | None = None,
+    suspicion_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Phase 2: read-only self-diagnosis over one run's telemetry.
+    """Phase 2 (+ Atom 2): read-only self-diagnosis over one run's telemetry.
 
     Asks "what happened to me?" — never "what should I do?". Pure function:
     no DB, no RNG, no search side effects. Never raises; insufficient data
     yields explicit unknown flags instead of invented verdicts.
+
+    Atom 2 splits the mirror in two honest senses (same verdict keys as
+    before, so all Phase 2 callers keep working):
+      inner (interoception) — diversity, spread, plateau, energy burn rate.
+      outer (exteroception) — holdout gap and fault-localization state.
+    Rule: premature_convergence is an INNER verdict (plateau + collapsed
+    diversity); overfit_risk is an OUTER verdict (gap only) and stays None
+    when unmeasured — inner collapse must never imply outer overfit.
     """
     thresholds = {
         "diversity_low": META_DIVERSITY_LOW,
@@ -149,6 +158,10 @@ def diagnose_run(
                 "overfit_risk": None if holdout_gap is None else bool(holdout_gap > META_OVERFIT_GAP),
                 "reasons": ["insufficient_data"],
                 "thresholds": thresholds,
+                "inner": {"plateau": None, "diversity": None, "diversity_low": None,
+                          "std": None, "energy_burn_per_eval": None},
+                "outer": {"holdout_gap": holdout_gap, "overfit_risk": None if holdout_gap is None else bool(holdout_gap > META_OVERFIT_GAP),
+                          "bad_localization": None},
             }
         tail = hist[-META_PLATEAU_GENS:]
         bests = [float(h.get("best_fitness", 0.0) or 0.0) for h in tail]
@@ -162,6 +175,26 @@ def diagnose_run(
             std = float(last.get("std_fitness", 1.0))
         except (TypeError, ValueError):
             std = 1.0
+        # Atom 2 inner: energy burn = fitness points gained per eval over tail.
+        try:
+            spent = sum(float(h.get("energy_spent", 0.0) or 0.0) for h in tail)
+            burn = round((bests[-1] - bests[0]) / spent, 4) if spent > 0 else None
+        except (TypeError, ValueError):
+            burn = None
+        # Atom 2 outer: localization state is caller-supplied or unknown.
+        try:
+            bad_loc = None
+            if isinstance(suspicion_state, dict) and suspicion_state:
+                empty = suspicion_state.get("empty")
+                misleading = suspicion_state.get("misleading")
+                if empty is True:
+                    bad_loc = "empty"
+                elif misleading is True:
+                    bad_loc = "misleading"
+                else:
+                    bad_loc = "ok"
+        except Exception:
+            bad_loc = None
         premature = bool(plateau and div < META_DIVERSITY_LOW and std < META_STD_LOW)
         reasons = []
         if premature:
@@ -179,6 +212,11 @@ def diagnose_run(
             "overfit_risk": overfit,
             "reasons": reasons,
             "thresholds": thresholds,
+            "inner": {"plateau": bool(plateau), "diversity": round(div, 4),
+                      "diversity_low": bool(div < META_DIVERSITY_LOW),
+                      "std": round(std, 4), "energy_burn_per_eval": burn},
+            "outer": {"holdout_gap": holdout_gap, "overfit_risk": overfit,
+                      "bad_localization": bad_loc},
         }
     except Exception:
         return {
@@ -187,6 +225,10 @@ def diagnose_run(
             "overfit_risk": None,
             "reasons": ["diagnosis_error"],
             "thresholds": thresholds,
+            "inner": {"plateau": None, "diversity": None, "diversity_low": None,
+                      "std": None, "energy_burn_per_eval": None},
+            "outer": {"holdout_gap": holdout_gap, "overfit_risk": None,
+                      "bad_localization": None},
         }
 
 

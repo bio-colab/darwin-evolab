@@ -4,7 +4,32 @@
     2,
     3,
     4,
-    5
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
   ],
   "numeric": {
     "baseline": [
@@ -12,17 +37,67 @@
       78.13,
       83.72,
       83.57,
-      86.01
+      86.01,
+      81.24,
+      79.66,
+      82.82,
+      79.73,
+      76.24,
+      79.87,
+      78.49,
+      81.57,
+      80.15,
+      76.53,
+      78.42,
+      77.68,
+      79.41,
+      77.91,
+      79.35,
+      81.52,
+      78.54,
+      84.82,
+      84.82,
+      79.83,
+      74.98,
+      80.21,
+      77.7,
+      83.88,
+      82.1
     ],
     "candidate": [
       81.09,
       78.13,
       83.72,
       83.57,
-      86.01
+      86.01,
+      81.24,
+      80.22,
+      82.82,
+      79.73,
+      75.59,
+      79.87,
+      78.49,
+      81.57,
+      80.15,
+      76.53,
+      78.42,
+      77.68,
+      79.41,
+      77.91,
+      79.35,
+      81.52,
+      78.54,
+      84.82,
+      84.82,
+      79.83,
+      74.98,
+      80.21,
+      76.27,
+      83.88,
+      82.1
     ],
-    "mean_b": 82.504,
-    "mean_c": 82.504
+    "mean_b": 80.333,
+    "mean_c": 80.2823
   },
   "code_capability": {
     "passes": {
@@ -53,7 +128,7 @@
   },
   "self_report": {
     "capability": {
-      "numeric_ga_mean": 82.5,
+      "numeric_ga_mean": 80.33,
       "code_apr_pass_rate": 1.0
     },
     "weakness": "long-horizon numeric search",
@@ -63,18 +138,17 @@
   "governor_verdict": {
     "decision": "REJECT",
     "reasons": [
-      "mean_not_improved",
-      "median_not_improved"
+      "mean_not_improved"
     ],
-    "mean_b": 82.504,
-    "mean_c": 82.504,
-    "median_b": 83.57,
-    "median_c": 83.57,
-    "worst_b": 78.13,
-    "worst_c": 78.13,
+    "mean_b": 80.333,
+    "mean_c": 80.2823,
+    "median_b": 79.85,
+    "median_c": 80.01,
+    "worst_b": 74.98,
+    "worst_c": 74.98,
     "regressions": 0,
-    "delta_mean": 0.0,
-    "delta_median": 0.0
+    "delta_mean": -0.0507,
+    "delta_median": 0.16
   },
-  "proposal": "SELF-MODIFICATION PROPOSAL #1\n\nChanged: meta_mode=directed\nBaseline: mean=82.504 median=83.57 worst=78.13\nCandidate: mean=82.504 median=83.57 worst=78.13\nDelta: mean=0.0 median=0.0\nRegressions: 0\nReasons: mean_not_improved, median_not_improved\n\nDecision: REJECT"
+  "proposal": "SELF-MODIFICATION PROPOSAL #1\n\nChanged: meta_mode=directed\nBaseline: mean=80.333 median=79.85 worst=74.98\nCandidate: mean=80.2823 median=80.01 worst=74.98\nDelta: mean=-0.0507 median=0.16\nRegressions: 0\nReasons: mean_not_improved\n\nDecision: REJECT"
 }

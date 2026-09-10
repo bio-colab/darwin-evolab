@@ -2,7 +2,14 @@
   "seeds": [
     1,
     2,
-    3
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
   ],
   "pop": 12,
   "gens": 15,
@@ -10,83 +17,123 @@
     "control": [
       83.0,
       79.78,
-      86.06
+      86.06,
+      83.51,
+      86.35,
+      81.44,
+      83.47,
+      83.44,
+      82.28,
+      77.65
     ],
     "directed": [
       83.0,
       79.78,
-      86.06
+      86.06,
+      84.38,
+      86.35,
+      81.44,
+      81.27,
+      83.44,
+      82.28,
+      83.03
     ],
     "reshuffle": [
       82.03,
       77.9,
-      82.83
+      82.83,
+      82.36,
+      85.05,
+      82.44,
+      84.75,
+      81.82,
+      80.82,
+      79.88
     ]
   },
   "stats": {
     "control": {
-      "mean": 82.9467,
-      "median": 83.0,
-      "worst": 79.78,
+      "mean": 82.698,
+      "median": 83.22,
+      "worst": 77.65,
       "bests": [
         83.0,
         79.78,
-        86.06
+        86.06,
+        83.51,
+        86.35,
+        81.44,
+        83.47,
+        83.44,
+        82.28,
+        77.65
       ]
     },
     "directed": {
-      "mean": 82.9467,
-      "median": 83.0,
+      "mean": 83.103,
+      "median": 83.015,
       "worst": 79.78,
       "bests": [
         83.0,
         79.78,
-        86.06
+        86.06,
+        84.38,
+        86.35,
+        81.44,
+        81.27,
+        83.44,
+        82.28,
+        83.03
       ]
     },
     "reshuffle": {
-      "mean": 80.92,
-      "median": 82.03,
+      "mean": 81.988,
+      "median": 82.195,
       "worst": 77.9,
       "bests": [
         82.03,
         77.9,
-        82.83
+        82.83,
+        82.36,
+        85.05,
+        82.44,
+        84.75,
+        81.82,
+        80.82,
+        79.88
       ]
     }
   },
   "governor_verdict": {
     "decision": "REJECT",
     "reasons": [
-      "mean_not_improved",
       "median_not_improved"
     ],
-    "mean_b": 82.9467,
-    "mean_c": 82.9467,
-    "median_b": 83.0,
-    "median_c": 83.0,
-    "worst_b": 79.78,
+    "mean_b": 82.698,
+    "mean_c": 83.103,
+    "median_b": 83.22,
+    "median_c": 83.015,
+    "worst_b": 77.65,
     "worst_c": 79.78,
     "regressions": 0,
-    "delta_mean": 0.0,
-    "delta_median": 0.0
+    "delta_mean": 0.405,
+    "delta_median": -0.205
   },
   "reshuffle_check": {
     "decision": "REJECT",
     "reasons": [
       "mean_not_improved",
-      "median_not_improved",
-      "worst_regressed"
+      "median_not_improved"
     ],
-    "mean_b": 82.9467,
-    "mean_c": 80.92,
-    "median_b": 83.0,
-    "median_c": 82.03,
-    "worst_b": 79.78,
+    "mean_b": 82.698,
+    "mean_c": 81.988,
+    "median_b": 83.22,
+    "median_c": 82.195,
+    "worst_b": 77.65,
     "worst_c": 77.9,
     "regressions": 0,
-    "delta_mean": -2.0267,
-    "delta_median": -0.97
+    "delta_mean": -0.71,
+    "delta_median": -1.025
   },
   "default_eligible": false,
   "note": "directed needs ACCEPT while reshuffle stays REJECT to prove trigger value"

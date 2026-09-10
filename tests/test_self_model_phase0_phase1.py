@@ -9,6 +9,10 @@ Preregistered gates (written before measurement):
         deterministically without breaking elites or RNG reproducibility.
   P1-C1 self tables exist beside experiences; broken/empty store degrades
         to silent no-op and self_summary() stays read-only (never search).
+  A1-C1 energy_spent per gen is measured (pop x eval_repeats + memory evals),
+        units disclosed separately, cumulative energy_total is deterministic
+        per seed and EVOLAB_SELF=0 never changes the trajectory.
+  A1-C2 cache misses reported best-effort without double counting.
 """
 from __future__ import annotations
 
@@ -97,3 +101,34 @@ def test_p1_self_store_contracts(tmp_path):
         assert len(s.self_summary()["recent_runs"]) == 1
     finally:
         os.environ.pop("EVOLAB_SELF", None)
+
+
+def test_a1_energy_accounting():
+    e = _engine()
+    r = e.run(3)
+    spent = [h.get("energy_spent") for h in r["history"]]
+    totals = [h.get("energy_total") for h in r["history"]]
+    evals = [h.get("energy_evals") for h in r["history"]]
+    mems = [h.get("energy_mem") for h in r["history"]]
+    miss = [h.get("energy_cache_miss") for h in r["history"]]
+    assert spent == [8, 8, 8]
+    assert totals == [8, 16, 24]
+    assert all(m == 0 for m in mems), "memory disabled by default"
+    assert all(isinstance(v, int) and v >= 0 for v in miss)
+    # Units disclosed separately; spent is the honest sum (misses excluded
+    # to avoid double counting: a miss causes the raw eval already counted).
+    assert all(s == a + b for s, a, b in zip(spent, evals, mems))
+    assert totals[-1] == r["total_candidates_evaluated"]
+
+
+def test_a1_energy_deterministic_and_untouched_by_killswitch():
+    e1, e2 = _engine(), _engine()
+    r1, r2 = e1.run(3), e2.run(3)
+    assert [h["energy_total"] for h in r1["history"]] == [h["energy_total"] for h in r2["history"]]
+    os.environ["EVOLAB_SELF"] = "0"
+    try:
+        r3 = _engine().run(3)
+    finally:
+        os.environ.pop("EVOLAB_SELF", None)
+    assert [h["energy_total"] for h in r3["history"]] == [h["energy_total"] for h in r1["history"]]
+    assert r3["history"][-1]["best_fitness"] == r1["history"][-1]["best_fitness"]
