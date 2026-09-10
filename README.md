@@ -42,6 +42,36 @@ graph TD
 
 ---
 
+## 🏛️ Two Flagship Production Pillars vs. 🧪 Exploratory Research Tracks
+
+To eliminate any ambiguity between hardened, production-grade tools and exploratory research interfaces, `darwin-evolab` maintains a crystal-clear architectural boundary:
+
+### 🌟 Two Flagship Production Pillars (100% Empirically Validated)
+1. **Software Automated Program Repair (APR) & SWE-bench Lite**
+   - **AST Mutation Operators**: Precise statement-level and expression-level rewrites (`DeleteStatement`, `InsertGuard`, `SwapCondition`, `ReplaceConstant`, `CallWrap`).
+   - **Spectrum-Based Fault Localization (SBFL Ochiai)**: Focuses search on suspicious code paths using test execution spectra.
+   - **Dual Invariant Enforcement**: Ensures 100% pass on failing test cases (`FAIL_TO_PASS`) with zero regressions on existing test suites (`PASS_TO_PASS`).
+   - **Zero-Breakage Memoization**: Program-keyed evaluation cache (`eval_cache.py`) achieving 72.8%–92.6% evaluation speedups.
+   - **Production-Ready Artifacts**: Emits standardized, `git apply`-ready unified diff patches.
+   - **Real-World Benchmark**: 50.0% pass rate on pre-registered 10-instance SWE-bench Lite subset with full provenance.
+2. **Digital Cartesian Genetic Programming (CGP) & Verilog RTL**
+   - **Formal Truth-Table Verification**: 100% exhaustive Boolean truth-table verification across all input permutations.
+   - **Discrete Gate DAG Synthesis**: Optimized topologies using fundamental logic gates (AND, OR, XOR, NOT, MUX, NAND, NOR).
+   - **Standard Digital Benchmarks**: 1-bit and multi-bit full adders, carry-lookahead logic, even/odd parity generators, and ALU slices.
+   - **Physical FPGA Export**: Direct export of synthesizable Verilog-2001 RTL and pinout constraint files (`.pcf` iCE40, `.lpf` ECP5, `.xdc` Xilinx).
+
+### 🧪 Exploratory & Research Tracks (`physical_claim: False`)
+The repository also includes ambitious research interfaces that explore the boundary of evolutionary computation:
+- **Analog Silicon & Sky130 OpAmp Optimization** (`experimental/electronics/`):
+  - Multi-objective NSGA-II Pareto optimization (Voltage Gain, GBW, Phase Margin, Power) and micro-MLP neural surrogate.
+  - *Provenance Disclaimer*: Computed via CMOS Level-1 small-signal equations ($g_m, r_o$, Miller pole-splitting) intended for rapid topology exploration and transistor sizing ($\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4). Marked with `physical_claim: False`.
+- **Genesis Physics & Foundation Model Bridge** (`src/evolab/genesis_bridge.py`):
+  - Multi-modal graph serialization bridging genomes to physical simulators and GNN endpoints (includes zero-dependency headless fallback).
+- **WebUSB Hardware Flasher & Interactive Workbench** (`experimental/electronics/ui/`):
+  - In-browser animated gate visualizer, phosphor oscilloscope, and WebUSB bitstream programmer (FTDI FT2232H, TinyFPGA BX, RP2040) with virtual loopback engine.
+
+---
+
 ## ⚡ 60-Second Quickstart
 
 ### 1. Installation
@@ -65,7 +95,7 @@ pip install -e ".[full]"
 
 ### 2. Instant CLI Usage
 
-#### Automated Program Repair & SWE-bench Lite
+#### 🌟 [Pillar 1] Automated Program Repair & SWE-bench Lite
 Fix bugs in Python source code guided by test assertions, or ingest official SWE-bench Lite issue instances:
 ```bash
 # Repair using built-in benchmark scenario and output a unified diff
@@ -78,8 +108,14 @@ python run.py evolve --source app.py --pytest test_app.py --patch-file fix.patch
 python run.py evolve --swe-bench src/evolab/fixtures/swe_bench/sympy__sympy_13480.json --patch-out fix.patch
 ```
 
-#### Multi-Objective Pareto Optimization (NSGA-II)
-Synthesize optimal trade-off frontiers across competing objectives (e.g. Correctness, Dynamic Power, Delay, Area for Digital CGP, or Voltage Gain vs GBW vs Power for Sky130 Analog Silicon):
+#### 🌟 [Pillar 2] Digital Logic Synthesis & Verilog RTL Export
+Synthesize a verified digital logic circuit from a Boolean equation, target a specific physical FPGA architecture, and generate synthesizable Verilog + constraints:
+```bash
+python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v
+```
+
+#### 🧪 [Exploratory Track] Multi-Objective Analog Sizing & Pareto Front (Sky130)
+Synthesize optimal trade-off frontiers across competing objectives for the SkyWater 130nm Two-Stage Miller OpAmp ($A_v$ Gain vs. Static Power Dissipation):
 ```bash
 # Evolve circuit under NSGA-II non-dominated sorting and export Pareto front
 python run.py evolve --engine nsga2 --expr "S = A ^ B; C = A & B" -g 10 -p 16 --pareto-export pareto_front.json
@@ -113,20 +149,17 @@ Differential Voltage Gain (dB)
 > - **Machine-Readable Provenance Artifact**: See [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) and [`docs/RESULTS.md`](docs/RESULTS.md) for complete breakdown.
 
 
-#### Silicon Hardware Synthesis & Interactive Web Workbench
-Synthesize a logic circuit from a Boolean equation, target a specific physical FPGA architecture, generate synthesizable Verilog + constraints, and export an interactive single-page dashboard:
+#### 🧪 [Exploratory Track] Interactive Workbench & WebUSB Hardware Programmer
+Export an interactive single-page canvas dashboard and flash dev boards directly from the browser:
 ```bash
-python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v --ui-file workbench.html
-```
+# Export workbench dashboard
+python run.py evolve --expr "S = A ^ B; C = A & B" --ui-file workbench.html
 
-#### Hardware-in-the-Loop WebUSB Programmer
-Serve the interactive workbench locally on a secure origin (`http://localhost`) to directly flash physical FPGAs (FTDI FT2232H, TinyFPGA BX, RP2040 pico-ice) or test with the in-browser Virtual Loopback Engine:
-```bash
+# Serve locally on secure context to test WebUSB flashing or virtual loopback
 python run.py serve-workbench workbench.html --port 8080
 ```
-Open `http://localhost:8080` in Chrome/Edge, navigate to the **WebUSB FPGA Programmer** tab, pair your USB dev board, stream bitstreams with real-time transfer telemetry, and test roundtrip HIL latency on live hardware.
 
-#### Genesis Foundational Model Evolutionary Kernel Bridge
+#### 🧪 [Exploratory Track] Genesis Foundational Model Evolutionary Bridge
 Connect the universal evolutionary engine to physical simulators or foundation model endpoints via tensor/GNN graph serialization and vectorized reward streaming:
 - **Dual-Mode Execution**: Directly connects to live simulation clusters via `remote_endpoint="http://host:port"` or leverages native Genesis physics (`import genesis as gs`) when locally installed.
 - **Fail-Safe Offline Mode**: Uses `MockGenesisSimulator` as an automatic zero-dependency fallback for headless CI environments.

@@ -64,7 +64,7 @@ from .evaluators import (
     SandboxFunctionTestEvaluator,
 )
 from .genome import EvolabGenome, FloatGenome, Individual
-from .experience import EvaluationCache, attach_eval_cache
+from .eval_cache import EvaluationCache, attach_eval_cache
 from .repair import (
     RepairEdit,
     RepairGenome,
@@ -163,12 +163,12 @@ _LAZY: dict[str, tuple[str, str]] = {
     "discretize_context": (".causal", "discretize_context"),
     "discretize_code_context": (".causal", "discretize_code_context"),
     "ExperienceStore": (".experience", "ExperienceStore"),
-    "ExperienceMutationPrior": (".experience", "ExperienceMutationPrior"),
-    "ExperienceSequencePrior": (".experience", "ExperienceSequencePrior"),
+    "ExperienceMutationPrior": (".priors", "ExperienceMutationPrior"),
+    "ExperienceSequencePrior": (".priors", "ExperienceSequencePrior"),
     "ExperienceRecorderProxy": (".experience", "ExperienceRecorderProxy"),
     "attach_experience_recorder": (".experience", "attach_experience_recorder"),
-    "EvaluationCache": (".experience", "EvaluationCache"),
-    "attach_eval_cache": (".experience", "attach_eval_cache"),
+    "EvaluationCache": (".eval_cache", "EvaluationCache"),
+    "attach_eval_cache": (".eval_cache", "attach_eval_cache"),
     "problem_fingerprint": (".experience", "problem_fingerprint"),
     "function_summaries": (".experience", "function_summaries"),
     "render_family_report": (".experience", "render_family_report"),

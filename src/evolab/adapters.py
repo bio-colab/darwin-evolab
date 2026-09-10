@@ -114,17 +114,21 @@ class SoftwareRepairAdapter(DomainAdapter):
         return "software_repair"
 
     def parse_spec(self, raw_input: Any) -> SoftwareRepairSpec:
-        from .code_fixtures import CodeScenario, load_scenario_file
+        from .code_fixtures import CodeScenario, SCENARIO_REGISTRY, load_scenario_file
 
         if isinstance(raw_input, SoftwareRepairSpec):
             return raw_input
         elif isinstance(raw_input, CodeScenario):
+            raw_tests = getattr(raw_input, "tests", getattr(raw_input, "test_cases", []))
             return SoftwareRepairSpec(
                 sources=dict(raw_input.sources),
                 target_file=raw_input.target_file,
-                tests=list(raw_input.tests),
+                tests=list(raw_tests),
                 func_name=raw_input.func_name,
             )
+        elif isinstance(raw_input, str) and raw_input in SCENARIO_REGISTRY:
+            sc = SCENARIO_REGISTRY[raw_input]()
+            return self.parse_spec(sc)
         elif isinstance(raw_input, (str, Path)) and Path(raw_input).is_file():
             sc = load_scenario_file(raw_input)
             return self.parse_spec(sc)

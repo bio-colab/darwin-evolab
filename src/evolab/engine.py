@@ -22,47 +22,14 @@ SCHEMA_VERSION = "report-schema/1"
 DISTANCE_PRESETS = ("composite", "euclidean", "maxdelta")
 
 
-def _desc_mean(genome: Any) -> float:
-    if hasattr(genome, "describe"):
-        desc = genome.describe()
-        for k in ("mean", "node_count", "hunk_count", "lines_added"):
-            if k in desc:
-                return float(desc[k])
-    if hasattr(genome, "values"):
-        vals = genome.values
-        return sum(vals) / max(len(vals), 1)
-    if hasattr(genome, "genes"):
-        return sum(genome.genes) / max(len(genome.genes), 1)
-    if isinstance(genome, list):
-        return sum(genome) / max(len(genome), 1)
-    if hasattr(genome, "fingerprint"):
-        return float(int(genome.fingerprint()[:4], 16) % 100) / 10.0
-    return 0.0
-
-
-def _desc_std(genome: Any) -> float:
-    if hasattr(genome, "describe"):
-        desc = genome.describe()
-        for k in ("slope", "std", "max_depth", "lines_removed", "stmt_count"):
-            if k in desc:
-                return float(desc[k])
-    if hasattr(genome, "values"):
-        vals = genome.values
-        if len(vals) > 1:
-            mid = len(vals) // 2
-            f_h = sum(vals[:mid]) / max(1, mid)
-            s_h = sum(vals[mid:]) / max(1, len(vals) - mid)
-            std_v = statistics.pstdev(vals)
-            return (s_h - f_h) / (std_v + 1e-6)
-        return 0.0
-    if hasattr(genome, "genes"):
-        g = genome.genes
-        return statistics.pstdev(g) if len(g) > 1 else 0.0
-    if isinstance(genome, list):
-        return statistics.pstdev(genome) if len(genome) > 1 else 0.0
-    if hasattr(genome, "fingerprint"):
-        return float(int(genome.fingerprint()[4:8], 16) % 50) / 10.0
-    return 0.0
+from .engine_telemetry import (
+    _desc_mean,
+    _desc_std,
+    build_causal_summary,
+    calculate_population_diversity,
+    count_cache_misses,
+    pattern_similarity,
+)
 
 
 FitnessFn = Callable[["Individual"], float]
@@ -515,26 +482,7 @@ class EvolutionEngine:
 
     def _build_causal_summary(self) -> dict:
         """Aggregate causal event statistics per mutation type."""
-        by_type: dict[str, list[float]] = {}
-        for e in self._causal_events:
-            t = e["mutation_type"]
-            by_type.setdefault(t, []).append(e["fitness_delta"])
-        summary = {}
-        for t, deltas in sorted(by_type.items()):
-            n = len(deltas)
-            positive = sum(1 for d in deltas if d > 0)
-            summary[t] = {
-                "count": n,
-                "mean_delta": round(statistics.mean(deltas), 4) if n else 0.0,
-                "positive_rate": round(positive / n, 3) if n else 0.0,
-                "std_delta": round(statistics.stdev(deltas), 4) if n > 1 else 0.0,
-            }
-        return {
-            "total_events": len(self._causal_events),
-            "by_mutation_type": summary,
-            "note": "fitness_delta = child_fitness - mean(parent_fitness); "
-                    "correlation ≠ causation",
-        }
+        return build_causal_summary(self._causal_events)
 
     def _genome_signature(self, genome: list[float]) -> tuple:
         """Coarse spatial signature: ('familiar', pattern) or ('novel', ()).
@@ -553,14 +501,7 @@ class EvolutionEngine:
 
     @staticmethod
     def _pattern_similarity(a: tuple, b: tuple) -> float:
-        if not a or not b or len(a) != len(b):
-            return 0.0
-        na = math.sqrt(sum(x * x for x in a))
-        nb = math.sqrt(sum(x * x for x in b))
-        if na < 1e-9 or nb < 1e-9:
-            return 0.0
-        dot = sum(x * y for x, y in zip(a, b))
-        return max(-1.0, min(1.0, dot / (na * nb)))
+        return pattern_similarity(a, b)
 
     def _sandbox_score(self, genome: list[float]) -> float:
         """Sandboxed evaluation for memory recall candidates.
@@ -653,28 +594,7 @@ class EvolutionEngine:
         any distance failure falls back to normalized fitness spread, and an
         empty/singleton population reports 0.0. Never raises.
         """
-        try:
-            n = len(pop)
-            if n < 2:
-                return 0.0
-            # Cap O(n^2) cost: sample at most 16 individuals deterministically.
-            sample = pop[:16] if n > 16 else pop
-            total = 0.0
-            count = 0
-            for i in range(len(sample)):
-                for j in range(i + 1, len(sample)):
-                    try:
-                        total += float(self.distance(sample[i], sample[j]))
-                        count += 1
-                    except Exception:
-                        continue
-            if count:
-                return round(total / count, 4)
-            fits = [float(getattr(ind, "fitness", 0.0)) for ind in pop]
-            spread = max(fits) - min(fits) if fits else 0.0
-            return round(max(0.0, min(spread / 100.0, 1.0)), 4)
-        except Exception:
-            return 0.0
+        return calculate_population_diversity(pop, self.distance)
 
     def _cache_misses_total(self) -> int:
         """Atom 1: best-effort cache-miss total through wrapper chains.
@@ -684,36 +604,7 @@ class EvolutionEngine:
         is folded as zero misses with the raw eval counter authoritative).
         Never raises.
         """
-        try:
-            seen = set()
-            node = self.fitness_fn
-            for _ in range(6):
-                if node is None or id(node) in seen:
-                    break
-                seen.add(id(node))
-                try:
-                    misses = getattr(node, "misses", None)
-                    if isinstance(misses, int):
-                        return max(int(misses), 0)
-                except Exception:
-                    pass
-                try:
-                    stats = getattr(node, "stats", None)
-                    if callable(stats):
-                        st = stats()
-                    else:
-                        st = stats
-                    if isinstance(st, dict) and isinstance(st.get("misses"), int):
-                        return max(int(st["misses"]), 0)
-                except Exception:
-                    pass
-                try:
-                    node = getattr(node, "raw", None)
-                except Exception:
-                    break
-            return 0
-        except Exception:
-            return 0
+        return count_cache_misses(self.fitness_fn)
 
     def assign_species(self, child: Individual) -> Species:
         if not self.speciation_enabled:
