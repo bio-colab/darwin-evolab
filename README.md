@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-599%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-616%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -226,10 +226,10 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 ### 3. Repository-Wide Test Health
 
 ```
-tests/ (Core, APR, NSGA-II, SWE-bench, Math, Vectorized, Sky130, OpAmp, Surrogate, Yosys, Genesis, Distilled EDA) : 532 passed (100%)
+tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Sky130, Electronics, EDA) : 549 passed (100%)
 experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab, Dual-Mode Studio)            :  67 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                                        : 599 passed (100%)
+Total Automated Test Suite                                                                                        : 616 passed (100%)
 ```
 
 ---

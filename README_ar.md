@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-599%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-616%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
 
@@ -384,10 +384,10 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 ### 3. سلامة حزمة الاختبارات الشاملة للمستودع
 
 ```
-tests/ (النواة، إصلاح البرمجيات، NSGA-II، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، Surrogate، Yosys، Genesis): 532 ناجح (100%)
+tests/ (النواة، إيجاز كوزا، ميلر CGP، مخططات هولاند، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، EDA) : 549 ناجح (100%)
 experimental/electronics/tests/ (محاكاة SPICE، دوائر CGP، واجهة WebUSB، أهداف FPGA، مختبر Spec2Ckt، استوديو النمطين): 67 ناجح (100%)
 ==================================================================================================================
-الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 599 ناجح (100%)
+الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 616 ناجح (100%)
 ```
 
 > 📄 **بيانات جبهة باريتو ومصدر النمذجة الكامل**: انظر الملف الموثق [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) والتقرير الأكاديمي الشامل [`docs/RESULTS.md`](docs/RESULTS.md).
