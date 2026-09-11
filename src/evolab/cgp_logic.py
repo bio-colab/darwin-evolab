@@ -422,6 +422,161 @@ def mutate_cgp_genome(
     return child
 
 
+def measure_neutrality(genome: CGPGenome) -> float:
+    """Calculates the ratio of inactive (neutral) gates in a CGP genome.
+
+    In Cartesian Genetic Programming (Miller 1999, 2011), neutrality represents the
+    proportion of functional nodes whose outputs do not trace back to any primary output:
+        neutrality = (total_nodes - active_nodes) / total_nodes
+    Higher neutrality provides latent capacity for neutral drift across fitness plateaus.
+    """
+    total = len(genome.nodes)
+    if total == 0:
+        return 0.0
+    active = len(genome.get_active_nodes())
+    return round(max(0, total - active) / total, 4)
+
+
+def classify_mutation(parent: CGPGenome, child: CGPGenome) -> str:
+    """Classifies whether a mutation altered active subgraphs (phenotypic) or silent nodes (neutral)."""
+    if parent.output_connections != child.output_connections:
+        return "phenotypic"
+    parent_active = parent.get_active_nodes()
+    for active_idx in parent_active:
+        node_idx = active_idx - parent.num_inputs
+        p_node = parent.nodes[node_idx]
+        c_node = child.nodes[node_idx]
+        if (
+            p_node.gate_type != c_node.gate_type
+            or p_node.input_a != c_node.input_a
+            or p_node.input_b != c_node.input_b
+        ):
+            return "phenotypic"
+    return "neutral"
+
+
+def evolve_cgp(
+    num_inputs: int,
+    num_outputs: int,
+    evaluator: Any,
+    lambda_offspring: int = 4,
+    max_evaluations: int = 1000,
+    target_fitness: float = 100.0,
+    num_nodes: int = 15,
+    mutation_rate: float = 0.15,
+    allow_neutral_drift: bool = True,
+    allowed_gates: Sequence[GateType] | None = None,
+    seed_genome: CGPGenome | None = None,
+    rng: random.Random | None = None,
+) -> tuple[CGPGenome, list[dict[str, Any]], int]:
+    """Synthesizes a digital circuit using Julian Miller's canonical (1 + lambda)-ES with neutral drift.
+
+    References:
+        - Miller, J. F. (1999). An empirical study of the efficiency of learning
+          boolean functions using a Cartesian Genetic Programming approach. GECCO-1999.
+        - Miller, J. F., & Thomson, P. (2000). Cartesian Genetic Programming. EuroGP-2000.
+        - Miller, J. F. (2011). Cartesian Genetic Programming. Natural Computing Series, Springer.
+
+    Algorithm Dynamics:
+        1. Generates lambda offspring per generation via point mutations.
+        2. Evaluates each offspring against the target specification.
+        3. Applies Miller's Selection Criterion:
+           - A child replaces the parent if f(child) > f(parent) [Darwinian improvement].
+           - If allow_neutral_drift=True, a child ALSO replaces the parent if
+             f(child) == f(parent) [Neutral drift traversal of fitness plateaus].
+           - If multiple children tie for the best score, the latest evaluated child is chosen.
+
+    Returns:
+        tuple[CGPGenome, list[dict[str, Any]], int]:
+            - best_genome: The highest-fitness evolved circuit genome.
+            - history: Generational telemetry of fitness, active nodes, neutrality, and drift events.
+            - total_evaluations: Cumulative number of fitness evaluations consumed.
+    """
+    r = rng or random.Random()
+    if seed_genome is not None:
+        parent = seed_genome.clone()
+    else:
+        parent = create_random_cgp_genome(
+            num_inputs=num_inputs,
+            num_outputs=num_outputs,
+            num_nodes=num_nodes,
+            allowed_gates=allowed_gates,
+            rng=r,
+        )
+
+    def _eval(g: CGPGenome) -> float:
+        if hasattr(evaluator, "evaluate"):
+            return float(evaluator.evaluate(g))
+        return float(evaluator(g))
+
+    parent_fitness = _eval(parent)
+    evaluations = 1
+    generation = 0
+
+    history: list[dict[str, Any]] = [
+        {
+            "generation": 0,
+            "evaluations": evaluations,
+            "fitness": parent_fitness,
+            "active_nodes": len(parent.get_active_nodes()),
+            "total_nodes": len(parent.nodes),
+            "neutrality": measure_neutrality(parent),
+            "action": "init",
+        }
+    ]
+
+    while evaluations < max_evaluations and parent_fitness < target_fitness:
+        generation += 1
+
+        best_child: CGPGenome | None = None
+        best_child_fitness = -float("inf")
+        best_child_mutation_type = "neutral"
+
+        for _ in range(lambda_offspring):
+            if evaluations >= max_evaluations:
+                break
+            child = mutate_cgp_genome(parent, mutation_rate=mutation_rate, rng=r)
+            m_type = classify_mutation(parent, child)
+            score = _eval(child)
+            evaluations += 1
+
+            # Miller's tie-breaking: on equal or better fitness, update best_child
+            if score >= best_child_fitness:
+                best_child = child
+                best_child_fitness = score
+                best_child_mutation_type = m_type
+
+        if best_child is None:
+            break
+
+        # Selection logic
+        action = None
+        if best_child_fitness > parent_fitness:
+            parent = best_child
+            parent_fitness = best_child_fitness
+            action = "improvement"
+        elif allow_neutral_drift and best_child_fitness == parent_fitness:
+            parent = best_child
+            action = "neutral_drift"
+
+        if action is not None or (generation % 25 == 0) or (parent_fitness >= target_fitness):
+            history.append(
+                {
+                    "generation": generation,
+                    "evaluations": evaluations,
+                    "fitness": parent_fitness,
+                    "active_nodes": len(parent.get_active_nodes()),
+                    "total_nodes": len(parent.nodes),
+                    "neutrality": measure_neutrality(parent),
+                    "action": action or "stagnant",
+                    "mutation_type": best_child_mutation_type if action else None,
+                }
+            )
+
+    return parent, history, evaluations
+
+
+
 # ===========================================================================
 # CMOS Logic Reference Specifications & Truth Tables
 # ===========================================================================
