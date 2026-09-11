@@ -46,3 +46,31 @@ def test_cli_audit_subcommand(tmp_path: Path):
     assert "governor" in data
     assert "code_benchmarks" in data
     assert data["code_benchmarks"]["passed"] == 4
+
+
+def test_cli_progressive_disclosure(tmp_path: Path, capsys):
+    out_file = tmp_path / "report_lean.json"
+    main(["repair", "--scenario", "click_cli_parser", "--quiet", "-o", str(out_file)])
+    captured = capsys.readouterr().out
+    assert "Saved to        :" in captured
+    assert "use --diagnose for detailed fault analysis" in captured
+    assert "REPAIR DIAGNOSTICS" not in captured
+
+    out_diag = tmp_path / "report_diag.json"
+    main(["repair", "--scenario", "click_cli_parser", "--diagnose", "--quiet", "-o", str(out_diag)])
+    captured_diag = capsys.readouterr().out
+    assert "REPAIR DIAGNOSTICS" in captured_diag
+    assert "Richness         :" in captured_diag
+
+
+def test_cli_argument_groups_help():
+    from evolab.cli import build_parser
+    parser = build_parser()
+    sub_action = [a for a in parser._actions if a.dest == "command"][0]
+    p_evo = sub_action.choices["evolve"]
+    help_text = p_evo.format_help()
+    assert "Target Specification & Scenario Inputs:" in help_text
+    assert "Evolution Budget & Hyperparameters:" in help_text
+    assert "Diagnostics, Output & Reporting:" in help_text
+    assert "Silicon & Domain Synthesis (Hardware Track):" in help_text
+

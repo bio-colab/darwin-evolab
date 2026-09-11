@@ -612,20 +612,23 @@ def cmd_evolve(args) -> int:
             f"Best            : {bi['id']} (fitness={bi['fitness']}, "
             f"species={bi.get('species', 'n/a')})"
         )
-        if bi.get("code"):
-            print("Best code:")
-            print(bi["code"])
         if args.diff and diff_text:
             print(diff_text)
+        elif bi.get("code") and getattr(args, "verbose", False):
+            print("Best code:")
+            print(bi["code"])
         if args.diff_file and diff_text:
             Path(args.diff_file).write_text(diff_text, encoding="utf-8")
 
         base_fit = float(baseline_res.score) if baseline_res else None
         base_fails = (baseline_res.artifacts or {}).get("failures", []) if baseline_res else []
-        print(format_terminal_diagnostics(result, scenario, base_fit, base_fails))
-        print(f"Saved to        : {out_path}")
-        report = parse_report(out_path)
-        print("\n".join(summarize(report)))
+        if getattr(args, "diagnose", False) or getattr(args, "verbose", False):
+            print(format_terminal_diagnostics(result, scenario, base_fit, base_fails))
+            print(f"Saved to        : {out_path}")
+            report = parse_report(out_path)
+            print("\n".join(summarize(report)))
+        else:
+            print(f"Saved to        : {out_path} (use --diagnose for detailed fault analysis & report summary)")
 
     report = parse_report(out_path)
     if not report.is_valid:
@@ -702,6 +705,8 @@ def _ensure_evolve_defaults(args) -> None:
         "llm": None,
         "llm_model": None,
         "quiet": False,
+        "diagnose": False,
+        "verbose": False,
     }
     for k, v in defaults.items():
         if not hasattr(args, k):
@@ -814,6 +819,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_rep.add_argument("--patch-file", default=None, help="save git-apply patch to file")
     p_rep.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
     p_rep.add_argument("-o", "--output", default="run_report.json")
+    p_rep.add_argument("--diagnose", action="store_true", help="display detailed failure diagnostics & report summary")
+    p_rep.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
     p_rep.add_argument("--sandbox", action="store_true")
     p_rep.add_argument("--no-sandbox", action="store_true")
     p_rep.add_argument("--llm", choices=["groq", "gemini", "openai", "mock"], default=None)
@@ -832,61 +839,72 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("--frac", type=float, default=0.667, help="exploitation start fraction")
     p_opt.add_argument("-o", "--output", default="run_report.json")
     p_opt.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
+    p_opt.add_argument("--diagnose", action="store_true", help="display detailed fitness sharing diagnostics & report summary")
+    p_opt.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
     p_opt.add_argument("--quiet", action="store_true", help="suppress live progress updates")
     p_opt.set_defaults(func=cmd_optimize)
 
-    # Subcommand: evolve (original full command with all 35+ flags 100% preserved)
+    # Subcommand: evolve (original full command with all 35+ flags organized into structured groups)
     p_evo = sub.add_parser("evolve", help="run a full evolution experiment with complete parameter control")
-    p_evo.add_argument("--engine", choices=["auto", "greedy", "ga", "nsga2"], default="auto",
-                       help="search engine: auto, greedy (code), ga, nsga2 (Pareto)")
-    p_evo.add_argument("--swe-bench", default=None, help="path to official SWE-bench Lite instance JSON file")
-    p_evo.add_argument("--pareto-export", default=None, help="write non-dominated Pareto front JSON to file")
-    p_evo.add_argument("--max-evals", type=int, default=None,
-                       help="greedy evaluation budget")
-    p_evo.add_argument("-g", "--generations", type=int, default=30)
-    p_evo.add_argument("-p", "--population", type=int, default=16)
-    p_evo.add_argument("-t", "--target", type=float, default=99.7,
-                       help="early-stop / success fitness target")
-    p_evo.add_argument("-s", "--seed", type=int, default=None)
-    p_evo.add_argument("-k", "--patience", type=int, default=15)
-    p_evo.add_argument("--mode", choices=["off", "static", "dynamic"],
-                       default="dynamic", help="GA fitness-sharing schedule")
-    p_evo.add_argument("--frac", type=float, default=0.667)
-    p_evo.add_argument("--genome", choices=["code", "numeric", "electronics"], default="code")
-    p_evo.add_argument("--scenario", default="click_cli_parser")
-    p_evo.add_argument("--scenario-file", default=None, help="JSON CodeScenario")
-    p_evo.add_argument("--source", action="append", default=[],
-                       help="source file (repeatable)")
-    p_evo.add_argument("--tests", default=None, help="JSON test cases")
-    p_evo.add_argument("--pytest", default=None, help="path to pytest file containing assertions")
-    p_evo.add_argument("--llm", choices=["groq", "gemini", "openai", "mock"], default=None,
-                       help="LLM provider for stagnation-breaking mutation")
-    p_evo.add_argument("--llm-model", default=None, help="LLM model name")
-    p_evo.add_argument("--func", default=None, help="target function name")
-    p_evo.add_argument("--target-file", default=None)
-    p_evo.add_argument("--sandbox", action="store_true")
-    p_evo.add_argument("--no-sandbox", action="store_true")
-    p_evo.add_argument("--diff", action="store_true", help="print unified diff")
-    p_evo.add_argument("--diff-file", default=None, help="write unified diff")
-    p_evo.add_argument("--netlist", default=None, help="path to custom SPICE netlist file (.cir)")
-    p_evo.add_argument("--spec", default=None, help="path to custom circuit specification (.json)")
-    p_evo.add_argument("--expr", default=None, help="Boolean logic equation string to synthesize (e.g. 'S = A ^ B; C = A & B')")
-    p_evo.add_argument("--verilog-in", default=None, help="path to synthesizable Verilog RTL module file (.v)")
-    p_evo.add_argument("--waveform", default=None, help="path to target oscilloscope waveform CSV file (time, voltage)")
-    p_evo.add_argument("--fpga-target", choices=["ice40_hx1k", "ice40_up5k", "ecp5_25k", "artix7_35t"],
-                       default="ice40_hx1k", help="target FPGA board preset for synthesis and resource estimation")
-    p_evo.add_argument("--objective", choices=["power", "speed", "area", "balanced"], default="balanced",
-                       help="multi-objective optimization priority for circuit synthesis")
-    p_evo.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console",
-                       help="primary stdout format")
-    p_evo.add_argument("--patch-file", "--patch-out", default=None, help="write git-apply compatible patch to file")
-    p_evo.add_argument("--summary-file", default=None, help="write GitHub Markdown summary to file")
-    p_evo.add_argument("--schematic-file", default=None, help="write synthesized circuit SVG schematic to file")
-    p_evo.add_argument("--verilog-file", default=None, help="write synthesized digital circuit Verilog netlist to file")
-    p_evo.add_argument("--ui-file", default=None, help="write interactive HTML5 Silicon Workbench dashboard to file")
-    p_evo.add_argument("--apply", action="store_true", help="apply successful repair in-place to source file (creates .bak)")
-    p_evo.add_argument("-o", "--output", default="run_report.json")
-    p_evo.add_argument("--quiet", action="store_true", help="suppress live terminal progress")
+
+    g_input = p_evo.add_argument_group("Target Specification & Scenario Inputs")
+    g_input.add_argument("--scenario", default="click_cli_parser", help="built-in benchmark scenario")
+    g_input.add_argument("--scenario-file", default=None, help="JSON CodeScenario")
+    g_input.add_argument("--source", action="append", default=[], help="source file (repeatable)")
+    g_input.add_argument("--pytest", default=None, help="path to pytest file containing assertions")
+    g_input.add_argument("--tests", default=None, help="JSON test cases")
+    g_input.add_argument("--func", default=None, help="target function name")
+    g_input.add_argument("--target-file", default=None)
+    g_input.add_argument("--swe-bench", default=None, help="path to official SWE-bench Lite instance JSON file")
+
+    g_budget = p_evo.add_argument_group("Evolution Budget & Hyperparameters")
+    g_budget.add_argument("--engine", choices=["auto", "greedy", "ga", "nsga2"], default="auto",
+                          help="search engine: auto, greedy (code), ga, nsga2 (Pareto)")
+    g_budget.add_argument("--genome", choices=["code", "numeric", "electronics"], default="code")
+    g_budget.add_argument("-g", "--generations", type=int, default=30)
+    g_budget.add_argument("-p", "--population", type=int, default=16)
+    g_budget.add_argument("-t", "--target", type=float, default=99.7,
+                          help="early-stop / success fitness target")
+    g_budget.add_argument("-s", "--seed", type=int, default=None)
+    g_budget.add_argument("-k", "--patience", type=int, default=15)
+    g_budget.add_argument("--max-evals", type=int, default=None, help="greedy evaluation budget")
+    g_budget.add_argument("--mode", choices=["off", "static", "dynamic"],
+                          default="dynamic", help="GA fitness-sharing schedule")
+    g_budget.add_argument("--frac", type=float, default=0.667)
+
+    g_diag = p_evo.add_argument_group("Diagnostics, Output & Reporting")
+    g_diag.add_argument("--diff", action="store_true", help="print unified diff")
+    g_diag.add_argument("--diff-file", default=None, help="write unified diff")
+    g_diag.add_argument("--diagnose", action="store_true", help="display detailed failure diagnostics & report summary")
+    g_diag.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
+    g_diag.add_argument("--quiet", action="store_true", help="suppress live terminal progress")
+    g_diag.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console",
+                        help="primary stdout format")
+    g_diag.add_argument("-o", "--output", default="run_report.json")
+    g_diag.add_argument("--apply", action="store_true", help="apply successful repair in-place to source file (creates .bak)")
+    g_diag.add_argument("--patch-file", "--patch-out", default=None, help="write git-apply compatible patch to file")
+    g_diag.add_argument("--summary-file", default=None, help="write GitHub Markdown summary to file")
+    g_diag.add_argument("--pareto-export", default=None, help="write non-dominated Pareto front JSON to file")
+    g_diag.add_argument("--sandbox", action="store_true")
+    g_diag.add_argument("--no-sandbox", action="store_true")
+    g_diag.add_argument("--llm", choices=["groq", "gemini", "openai", "mock"], default=None,
+                        help="LLM provider for stagnation-breaking mutation")
+    g_diag.add_argument("--llm-model", default=None, help="LLM model name")
+
+    g_silicon = p_evo.add_argument_group("Silicon & Domain Synthesis (Hardware Track)")
+    g_silicon.add_argument("--netlist", default=None, help="path to custom SPICE netlist file (.cir)")
+    g_silicon.add_argument("--spec", default=None, help="path to custom circuit specification (.json)")
+    g_silicon.add_argument("--expr", default=None, help="Boolean logic equation string to synthesize")
+    g_silicon.add_argument("--verilog-in", default=None, help="path to synthesizable Verilog RTL module file (.v)")
+    g_silicon.add_argument("--verilog-file", default=None, help="write synthesized digital circuit Verilog netlist to file")
+    g_silicon.add_argument("--waveform", default=None, help="path to target oscilloscope waveform CSV file")
+    g_silicon.add_argument("--fpga-target", choices=["ice40_hx1k", "ice40_up5k", "ecp5_25k", "artix7_35t"],
+                           default="ice40_hx1k", help="target FPGA board preset")
+    g_silicon.add_argument("--objective", choices=["power", "speed", "area", "balanced"], default="balanced",
+                           help="multi-objective optimization priority for circuit synthesis")
+    g_silicon.add_argument("--schematic-file", default=None, help="write synthesized circuit SVG schematic to file")
+    g_silicon.add_argument("--ui-file", default=None, help="write interactive HTML5 Silicon Workbench dashboard to file")
+
     p_evo.set_defaults(func=cmd_evolve)
     return ap
 
