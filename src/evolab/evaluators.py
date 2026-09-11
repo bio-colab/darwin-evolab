@@ -153,6 +153,7 @@ class FunctionTestEvaluator(Evaluator):
         test_cases: Sequence[tuple[tuple[Any, ...], Any]],
         holdout_cases: Sequence[tuple[tuple[Any, ...], Any]] | None = None,
         timeout_seconds: float = 1.0,
+        parsimony_weight: float = 0.0,
     ):
         self.base_sources = base_sources
         self.target_file = target_file
@@ -160,6 +161,7 @@ class FunctionTestEvaluator(Evaluator):
         self.test_cases = list(test_cases)
         self.holdout_cases = list(holdout_cases) if holdout_cases is not None else None
         self.timeout_seconds = timeout_seconds
+        self.parsimony_weight = float(parsimony_weight)
         self.last_suspicion_map = None
 
     #: Observable state that ``evaluate`` mutates as a side effect. The
@@ -305,6 +307,11 @@ class FunctionTestEvaluator(Evaluator):
 
                 # Base score: 20 points for compilation + 80 points for test passing ratio
                 score = round(20.0 + 80.0 * test_ratio, 2)
+                parsimony_penalty = 0.0
+                if self.parsimony_weight > 0.0:
+                    edit_count = len(getattr(patch, "edits", [])) if hasattr(patch, "edits") else 0
+                    parsimony_penalty = min(5.0, round(self.parsimony_weight * edit_count, 4))
+                    score = max(0.0, round(score - parsimony_penalty, 2))
 
                 passed_holdout = None
                 if self.holdout_cases is not None:
@@ -312,11 +319,19 @@ class FunctionTestEvaluator(Evaluator):
                     passed_holdout = (h_passed == h_total)
 
                 duration = (time.perf_counter() - t0) * 1000.0
+                sub_scores = {"compiled": 100.0, "tests_passed": round(test_ratio * 100.0, 2)}
+                if self.parsimony_weight > 0.0:
+                    sub_scores["parsimony_penalty"] = parsimony_penalty
                 return FitnessResult(
                     score=score,
-                    sub_scores={"compiled": 100.0, "tests_passed": round(test_ratio * 100.0, 2)},
+                    sub_scores=sub_scores,
                     passed_holdout=passed_holdout,
-                    artifacts={"passed_tests": passed, "total_tests": total, "failures": failure_details},
+                    artifacts={
+                        "passed_tests": passed,
+                        "total_tests": total,
+                        "failures": failure_details,
+                        "parsimony_penalty": parsimony_penalty,
+                    },
                     evaluation_time_ms=duration,
                 )
             finally:
@@ -344,6 +359,7 @@ class SandboxFunctionTestEvaluator(Evaluator):
         test_cases: Sequence[tuple[tuple[Any, ...], Any]],
         holdout_cases: Sequence[tuple[tuple[Any, ...], Any]] | None = None,
         config: Any = None,
+        parsimony_weight: float = 0.0,
     ):
         from .sandbox import SandboxConfig, SandboxRunner
 
@@ -354,6 +370,7 @@ class SandboxFunctionTestEvaluator(Evaluator):
         self.holdout_cases = list(holdout_cases) if holdout_cases is not None else None
         self.config = config or SandboxConfig()
         self.runner = SandboxRunner(self.config)
+        self.parsimony_weight = float(parsimony_weight)
 
     @property
     def deterministic(self) -> bool:
@@ -433,16 +450,26 @@ class SandboxFunctionTestEvaluator(Evaluator):
 
         test_ratio = passed / total if total > 0 else 1.0
         score = round(20.0 + 80.0 * test_ratio, 2)
+        parsimony_penalty = 0.0
+        if self.parsimony_weight > 0.0:
+            edit_count = len(getattr(patch, "edits", [])) if hasattr(patch, "edits") else 0
+            parsimony_penalty = min(5.0, round(self.parsimony_weight * edit_count, 4))
+            score = max(0.0, round(score - parsimony_penalty, 2))
+
+        sub_scores = {"compiled": 100.0, "tests_passed": round(test_ratio * 100.0, 2)}
+        if self.parsimony_weight > 0.0:
+            sub_scores["parsimony_penalty"] = parsimony_penalty
 
         return FitnessResult(
             score=score,
-            sub_scores={"compiled": 100.0, "tests_passed": round(test_ratio * 100.0, 2)},
+            sub_scores=sub_scores,
             passed_holdout=holdout_passed,
             artifacts={
                 "passed_tests": passed,
                 "total_tests": total,
                 "failures": val.get("details", []),
                 "stdout": exec_res.stdout,
+                "parsimony_penalty": parsimony_penalty,
             },
             evaluation_time_ms=duration,
         )

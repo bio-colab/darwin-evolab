@@ -104,6 +104,7 @@ class SoftwareRepairSpec:
     tests: list[tuple[Any, Any]]
     func_name: str
     use_sandbox: bool = True
+    parsimony_weight: float = 0.0
 
 
 class SoftwareRepairAdapter(DomainAdapter):
@@ -125,6 +126,7 @@ class SoftwareRepairAdapter(DomainAdapter):
                 target_file=raw_input.target_file,
                 tests=list(raw_tests),
                 func_name=raw_input.func_name,
+                parsimony_weight=float(getattr(raw_input, "parsimony_weight", 0.0)),
             )
         elif isinstance(raw_input, str) and raw_input in SCENARIO_REGISTRY:
             sc = SCENARIO_REGISTRY[raw_input]()
@@ -139,6 +141,7 @@ class SoftwareRepairAdapter(DomainAdapter):
                 tests=list(raw_input.get("tests", [])),
                 func_name=str(raw_input.get("func_name", "solve")),
                 use_sandbox=bool(raw_input.get("use_sandbox", True)),
+                parsimony_weight=float(raw_input.get("parsimony_weight", 0.0)),
             )
         raise TypeError(f"Cannot parse software repair spec from {type(raw_input)}")
 
@@ -176,12 +179,14 @@ class SoftwareRepairAdapter(DomainAdapter):
                 target_file=spec.target_file,
                 func_name=spec.func_name,
                 test_cases=spec.tests,
+                parsimony_weight=spec.parsimony_weight,
             )
         return FunctionTestEvaluator(
             base_sources=spec.sources,
             target_file=spec.target_file,
             func_name=spec.func_name,
             test_cases=spec.tests,
+            parsimony_weight=spec.parsimony_weight,
         )
 
     def export_solution(

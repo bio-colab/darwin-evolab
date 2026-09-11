@@ -670,12 +670,56 @@ def _score(evaluator: Any, genome: RepairGenome) -> tuple[float, bool | None]:
     return float(result.score), result.passed_holdout
 
 
+def parsimony_prune(
+    sources: dict[str, str],
+    target_file: str,
+    genome: RepairGenome,
+    evaluator: Any,
+) -> tuple[RepairGenome, int]:
+    """Koza Parsimony Shrink: eliminates redundant edits from a multi-edit patch.
+
+    Tests 1-minimality: for each edit in reverse order, evaluates the genome
+    without that edit. If the pruned genome achieves >= score and preserves
+    holdout status, the edit is pruned as a non-essential syntactic intron.
+
+    Returns (pruned_genome, evals_used).
+    """
+    if len(genome.edits) <= 1:
+        return genome, 0
+
+    current = genome.clone()
+    best_score, best_hold = _score(evaluator, current)
+    evals = 1
+
+    pruning = True
+    while pruning and len(current.edits) > 1:
+        pruning = False
+        for i in reversed(range(len(current.edits))):
+            candidate_edits = [e for j, e in enumerate(current.edits) if j != i]
+            trial = RepairGenome(
+                sources=dict(sources),
+                target_file=target_file,
+                edits=candidate_edits,
+            )
+            score, hold = _score(evaluator, trial)
+            evals += 1
+            if score >= best_score and (hold is True or (hold is None and best_hold is None)):
+                current = trial
+                best_score = score
+                best_hold = hold
+                pruning = True
+                break
+
+    return current, evals
+
+
 def greedy_repair(
     sources: dict[str, str],
     target_file: str,
     evaluator: Any,
     max_evals: int | None = None,
     prioritize_by_suspicion: bool = True,
+    parsimony_shrink: bool = True,
 ) -> tuple[RepairGenome, list[dict[str, Any]], int]:
     """Forward greedy: add a gene only if it raises score and does not fail holdout."""
     catalog = catalog_sources(sources)
@@ -724,7 +768,19 @@ def greedy_repair(
                 continue
             if hold is False and best_hold is True:
                 continue
-            if score > best_trial_score or (score == best_trial_score and hold is True and best_trial_hold is not True):
+
+            # Koza Lexicographic Parsimony: higher score strictly preferred;
+            # on equal scores, prefer holdout compliance; on identical holdout, prefer minimal edit footprint.
+            is_better = False
+            if score > best_trial_score:
+                is_better = True
+            elif score == best_trial_score:
+                if hold is True and best_trial_hold is not True:
+                    is_better = True
+                elif (hold == best_trial_hold) and len(trial.edits) < len(getattr(best_trial, "edits", [])):
+                    is_better = True
+
+            if is_better:
                 best_trial = trial
                 best_trial_score = score
                 best_trial_hold = hold
@@ -746,6 +802,19 @@ def greedy_repair(
         improved = True
         if best_score >= 100.0 and best_hold is not False:
             break
+
+    if parsimony_shrink and len(current.edits) > 1:
+        current, prune_evals = parsimony_prune(sources, target_file, current, evaluator)
+        evaluations += prune_evals
+        if len(current.edits) < history[-1].get("edits", 0):
+            history.append({
+                "generation": gen + 1,
+                "best_fitness": best_score,
+                "mean_fitness": best_score,
+                "edits": len(current.edits),
+                "action": "parsimony_shrink",
+            })
+
     return current, history, evaluations
 
 

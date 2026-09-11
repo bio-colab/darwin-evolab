@@ -73,6 +73,7 @@ from .repair import (
     catalog_sources,
     greedy_repair,
     list_repair_patterns,
+    parsimony_prune,
     register_repair_pattern,
     unified_source_diff,
     unregister_repair_pattern,
