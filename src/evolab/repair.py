@@ -720,6 +720,7 @@ def greedy_repair(
     max_evals: int | None = None,
     prioritize_by_suspicion: bool = True,
     parsimony_shrink: bool = True,
+    on_step: Any = None,
 ) -> tuple[RepairGenome, list[dict[str, Any]], int]:
     """Forward greedy: add a gene only if it raises score and does not fail holdout."""
     catalog = catalog_sources(sources)
@@ -760,6 +761,11 @@ def greedy_repair(
             )
             score, hold = _score(evaluator, trial)
             evaluations += 1
+            if on_step is not None:
+                try:
+                    on_step(gen, best_score, evaluations, edit.kind)
+                except Exception:
+                    pass
             if max_evals is not None and evaluations >= max_evals:
                 if best_trial is None:
                     return current, history, evaluations
@@ -825,6 +831,8 @@ def greedy_run_report(
     scenario_name: str = "",
     max_evals: int | None = None,
     prioritize_by_suspicion: bool = True,
+    parsimony_shrink: bool = True,
+    on_step: Any = None,
 ) -> dict[str, Any]:
     from datetime import datetime, timezone
 
@@ -834,6 +842,8 @@ def greedy_run_report(
         evaluator,
         max_evals=max_evals,
         prioritize_by_suspicion=prioritize_by_suspicion,
+        parsimony_shrink=parsimony_shrink,
+        on_step=on_step,
     )
     score, hold = _score(evaluator, genome)
     evaluations += 1

@@ -100,12 +100,14 @@ class GreedySearchStrategy(SearchStrategy):
         scenario_name: str = "",
         max_evals: int | None = None,
         prioritize_by_suspicion: bool = True,
+        on_step: Any = None,
     ) -> None:
         self.sources = sources or {}
         self.target_file = target_file
         self.scenario_name = scenario_name
         self.max_evals = max_evals
         self.prioritize_by_suspicion = prioritize_by_suspicion
+        self.on_step = on_step
 
     def search(
         self,
@@ -118,6 +120,7 @@ class GreedySearchStrategy(SearchStrategy):
         scenario_name = kwargs.get("scenario_name", self.scenario_name)
         max_evals = kwargs.get("max_evals", self.max_evals)
         prioritize = kwargs.get("prioritize_by_suspicion", self.prioritize_by_suspicion)
+        on_step = kwargs.get("on_step", self.on_step)
 
         return greedy_run_report(
             sources=sources,
@@ -126,6 +129,7 @@ class GreedySearchStrategy(SearchStrategy):
             scenario_name=scenario_name,
             max_evals=max_evals,
             prioritize_by_suspicion=prioritize,
+            on_step=on_step,
         )
 
 

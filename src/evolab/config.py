@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
+from pathlib import Path
 
 
 @dataclass
@@ -79,3 +80,147 @@ class EngineConfig:
     hard_constraints: Sequence[Callable] = field(default_factory=tuple)
     record_population_snapshots: bool = False
     record_archive_solutions: bool = False
+
+
+# ==============================================================================
+# Declarative Project Configuration (evolab.toml / .evolab.json / pyproject.toml)
+# ==============================================================================
+
+def find_project_config_file(start_dir: Path | str | None = None) -> Path | None:
+    """Search upwards from start_dir for evolab.toml, .evolab.json, or pyproject.toml."""
+    cur = Path(start_dir or ".").resolve()
+    for directory in [cur, *cur.parents]:
+        for candidate in ["evolab.toml", ".evolab.json", "pyproject.toml"]:
+            target = directory / candidate
+            if target.is_file():
+                if candidate == "pyproject.toml":
+                    try:
+                        content = target.read_text(encoding="utf-8")
+                        if "[tool.evolab]" in content:
+                            return target
+                    except Exception:
+                        continue
+                else:
+                    return target
+    return None
+
+
+def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
+    """Load declarative evolab configuration if found in current project directory tree."""
+    cfg_file = find_project_config_file(start_dir)
+    if not cfg_file:
+        return {}
+
+    try:
+        content = cfg_file.read_text(encoding="utf-8")
+    except Exception:
+        return {}
+
+    raw_data: dict[str, Any] = {}
+    if cfg_file.suffix == ".json":
+        import json
+        try:
+            raw_data = json.loads(content)
+        except Exception:
+            return {}
+    else:
+        # TOML format
+        try:
+            import tomllib
+            raw_data = tomllib.loads(content)
+        except ImportError:
+            try:
+                import tomli as tomllib
+                raw_data = tomllib.loads(content)
+            except ImportError:
+                # Fallback: simple line parser for basic key = value
+                raw_data = {}
+                current_section = ""
+                for line in content.splitlines():
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    if line.startswith("[") and line.endswith("]"):
+                        current_section = line[1:-1].strip()
+                        continue
+                    if "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        v = v.strip().strip('"').strip("'")
+                        target_sec = raw_data.setdefault(current_section, {}) if current_section else raw_data
+                        if v.lower() in ("true", "false"):
+                            target_sec[k] = v.lower() == "true"
+                        elif v.isdigit():
+                            target_sec[k] = int(v)
+                        else:
+                            try:
+                                target_sec[k] = float(v)
+                            except ValueError:
+                                target_sec[k] = v
+
+    if "tool" in raw_data and "evolab" in raw_data["tool"]:
+        raw_data = raw_data["tool"]["evolab"]
+
+    # Flatten sections ([project], [engine], [reporting]) into unified CLI option map
+    flat: dict[str, Any] = {}
+    for section_key, section_val in raw_data.items():
+        if isinstance(section_val, dict):
+            for k, v in section_val.items():
+                flat[k] = v
+        else:
+            flat[section_key] = section_val
+
+    # Normalize aliases
+    if "sources" in flat and "source" not in flat:
+        flat["source"] = flat.pop("sources")
+    if "tests" in flat and isinstance(flat["tests"], list):
+        import json
+        flat["tests"] = json.dumps(flat["tests"])
+
+    return flat
+
+
+def generate_default_config(fmt: str = "toml") -> str:
+    """Generate starter configuration template for evolab init."""
+    if fmt.lower() == "json":
+        import json
+        return json.dumps({
+            "project": {
+                "sources": ["app.py"],
+                "pytest": "tests/test_app.py",
+            },
+            "engine": {
+                "engine": "auto",
+                "generations": 30,
+                "population": 16,
+                "target": 99.7,
+                "seed": 42,
+            },
+            "reporting": {
+                "diff": True,
+                "output": "run_report.json",
+            },
+        }, indent=2) + "\n"
+
+    return """# evolab.toml — Project configuration for darwin-evolab
+
+[project]
+# Target source file(s) to evolve / repair
+sources = ["app.py"]
+
+# Pytest assertion file to evaluate solutions
+pytest = "tests/test_app.py"
+
+[engine]
+# Search engine: "auto", "greedy" (code), "ga" (numerical), or "nsga2"
+engine = "auto"
+generations = 30
+population = 16
+target = 99.7
+seed = 42
+
+[reporting]
+diff = true
+output = "run_report.json"
+"""
+

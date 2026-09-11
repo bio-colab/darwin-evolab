@@ -44,7 +44,7 @@ def cmd_inspect(args) -> int:
 
 
 def _build_engine(args, fitness_fn=None, genome_size=None) -> EvolutionEngine:
-    return EvolutionEngine(
+    engine = EvolutionEngine(
         population_size=args.population,
         early_stop_fitness=args.target,
         stagnation_patience=args.patience,
@@ -54,6 +54,12 @@ def _build_engine(args, fitness_fn=None, genome_size=None) -> EvolutionEngine:
         fitness_fn=fitness_fn,
         genome_size=genome_size,
     )
+    from .ui.terminal import TerminalProgressObserver
+    quiet = getattr(args, "quiet", False)
+    gens = getattr(args, "generations", 30)
+    observer = TerminalProgressObserver(total_generations=gens, quiet=quiet)
+    observer.attach_to_engine(engine)
+    return engine
 
 
 def _resolve_engine(args) -> str:
@@ -338,6 +344,9 @@ def cmd_evolve(args) -> int:
         except Exception:
             pass
 
+        from .ui.terminal import StepProgressObserver
+        quiet = getattr(args, "quiet", False)
+        step_observer = StepProgressObserver(quiet=quiet)
         from .strategies import get_search_strategy
         strategy = get_search_strategy(
             "greedy",
@@ -345,8 +354,13 @@ def cmd_evolve(args) -> int:
             target_file=scenario.target_file,
             scenario_name=scenario.name,
             max_evals=args.max_evals,
+            on_step=step_observer.on_step,
         )
         result = strategy.search(evaluator)
+        step_observer.complete(
+            best_score=float((result.get("best_individual") or {}).get("fitness", 0.0)),
+            total_evals=int(result.get("total_candidates_evaluated", 0)),
+        )
 
     if getattr(args, "llm", None) and not _hit(result, args.target):
         bi = result.get("best_individual") or {}
@@ -656,16 +670,107 @@ def cmd_serve_workbench(args) -> int:
     return 0
 
 
+def _ensure_evolve_defaults(args) -> None:
+    """Ensure all attributes accessed by cmd_evolve are present even when called from subcommands."""
+    defaults = {
+        "engine": "auto",
+        "genome": "code",
+        "scenario": "click_cli_parser",
+        "scenario_file": None,
+        "source": [],
+        "tests": None,
+        "pytest": None,
+        "func": None,
+        "target_file": None,
+        "generations": 30,
+        "population": 16,
+        "target": 99.7,
+        "seed": None,
+        "patience": 15,
+        "mode": "dynamic",
+        "frac": 0.667,
+        "max_evals": None,
+        "sandbox": False,
+        "no_sandbox": False,
+        "diff": False,
+        "diff_file": None,
+        "apply": False,
+        "format": "console",
+        "patch_file": None,
+        "summary_file": None,
+        "output": "run_report.json",
+        "llm": None,
+        "llm_model": None,
+        "quiet": False,
+    }
+    for k, v in defaults.items():
+        if not hasattr(args, k):
+            setattr(args, k, v)
+
+
+def cmd_repair(args) -> int:
+    """Streamlined subcommand for Automated Program Repair (APR)."""
+    args.genome = "code"
+    args.engine = "greedy"
+    if not hasattr(args, "diff") or args.diff is None:
+        args.diff = True
+    _ensure_evolve_defaults(args)
+    return cmd_evolve(args)
+
+
+def cmd_optimize(args) -> int:
+    """Streamlined subcommand for Numerical and Algorithmic Optimization."""
+    args.genome = "numeric"
+    args.engine = "ga"
+    _ensure_evolve_defaults(args)
+    return cmd_evolve(args)
+
+
+def cmd_audit(args) -> int:
+    """Run autonomous self-audit and governance evaluation."""
+    from .supervisor import SelfAuditSupervisor
+    supervisor = SelfAuditSupervisor(
+        candidate_mode=getattr(args, "candidate", "directed"),
+        full_suite=getattr(args, "full", False),
+        output_path=getattr(args, "output", "reports/self_audit.json"),
+        quiet=getattr(args, "quiet", False),
+    )
+    report = supervisor.run_audit()
+    return 0 if report.get("overall_verdict") == "PASS" else 1
+
+
+def cmd_wizard(args) -> int:
+    """Interactive onboarding wizard."""
+    from .ui.wizard import run_wizard
+    return run_wizard()
+
+
+def cmd_init(args) -> int:
+    """Initialize starter configuration file in current project."""
+    from .config import generate_default_config
+    fmt = getattr(args, "format", "toml")
+    target = Path("evolab.toml" if fmt == "toml" else ".evolab.json")
+    if target.exists() and not getattr(args, "force", False):
+        print(f"error: {target} already exists. Use --force to overwrite.")
+        return 2
+    template = generate_default_config(fmt=fmt)
+    target.write_text(template, encoding="utf-8")
+    print(f"Initialized configuration file: {target}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
-        prog="evolab", description="Evolutionary experimentation lab"
+        prog="evolab", description="Universal Evolutionary Optimization & Synthesis Kernel"
     )
     sub = ap.add_subparsers(dest="command", required=True)
 
+    # Subcommand: inspect
     p_inspect = sub.add_parser("inspect", help="validate and analyze a report file")
     p_inspect.add_argument("file", nargs="?", default=None, help="report JSON path")
     p_inspect.set_defaults(func=cmd_inspect)
 
+    # Subcommand: serve-workbench
     p_serve = sub.add_parser("serve-workbench", help="launch local HTTP server for interactive Silicon Workbench with WebUSB enabled")
     p_serve.add_argument("file", help="path to HTML workbench file")
     p_serve.add_argument("--port", type=int, default=8080, help="HTTP port (default: 8080)")
@@ -673,7 +778,65 @@ def build_parser() -> argparse.ArgumentParser:
     p_serve.add_argument("--no-browser", action="store_true", help="do not auto-open browser")
     p_serve.set_defaults(func=cmd_serve_workbench)
 
-    p_evo = sub.add_parser("evolve", help="run a new evolution experiment")
+    # Subcommand: wizard
+    p_wiz = sub.add_parser("wizard", help="launch interactive step-by-step onboarding wizard")
+    p_wiz.set_defaults(func=cmd_wizard)
+
+    # Subcommand: init
+    p_init = sub.add_parser("init", help="initialize starter evolab.toml or .evolab.json in current directory")
+    p_init.add_argument("--format", choices=["toml", "json"], default="toml", help="configuration file format (default: toml)")
+    p_init.add_argument("--force", action="store_true", help="overwrite existing configuration file")
+    p_init.set_defaults(func=cmd_init)
+
+    # Subcommand: audit
+    p_audit = sub.add_parser("audit", help="run autonomous self-audit and governance verification")
+    p_audit.add_argument("--full", action="store_true", help="run full 30-seed benchmark suite")
+    p_audit.add_argument("--candidate", default="directed", help="candidate mutation strategy mode (default: directed)")
+    p_audit.add_argument("-o", "--output", default="reports/self_audit.json", help="audit report JSON path")
+    p_audit.add_argument("--quiet", action="store_true", help="suppress interactive terminal scorecard")
+    p_audit.set_defaults(func=cmd_audit)
+
+    # Subcommand: repair (focused APR)
+    p_rep = sub.add_parser("repair", help="automated program repair for Python source code")
+    p_rep.add_argument("--source", action="append", default=[], help="source file to repair (repeatable)")
+    p_rep.add_argument("--pytest", default=None, help="path to pytest file containing assertions")
+    p_rep.add_argument("--tests", default=None, help="JSON test cases")
+    p_rep.add_argument("--func", default=None, help="target function name")
+    p_rep.add_argument("--target-file", default=None, help="target file within multi-file project")
+    p_rep.add_argument("--scenario", default="click_cli_parser", help="built-in code scenario (default: click_cli_parser)")
+    p_rep.add_argument("--scenario-file", default=None, help="JSON CodeScenario file")
+    p_rep.add_argument("--max-evals", type=int, default=None, help="search evaluation budget")
+    p_rep.add_argument("-t", "--target", type=float, default=99.7, help="early-stop fitness target")
+    p_rep.add_argument("--diff", action="store_true", default=True, help="print unified diff (default: true)")
+    p_rep.add_argument("--no-diff", dest="diff", action="store_false", help="do not print diff")
+    p_rep.add_argument("--diff-file", default=None, help="write unified diff to file")
+    p_rep.add_argument("--apply", action="store_true", help="apply repair in-place (creates .bak backup)")
+    p_rep.add_argument("--patch-file", default=None, help="save git-apply patch to file")
+    p_rep.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
+    p_rep.add_argument("-o", "--output", default="run_report.json")
+    p_rep.add_argument("--sandbox", action="store_true")
+    p_rep.add_argument("--no-sandbox", action="store_true")
+    p_rep.add_argument("--llm", choices=["groq", "gemini", "openai", "mock"], default=None)
+    p_rep.add_argument("--llm-model", default=None)
+    p_rep.add_argument("--quiet", action="store_true", help="suppress live progress updates")
+    p_rep.set_defaults(func=cmd_repair)
+
+    # Subcommand: optimize (focused numeric optimization)
+    p_opt = sub.add_parser("optimize", help="numerical and algorithm optimization")
+    p_opt.add_argument("-g", "--generations", type=int, default=30, help="number of generations (default: 30)")
+    p_opt.add_argument("-p", "--population", type=int, default=16, help="population size (default: 16)")
+    p_opt.add_argument("-t", "--target", type=float, default=99.7, help="early-stop fitness target")
+    p_opt.add_argument("-s", "--seed", type=int, default=None, help="random seed")
+    p_opt.add_argument("-k", "--patience", type=int, default=15, help="stagnation patience")
+    p_opt.add_argument("--mode", choices=["off", "static", "dynamic"], default="dynamic", help="fitness sharing mode")
+    p_opt.add_argument("--frac", type=float, default=0.667, help="exploitation start fraction")
+    p_opt.add_argument("-o", "--output", default="run_report.json")
+    p_opt.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
+    p_opt.add_argument("--quiet", action="store_true", help="suppress live progress updates")
+    p_opt.set_defaults(func=cmd_optimize)
+
+    # Subcommand: evolve (original full command with all 35+ flags 100% preserved)
+    p_evo = sub.add_parser("evolve", help="run a full evolution experiment with complete parameter control")
     p_evo.add_argument("--engine", choices=["auto", "greedy", "ga", "nsga2"], default="auto",
                        help="search engine: auto, greedy (code), ga, nsga2 (Pareto)")
     p_evo.add_argument("--swe-bench", default=None, help="path to official SWE-bench Lite instance JSON file")
@@ -723,25 +886,61 @@ def build_parser() -> argparse.ArgumentParser:
     p_evo.add_argument("--ui-file", default=None, help="write interactive HTML5 Silicon Workbench dashboard to file")
     p_evo.add_argument("--apply", action="store_true", help="apply successful repair in-place to source file (creates .bak)")
     p_evo.add_argument("-o", "--output", default="run_report.json")
+    p_evo.add_argument("--quiet", action="store_true", help="suppress live terminal progress")
     p_evo.set_defaults(func=cmd_evolve)
     return ap
 
 
 def main(argv: list[str] | None = None) -> int:
+    import sys
+    # If invoked with no arguments in an interactive terminal, offer to launch onboarding wizard
+    if argv is None and len(sys.argv) <= 1:
+        if sys.stdin.isatty() and sys.stdout.isatty():
+            from .ui.wizard import run_wizard
+            return run_wizard()
+
     ap = build_parser()
+
+    # Discover and apply declarative project configuration defaults (evolab.toml / .evolab.json)
+    try:
+        from .config import load_project_config
+        cfg = load_project_config()
+        if cfg:
+            valid_dest = {action.dest for action in ap._actions}
+            if ap._subparsers and hasattr(ap._subparsers, "_actions"):
+                for sub_act in ap._subparsers._actions:
+                    if hasattr(sub_act, "choices") and isinstance(sub_act.choices, dict):
+                        for subp in sub_act.choices.values():
+                            valid_dest.update({a.dest for a in subp._actions})
+            valid_cfg = {k: v for k, v in cfg.items() if k in valid_dest}
+            if valid_cfg:
+                ap.set_defaults(**valid_cfg)
+    except Exception:
+        pass
+
     args = ap.parse_args(argv)
-    if getattr(args, "command", None) == "inspect" and args.file is None:
+    _ensure_evolve_defaults(args)
+    if getattr(args, "command", None) == "inspect" and getattr(args, "file", None) is None:
         print("error: report file not found: <missing path>")
         print("hint: pass a report path, e.g. evolab inspect run_report.json")
         return 2
-    if getattr(args, "command", None) == "inspect":
+    cmd = getattr(args, "command", None)
+    if cmd == "inspect":
         return cmd_inspect(args)
-    if getattr(args, "command", None) == "serve-workbench":
+    if cmd == "serve-workbench":
         return cmd_serve_workbench(args)
-    if getattr(args, "command", None) == "evolve":
+    if cmd == "evolve":
         return cmd_evolve(args)
-    if hasattr(args, "func") and callable(args.func):
-        return args.func(args)
+    if cmd == "repair":
+        return cmd_repair(args)
+    if cmd == "optimize":
+        return cmd_optimize(args)
+    if cmd == "audit":
+        return cmd_audit(args)
+    if cmd == "wizard":
+        return cmd_wizard(args)
+    if cmd == "init":
+        return cmd_init(args)
     return 2
 
 

@@ -1,0 +1,82 @@
+{
+  "timestamp": 1789115087.0186126,
+  "overall_verdict": "NEEDS_REVIEW",
+  "governor": {
+    "verdict": "REJECT",
+    "reason": "mean_not_improved, median_not_improved",
+    "candidate_mode": "directed",
+    "seeds_evaluated": 5
+  },
+  "code_benchmarks": {
+    "total": 4,
+    "passed": 4,
+    "pass_rate": 1.0,
+    "wilson_ci_95": [
+      0.5101,
+      1.0
+    ],
+    "scenarios": {
+      "click_cli_parser": {
+        "passed": true,
+        "fitness": 100.0,
+        "passed_holdout": true,
+        "edits_count": 3,
+        "duration_seconds": 0.094
+      },
+      "requests_http_helper": {
+        "passed": true,
+        "fitness": 100.0,
+        "passed_holdout": true,
+        "edits_count": 2,
+        "duration_seconds": 0.016
+      },
+      "lru_cache_logic": {
+        "passed": true,
+        "fitness": 100.0,
+        "passed_holdout": true,
+        "edits_count": 2,
+        "duration_seconds": 0.027
+      },
+      "multi_file_config": {
+        "passed": true,
+        "fitness": 100.0,
+        "passed_holdout": true,
+        "edits_count": 2,
+        "duration_seconds": 0.026
+      }
+    }
+  },
+  "numeric_benchmarks": {
+    "control": {
+      "mean": 82.504,
+      "median": 83.57,
+      "worst": 78.13,
+      "scores": [
+        81.09,
+        78.13,
+        83.72,
+        83.57,
+        86.01
+      ]
+    },
+    "candidate": {
+      "mean": 82.504,
+      "median": 83.57,
+      "worst": 78.13,
+      "scores": [
+        81.09,
+        78.13,
+        83.72,
+        83.57,
+        86.01
+      ]
+    },
+    "mean_delta": 0.0
+  },
+  "invariants": {
+    "no_state_corruption": true,
+    "security_oracle_pass": true,
+    "bounded_execution_pass": true,
+    "zero_code_regressions": true
+  }
+}
