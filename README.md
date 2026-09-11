@@ -1,15 +1,13 @@
-# darwin-evolab
+# Darwin-Evolab: A Research Framework for Evolutionary Optimization across Software and Silicon
 
-> **Universal Evolutionary Optimization & Synthesis Kernel across Software, Silicon, Discrete Logic, and Mathematics.**
+> **Universal Kernel + Pluggable Domain Adapters across Software, Silicon, Discrete Logic, and Mathematics.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-616%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
-[![Pass Rate](https://img.shields.io/badge/pass%20rate-100%25-success.svg)](https://github.com/bio-colab/darwin-evolab)
-[![Scientific Integrity](https://img.shields.io/badge/methodology-pre--registered%20benchmarks-blueviolet.svg)](Memory.md)
+[![Tests Passing](https://img.shields.io/badge/tests-631%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
-> **Transparency Notice**: `darwin-evolab` is an open research project. All reported metrics are reproducible across random seeds and verified continuously via public GitHub Actions CI. Analytical approximations and physical bounds are explicitly disclosed. We welcome audits, issues, and peer critique.
+> **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, and physical bounds are explicitly disclosed. We invite peer audit and critique.
 
 🌐 **Language / اللغة:**
 - **[العربية / Arabic Documentation & Historical Audit Notes](README_ar.md)**
@@ -42,33 +40,33 @@ graph TD
 
 ---
 
-## 🏛️ Two Flagship Production Pillars vs. 🧪 Exploratory Research Tracks
+## 🏛️ Mature Tracks (Fully Tested, Reproducible via CI) vs. 🧪 Exploratory Tracks (Research Prototypes, `physical_claim: false`)
 
-To eliminate any ambiguity between hardened, production-grade tools and exploratory research interfaces, `darwin-evolab` maintains a crystal-clear architectural boundary:
+To eliminate any ambiguity between hardened, fully-tested pipelines and exploratory research prototypes, `darwin-evolab` maintains a crystal-clear architectural boundary:
 
-### 🌟 Two Flagship Production Pillars (100% Empirically Validated)
-1. **Software Automated Program Repair (APR) & SWE-bench Lite**
+### 🌟 Mature Tracks (Fully Tested, Reproducible via CI)
+1. **Software Automated Program Repair (APR) & SWE-bench Lite Probe**
    - **AST Mutation Operators**: Precise statement-level and expression-level rewrites (`DeleteStatement`, `InsertGuard`, `SwapCondition`, `ReplaceConstant`, `CallWrap`).
    - **Spectrum-Based Fault Localization (SBFL Ochiai)**: Focuses search on suspicious code paths using test execution spectra.
-   - **Dual Invariant Enforcement**: Ensures 100% pass on failing test cases (`FAIL_TO_PASS`) with zero regressions on existing test suites (`PASS_TO_PASS`).
-   - **Zero-Breakage Memoization**: Program-keyed evaluation cache (`eval_cache.py`) achieving 72.8%–92.6% evaluation speedups.
-   - **Production-Ready Artifacts**: Emits standardized, `git apply`-ready unified diff patches.
-   - **Real-World Benchmark**: 50.0% pass rate on pre-registered 10-instance SWE-bench Lite subset with full provenance.
+   - **Dual Invariant Enforcement**: Strict verification requirement of 100% pass on failing test cases (`FAIL_TO_PASS`) with 0% regression on existing test suites (`PASS_TO_PASS`).
+   - **Program-Keyed Memoization**: Evaluation cache (`eval_cache.py`) achieving 72.8%–92.6% evaluation savings on redundant candidate programs.
+   - **Reproducible Artifacts**: Emits standardized, `git apply`-ready unified diff patches.
+   - **SWE-bench Lite Probe**: 50.0% pass rate on a pre-registered 10-instance probe ($N=10/300$) with full provenance and negative results disclosed.
 2. **Digital Cartesian Genetic Programming (CGP) & Verilog RTL**
-   - **Formal Truth-Table Verification**: 100% exhaustive Boolean truth-table verification across all input permutations.
+   - **Formal Truth-Table Verification**: Exhaustive Boolean truth-table verification across all input permutations.
    - **Discrete Gate DAG Synthesis**: Optimized topologies using fundamental logic gates (AND, OR, XOR, NOT, MUX, NAND, NOR).
    - **Standard Digital Benchmarks**: 1-bit and multi-bit full adders, carry-lookahead logic, even/odd parity generators, and ALU slices.
-   - **Physical FPGA Export**: Direct export of synthesizable Verilog-2001 RTL and pinout constraint files (`.pcf` iCE40, `.lpf` ECP5, `.xdc` Xilinx).
+   - **FPGA Toolchain Export**: Direct export of synthesizable Verilog-2001 RTL and pinout constraint files (`.pcf` iCE40, `.lpf` ECP5, `.xdc` Xilinx).
 
-### 🧪 Exploratory & Research Tracks (`physical_claim: False`)
-The repository also includes ambitious research interfaces that explore the boundary of evolutionary computation:
-- **Analog Silicon & Sky130 OpAmp Optimization** (`experimental/electronics/`):
-  - Multi-objective NSGA-II Pareto optimization (Voltage Gain, GBW, Phase Margin, Power) and micro-MLP neural surrogate.
-  - *Provenance Disclaimer*: Computed via CMOS Level-1 small-signal equations ($g_m, r_o$, Miller pole-splitting) intended for rapid topology exploration and transistor sizing ($\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4). Marked with `physical_claim: False`.
+### 🧪 Exploratory Research Tracks (`physical_claim: false`)
+The repository also includes exploratory research prototypes investigating the boundaries of evolutionary computation:
+- **Analog Circuit Sizing (SkyWater 130nm)** (`experimental/electronics/`):
+  - Multi-objective NSGA-II Pareto optimization (Voltage Gain, GBW, Phase Margin, Power) and micro-MLP surrogate.
+  - *Analytical Disclaimer*: Evaluated using CMOS Level-1 small-signal equations ($g_m, r_o$, Miller pole-splitting) for rapid exploration ($\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4). Marked with `physical_claim: false` (no foundry tapeout claim).
 - **Genesis Physics & Foundation Model Bridge** (`src/evolab/genesis_bridge.py`):
   - Multi-modal graph serialization bridging genomes to physical simulators and GNN endpoints (includes zero-dependency headless fallback).
 - **WebUSB Hardware Flasher & Interactive Workbench** (`experimental/electronics/ui/`):
-  - In-browser animated gate visualizer, phosphor oscilloscope, and WebUSB bitstream programmer (FTDI FT2232H, TinyFPGA BX, RP2040) with virtual loopback engine.
+  - In-browser gate visualizer, phosphor oscilloscope, and WebUSB bitstream flasher prototype (FTDI FT2232H, TinyFPGA BX, RP2040) with virtual loopback engine.
 
 ---
 
@@ -121,32 +119,11 @@ Synthesize optimal trade-off frontiers across competing objectives for the SkyWa
 python run.py evolve --engine nsga2 --expr "S = A ^ B; C = A & B" -g 10 -p 16 --pareto-export pareto_front.json
 ```
 
-##### Published Non-Dominated Pareto Frontier ($F_0$ Trade-Offs)
-The chart below illustrates the empirical Pareto front discovered by Darwin's NSGA-II on the **SkyWater 130nm Two-Stage Miller OpAmp** ($A_v$ Gain vs. Static Power Dissipation):
-
-```
-Differential Voltage Gain (dB)
-  105 |                   [Sol-E: 104.4 dB, 244 µW]
-  100 |               [Sol-D: 103.0 dB, 228 µW]
-   95 |           * [Sol-A: 94.5 dB, 281 µW, PM=71°]
-   90 |       * [Sol-C: 90.8 dB, 394 µW, GBW=19.4 MHz]
-   85 |   * [Sol-B: 89.2 dB, 477 µW, GBW=14.3 MHz]
-      +----------------------------------------------------> Static Power (µW)
-          200       300       400       500       600
-```
-
-| Pareto Solution | $A_v$ Gain | Bandwidth (GBW) | Phase Margin | Static Power | Optimal Transistor Sizing |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Sol-A (High Stability)** | **94.5 dB** | 11.7 MHz | **$71.1^\circ$** | **281.6 µW** | $W_1=16.8\mu\text{m}, W_6=42.1\mu\text{m}, C_c=3.3\text{pF}, I_{\text{bias}}=14.3\mu\text{A}$ |
-| **Sol-B (High Speed)** | 89.2 dB | **14.3 MHz** | $63.7^\circ$ | 476.9 µW | $W_1=22.4\mu\text{m}, W_6=58.2\mu\text{m}, C_c=4.0\text{pF}, I_{\text{bias}}=20.4\mu\text{A}$ |
-| **Sol-C (Balanced)** | **94.0 dB** | 12.1 MHz | $63.1^\circ$ | **288.0 µW** | $W_1=18.5\mu\text{m}, W_6=48.0\mu\text{m}, C_c=3.5\text{pF}, I_{\text{bias}}=20.0\mu\text{A}$ |
-| **Sol-D (Ultra-Low-Power)**| **103.0 dB** | 26.8 MHz | $50.9^\circ$ | **228.1 µW** | $W_1=14.2\mu\text{m}, W_6=36.5\mu\text{m}, C_c=3.5\text{pF}, I_{\text{bias}}=18.0\mu\text{A}$ |
-| **Sol-E (Maximum Gain)** | **104.4 dB** | 16.4 MHz | $48.8^\circ$ | **244.1 µW** | $W_1=12.1\mu\text{m}, W_6=32.0\mu\text{m}, C_c=3.6\text{pF}, I_{\text{bias}}=25.7\mu\text{A}$ |
-
 > [!NOTE]
-> **Silicon Modeling Provenance & Accuracy Bounds**:  
-> - **Analytical Formulation**: Metrics are evaluated using CMOS Level-1 small-signal equations ($g_m = 2I_D/V_{ov}$, $r_o = V_A/I_D$, Miller pole-splitting). Small-signal gain values have an estimated $\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4 models. All analytical scores carry `physical_claim: false`.
-> - **Machine-Readable Provenance Artifact**: See [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) and [`docs/RESULTS.md`](docs/RESULTS.md) for complete breakdown.
+> **Analytical Silicon Sizing & Modeling Fidelity**:  
+> - **Problem Formulation**: Multi-objective transistor sizing for a Two-Stage Miller Operational Amplifier under SkyWater 130nm process constraints ($A_v \ge 60\text{ dB}$, $\text{GBW} \ge 10\text{ MHz}$, $\text{PM} \ge 60^\circ$).
+> - **Analytical Equations**: Evaluated using textbook CMOS Level-1 small-signal equations ($g_m = 2I_D/V_{ov}$, $r_o = V_A/I_D$, Miller pole-splitting) for rapid topological exploration ($\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4 models). All analytical scores carry `physical_claim: false` and do not constitute physical silicon signoff.
+> - **Data & Reproducibility**: Complete non-dominated Pareto front data points ($N=16$) and transistor geometries ($W_1..W_8, C_c, I_{\text{bias}}$) are documented in [`docs/RESULTS.md`](docs/RESULTS.md) and machine-readable in [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json).
 
 
 #### 🧪 [Exploratory Track] Interactive Workbench & WebUSB Hardware Programmer
@@ -189,7 +166,9 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 
 > 📄 **Detailed Unadorned Scientific Report**: See [`docs/RESULTS.md`](docs/RESULTS.md) for full telemetry, ablation studies, and pre-registered negative empirical results.
 
-### 1. Software Program Repair (30 Independent Seeds)
+### 1. Internal Synthetic Regressions (Unit Scenarios across 30 Independent Seeds)
+
+Deterministic baseline regression scenarios created to benchmark AST mutation operators, Ochiai SBFL fault localization, and program-keyed evaluation caching across 30 random seeds:
 
 | Scenario | Evaluation Budget | Repair Pass Rate (FAIL→PASS) | Cache Hit Rate | Baseline Speedup | Notes |
 | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -197,15 +176,24 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 | **`requests_http_helper`** | 107 evals | **100%** (30/30 passed) | **92.0%** hit rate | **1.10× faster** | Auth-header injection with holdout validation |
 | **`lru_cache_logic`** | 115 evals | **100%** (30/30 passed) | **92.2%** hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
 | **`multi_file_config`** | 106 evals | **100%** (30/30 passed) | **92.6%** hit rate | **1.12× faster** | Cross-file dependency validation |
-| **SWE-bench Lite (Pre-registered subset, $N=10$)** | $\le 32$ evals | **50.0%** (5/10 resolved) | **N/A** (AST + SBFL) | **Dual invariant** | 100% FAIL_TO_PASS passed, 0% PASS_TO_PASS regression on resolved set; 5 honest hard unresolved cases |
 
-> [!NOTE]
-> **Scientific Scope & Integrity Note on SWE-bench Lite**:  
-> The row above reports empirical evaluation on an official pre-registered SWE-bench Lite subset of 10 real-world issue instances (`sympy`, `pytest`, `flask`, `requests`, `jinja`, `click`, `urllib3`, `sphinx`, `black`, `marshmallow`), confirming dual-invariant enforcement (100% pass on `FAIL_TO_PASS` and 0% regression on `PASS_TO_PASS` across resolved issues).  
-> **This is an evaluated 10-instance pre-registered benchmark subset ($N=10$), NOT a full evaluation across all 300 instances of SWE-bench Lite.** The complete dataset requires containerized execution harnesses. Full instance-by-instance breakdown is published in [`docs/RESULTS.md`](docs/RESULTS.md) and [`reports/swe_bench_lite_subset.json`](reports/swe_bench_lite_subset.json).
+### 2. External Benchmark Probe: SWE-bench Lite ($N=10/300$ Probe)
+
+To test generalizability on real-world defects without synthetic tuning, Darwin-Evolab was evaluated against a pre-registered 10-instance probe drawn from SWE-bench Lite:
+
+| Benchmark Probe | Sample Size ($N$) | Resolved (Pass Rate) | Dual Invariant Adherence | Unresolved Instances (Negative Results) |
+| :--- | :---: | :---: | :---: | :--- |
+| **SWE-bench Lite Subset** | **$N = 10 / 300$** | **50.0%** (5/10 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | 5 instances unresolved (honest negative results: `pytest__pytest-5221`, `flask__flask-2097`, `requests__requests-3362`, `black__black-485`, `marshmallow__marshmallow-1359`) |
+
+> [!IMPORTANT]
+> **Scope & Denominator Notice on SWE-bench Lite**:  
+> - **Denominator First**: This probe evaluates **10 instances ($N=10$)** out of the 300 instances comprising the full SWE-bench Lite benchmark. It is **NOT** a claim of 50% resolution across the full SWE-bench Lite dataset.  
+> - **Dual Invariant Requirement**: A patch is classified as resolved *only* if it passes all target failing tests (`FAIL_TO_PASS`) while introducing zero regressions across existing test suites (`PASS_TO_PASS`).  
+> - **Pre-registered Negative Results**: The 5 unresolved instances are documented as empirical negative results where localized AST mutations were insufficient without broader semantic synthesis or package-level infrastructure.  
+> - **Full Provenance & Artifacts**: Detailed per-instance traces, execution outputs, and patch diffs are archived in [`reports/swe_bench_lite_subset.json`](reports/swe_bench_lite_subset.json) and discussed in [`docs/RESULTS.md`](docs/RESULTS.md).
 
 
-### 2. Silicon Physics & Hardware Metrics (SkyWater 130nm & FPGA)
+### 3. Silicon Physics & Hardware Metrics (SkyWater 130nm & FPGA)
 
 | Circuit Target | Verification Tier | Measured Physical Metric | Specification / Datasheet |
 | :--- | :---: | :---: | :---: |
@@ -223,13 +211,13 @@ Every claim in `darwin-evolab` is backed by **pre-registered, byte-for-byte repr
 > - **Yosys Synthesis Provenance**: Comparative cell counts invoke the native `yosys` executable with ABC optimization passes when available. When Yosys is absent, the bridge transparently falls back to an AIG operator count and explicitly labels the verdict as `ESTIMATED (Built-in proxy count)` to maintain strict provenance integrity.
 > - **WebUSB Capabilities**: The WebUSB bridge provides in-browser bitstream programming and an interactive JTAG/UART terminal over USB bulk endpoints, serving as a functional flasher and loopback bridge rather than a sub-nanosecond physical logic-analyzer measurement instrument.
 
-### 3. Repository-Wide Test Health
+### 4. Repository-Wide Test Health
 
 ```
-tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Sky130, Electronics, EDA) : 549 passed (100%)
+tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Sky130, Electronics, EDA, UX) : 564 passed (100%)
 experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab, Dual-Mode Studio)            :  67 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                                        : 616 passed (100%)
+Total Automated Test Suite                                                                                        : 631 passed (100%)
 ```
 
 ---
@@ -356,11 +344,22 @@ We welcome contributions from researchers and developers worldwide! Please see:
 
 ---
 
-## ⚖️ Scientific Integrity & Disclosure
+## ⚠️ Limitations & Non-Claims
 
-- **Transparent AI Disclosure**: Built with state-of-the-art AI pair programming; zero dollars spent, zero human code written, with 100% human architectural supervision by **Eylias Sharar**.
-- **No Fictitious Claims**: If an external simulator (such as `ngspice`) is unavailable, fallback heuristics are explicitly labeled and prohibited from claiming physical realism (`physical_claim=False`).
-- **Full History Preserved**: For the complete audit history, past iterations, and negative benchmark results, refer to [`Memory.md`](Memory.md) and [`README_ar.md`](README_ar.md).
+To ensure absolute rigor and clarity for peer review and academic scrutiny, we explicitly enumerate what `darwin-evolab` does **NOT** claim:
+
+1. **Not a Full SWE-bench Benchmark Evaluation**: We do not claim a 50% pass rate on the full SWE-bench Lite (300 instances). Our reported metric reflects an empirical evaluation on a pre-registered 10-instance probe ($N=10/300$) used to assess local AST mutation and dual-invariant verification. Evaluating the complete 300-instance set requires distributed multi-node infrastructure and broader repository-level semantic synthesis.
+2. **Not an Industrial EDA Signoff Tool**: The analog circuit sizing and optimization pipelines use Level-1 CMOS small-signal equations ($\pm 6\text{ to } 10\text{ dB}$ margin vs. foundry BSIM4 models) for rapid algorithmic exploration. We make no claim of foundry tapeout signoff without formal verification in commercial EDA suites (e.g., Cadence Spectre, Synopsys HSPICE) using foundry-certified BSIM4/BSIM-CMG PDKs.
+3. **"Operating System" is an Architectural Metaphor**: Darwin-Evolab is an evolutionary optimization framework structured around an operating-system-inspired design pattern (a domain-agnostic evolutionary kernel orchestrating pluggable domain adapter device drivers). It is not a POSIX or bootable operating system kernel.
+4. **Meta-Controller is Opt-In by Empirical Decision**: In accordance with pre-registered empirical protocols, Phase 4 meta-control (dynamic immigrant injection) and Phase 5 self-modification remain disabled by default (`meta_mode=None`). The pre-registered governor rejected default activation after rigorous A/B benchmarking demonstrated insufficient empirical gain over the control baseline.
+
+---
+
+## ⚖️ Scientific Integrity & Authorship Attribution
+
+- **AI Pair Programming Attribution**: Implementation was developed with AI pair programming assistance under complete human architectural supervision, direction, design, and code review by **Eylias Sharar**. All algorithmic formulations, domain adapter contracts, mathematical derivations, and verification protocols were authored and vetted by the human investigator.
+- **No Fictitious Claims**: If an external simulator (such as `ngspice` or `yosys`) is unavailable, fallback heuristics are explicitly labeled and prohibited from claiming physical realism (`physical_claim=False`).
+- **Full Audit Trail**: For complete historical audit notes, iterative decisions, and pre-registered negative benchmark data, refer to [`Memory.md`](Memory.md) and [`README_ar.md`](README_ar.md).
 
 ---
 
