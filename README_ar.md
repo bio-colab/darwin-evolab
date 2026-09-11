@@ -736,6 +736,28 @@ m = store.run_metrics("run_id")       # التقييمات حتى أول نجا�
 
 ---
 
+## 📚 الأصول النظرية والمراجع الأكاديمية التأسيسية
+
+لا يعتمد `darwin-evolab` على أساليب تحسين احتمالية اعتباطية أو حدسية، بل يجسد معمار النواة ومحركات النطاقات صراحة النماذج الرياضية الصارمة المؤسسة في ثلاثة مراجع كلاسيكية بارزة:
+
+1. **البرمجة الوراثية الديكارتية ونظرية الرسوم البيانية (مسار المنطق الرقمي والسيليكون)**:
+   - **Miller, J. F., & Thomson, P.** (1999). *An empirical study of the efficiency of learning boolean functions using a Cartesian Genetic Programming approach*. GECCO-1999.
+   - **Miller, J. F. (Ed.)**. (2011). *Cartesian Genetic Programming*. Natural Computing Series, Springer. DOI: [10.1007/978-3-642-17310-3](https://doi.org/10.1007/978-3-642-17310-3).
+   - *الأسس الرياضية المطبقة*: تمثيل الشبكة الشبكية الموجهة ثنائية الأبعاد (2D Grid DAG)، عزل الجينات الخاملة عبر استخراج الرسم البياني الفرعي الفعال (Active Subgraph Reachability Filtering)، والانجراف الوراثي المحايد (Neutral Genetic Drift) الذي يجوب هضاب اللياقة المتكافئة دون الحاجة للعبور (Crossover) المشتت للرسم.
+
+2. **البرمجة الوراثية وتوليف البرامج والدوائر التناظرية (مسار إصلاح البرمجيات و SPICE)**:
+   - **Koza, J. R.** (1992). *Genetic Programming: On the Programming of Computers by Means of Natural Selection*. MIT Press. ISBN: 978-0262111706.
+   - **Koza, J. R., et al.** (1999). *Genetic Programming III: Darwinian Invention and Problem Solving*. Morgan Kaufmann.
+   - *الأسس الرياضية المطبقة*: التطور البرمجي على شجرة البناء المجرد (AST)، شرط الإغلاق النحوي والاشتمال، ضغط البساطة (Parsimony Pressure) لكبح التضخم البرمجي (Code Bloat)، والتوليف التطوري للدوائر التناظرية المدمجة مع محاكي SPICE.
+
+3. **الأنظمة التكيفية المعقدة ونظرية المخططات (نواة المحرك العامة وتخصيص الموارد)**:
+   - **Holland, J. H.** (1975). *Adaptation in Natural and Artificial Systems*. University of Michigan Press / MIT Press.
+   - *الأسس الرياضية المطبقة*: نظرية المخططات (The Schema Theorem)، فرضية اللبنات الأساسية (Building Block Hypothesis)، إسناد الفضل السببي (Causal Credit Assignment)، والتخصيص الأمثل للمحاولات تحت صياغة مسألة المقامر متعدد الأذرع ($k$-armed bandit).
+
+> 📄 **الأطروحة النظرية الموسعة**: راجع وثيقة [`docs/THEORETICAL_FOUNDATIONS.md`](docs/THEORETICAL_FOUNDATIONS.md) للاطلاع على الاشتقاقات الرياضية الكاملة وصيغ BibTeX القياسية.
+
+---
+
 ## الرخصة
 
 MIT — انظر `LICENSE`.

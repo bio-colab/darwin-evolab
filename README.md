@@ -328,6 +328,26 @@ python run.py evolve --scenario click_cli_parser --llm groq --llm-model llama-3.
 
 ---
 
+## 📚 Theoretical Foundations & Classical References
+
+`darwin-evolab` is grounded in foundational evolutionary algorithms and program synthesis literature. Rather than relying on ad-hoc heuristics, the core architecture directly instantiates the mathematical models of three seminal works:
+
+1. **Cartesian Genetic Programming (CGP & Discrete Logic Track)**:
+   - **Miller, J. F., & Thomson, P.** (1999). *An empirical study of the efficiency of learning boolean functions using a Cartesian Genetic Programming approach*. GECCO-1999.
+   - **Miller, J. F. (Ed.)**. (2011). *Cartesian Genetic Programming*. Natural Computing Series, Springer. DOI: [10.1007/978-3-642-17310-3](https://doi.org/10.1007/978-3-642-17310-3).
+   - *Core Foundations*: Positional grid DAG representation, active subgraph reachability filtering, neutral genetic drift across non-coding introns, and mutation-driven phenotypic search without destructive crossover.
+2. **Genetic Programming, AST Manifolds & SPICE Synthesis (Software APR & Analog Tracks)**:
+   - **Koza, J. R.** (1992). *Genetic Programming: On the Programming of Computers by Means of Natural Selection*. MIT Press. ISBN: 978-0262111706.
+   - **Koza, J. R., et al.** (1999). *Genetic Programming III: Darwinian Invention and Problem Solving*. Morgan Kaufmann.
+   - *Core Foundations*: Program synthesis over Abstract Syntax Trees (ASTs), test-case fitness closure, parsimony pressure against code bloat, and automated analog SPICE circuit synthesis.
+3. **Complex Adaptive Systems & Schema Theory (Universal Engine Kernel)**:
+   - **Holland, J. H.** (1975). *Adaptation in Natural and Artificial Systems*. University of Michigan Press / MIT Press.
+   - *Core Foundations*: The Schema Theorem, Building Block Hypothesis, credit assignment via causal chains, and optimal trial allocation under the $k$-armed bandit formulation.
+
+> 📄 **Complete Theoretical Treatise**: See [`docs/THEORETICAL_FOUNDATIONS.md`](docs/THEORETICAL_FOUNDATIONS.md) for full formal mathematical definitions, algorithmic derivations, and BibTeX citations.
+
+---
+
 ## 🤝 Community & Contributing
 
 We welcome contributions from researchers and developers worldwide! Please see:
