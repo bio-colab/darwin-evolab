@@ -105,6 +105,8 @@ class EvolutionEngine:
         generations: int | None = None,
         causal_layer_enabled: bool | None = None,
         meta_mode: str | None = None,
+        holland_allocator: bool | None = None,
+        holland_c: float | None = None,
     ) -> None:
         if isinstance(config, dict):
             cfg = EngineConfig()
@@ -182,6 +184,19 @@ class EvolutionEngine:
         # Explicit "directed"/"reshuffle" opts in; EVOLAB_META=1 resolves to
         # "directed" (or the env's named mode). Default stays OFF.
         self.meta_mode = meta_mode
+        self.holland_allocator_enabled = bool(
+            holland_allocator if holland_allocator is not None else self.extra_config_dict.get("holland_allocator", False)
+        )
+        self.holland_c = float(
+            holland_c if holland_c is not None else self.extra_config_dict.get("holland_c", 1.0)
+        )
+        self._holland_allocator = None
+        if self.holland_allocator_enabled:
+            from .holland import HollandTrialAllocator
+            self._holland_allocator = HollandTrialAllocator(
+                arms=["light", "semantic"],
+                c_exploration=self.holland_c,
+            )
         self._custom_distance = distance_fn
 
         # pluggable distance (audit A21 #2)
@@ -665,6 +680,8 @@ class EvolutionEngine:
                 from .causal import discretize_context
                 ctx = discretize_context(ind.genome, parent_f)
                 kind = self._mutation_selector.select(ctx, self.rng)
+            elif self.holland_allocator_enabled and self._holland_allocator is not None:
+                kind = self._holland_allocator.select_arm()
             else:
                 kind = "light" if self.rng.random() < self.hybrid_light_share else "semantic"
             cfg = species_cfg(ind.species)
@@ -732,6 +749,12 @@ class EvolutionEngine:
         self._energy_prev_evals = 0
         self._energy_prev_mem = 0
         self._energy_prev_cache_miss = 0
+        if self.holland_allocator_enabled:
+            from .holland import HollandTrialAllocator
+            self._holland_allocator = HollandTrialAllocator(
+                arms=["light", "semantic"],
+                c_exploration=self.holland_c,
+            )
 
     def run(
         self,
@@ -875,6 +898,8 @@ class EvolutionEngine:
                             "child_fitness": ind.fitness,
                             "fitness_delta": delta,
                         })
+                        if self.holland_allocator_enabled and self._holland_allocator is not None:
+                            self._holland_allocator.update(p["mutation_kind"], max(0.0, delta))
                         if hasattr(self, "_causal_model"):
                             from .causal import discretize_context
                             ctx = discretize_context(ind.genome, p["parent_fitness_mean"])
@@ -954,6 +979,8 @@ class EvolutionEngine:
                     "energy_cache_miss": 0,
                 }
             )
+            if self.holland_allocator_enabled and self._holland_allocator is not None:
+                history[-1]["holland_allocation"] = self._holland_allocator.allocation_ratios()
             species_history.append(dict(sorted(dist_now.items())))
 
             if hasattr(self, "event_bus"):
@@ -1309,6 +1336,8 @@ class EvolutionEngine:
             exploit_start=exploit_start,
             final_gen=final_gen,
         )
+        if self.holland_allocator_enabled and self._holland_allocator is not None:
+            report["holland_allocator"] = self._holland_allocator.describe()
         # Phase 1: silent post-run self fact (observation only, never search).
         # Phase 2+3: read-only mirror entries on the finished report.
         try:
