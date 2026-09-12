@@ -50,6 +50,10 @@ def _kill_process_tree(pid: int) -> None:
                 pass
 
 
+# Public cross-platform process tree killer
+kill_process_tree = _kill_process_tree
+
+
 if sys.platform == "win32":
     import ctypes
     from ctypes import wintypes

@@ -117,6 +117,7 @@ class CheckpointData:
     species_history: list[dict[str, int]] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
+    schema_version: str = "2.1.0"
 
 
 def save_checkpoint(
@@ -130,6 +131,7 @@ def save_checkpoint(
     species_history: list[dict[str, int]] | None = None,
     metadata: dict[str, Any] | None = None,
     compress: bool | None = None,
+    schema_version: str = "2.1.0",
 ) -> Path:
     """
     Atomically saves a full evolutionary engine snapshot to disk.
@@ -159,6 +161,7 @@ def save_checkpoint(
 
     payload = {
         "version": 1,
+        "schema_version": str(schema_version),
         "timestamp": time.time(),
         "generation": int(generation),
         "total_generations": int(total_generations),
@@ -236,6 +239,9 @@ def load_checkpoint(filepath: str | Path) -> CheckpointData:
     species_history = payload.get("species_history", [])
     metadata = payload.get("metadata", {})
     timestamp = float(payload.get("timestamp", 0.0))
+    schema_ver = str(payload.get("schema_version", metadata.get("schema_version", "1.0.0")))
+    if "schema_version" not in metadata:
+        metadata["schema_version"] = schema_ver
 
     return CheckpointData(
         generation=generation,
@@ -247,4 +253,5 @@ def load_checkpoint(filepath: str | Path) -> CheckpointData:
         species_history=species_history,
         metadata=metadata,
         timestamp=timestamp,
+        schema_version=schema_ver,
     )

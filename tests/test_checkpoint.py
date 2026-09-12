@@ -70,6 +70,7 @@ def test_checkpoint_save_and_load(tmp_path: Path):
     assert saved_path.is_file()
 
     loaded = load_checkpoint(ckpt_file)
+    assert loaded.schema_version == "2.1.0"
     assert loaded.generation == 1
     assert loaded.total_generations == 10
     assert len(loaded.population) == 4
@@ -213,4 +214,48 @@ def test_engine_gzip_checkpoint_resumption(tmp_path: Path):
     report = engine_resumed.run(generations=6, resume_from=gz_file)
     assert report["total_generations"] == 6
     assert len(report["history"]) == 6
+
+
+def test_checkpoint_schema_version_custom_and_backward_compat(tmp_path: Path):
+    """Verifies schema_version customization and backward compatibility default."""
+    import random
+    ckpt_file = tmp_path / "custom_schema.json"
+    pop = [Individual(FloatGenome([1.0, 2.0]), species="spec_0", fitness=10.0)]
+    save_checkpoint(
+        filepath=ckpt_file,
+        generation=1,
+        total_generations=5,
+        population=pop,
+        best_ever=pop[0],
+        rng=random.Random(1),
+        schema_version="2.5.0",
+    )
+    loaded = load_checkpoint(ckpt_file)
+    assert loaded.schema_version == "2.5.0"
+
+    # Backward compatibility test: legacy JSON without schema_version field
+    with open(ckpt_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    del data["schema_version"]
+    legacy_file = tmp_path / "legacy.json"
+    with open(legacy_file, "w", encoding="utf-8") as f:
+        json.dump(data, f)
+
+    loaded_legacy = load_checkpoint(legacy_file)
+    assert loaded_legacy.schema_version == "1.0.0"
+
+    # Default schema version when saved without explicit parameter
+    default_file = tmp_path / "default_schema.json"
+    save_checkpoint(
+        filepath=default_file,
+        generation=1,
+        total_generations=5,
+        population=pop,
+        best_ever=pop[0],
+        rng=random.Random(1),
+    )
+    loaded_default = load_checkpoint(default_file)
+    assert loaded_default.schema_version == "2.1.0"
+
+
 

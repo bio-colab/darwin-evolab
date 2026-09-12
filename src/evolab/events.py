@@ -56,6 +56,26 @@ class RunCompletedEvent(EvolutionEvent):
     total_time_seconds: float = 0.0
 
 
+@dataclass(frozen=True)
+class EvaluationTimeoutEvent(EvolutionEvent):
+    """Emitted when an evaluation exceeds its resource budget ceiling."""
+    genome_id: str = ""
+    worker_id: int = 0
+    timeout_seconds: float = 0.0
+    elapsed_seconds: float = 0.0
+    termination_phase: str = "phase1_cancel"
+    partial_progress: float | None = None
+    replacement_worker_id: int | None = None
+
+
+@dataclass(frozen=True)
+class WorkerRecycledEvent(EvolutionEvent):
+    """Emitted when a stuck or crashed worker process is recycled."""
+    old_worker_id: int = 0
+    new_worker_id: int = 0
+    reason: str = "timeout"
+
+
 class EventBus:
     """Lightweight in-process event dispatcher supporting decoupled observers and telemetry."""
 
