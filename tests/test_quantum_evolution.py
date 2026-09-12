@@ -9,8 +9,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-import numpy as np
 import pytest
+
+np = pytest.importorskip("numpy")
+scipy = pytest.importorskip("scipy")
 
 from evolab.engine import EngineConfig, EvolutionEngine, SpeciationConfig
 from evolab.assembly_genome import AssemblyGenome, Instruction, Opcode

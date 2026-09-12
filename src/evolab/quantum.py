@@ -11,22 +11,43 @@ import math
 from collections.abc import Sequence
 from typing import Any
 
-import numpy as np
-from scipy.linalg import expm
+try:
+    import numpy as np
+    from scipy.linalg import expm
+    HAS_QUANTUM_DEPS = True
+    _QUANTUM_IMPORT_ERROR: Exception | None = None
+except ImportError as _err:
+    HAS_QUANTUM_DEPS = False
+    _QUANTUM_IMPORT_ERROR = _err
+    np = None  # type: ignore
+    expm = None  # type: ignore
 
 from .asm_vm import Opcode
 from .assembly_genome import AssemblyGenome
 from .evaluators import Evaluator, FitnessResult
 from .genome import EvolabGenome, FloatGenome, Individual
 
+
+def _require_quantum_deps() -> None:
+    """Raises a clear, helpful error if numpy or scipy are missing."""
+    if not HAS_QUANTUM_DEPS:
+        raise ImportError(
+            "evolab.quantum requires 'numpy' and 'scipy'. "
+            "Install them via: pip install evolab[quantum] or pip install evolab[full]"
+        ) from _QUANTUM_IMPORT_ERROR
+
+
 # ============================================================================
 # 1. Quantum Fundamental Constants and Pauli Matrices
 # ============================================================================
 
-PAULI_I = np.array([[1, 0], [0, 1]], dtype=complex)
-PAULI_X = np.array([[0, 1], [1, 0]], dtype=complex)
-PAULI_Y = np.array([[0, -1j], [1j, 0]], dtype=complex)
-PAULI_Z = np.array([[1, 0], [0, -1]], dtype=complex)
+if HAS_QUANTUM_DEPS:
+    PAULI_I = np.array([[1, 0], [0, 1]], dtype=complex)
+    PAULI_X = np.array([[0, 1], [1, 0]], dtype=complex)
+    PAULI_Y = np.array([[0, -1j], [1j, 0]], dtype=complex)
+    PAULI_Z = np.array([[1, 0], [0, -1]], dtype=complex)
+else:
+    PAULI_I = PAULI_X = PAULI_Y = PAULI_Z = None  # type: ignore
 
 
 # ============================================================================
@@ -35,6 +56,7 @@ PAULI_Z = np.array([[1, 0], [0, -1]], dtype=complex)
 
 def pauli_x() -> np.ndarray:
     """Single-qubit bit flip gate (NOT)."""
+    _require_quantum_deps()
     return np.array([[0, 1], [1, 0]], dtype=complex)
 
 def pauli_y() -> np.ndarray:
@@ -224,6 +246,7 @@ class QuantumPulseEvaluator(Evaluator):
         energy_penalty_weight: float = 0.02,
         multi_axis: bool = True,
     ) -> None:
+        _require_quantum_deps()
         self.target_gate = np.asarray(target_gate, dtype=complex)
         self.num_qubits = 1 if self.target_gate.shape[0] == 2 else 2
         self.num_timesteps = num_timesteps

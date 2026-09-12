@@ -702,3 +702,28 @@ pytest experimental/electronics/tests    # 66 passed (100% pass rate)
    - إنشاء `tests/test_parallel_budget_executor.py` واختبار: بناء التكوين، التقييم الدفعي المتوازي، فك تغليف كائنات `FitnessResult`، ثبات معرفات العمليات (Zero Churn)، عزل أعطال المقيّم، وتفعيل حارس الوقت مع إعادة التدوير وبث الأحداث.
    - إضافة اختبارات توافقية وتخصيص إصدار المخطط في `tests/test_checkpoint.py`.
    - ارتفاع إجمالي اختبارات المستودع المؤتمتة إلى **687 اختباراً مؤتمتاً بنسبة نجاح 100%** (603 نواة + 67 إلكترونيات + 9 متاهات + 8 نيورومورفيك + 1 تخطي).
+
+## ملحق التدقيق المعماري والتشذيب الهيكلي (Architecture Audit v1: Structured Pruning & Boundary Governance) (2026-09-12 — تُلحق ولا تُعدَّل)
+
+تنفيذاً لمرحلة التدقيق المعماري الشاملة الهادفة إلى تقليص المساحة المعرفية للمستودع (Reduce cognitive surface without reducing experimental capability) وتثبيت حدود النواة:
+
+1. **تنظيم وتطهير السكربتات (`scripts/historical/`)**:
+   - نقل 12 سكربتاً مخصصة لتشخيص تجارب الفرضيات السابقة (A/B testing scripts) من جذر `scripts/` إلى `scripts/historical/`.
+   - قصر جذر `scripts/` على 5 أدوات تشغيلية حية فقط (`generate_notebooks.py`, `generate_sbom.py`, `self_benchmark.py`, `run_swe_bench_subset.py`, `probe_duplicate_evals.py`).
+   - تحديث مسارات الاستيراد في اختبارات التحقق من الفرضيات (`test_ab_metrics.py`, `test_composition_seeding.py`, `test_genetic_init_memory.py`) للبحث الشفاف في المسارين.
+
+2. **الصدق في إدارة الاعتماديات وتحصين مسار الكم (`quantum.py`)**:
+   - إدراج حزمة `scipy>=1.9` صراحة في `pyproject.toml` تحت `[project.optional-dependencies].quantum`.
+   - تزويد `src/evolab/quantum.py` بصمام أمان دفاعي (`HAS_QUANTUM_DEPS` و `_require_quantum_deps()`) يمنع الانهيار العشوائي ويُطلق استثناءً واضحاً يوجّه المستخدم لتثبيت الحزمة الاختيارية عند غياب `numpy` أو `scipy`.
+   - تحصين اختبارات الكم في `tests/test_quantum_evolution.py` بـ `pytest.importorskip` للعمل النظيف في البيئات الصافية.
+
+3. **حوكمة وإفصاح المختبرات التاريخية (`spec2ckt_lab`)**:
+   - توثيق الوضع التاريخي لـ `experimental/spec2ckt_lab` عبر `README.md` يوضح انتقال مفاهيمه وتطويرها في `src/evolab/silicon/` و `experimental/electronics/`.
+   - تصحيح وإضافة دوال الربط التيسيرية (`project_to_valid_manifold` و `optimize_circuit_seeds`) في `evolab.silicon`.
+
+4. **حوكمة أدلة التجارب وحجب ضوضاء المحاكاة (Evidence vs. Noise في `.gitignore`)**:
+   - الحفاظ الكامل على ملفات الأدلة العلمية ومصفوفات البصمة الجينية في Git (`reports/*.json` و `reports/*.v`).
+   - حجب ملفات المحاكاة الثنائية والضوضاء الناتجة عن محاكيات SPICE و EDA مستقبلاً (`*.raw`, `*.tr0`, `*.sw0`, `*.ac0`, `*.vcd`, `*.tmp`).
+
+5. **سلامة المستودع الكاملة**:
+   - استمرار اجتياز كافة الاختبارات بنسبة 100%: **687 اختباراً مؤتمتاً بنجاح تام وبصفر انكسار**.

@@ -51,9 +51,17 @@ dist/
 *.raw
 *.op.raw
 *.decode
+*.tr0
+*.sw0
+*.ac0
+*.vcd
+*.valgrind.log
+*.ngspice.log
+*.tmp
 
 # Local runtime outputs (CLI default report + MAP-Elites archive DB + experience store)
 /run_report.json
 /data/
 experimental/electronics/data/
 experimental/spec2ckt_lab/data/
+

@@ -101,3 +101,11 @@ class BanditLatentOptimizer:
 
         arms.sort(key=lambda a: a.fitness, reverse=True)
         return [arm.sizing for arm in arms]
+
+
+def optimize_circuit_seeds(
+    seeds: Sequence[OpAmpSizing], target_spec: TargetCircuitSpec, max_steps: int = 50
+) -> list[OpAmpSizing]:
+    """Convenience functional seed optimizer using BanditLatentOptimizer."""
+    return BanditLatentOptimizer().optimize_seeds(seeds, target_spec, max_steps=max_steps)
+

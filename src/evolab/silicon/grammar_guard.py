@@ -174,3 +174,9 @@ class PhysicalGrammarGuard:
             repaired.cc_pf = round(repaired.cc_pf * 1.5, 3)
 
         return repaired
+
+
+def project_to_valid_manifold(sizing: OpAmpSizing) -> OpAmpSizing:
+    """Convenience functional projection onto the valid CMOS manifold."""
+    return PhysicalGrammarGuard().project_to_valid_manifold(sizing)
+

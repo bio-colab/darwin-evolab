@@ -46,6 +46,7 @@ cst = [
 ]
 quantum = [
     "numpy>=1.22",
+    "scipy>=1.9",
 ]
 full = [
     "numpy>=1.22",

@@ -4,7 +4,9 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-_SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "ab_memory_value.py"
+_SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "historical" / "ab_memory_value.py"
+if not _SCRIPT.exists():
+    _SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "ab_memory_value.py"
 _spec = importlib.util.spec_from_file_location("ab_memory_value", _SCRIPT)
 ab = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(ab)

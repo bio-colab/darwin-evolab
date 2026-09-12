@@ -302,8 +302,12 @@ def test_make_code_population_avoid_all_doors_still_terminates():
 # ---------- 4. the registered decision rule (harness, importlib) ----------
 
 _SCRIPT = (
-    Path(__file__).resolve().parent.parent / "scripts" / "ab_genetic_init_memory.py"
+    Path(__file__).resolve().parent.parent / "scripts" / "historical" / "ab_genetic_init_memory.py"
 )
+if not _SCRIPT.exists():
+    _SCRIPT = (
+        Path(__file__).resolve().parent.parent / "scripts" / "ab_genetic_init_memory.py"
+    )
 _spec = importlib.util.spec_from_file_location("ab_genetic_init_memory", _SCRIPT)
 ab8 = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(ab8)
