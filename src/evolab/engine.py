@@ -1336,6 +1336,7 @@ class EvolutionEngine:
             exploit_start=exploit_start,
             final_gen=final_gen,
         )
+        self.best_ever = best_ever
         if self.holland_allocator_enabled and self._holland_allocator is not None:
             report["holland_allocator"] = self._holland_allocator.describe()
         # Phase 1: silent post-run self fact (observation only, never search).

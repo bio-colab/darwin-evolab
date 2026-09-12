@@ -510,6 +510,9 @@ def get_domain_adapter(name: str) -> DomainAdapter:
     if key in ("sky130_opamp", "sky130"):
         from .silicon.opamp_benchmark import Sky130OpAmpAdapter
         return Sky130OpAmpAdapter()
+    if key in ("evomaze", "maze"):
+        from experimental.evomaze.adapter import EvoMazeAdapter
+        return EvoMazeAdapter()
     if key not in _ADAPTER_REGISTRY:
         raise KeyError(f"Unknown domain adapter {name!r}. Available: {list_domain_adapters()}")
     return _ADAPTER_REGISTRY[key]
@@ -517,5 +520,5 @@ def get_domain_adapter(name: str) -> DomainAdapter:
 
 def list_domain_adapters() -> list[str]:
     """Returns the list of all registered domain adapter names."""
-    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp"})
+    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp", "evomaze"})
 

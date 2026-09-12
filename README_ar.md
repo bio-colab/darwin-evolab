@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-631%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-640%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **إفصاح الشفافية والأمانة الأكاديمية (Transparency Notice)**:  
 > مشروع `darwin-evolab` هو إطار بحثي مفتوح المصدر بالكامل. جميع المقاييس والنتائج المعلنة تجريبية وقابلة لإعادة الإنتاج بايت-ببايت عبر بذور عشوائية مسجلة مسبقاً، وتخضع للتحقق المستمر والمؤتمت عبر CI العام. جميع التقريبات التحليلية وحدود النمذجة والقيود الفيزيائية مُفصح عنها صراحة. نرحب بالتدقيق الأكاديمي الصارم ونقد الأقران.
@@ -85,6 +85,9 @@ graph TD
   - تمثيل الحلول كرسم بياني GNN وربطها بالمحاكيات الفيزيائية المعقدة (مع محاكي بديل آمن بدون تبعيات لبيئات CI).
 - **منصة العمل التفاعلية ومبرمج WebUSB المادي** (`experimental/electronics/ui/`):
   - محاكي البوابات الرسومي، راسم الإشارة الفسفوري (CRT Oscilloscope)، ومبرمج شرائح FPGA المباشر من المتصفح عبر WebUSB مع محاكي استرجاع افتراضي.
+- **توليد المتاهات المكانية الإدراكية والتصميم الإجرائي (`EvoMaze`)** (`experimental/evomaze/`):
+  - جينوم طوبولوجي يعتمد شجرة الامتداد الأصغري (MST) لضمان حتمية وجود مسار حل 100% رياضياً ومنع المتاهات المستحيلة.
+  - استمثال متعدد الأهداف (طول المسار، تشعب القرارات، النهايات المسدودة، الحلقات الدائرية) مع رسم طرفي ANSI/ASCII وتصدير مصفوفة JSON جاهزة لمحركات الألعاب (Godot 4 / Unity).
 
 ---
 
@@ -395,8 +398,9 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 ```
 tests/ (النواة، إيجاز كوزا، ميلر CGP، مخططات هولاند، SWE-bench، الرياضيات، النواقل، Sky130، OpAmp، EDA، واجهة المستخدم): 564 ناجح (100%)
 experimental/electronics/tests/ (محاكاة SPICE، دوائر CGP، واجهة WebUSB، أهداف FPGA، مختبر Spec2Ckt، استوديو النمطين)       :  67 ناجح (100%)
+experimental/evomaze/tests/ (لامتغير MST، برهان قابلية الحل، المقاييس الطوبولوجية، تصدير JSON)                        :   9 ناجح (100%)
 ==================================================================================================================
-الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 631 ناجح (100%)
+الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 640 ناجح (100%)
 ```
 
 > 📄 **بيانات جبهة باريتو ومصدر النمذجة الكامل**: انظر الملف الموثق [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) والتقرير الأكاديمي الشامل [`docs/RESULTS.md`](docs/RESULTS.md).

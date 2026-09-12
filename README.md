@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-631%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-640%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, and physical bounds are explicitly disclosed. We invite peer audit and critique.
 
@@ -67,6 +67,9 @@ The repository also includes exploratory research prototypes investigating the b
   - Multi-modal graph serialization bridging genomes to physical simulators and GNN endpoints (includes zero-dependency headless fallback).
 - **WebUSB Hardware Flasher & Interactive Workbench** (`experimental/electronics/ui/`):
   - In-browser gate visualizer, phosphor oscilloscope, and WebUSB bitstream flasher prototype (FTDI FT2232H, TinyFPGA BX, RP2040) with virtual loopback engine.
+- **Spatial Graph & Search-Based PCG (`EvoMaze`)** (`experimental/evomaze/`):
+  - Minimum Spanning Tree (MST) topological graph genome ensuring 100% solvable spatial maze synthesis.
+  - Multi-objective targets (path length, branching entropy, dead ends, cycles) with ANSI terminal visualization and Godot/Unity JSON tilemap export.
 
 ---
 
@@ -216,8 +219,9 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 ```
 tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Sky130, Electronics, EDA, UX) : 564 passed (100%)
 experimental/electronics/tests/ (SPICE, CGP, WebUSB UI, FPGA Targets, Spec2Ckt Lab, Dual-Mode Studio)            :  67 passed (100%)
+experimental/evomaze/tests/ (MST Invariant, Solvability Proof, Topological Evaluators, JSON Exporter)             :   9 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                                        : 631 passed (100%)
+Total Automated Test Suite                                                                                        : 640 passed (100%)
 ```
 
 ---
@@ -284,6 +288,7 @@ See [examples/03_custom_domain_adapter.py](examples/03_custom_domain_adapter.py)
 | **[`examples/01_quickstart_code_repair.py`](examples/01_quickstart_code_repair.py)** | Self-contained Python bug repair in under 2 seconds. |
 | **[`examples/02_synthesize_silicon_alu.py`](examples/02_synthesize_silicon_alu.py)** | CGP full adder synthesis and Verilog-2001 export. |
 | **[`examples/03_custom_domain_adapter.py`](examples/03_custom_domain_adapter.py)** | Step-by-step tutorial for building your own domain driver. |
+| **[`examples/04_evomaze_generation.py`](examples/04_evomaze_generation.py)** | Procedural maze generation with guaranteed solvability and JSON export. |
 
 ---
 
