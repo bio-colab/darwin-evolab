@@ -13,7 +13,13 @@ from __future__ import annotations
 import math
 import time
 from typing import Any, Callable, Sequence
-import numpy as np
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    np = None  # type: ignore
+    HAS_NUMPY = False
 
 from .evaluators import Evaluator, FitnessResult
 from .genome import EvolabGenome, FloatGenome, Individual
@@ -29,42 +35,100 @@ except ImportError:
 
 
 # ============================================================================
-# Pure NumPy Vectorized Implementations (Shape: (N, D) -> (N,))
+# Pure Python Standard-Library Mathematical Implementations (Zero-Dependency)
 # ============================================================================
 
-def np_sphere(X: np.ndarray) -> np.ndarray:
+def py_sphere(x: Sequence[float]) -> float:
     """Sphere function: f(x) = sum(x_i^2). Minimum at 0.0."""
-    return np.sum(X ** 2, axis=-1)
+    return sum(xi ** 2 for xi in x)
 
 
-def np_rastrigin(X: np.ndarray) -> np.ndarray:
+def py_rastrigin(x: Sequence[float]) -> float:
     """Rastrigin function: f(x) = 10d + sum(x_i^2 - 10*cos(2*pi*x_i)). Minimum at 0.0."""
-    d = X.shape[-1]
-    return 10.0 * d + np.sum(X ** 2 - 10.0 * np.cos(2.0 * np.pi * X), axis=-1)
+    d = len(x)
+    return 10.0 * d + sum(xi ** 2 - 10.0 * math.cos(2.0 * math.pi * xi) for xi in x)
 
 
-def np_rosenbrock(X: np.ndarray) -> np.ndarray:
+def py_rosenbrock(x: Sequence[float]) -> float:
     """Rosenbrock function: f(x) = sum(100*(x_{i+1} - x_i^2)^2 + (1 - x_i)^2). Minimum at 0.0."""
-    return np.sum(100.0 * (X[..., 1:] - X[..., :-1] ** 2) ** 2 + (1.0 - X[..., :-1]) ** 2, axis=-1)
+    return sum(100.0 * (x[i + 1] - x[i] ** 2) ** 2 + (1.0 - x[i]) ** 2 for i in range(len(x) - 1))
 
 
-def np_ackley(X: np.ndarray) -> np.ndarray:
+def py_ackley(x: Sequence[float]) -> float:
     """Ackley function. Highly multimodal with global minimum at 0.0."""
-    d = X.shape[-1]
-    sum_sq = np.sum(X ** 2, axis=-1)
-    sum_cos = np.sum(np.cos(2.0 * np.pi * X), axis=-1)
-    term1 = -20.0 * np.exp(-0.2 * np.sqrt(sum_sq / max(1, d)))
-    term2 = -np.exp(sum_cos / max(1, d))
-    return term1 + term2 + 20.0 + np.e
+    d = max(1, len(x))
+    sum_sq = sum(xi ** 2 for xi in x)
+    sum_cos = sum(math.cos(2.0 * math.pi * xi) for xi in x)
+    term1 = -20.0 * math.exp(-0.2 * math.sqrt(sum_sq / d))
+    term2 = -math.exp(sum_cos / d)
+    return term1 + term2 + 20.0 + math.e
 
 
-def np_griewank(X: np.ndarray) -> np.ndarray:
+def py_griewank(x: Sequence[float]) -> float:
     """Griewank function. Minimum at 0.0."""
-    d = X.shape[-1]
-    sum_sq = np.sum(X ** 2, axis=-1) / 4000.0
-    i_factors = np.sqrt(np.arange(1, d + 1, dtype=float))
-    prod_cos = np.prod(np.cos(X / i_factors), axis=-1)
+    sum_sq = sum(xi ** 2 for xi in x) / 4000.0
+    prod_cos = 1.0
+    for i, xi in enumerate(x, 1):
+        prod_cos *= math.cos(xi / math.sqrt(i))
     return 1.0 + sum_sq - prod_cos
+
+
+PY_LANDSCAPES: dict[str, Callable[[Sequence[float]], float]] = {
+    "sphere": py_sphere,
+    "rastrigin": py_rastrigin,
+    "rosenbrock": py_rosenbrock,
+    "ackley": py_ackley,
+    "griewank": py_griewank,
+}
+
+
+# ============================================================================
+# NumPy Vectorized Implementations (Shape: (N, D) -> (N,))
+# ============================================================================
+
+if HAS_NUMPY:
+    def np_sphere(X: np.ndarray) -> np.ndarray:
+        """Sphere function: f(x) = sum(x_i^2). Minimum at 0.0."""
+        return np.sum(X ** 2, axis=-1)
+
+    def np_rastrigin(X: np.ndarray) -> np.ndarray:
+        """Rastrigin function: f(x) = 10d + sum(x_i^2 - 10*cos(2*pi*x_i)). Minimum at 0.0."""
+        d = X.shape[-1]
+        return 10.0 * d + np.sum(X ** 2 - 10.0 * np.cos(2.0 * np.pi * X), axis=-1)
+
+    def np_rosenbrock(X: np.ndarray) -> np.ndarray:
+        """Rosenbrock function: f(x) = sum(100*(x_{i+1} - x_i^2)^2 + (1 - x_i)^2). Minimum at 0.0."""
+        return np.sum(100.0 * (X[..., 1:] - X[..., :-1] ** 2) ** 2 + (1.0 - X[..., :-1]) ** 2, axis=-1)
+
+    def np_ackley(X: np.ndarray) -> np.ndarray:
+        """Ackley function. Highly multimodal with global minimum at 0.0."""
+        d = X.shape[-1]
+        sum_sq = np.sum(X ** 2, axis=-1)
+        sum_cos = np.sum(np.cos(2.0 * np.pi * X), axis=-1)
+        term1 = -20.0 * np.exp(-0.2 * np.sqrt(sum_sq / max(1, d)))
+        term2 = -np.exp(sum_cos / max(1, d))
+        return term1 + term2 + 20.0 + np.e
+
+    def np_griewank(X: np.ndarray) -> np.ndarray:
+        """Griewank function. Minimum at 0.0."""
+        d = X.shape[-1]
+        sum_sq = np.sum(X ** 2, axis=-1) / 4000.0
+        i_factors = np.sqrt(np.arange(1, d + 1, dtype=float))
+        prod_cos = np.prod(np.cos(X / i_factors), axis=-1)
+        return 1.0 + sum_sq - prod_cos
+
+    LANDSCAPES: dict[str, Callable[[Any], Any]] = {
+        "sphere": np_sphere,
+        "rastrigin": np_rastrigin,
+        "rosenbrock": np_rosenbrock,
+        "ackley": np_ackley,
+        "griewank": np_griewank,
+    }
+else:
+    LANDSCAPES: dict[str, Callable[[Any], Any]] = {  # type: ignore[no-redef]
+        k: v for k, v in PY_LANDSCAPES.items()
+    }
+
 
 
 # ============================================================================
@@ -110,15 +174,6 @@ if HAS_JAX:
     jax_vmap_griewank = jax.vmap(jax_griewank)
 
 
-LANDSCAPES: dict[str, Callable[[np.ndarray], np.ndarray]] = {
-    "sphere": np_sphere,
-    "rastrigin": np_rastrigin,
-    "rosenbrock": np_rosenbrock,
-    "ackley": np_ackley,
-    "griewank": np_griewank,
-}
-
-
 class VectorizedLandscapeEvaluator(Evaluator):
     """
     High-performance evaluator for mathematical optimization landscapes.
@@ -147,7 +202,7 @@ class VectorizedLandscapeEvaluator(Evaluator):
     def cost_estimate(self) -> str:
         return "cheap"
 
-    def _to_matrix(self, population: Sequence[Any]) -> tuple[np.ndarray, list[Any]]:
+    def _to_matrix(self, population: Sequence[Any]) -> tuple[Any, list[Any]]:
         """Extract float matrix of shape (N, D) from sequence of individuals or genomes."""
         rows: list[list[float]] = []
         clean_pop: list[Any] = []
@@ -159,23 +214,27 @@ class VectorizedLandscapeEvaluator(Evaluator):
                 g = item
 
             if hasattr(g, "values"):
-                rows.append(list(g.values))
+                rows.append([float(v) for v in g.values])
             elif hasattr(g, "genes"):
-                rows.append(list(g.genes))
-            elif isinstance(g, (list, tuple, np.ndarray)):
-                rows.append(list(g))
+                rows.append([float(v) for v in g.genes])
+            elif isinstance(g, (list, tuple)) or (HAS_NUMPY and isinstance(g, np.ndarray)):
+                rows.append([float(v) for v in g])
             else:
                 raise TypeError(f"Cannot extract vector coordinates from {type(g)}")
 
         if not rows:
-            return np.empty((0, 0), dtype=float), clean_pop
+            if HAS_NUMPY:
+                return np.empty((0, 0), dtype=float), clean_pop
+            return [], clean_pop
 
         d = len(rows[0])
         for r in rows:
             if len(r) != d:
                 raise ValueError(f"Inconsistent vector dimensions in batch: expected {d}, got {len(r)}")
 
-        return np.asarray(rows, dtype=float), clean_pop
+        if HAS_NUMPY:
+            return np.asarray(rows, dtype=float), clean_pop
+        return rows, clean_pop
 
     def evaluate_batch(
         self,
@@ -188,7 +247,9 @@ class VectorizedLandscapeEvaluator(Evaluator):
         if n == 0:
             return []
 
-        backend = "numpy"
+        backend = "pure_python"
+        dim = int(X.shape[1]) if hasattr(X, "shape") else len(X[0])
+
         if self.use_jax and HAS_JAX:
             backend = "jax"
             j_arr = jnp.asarray(X)
@@ -199,9 +260,14 @@ class VectorizedLandscapeEvaluator(Evaluator):
                 "ackley": jax_vmap_ackley,
                 "griewank": jax_vmap_griewank,
             }[self.landscape]
-            losses = np.asarray(vmap_fn(j_arr))
+            losses = [float(v) for v in np.asarray(vmap_fn(j_arr))]
+        elif HAS_NUMPY:
+            backend = "numpy"
+            losses = [float(v) for v in self.numpy_fn(X)]
         else:
-            losses = self.numpy_fn(X)
+            backend = "pure_python"
+            py_fn = PY_LANDSCAPES[self.landscape]
+            losses = [float(py_fn(row)) for row in X]
 
         duration_ms = (time.perf_counter() - t0) * 1000.0
         per_item_ms = duration_ms / max(1, n)
@@ -218,7 +284,7 @@ class VectorizedLandscapeEvaluator(Evaluator):
                     "loss": loss_val,
                     "backend": backend,
                     "landscape": self.landscape,
-                    "dimension": int(X.shape[1]),
+                    "dimension": dim,
                 },
                 evaluation_time_ms=per_item_ms,
             )

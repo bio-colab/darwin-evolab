@@ -265,10 +265,14 @@ def load_source_scenario(
     func_name: str,
     target_file: str | None = None,
 ) -> CodeScenario:
+    import sys
     sources: dict[str, str] = {}
     for raw in source_paths:
-        fp = Path(raw)
-        sources[fp.name] = fp.read_text(encoding="utf-8")
+        if str(raw) == "-":
+            sources["stdin.py"] = sys.stdin.read()
+        else:
+            fp = Path(raw)
+            sources[fp.name] = fp.read_text(encoding="utf-8")
     if not sources:
         raise ValueError("no source files")
     payload = json.loads(Path(tests_path).read_text(encoding="utf-8"))
@@ -339,8 +343,11 @@ def load_pytest_scenario(
 
     sources: dict[str, str] = {}
     for raw in source_paths:
-        fp = Path(raw)
-        sources[fp.name] = fp.read_text(encoding="utf-8")
+        if str(raw) == "-":
+            sources["stdin.py"] = sys.stdin.read()
+        else:
+            fp = Path(raw)
+            sources[fp.name] = fp.read_text(encoding="utf-8")
     if not sources:
         raise ValueError("no source files")
 

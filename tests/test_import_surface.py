@@ -28,3 +28,20 @@ def test_lazy_side_export_still_resolves():
     from evolab import EventBus
 
     assert EventBus is not None
+
+
+def test_import_without_numpy():
+    """Ensure core package imports cleanly even when numpy is not installed."""
+    script = (
+        "import sys; "
+        f"sys.path.insert(0, {str(ROOT / 'src')!r}); "
+        "sys.modules['numpy'] = None; "
+        "import evolab; "
+        "from evolab.vectorized import VectorizedLandscapeEvaluator; "
+        "ev = VectorizedLandscapeEvaluator('rastrigin'); "
+        "res = ev.evaluate([0.0, 0.0]); "
+        "assert res.score == 100.0, f'Expected 100.0, got {res.score}'; "
+        "raise SystemExit(0)"
+    )
+    proc = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stdout + proc.stderr

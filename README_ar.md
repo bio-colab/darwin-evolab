@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-652%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-660%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **إفصاح الشفافية والأمانة الأكاديمية (Transparency Notice)**:  
 > مشروع `darwin-evolab` هو إطار بحثي مفتوح المصدر بالكامل. جميع المقاييس والنتائج المعلنة تجريبية وقابلة لإعادة الإنتاج بايت-ببايت عبر بذور عشوائية مسجلة مسبقاً، وتخضع للتحقق المستمر والمؤتمت عبر CI العام. جميع التقريبات التحليلية وحدود النمذجة والقيود الفيزيائية مُفصح عنها صراحة. نرحب بالتدقيق الأكاديمي الصارم ونقد الأقران.
@@ -396,11 +396,11 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 ### 4. سلامة حزمة الاختبارات الشاملة للمستودع
 
 ```
-tests/ (النواة، إيجاز كوزا، ميلر CGP، هولاند، SWE-bench، الرياضيات، EDA، واجهة المستخدم، الإشارات، الاستعادة): 576 ناجح (100%)
+tests/ (النواة، إيجاز كوزا، ميلر CGP، هولاند، SWE-bench، الرياضيات، EDA، واجهة المستخدم، الإشارات، الاستعادة، أدوات يونكس): 584 ناجح (100%)
 experimental/electronics/tests/ (محاكاة SPICE، دوائر CGP، واجهة WebUSB، أهداف FPGA، مختبر Spec2Ckt، استوديو النمطين)       :  67 ناجح (100%)
 experimental/evomaze/tests/ (لامتغير MST، برهان قابلية الحل، المقاييس الطوبولوجية، تصدير JSON)                        :   9 ناجح (100%)
 ==================================================================================================================
-الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 652 ناجح (100%)
+الإجمالي الكلي للاختبارات المؤتمتة                                                                                 : 660 ناجح (100%)
 ```
 
 > 📄 **بيانات جبهة باريتو ومصدر النمذجة الكامل**: انظر الملف الموثق [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) والتقرير الأكاديمي الشامل [`docs/RESULTS.md`](docs/RESULTS.md).

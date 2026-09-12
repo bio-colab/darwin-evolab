@@ -49,7 +49,7 @@ class TerminalProgressObserver:
     ) -> None:
         self.total_generations = max(1, total_generations)
         self.quiet = quiet
-        self.stream = stream or sys.stdout
+        self.stream = stream or sys.stderr
         self.bar_width = bar_width
         self.is_tty = getattr(self.stream, "isatty", lambda: False)()
         self.use_color = supports_color(self.stream)
@@ -141,7 +141,7 @@ class StepProgressObserver:
 
     def __init__(self, quiet: bool = False, stream: TextIO | None = None) -> None:
         self.quiet = quiet
-        self.stream = stream or sys.stdout
+        self.stream = stream or sys.stderr
         self.is_tty = getattr(self.stream, "isatty", lambda: False)()
         self.use_color = supports_color(self.stream)
         self.start_time = time.perf_counter()

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from . import EvolutionEngine, parse_report, summarize
@@ -22,11 +23,20 @@ from .code_fixtures import (
 
 
 def cmd_inspect(args) -> int:
+    import sys
+    target = getattr(args, "file", None)
+    if target is None or target == "":
+        if not sys.stdin.isatty():
+            target = "-"
+        else:
+            print("error: report file not found: <missing path>")
+            print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json")
+            return 2
     try:
-        report = parse_report(args.file)
+        report = parse_report(target)
     except FileNotFoundError:
-        print(f"error: report file not found: {args.file}")
-        print("hint: pass a report path, e.g. evolab inspect run_report.json")
+        print(f"error: report file not found: {target}")
+        print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json")
         return 2
     except ValueError as exc:
         print(f"error: {exc}")
@@ -71,6 +81,7 @@ def _resolve_engine(args) -> str:
 
 
 def _load_code_scenario(args):
+    import sys
     if args.scenario_file:
         return load_scenario_file(args.scenario_file), True
     if args.source:
@@ -79,19 +90,19 @@ def _load_code_scenario(args):
             try:
                 return load_pytest_scenario(args.source, args.pytest, target_func, args.target_file), True
             except Exception as e:
-                print(f"error loading pytest scenario: {e}")
+                print(f"error loading pytest scenario: {e}", file=sys.stderr)
                 return None, True
         if not target_func:
-            print("error: --source requires --func (or use --pytest for auto-detection)")
+            print("error: --source requires --func (or use --pytest for auto-detection)", file=sys.stderr)
             return None, True
         if not args.tests:
-            print("error: --source requires either --tests or --pytest")
+            print("error: --source requires either --tests or --pytest", file=sys.stderr)
             return None, True
         return load_source_scenario(args.source, args.tests, target_func, args.target_file), True
     if args.scenario not in SCENARIO_REGISTRY:
         names = ", ".join(sorted(SCENARIO_REGISTRY))
-        print(f"error: unknown scenario {args.scenario!r}")
-        print(f"hint: choose one of: {names}")
+        print(f"error: unknown scenario {args.scenario!r}", file=sys.stderr)
+        print(f"hint: choose one of: {names}", file=sys.stderr)
         return None, True
     return SCENARIO_REGISTRY[args.scenario](), False
 
@@ -132,23 +143,23 @@ def cmd_evolve(args) -> int:
         from .swe_bench import SWEBenchAdapter
         adapter = SWEBenchAdapter()
         spec = adapter.parse_spec(args.swe_bench)
-        print(f"SWE-bench Issue    : {spec.instance_id} ({spec.repo})")
-        print(f"Problem Summary    : {spec.problem_statement[:80]}...")
-        print(f"Target File        : {spec.target_file}")
-        print(f"FAIL_TO_PASS Tests : {len(spec.fail_to_pass_tests)}")
-        print(f"PASS_TO_PASS Tests : {len(spec.pass_to_pass_tests)}")
+        print(f"SWE-bench Issue    : {spec.instance_id} ({spec.repo})", file=sys.stderr)
+        print(f"Problem Summary    : {spec.problem_statement[:80]}...", file=sys.stderr)
+        print(f"Target File        : {spec.target_file}", file=sys.stderr)
+        print(f"FAIL_TO_PASS Tests : {len(spec.fail_to_pass_tests)}", file=sys.stderr)
+        print(f"PASS_TO_PASS Tests : {len(spec.pass_to_pass_tests)}", file=sys.stderr)
         
         resolution = adapter.solve_instance(spec, max_evals=args.max_evals or 32)
-        print(f"\n[SWE-bench Resolution Verdict]")
-        print(f"Resolved           : {'YES (100% Green)' if resolution.resolved else 'NO'}")
-        print(f"FAIL_TO_PASS       : {'PASS' if resolution.fail_to_pass_passed else 'FAIL'}")
-        print(f"PASS_TO_PASS       : {'CLEAN (Zero Regressions)' if resolution.pass_to_pass_clean else 'BROKEN'}")
-        print(f"Evaluations Used   : {resolution.evaluations_used}")
-        print(f"Execution Time     : {resolution.execution_time_seconds}s")
+        print(f"\n[SWE-bench Resolution Verdict]", file=sys.stderr)
+        print(f"Resolved           : {'YES (100% Green)' if resolution.resolved else 'NO'}", file=sys.stderr)
+        print(f"FAIL_TO_PASS       : {'PASS' if resolution.fail_to_pass_passed else 'FAIL'}", file=sys.stderr)
+        print(f"PASS_TO_PASS       : {'CLEAN (Zero Regressions)' if resolution.pass_to_pass_clean else 'BROKEN'}", file=sys.stderr)
+        print(f"Evaluations Used   : {resolution.evaluations_used}", file=sys.stderr)
+        print(f"Execution Time     : {resolution.execution_time_seconds}s", file=sys.stderr)
         
         if getattr(args, "patch_file", None):
             Path(args.patch_file).write_text(resolution.generated_patch, encoding="utf-8")
-            print(f"Git Patch saved    : {args.patch_file}")
+            print(f"Git Patch saved    : {args.patch_file}", file=sys.stderr)
 
         out_path = Path(args.output)
         out_path.write_text(json.dumps({
@@ -160,7 +171,6 @@ def cmd_evolve(args) -> int:
         }, indent=2) + "\n", encoding="utf-8")
         return 0 if resolution.resolved else 1
     if is_electronics:
-        import sys
         root = Path(__file__).resolve().parents[2]
         if str(root) not in sys.path:
             sys.path.insert(0, str(root))
@@ -171,7 +181,7 @@ def cmd_evolve(args) -> int:
                 prepare_custom_electronics_run,
             )
         except ImportError as exc:
-            print(f"error: electronics track not available ({exc})")
+            print(f"error: electronics track not available ({exc})", file=sys.stderr)
             return 2
 
         has_custom_input = any((
@@ -198,8 +208,8 @@ def cmd_evolve(args) -> int:
         else:
             name = args.scenario if args.scenario in list_electronics_scenarios() else "half_adder"
             if args.scenario not in list_electronics_scenarios() and args.scenario != "click_cli_parser":
-                print(f"error: unknown electronics scenario {args.scenario!r}")
-                print("hint: " + ", ".join(list_electronics_scenarios()))
+                print(f"error: unknown electronics scenario {args.scenario!r}", file=sys.stderr)
+                print("hint: " + ", ".join(list_electronics_scenarios()), file=sys.stderr)
                 return 2
             evaluator, pop, name = prepare_electronics_run(name, args.population, effective_seed)
 
@@ -219,7 +229,8 @@ def cmd_evolve(args) -> int:
 
         print(
             f"Engine: GA | genome=electronics | scenario={name} | tool={tool_name} "
-            f"| pop={args.population} gens={args.generations} seed={effective_seed}"
+            f"| pop={args.population} gens={args.generations} seed={effective_seed}",
+            file=sys.stderr,
         )
         # Thread the scenario's true genome size into the engine so the
         # printed config is truthful instead of the numeric default (16):
@@ -256,13 +267,13 @@ def cmd_evolve(args) -> int:
                 seed=args.seed,
             )
             nsga_res = engine.run(initial_population=pop, generations=args.generations)
-            print(f"Engine: NSGA-II | Multi-Objective Pareto Frontier Discovered")
-            print(f"Pareto Front Size: {len(nsga_res['front_0'])} non-dominated solutions")
+            print(f"Engine: NSGA-II | Multi-Objective Pareto Frontier Discovered", file=sys.stderr)
+            print(f"Pareto Front Size: {len(nsga_res['front_0'])} non-dominated solutions", file=sys.stderr)
             for i, sol in enumerate(nsga_res['front_0'][:5]):
-                print(f"  Pareto #{i+1}: {sol['scores']}")
+                print(f"  Pareto #{i+1}: {sol['scores']}", file=sys.stderr)
             if getattr(args, "pareto_export", None):
                 engine.export_pareto_front(args.pareto_export)
-                print(f"Pareto Front saved: {args.pareto_export}")
+                print(f"Pareto Front saved: {args.pareto_export}", file=sys.stderr)
             return 0
 
         from .signals import SignalController
@@ -286,7 +297,8 @@ def cmd_evolve(args) -> int:
                 print(
                     f"Archive: scenario={st['scenario']} hits={st['hits']} misses={st['misses']} "
                     f"| rows={st['total_evaluations']} distinct_genomes={st['distinct_genomes']} "
-                    f"| db={st['db']}"
+                    f"| db={st['db']}",
+                    file=sys.stderr,
                 )
             except Exception:
                 pass
@@ -304,7 +316,8 @@ def cmd_evolve(args) -> int:
             pop = make_code_population(scenario, args.population, random.Random(args.seed))
             print(
                 f"Engine: GA | genome=code | pop={args.population} "
-                f"gens={args.generations} seed={args.seed} sandbox=False"
+                f"gens={args.generations} seed={args.seed} sandbox=False",
+                file=sys.stderr,
             )
             with SignalController(register_os_signals=True) as sc:
                 result = engine.run(
@@ -325,7 +338,8 @@ def cmd_evolve(args) -> int:
         else:
             print(
                 f"Engine: GA | genome=numeric | pop={args.population} "
-                f"gens={args.generations} seed={args.seed}"
+                f"gens={args.generations} seed={args.seed}",
+                file=sys.stderr,
             )
             engine = _build_engine(args)
             with SignalController(register_os_signals=True) as sc:
@@ -343,7 +357,7 @@ def cmd_evolve(args) -> int:
         scenario = loaded
         use_sandbox = args.sandbox or (external and not args.no_sandbox)
         if external and not use_sandbox:
-            print("warning: evaluating external code without --sandbox")
+            print("warning: evaluating external code without --sandbox", file=sys.stderr)
         if use_sandbox:
             from .evaluators import SandboxFunctionTestEvaluator
             evaluator = SandboxFunctionTestEvaluator(
@@ -359,7 +373,8 @@ def cmd_evolve(args) -> int:
         catalog_n = len(catalog_sources(scenario.sources))
         print(
             f"Engine: Greedy | Search Budget: Catalog Size (N={catalog_n}) "
-            f"| max_evals={args.max_evals} | Sandbox: {use_sandbox}"
+            f"| max_evals={args.max_evals} | Sandbox: {use_sandbox}",
+            file=sys.stderr,
         )
         baseline_res = None
         try:
@@ -392,7 +407,8 @@ def cmd_evolve(args) -> int:
         current_fit = float(bi.get("fitness", 0.0))
         print(
             f"\n[Hybrid LLM] Evolutionary search stagnated at {current_fit:.2f}%. "
-            f"Invoking {args.llm} stagnation breaker..."
+            f"Invoking {args.llm} stagnation breaker...",
+            file=sys.stderr,
         )
         try:
             from .llm_mutator import LLMConfig, LLMSemanticMutator
@@ -433,7 +449,8 @@ def cmd_evolve(args) -> int:
                         fit_res = evaluator.evaluate(cand_circuit)
                         if fit_res.score > current_fit:
                             print(
-                                f"[Hybrid LLM] Circuit stagnation broken! Fitness improved from {current_fit:.2f}% to {fit_res.score:.2f}%."
+                                f"[Hybrid LLM] Circuit stagnation broken! Fitness improved from {current_fit:.2f}% to {fit_res.score:.2f}%.",
+                                file=sys.stderr,
                             )
                             bi["fitness"] = fit_res.score
                             bi["passed_holdout"] = fit_res.passed_holdout
@@ -448,7 +465,8 @@ def cmd_evolve(args) -> int:
                             engine.best_ever = Individual(genome=cand_circuit, fitness=fit_res.score, species="spec_electronics")
                         else:
                             print(
-                                f"[Hybrid LLM] Circuit candidate rejected: score={fit_res.score:.2f}%. Safety preserved."
+                                f"[Hybrid LLM] Circuit candidate rejected: score={fit_res.score:.2f}%. Safety preserved.",
+                                file=sys.stderr,
                             )
 
             elif scenario is not None:
@@ -464,7 +482,8 @@ def cmd_evolve(args) -> int:
                     fit_res = evaluator.evaluate(cand_genome)
                     if fit_res.score > current_fit and fit_res.passed_holdout is not False:
                         print(
-                            f"[Hybrid LLM] Stagnation broken! Fitness improved from {current_fit:.2f}% to {fit_res.score:.2f}%."
+                            f"[Hybrid LLM] Stagnation broken! Fitness improved from {current_fit:.2f}% to {fit_res.score:.2f}%.",
+                            file=sys.stderr,
                         )
                         bi["fitness"] = fit_res.score
                         bi["code"] = mutated_code
@@ -480,10 +499,11 @@ def cmd_evolve(args) -> int:
                         })
                     else:
                         print(
-                            f"[Hybrid LLM] Candidate rejected: score={fit_res.score:.2f}%, holdout={fit_res.passed_holdout}. Safety preserved."
+                            f"[Hybrid LLM] Candidate rejected: score={fit_res.score:.2f}%, holdout={fit_res.passed_holdout}. Safety preserved.",
+                            file=sys.stderr,
                         )
         except Exception as err:
-            print(f"[Hybrid LLM] Stagnation breaker error: {err}")
+            print(f"[Hybrid LLM] Stagnation breaker error: {err}", file=sys.stderr)
 
     if is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
@@ -566,26 +586,26 @@ def cmd_evolve(args) -> int:
         else:
             patch_str = f"=== SYNTHESIZED NETLIST TOPOLOGY ===\n{diff_text}\n"
         Path(args.patch_file).write_text(patch_str, encoding="utf-8")
-        print(f"Patch saved     : {args.patch_file}")
+        print(f"Patch saved     : {args.patch_file}", file=sys.stderr)
 
     if getattr(args, "summary_file", None):
         summary_str = format_markdown_summary(result, scenario, diff_text)
         Path(args.summary_file).write_text(summary_str, encoding="utf-8")
-        print(f"Markdown Summary: {args.summary_file}")
+        print(f"Markdown Summary: {args.summary_file}", file=sys.stderr)
 
     if getattr(args, "schematic_file", None) and is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
         if best_g and (hasattr(best_g.genome, "circuit") or hasattr(best_g.genome, "connections") or hasattr(best_g.genome, "get_active_nodes")):
             from experimental.electronics.instruments.schematic import save_circuit_svg
             save_circuit_svg(best_g.genome, args.schematic_file)
-            print(f"Schematic saved : {args.schematic_file}")
+            print(f"Schematic saved : {args.schematic_file}", file=sys.stderr)
 
     if getattr(args, "verilog_file", None) and is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
         if best_g and hasattr(best_g.genome, "to_verilog"):
             v_code = best_g.genome.to_verilog(module_name="synthesized_circuit")
             Path(args.verilog_file).write_text(v_code, encoding="utf-8")
-            print(f"Verilog saved   : {args.verilog_file}")
+            print(f"Verilog saved   : {args.verilog_file}", file=sys.stderr)
 
     if getattr(args, "ui_file", None) and is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
@@ -600,7 +620,7 @@ def cmd_evolve(args) -> int:
                 "fpga_target": fpga_target,
             }
             save_workbench_html(best_g.genome, args.ui_file, metadata=meta)
-            print(f"Workbench UI saved: {args.ui_file}")
+            print(f"Workbench UI saved: {args.ui_file}", file=sys.stderr)
 
             if hasattr(best_g.genome, "get_active_nodes"):
                 from evolab.cgp_logic import estimate_fpga_resources
@@ -621,7 +641,7 @@ def cmd_evolve(args) -> int:
         file_mapping = {Path(raw).name: Path(raw) for raw in (args.source or [])}
         applied = apply_in_place(scenario, repaired, create_backup=True, file_mapping=file_mapping)
         if applied:
-            print(f"[In-Place Apply] Successfully patched: {', '.join(applied)} (backup saved with .bak)")
+            print(f"[In-Place Apply] Successfully patched: {', '.join(applied)} (backup saved with .bak)", file=sys.stderr)
 
     out_format = getattr(args, "format", "console")
     if out_format == "markdown":
@@ -785,15 +805,88 @@ def cmd_init(args) -> int:
         return 2
     template = generate_default_config(fmt=fmt)
     target.write_text(template, encoding="utf-8")
-    print(f"Initialized configuration file: {target}")
+    print(f"Initialized configuration file: {target}", file=sys.stderr)
+    return 0
+
+
+def cmd_eval(args) -> int:
+    """Standalone Fitness Oracle evaluating candidate representation from CLI argument or stdin."""
+    import sys
+    raw_input = getattr(args, "candidate", None)
+    if raw_input is None or raw_input == "-":
+        if not sys.stdin.isatty():
+            raw_input = sys.stdin.read().strip()
+        else:
+            print("error: eval requires a candidate vector/JSON argument or '-' via stdin", file=sys.stderr)
+            print("hint: echo '[0.0, 0.0]' | evolab eval", file=sys.stderr)
+            return 2
+
+    if not raw_input:
+        print("error: empty candidate provided to eval", file=sys.stderr)
+        return 2
+
+    vector = None
+    try:
+        parsed = json.loads(raw_input)
+        if isinstance(parsed, list):
+            vector = [float(x) for x in parsed]
+        elif isinstance(parsed, dict) and "values" in parsed:
+            vector = [float(x) for x in parsed["values"]]
+        elif isinstance(parsed, dict) and "genes" in parsed:
+            vector = [float(x) for x in parsed["genes"]]
+    except Exception:
+        pass
+
+    if vector is None:
+        try:
+            cleaned = raw_input.replace(",", " ").split()
+            vector = [float(x) for x in cleaned]
+        except Exception:
+            pass
+
+    if vector is None:
+        print(f"error: could not parse candidate vector coordinates from: {raw_input[:60]!r}", file=sys.stderr)
+        return 2
+
+    landscape = getattr(args, "landscape", "rastrigin")
+    target = getattr(args, "target", 100.0)
+    from .vectorized import VectorizedLandscapeEvaluator
+    try:
+        evaluator = VectorizedLandscapeEvaluator(landscape=landscape, target_score=target)
+        result = evaluator.evaluate(vector)
+    except Exception as exc:
+        print(f"error during evaluation: {exc}", file=sys.stderr)
+        return 2
+
+    out_fmt = getattr(args, "format", "score")
+    if out_fmt == "json":
+        print(json.dumps({
+            "score": result.score,
+            "sub_scores": result.sub_scores,
+            "artifacts": result.artifacts,
+            "evaluation_time_ms": result.evaluation_time_ms,
+        }, indent=2))
+    else:
+        print(f"{result.score:.4f}")
     return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
+    from . import __version__
     ap = argparse.ArgumentParser(
         prog="evolab", description="Universal Evolutionary Optimization & Synthesis Kernel"
     )
+    ap.add_argument("--version", action="version", version=f"evolab {__version__}")
     sub = ap.add_subparsers(dest="command", required=True)
+
+    # Subcommand: eval (Fitness Oracle)
+    p_eval = sub.add_parser("eval", help="evaluate candidate representation or vector as a Fitness Oracle")
+    p_eval.add_argument("candidate", nargs="?", default=None, help="candidate coordinates e.g. '[0.0, 0.0]' or '-' for stdin")
+    p_eval.add_argument("--landscape", choices=["rastrigin", "sphere", "rosenbrock", "ackley", "griewank"],
+                        default="rastrigin", help="mathematical benchmark landscape (default: rastrigin)")
+    p_eval.add_argument("-t", "--target", type=float, default=100.0, help="target score (default: 100.0)")
+    p_eval.add_argument("--format", choices=["score", "json"], default="score", help="output format (score or json)")
+    p_eval.set_defaults(func=cmd_eval)
 
     # Subcommand: inspect
     p_inspect = sub.add_parser("inspect", help="validate and analyze a report file")
@@ -940,7 +1033,7 @@ def build_parser() -> argparse.ArgumentParser:
     return ap
 
 
-def main(argv: list[str] | None = None) -> int:
+def _run_cli(argv: list[str] | None = None) -> int:
     import sys
     # If invoked with no arguments in an interactive terminal, offer to launch onboarding wizard
     if argv is None and len(sys.argv) <= 1:
@@ -970,12 +1063,17 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     _ensure_evolve_defaults(args)
     if getattr(args, "command", None) == "inspect" and getattr(args, "file", None) is None:
-        print("error: report file not found: <missing path>")
-        print("hint: pass a report path, e.g. evolab inspect run_report.json")
-        return 2
+        if not sys.stdin.isatty():
+            args.file = "-"
+        else:
+            print("error: report file not found: <missing path>", file=sys.stderr)
+            print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json", file=sys.stderr)
+            return 2
     cmd = getattr(args, "command", None)
     if cmd == "inspect":
         return cmd_inspect(args)
+    if cmd == "eval":
+        return cmd_eval(args)
     if cmd == "serve-workbench":
         return cmd_serve_workbench(args)
     if cmd == "evolve":
@@ -991,6 +1089,20 @@ def main(argv: list[str] | None = None) -> int:
     if cmd == "init":
         return cmd_init(args)
     return 2
+
+
+def main(argv: list[str] | None = None) -> int:
+    import os
+    import sys
+    try:
+        return _run_cli(argv)
+    except BrokenPipeError:
+        try:
+            devnull = os.open(os.devnull, os.O_WRONLY)
+            os.dup2(devnull, sys.stdout.fileno())
+        except Exception:
+            pass
+        return 141
 
 
 if __name__ == "__main__":

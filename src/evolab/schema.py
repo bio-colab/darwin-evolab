@@ -136,10 +136,16 @@ def _reject_dup_keys(pairs: list) -> dict:
     return dict(pairs)
 
 
-def parse_report(path: str | Path) -> RunReport:
-    path = Path(path)
+def parse_report(path: str | Path | None) -> RunReport:
+    import sys
     issues: list[Issue] = []
-    text = path.read_text(encoding="utf-8")
+    if path is None or str(path) == "-":
+        text = sys.stdin.read()
+        source_path = "<stdin>"
+    else:
+        p = Path(path)
+        text = p.read_text(encoding="utf-8")
+        source_path = str(p)
     try:
         raw = json.loads(text, object_pairs_hook=_reject_dup_keys)
     except ValueError:
@@ -501,7 +507,7 @@ def parse_report(path: str | Path) -> RunReport:
         config=config if isinstance(config, dict) else None,
         timestamp_utc=raw.get("timestamp_utc"),
         engine_version=raw.get("engine_version"),
-        source_path=str(path),
+        source_path=source_path,
         issues=issues,
         extra=extra,
     )
