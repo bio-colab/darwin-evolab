@@ -105,12 +105,23 @@ def find_project_config_file(start_dir: Path | str | None = None) -> Path | None
     return None
 
 
-def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
-    """Load declarative evolab configuration if found in current project directory tree."""
-    cfg_file = find_project_config_file(start_dir)
-    if not cfg_file:
-        return {}
+def find_user_config_file() -> Path | None:
+    """Search for global user configuration in ~/.evolab/config.toml, ~/.darwinrc, or XDG config."""
+    home = Path.home()
+    candidates = [
+        home / ".evolab" / "config.toml",
+        home / ".evolab.toml",
+        home / ".darwinrc",
+        home / ".config" / "evolab" / "config.toml",
+    ]
+    for c in candidates:
+        if c.is_file():
+            return c
+    return None
 
+
+def _parse_config_file(cfg_file: Path) -> dict[str, Any]:
+    """Parses a TOML or JSON config file and returns a flattened dictionary."""
     try:
         content = cfg_file.read_text(encoding="utf-8")
     except Exception:
@@ -133,7 +144,6 @@ def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
                 import tomli as tomllib
                 raw_data = tomllib.loads(content)
             except ImportError:
-                # Fallback: simple line parser for basic key = value
                 raw_data = {}
                 current_section = ""
                 for line in content.splitlines():
@@ -161,7 +171,6 @@ def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
     if "tool" in raw_data and "evolab" in raw_data["tool"]:
         raw_data = raw_data["tool"]["evolab"]
 
-    # Flatten sections ([project], [engine], [reporting]) into unified CLI option map
     flat: dict[str, Any] = {}
     for section_key, section_val in raw_data.items():
         if isinstance(section_val, dict):
@@ -170,7 +179,6 @@ def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
         else:
             flat[section_key] = section_val
 
-    # Normalize aliases
     if "sources" in flat and "source" not in flat:
         flat["source"] = flat.pop("sources")
     if "tests" in flat and isinstance(flat["tests"], list):
@@ -178,6 +186,128 @@ def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
         flat["tests"] = json.dumps(flat["tests"])
 
     return flat
+
+
+def load_project_config(start_dir: Path | str | None = None) -> dict[str, Any]:
+    """Load declarative evolab configuration if found in current project directory tree."""
+    cfg_file = find_project_config_file(start_dir)
+    if not cfg_file:
+        return {}
+    return _parse_config_file(cfg_file)
+
+
+# Global provenance tracker
+_LAST_CONFIG_PROVENANCE: dict[str, tuple[Any, str]] = {}
+
+
+def get_config_provenance() -> dict[str, tuple[Any, str]]:
+    """Returns provenance of the most recently loaded hierarchical configuration."""
+    return dict(_LAST_CONFIG_PROVENANCE)
+
+
+def _get_env_config(prefix: str = "EVOLAB_") -> dict[str, Any]:
+    """Extracts configuration settings from environment variables starting with prefix."""
+    import os
+    env_map: dict[str, Any] = {}
+    prefix_len = len(prefix)
+
+    var_to_key = {
+        "POPULATION": "population",
+        "POPULATION_SIZE": "population",
+        "GENERATIONS": "generations",
+        "SEED": "seed",
+        "ENGINE": "engine",
+        "MUTATION_RATE": "mutation_rate",
+        "TARGET": "target",
+        "DIFF": "diff",
+        "OUTPUT": "output",
+        "SCENARIO": "scenario",
+        "SOURCE": "source",
+        "PYTEST": "pytest",
+        "VERBOSE": "verbose",
+        "CHECKPOINT_EVERY": "checkpoint_every",
+    }
+
+    for k, v in os.environ.items():
+        if k.startswith(prefix):
+            suffix = k[prefix_len:].upper()
+            target_key = var_to_key.get(suffix, suffix.lower())
+            val: Any = v
+            if v.lower() in ("true", "1", "yes"):
+                val = True
+            elif v.lower() in ("false", "0", "no"):
+                val = False
+            elif v.isdigit():
+                val = int(v)
+            else:
+                try:
+                    val = float(v)
+                except ValueError:
+                    val = v
+            env_map[target_key] = val
+
+    return env_map
+
+
+def load_hierarchical_config(
+    start_dir: Path | str | None = None,
+    cli_overrides: dict[str, Any] | None = None,
+    env_prefix: str = "EVOLAB_",
+) -> dict[str, Any]:
+    """
+    Cascading hierarchical configuration loader adhering to UNIX precedence:
+    Defaults < User (~/.evolab/config.toml) < Project (evolab.toml) < Environment (EVOLAB_*) < CLI
+    """
+    global _LAST_CONFIG_PROVENANCE
+    provenance: dict[str, tuple[Any, str]] = {}
+    merged: dict[str, Any] = {}
+
+    # Layer 1: Code base defaults
+    base_defaults = {
+        "engine": "auto",
+        "generations": 30,
+        "population": 16,
+        "target": 99.7,
+        "seed": None,
+        "diff": False,
+    }
+    for k, v in base_defaults.items():
+        merged[k] = v
+        provenance[k] = (v, "default")
+
+    # Layer 2: User config
+    user_file = find_user_config_file()
+    if user_file:
+        user_cfg = _parse_config_file(user_file)
+        for k, v in user_cfg.items():
+            merged[k] = v
+            provenance[k] = (v, f"user:{user_file.name}")
+
+    # Layer 3: Project config
+    proj_cfg = load_project_config(start_dir)
+    if proj_cfg:
+        proj_file = find_project_config_file(start_dir)
+        proj_name = proj_file.name if proj_file else "project"
+        for k, v in proj_cfg.items():
+            merged[k] = v
+            provenance[k] = (v, f"project:{proj_name}")
+
+    # Layer 4: Environment variables
+    env_cfg = _get_env_config(env_prefix)
+    for k, v in env_cfg.items():
+        merged[k] = v
+        provenance[k] = (v, f"env:{env_prefix}{k.upper()}")
+
+    # Layer 5: CLI overrides
+    if cli_overrides:
+        for k, v in cli_overrides.items():
+            if v is not None:
+                merged[k] = v
+                provenance[k] = (v, "cli")
+
+    _LAST_CONFIG_PROVENANCE = provenance
+    return merged
+
 
 
 def generate_default_config(fmt: str = "toml") -> str:

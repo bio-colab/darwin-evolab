@@ -265,8 +265,17 @@ def cmd_evolve(args) -> int:
                 print(f"Pareto Front saved: {args.pareto_export}")
             return 0
 
+        from .signals import SignalController
         engine = _build_engine(args, fitness_fn=evaluator, genome_size=genome_size)
-        result = engine.run(args.generations, initial_population=pop)
+        with SignalController(register_os_signals=True) as sc:
+            result = engine.run(
+                args.generations,
+                initial_population=pop,
+                resume_from=getattr(args, "resume", None),
+                checkpoint_every=getattr(args, "checkpoint_every", None),
+                checkpoint_dir=getattr(args, "checkpoint_dir", None),
+                signal_controller=sc,
+            )
         result.setdefault("config", {})
         result["config"]["genome"] = "electronics"
         result["config"]["scenario"] = name
@@ -282,6 +291,7 @@ def cmd_evolve(args) -> int:
             except Exception:
                 pass
     elif engine_kind == "ga" or args.genome == "numeric":
+        from .signals import SignalController
         if args.genome != "numeric" and engine_kind == "ga":
             loaded, external = _load_code_scenario(args)
             if loaded is None:
@@ -296,7 +306,15 @@ def cmd_evolve(args) -> int:
                 f"Engine: GA | genome=code | pop={args.population} "
                 f"gens={args.generations} seed={args.seed} sandbox=False"
             )
-            result = engine.run(args.generations, initial_population=pop)
+            with SignalController(register_os_signals=True) as sc:
+                result = engine.run(
+                    args.generations,
+                    initial_population=pop,
+                    resume_from=getattr(args, "resume", None),
+                    checkpoint_every=getattr(args, "checkpoint_every", None),
+                    checkpoint_dir=getattr(args, "checkpoint_dir", None),
+                    signal_controller=sc,
+                )
             result.setdefault("config", {})
             result["config"]["genome"] = "code"
             result["config"]["scenario"] = scenario.name
@@ -310,7 +328,14 @@ def cmd_evolve(args) -> int:
                 f"gens={args.generations} seed={args.seed}"
             )
             engine = _build_engine(args)
-            result = engine.run(args.generations)
+            with SignalController(register_os_signals=True) as sc:
+                result = engine.run(
+                    args.generations,
+                    resume_from=getattr(args, "resume", None),
+                    checkpoint_every=getattr(args, "checkpoint_every", None),
+                    checkpoint_dir=getattr(args, "checkpoint_dir", None),
+                    signal_controller=sc,
+                )
     else:
         loaded, external = _load_code_scenario(args)
         if loaded is None:
@@ -839,6 +864,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("--frac", type=float, default=0.667, help="exploitation start fraction")
     p_opt.add_argument("-o", "--output", default="run_report.json")
     p_opt.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
+    p_opt.add_argument("--checkpoint-every", type=int, default=None, help="save state checkpoint every N generations")
+    p_opt.add_argument("--checkpoint-dir", default=None, help="directory to store checkpoints (default: checkpoints/)")
+    p_opt.add_argument("--resume", default=None, help="resume execution from a checkpoint JSON file")
     p_opt.add_argument("--diagnose", action="store_true", help="display detailed fitness sharing diagnostics & report summary")
     p_opt.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
     p_opt.add_argument("--quiet", action="store_true", help="suppress live progress updates")
@@ -871,6 +899,9 @@ def build_parser() -> argparse.ArgumentParser:
     g_budget.add_argument("--mode", choices=["off", "static", "dynamic"],
                           default="dynamic", help="GA fitness-sharing schedule")
     g_budget.add_argument("--frac", type=float, default=0.667)
+    g_budget.add_argument("--checkpoint-every", type=int, default=None, help="periodically save state checkpoint every N generations")
+    g_budget.add_argument("--checkpoint-dir", default=None, help="directory to store state checkpoints (default: checkpoints/)")
+    g_budget.add_argument("--resume", default=None, help="resume execution from a checkpoint JSON file")
 
     g_diag = p_evo.add_argument_group("Diagnostics, Output & Reporting")
     g_diag.add_argument("--diff", action="store_true", help="print unified diff")
@@ -919,10 +950,10 @@ def main(argv: list[str] | None = None) -> int:
 
     ap = build_parser()
 
-    # Discover and apply declarative project configuration defaults (evolab.toml / .evolab.json)
+    # Discover and apply cascading hierarchical configuration defaults (defaults < user < project < env < cli)
     try:
-        from .config import load_project_config
-        cfg = load_project_config()
+        from .config import load_hierarchical_config
+        cfg = load_hierarchical_config()
         if cfg:
             valid_dest = {action.dest for action in ap._actions}
             if ap._subparsers and hasattr(ap._subparsers, "_actions"):

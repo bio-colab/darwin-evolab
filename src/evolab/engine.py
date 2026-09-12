@@ -8,6 +8,7 @@ import statistics
 import time
 from collections.abc import Callable, Sequence
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from .config import EngineConfig, SpeciationConfig, QualityDiversityConfig, MemoryConfig
@@ -333,7 +334,34 @@ class EvolutionEngine:
             )
 
         from .events import EventBus
+        from .journal import StructuredJournal
         self.event_bus = EventBus()
+        self.journal = StructuredJournal()
+        self.journal.attach_to_bus(self.event_bus)
+        self.signal_controller = None
+
+    def attach_signal_controller(self, controller: Any | None = None) -> Any:
+        """Attaches a SignalController to this engine."""
+        if controller is None:
+            from .signals import SignalController
+            controller = SignalController()
+        self.signal_controller = controller
+        return controller
+
+    def pause(self) -> None:
+        """Cooperatively pauses the running engine."""
+        if getattr(self, "signal_controller", None) is not None:
+            self.signal_controller.pause()
+
+    def resume(self) -> None:
+        """Resumes a paused engine."""
+        if getattr(self, "signal_controller", None) is not None:
+            self.signal_controller.resume()
+
+    def request_stop(self, reason: str = "programmatic_stop") -> None:
+        """Cooperatively stops the running engine at the next generation boundary."""
+        if getattr(self, "signal_controller", None) is not None:
+            self.signal_controller.request_stop(reason)
 
     def add_event_listener(self, event_type: Any, listener: Callable[[Any], None]) -> None:
         """Subscribes an observer callback to a lifecycle evolution event."""
@@ -760,6 +788,10 @@ class EvolutionEngine:
         self,
         generations: int,
         initial_population: list[Individual] | None = None,
+        resume_from: str | Path | None = None,
+        checkpoint_every: int | None = None,
+        checkpoint_dir: str | Path | None = None,
+        signal_controller: Any | None = None,
     ) -> dict:
         # run contract (audit A11 F-02)
         if type(generations) is not int or isinstance(generations, bool):
@@ -769,9 +801,30 @@ class EvolutionEngine:
         self._begin_run()
         t0 = time.perf_counter()
 
+        if signal_controller is None:
+            signal_controller = getattr(self, "signal_controller", None)
+
+        start_gen = 1
+        resumed_history: list[dict] = []
+        resumed_species_history: list[dict[str, int]] = []
+        resumed_best_ever: Individual | None = None
+
+        if resume_from is not None:
+            from .checkpoint import load_checkpoint
+            ckpt = load_checkpoint(resume_from)
+            start_gen = ckpt.generation + 1
+            population = ckpt.population
+            resumed_history = list(ckpt.history)
+            resumed_species_history = list(ckpt.species_history)
+            resumed_best_ever = ckpt.best_ever
+            if ckpt.rng_state is not None:
+                self.rng.setstate(ckpt.rng_state)
+            for ind in population:
+                clone_g = ind.genome.clone() if hasattr(ind.genome, "clone") else list(ind.genome)
+                self._representatives.setdefault(ind.species, clone_g)
         # initial-population injection (audit A20 P1): enables reachability,
         # seeded-basin and adversarial-evaluator studies without private hooks
-        if initial_population is not None:
+        elif initial_population is not None:
             if len(initial_population) != self.population_size:
                 raise ValueError(
                     f"initial_population must contain exactly "
@@ -844,12 +897,12 @@ class EvolutionEngine:
             self.speciation_enabled = False
             self.qd_selection = False
 
-        history: list[dict] = []
-        best_ever: Individual | None = None
+        history: list[dict] = list(resumed_history)
+        best_ever: Individual | None = resumed_best_ever
         early_stop = False
-        species_history: list[dict[str, int]] = []
+        species_history: list[dict[str, int]] = list(resumed_species_history)
         stagnation_events: list[int] = []
-        best_so_far = -1.0
+        best_so_far = best_ever.fitness if best_ever is not None else -1.0
         gens_since_improvement = 0
         exploit_start = int(generations * self.exploit_after_frac)
 
@@ -871,7 +924,19 @@ class EvolutionEngine:
             ),
         })
 
-        for gen in range(1, generations + 1):
+        for gen in range(start_gen, generations + 1):
+            if signal_controller is not None:
+                if getattr(signal_controller, "is_paused", False):
+                    unpaused = signal_controller.wait_if_paused()
+                    if not unpaused or signal_controller.stop_requested:
+                        early_stop = True
+                        self._decision_log.append({
+                            "at_generation": gen,
+                            "event": "signal_interrupt",
+                            "detail": getattr(signal_controller, "stop_reason", "signal_stop"),
+                        })
+                        break
+
             _gen_t0 = time.perf_counter()
             # Atom 1 baselines (energy spent THIS generation).
             _e0 = int(getattr(self, "_total_evals", 0) or 0)
@@ -1060,6 +1125,43 @@ class EvolutionEngine:
                     history[-1]["energy_total"] = int(self._energy_total)
             except Exception:
                 pass
+
+            # Save checkpoint if requested via signal or on schedule
+            should_save_ckpt = False
+            if signal_controller is not None and getattr(signal_controller, "consume_checkpoint_request", lambda: False)():
+                should_save_ckpt = True
+            elif checkpoint_every and checkpoint_every > 0 and gen % checkpoint_every == 0:
+                should_save_ckpt = True
+
+            if should_save_ckpt:
+                from .checkpoint import save_checkpoint
+                ckpt_folder = Path(checkpoint_dir or "checkpoints")
+                ckpt_file = ckpt_folder / f"checkpoint_gen_{gen:04d}.json"
+                save_checkpoint(
+                    filepath=ckpt_file,
+                    generation=gen,
+                    total_generations=generations,
+                    population=population,
+                    best_ever=best_ever,
+                    rng=self.rng,
+                    history=history,
+                    species_history=species_history,
+                    metadata={"engine": "EvolutionEngine", "species_count": len(dist_now)},
+                )
+                self._decision_log.append({
+                    "at_generation": gen,
+                    "event": "checkpoint_saved",
+                    "detail": str(ckpt_file),
+                })
+
+            if signal_controller is not None and getattr(signal_controller, "stop_requested", False):
+                early_stop = True
+                self._decision_log.append({
+                    "at_generation": gen,
+                    "event": "signal_interrupt",
+                    "detail": getattr(signal_controller, "stop_reason", "signal_stop"),
+                })
+                break
 
             if best.fitness > best_so_far + 0.01:
                 best_so_far = best.fitness
@@ -1337,6 +1439,7 @@ class EvolutionEngine:
             final_gen=final_gen,
         )
         self.best_ever = best_ever
+        report["stopped_by_signal"] = bool(signal_controller and getattr(signal_controller, "stop_requested", False))
         if self.holland_allocator_enabled and self._holland_allocator is not None:
             report["holland_allocator"] = self._holland_allocator.describe()
         # Phase 1: silent post-run self fact (observation only, never search).
