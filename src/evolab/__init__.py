@@ -63,6 +63,7 @@ from .evaluators import (
     NumericEvaluator,
     SandboxFunctionTestEvaluator,
 )
+from .ipc_evaluator import ExternalProcessEvaluator
 from .genome import EvolabGenome, FloatGenome, Individual
 from .eval_cache import EvaluationCache, attach_eval_cache
 from .repair import (
@@ -365,6 +366,7 @@ __all__ = [
     "SandboxFunctionTestEvaluator",
     "CompileCheckEvaluator",
     "NumericEvaluator",
+    "ExternalProcessEvaluator",
     "EvaluationCache",
     "attach_eval_cache",
     # 3. Evolution Engine Core Contracts (README_ar.md: "API البرمجي — مسار الأرقام")

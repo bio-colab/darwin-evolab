@@ -53,7 +53,67 @@ def cmd_inspect(args) -> int:
     return 0 if hit else 1
 
 
+def _attach_telemetry_stream(engine: EvolutionEngine, path_str: str) -> Any:
+    import os
+    import time
+    p = Path(path_str)
+    if hasattr(os, "mkfifo") and not p.exists():
+        try:
+            os.mkfifo(str(p))
+        except OSError:
+            pass
+    try:
+        stream = open(p, "a", encoding="utf-8", buffering=1)
+    except Exception as exc:
+        print(f"warning: could not open telemetry stream {path_str}: {exc}", file=sys.stderr)
+        return None
+
+    def on_gen(event: Any) -> None:
+        try:
+            data = {
+                "event": "generation",
+                "gen": getattr(event, "generation", 0),
+                "best_fitness": round(getattr(event, "best_fitness", 0.0), 4),
+                "mean_fitness": round(getattr(event, "mean_fitness", 0.0), 4),
+                "diversity": round(getattr(event, "diversity", 0.0), 4),
+                "duration_ms": round(getattr(event, "duration_ms", 0.0), 2),
+                "timestamp": getattr(event, "timestamp", time.time()),
+            }
+            stream.write(json.dumps(data) + "\n")
+            stream.flush()
+        except Exception:
+            pass
+
+    def on_complete(event: Any) -> None:
+        try:
+            data = {
+                "event": "completed",
+                "total_generations": getattr(event, "total_generations", 0),
+                "best_fitness": round(getattr(event, "best_fitness", 0.0), 4),
+                "early_stopped": getattr(event, "early_stopped", False),
+                "total_time_seconds": round(getattr(event, "total_time_seconds", 0.0), 4),
+                "timestamp": getattr(event, "timestamp", time.time()),
+            }
+            stream.write(json.dumps(data) + "\n")
+            stream.flush()
+        except Exception:
+            pass
+        finally:
+            try:
+                stream.close()
+            except Exception:
+                pass
+
+    from .events import GenerationEvaluatedEvent, RunCompletedEvent
+    engine.event_bus.subscribe(GenerationEvaluatedEvent, on_gen)
+    engine.event_bus.subscribe(RunCompletedEvent, on_complete)
+    return stream
+
+
 def _build_engine(args, fitness_fn=None, genome_size=None) -> EvolutionEngine:
+    if getattr(args, "external_driver", None) and fitness_fn is None:
+        from .ipc_evaluator import ExternalProcessEvaluator
+        fitness_fn = ExternalProcessEvaluator(args.external_driver)
     engine = EvolutionEngine(
         population_size=args.population,
         early_stop_fitness=args.target,
@@ -69,6 +129,11 @@ def _build_engine(args, fitness_fn=None, genome_size=None) -> EvolutionEngine:
     gens = getattr(args, "generations", 30)
     observer = TerminalProgressObserver(total_generations=gens, quiet=quiet)
     observer.attach_to_engine(engine)
+
+    telemetry_path = getattr(args, "telemetry_stream", None) or getattr(args, "telemetry_fifo", None)
+    if telemetry_path:
+        _attach_telemetry_stream(engine, telemetry_path)
+
     return engine
 
 
@@ -84,11 +149,14 @@ def _load_code_scenario(args):
     import sys
     if args.scenario_file:
         return load_scenario_file(args.scenario_file), True
-    if args.source:
+    source = list(args.source or [])
+    if not source and not sys.stdin.isatty() and (getattr(args, "pytest", None) or getattr(args, "tests", None)):
+        source = ["-"]
+    if source:
         target_func = args.func if isinstance(args.func, str) else None
         if getattr(args, "pytest", None):
             try:
-                return load_pytest_scenario(args.source, args.pytest, target_func, args.target_file), True
+                return load_pytest_scenario(source, args.pytest, target_func, args.target_file), True
             except Exception as e:
                 print(f"error loading pytest scenario: {e}", file=sys.stderr)
                 return None, True
@@ -98,7 +166,7 @@ def _load_code_scenario(args):
         if not args.tests:
             print("error: --source requires either --tests or --pytest", file=sys.stderr)
             return None, True
-        return load_source_scenario(args.source, args.tests, target_func, args.target_file), True
+        return load_source_scenario(source, args.tests, target_func, args.target_file), True
     if args.scenario not in SCENARIO_REGISTRY:
         names = ", ".join(sorted(SCENARIO_REGISTRY))
         print(f"error: unknown scenario {args.scenario!r}", file=sys.stderr)
@@ -124,6 +192,7 @@ def _hit(result: dict, target: float) -> bool:
 
 
 def cmd_evolve(args) -> int:
+    quiet = getattr(args, "quiet", False)
     engine_kind = _resolve_engine(args)
     scenario = None
     external = False
@@ -314,11 +383,12 @@ def cmd_evolve(args) -> int:
             evaluator = scenario.create_evaluator()
             engine = _build_engine(args, fitness_fn=evaluator)
             pop = make_code_population(scenario, args.population, random.Random(args.seed))
-            print(
-                f"Engine: GA | genome=code | pop={args.population} "
-                f"gens={args.generations} seed={args.seed} sandbox=False",
-                file=sys.stderr,
-            )
+            if not quiet:
+                print(
+                    f"Engine: GA | genome=code | pop={args.population} "
+                    f"gens={args.generations} seed={args.seed} sandbox=False",
+                    file=sys.stderr,
+                )
             with SignalController(register_os_signals=True) as sc:
                 result = engine.run(
                     args.generations,
@@ -336,11 +406,12 @@ def cmd_evolve(args) -> int:
             if best is not None and hasattr(best.genome, "to_code"):
                 result["best_individual"]["code"] = best.genome.to_code()
         else:
-            print(
-                f"Engine: GA | genome=numeric | pop={args.population} "
-                f"gens={args.generations} seed={args.seed}",
-                file=sys.stderr,
-            )
+            if not quiet:
+                print(
+                    f"Engine: GA | genome=numeric | pop={args.population} "
+                    f"gens={args.generations} seed={args.seed}",
+                    file=sys.stderr,
+                )
             engine = _build_engine(args)
             with SignalController(register_os_signals=True) as sc:
                 result = engine.run(
@@ -371,11 +442,12 @@ def cmd_evolve(args) -> int:
             evaluator = scenario.create_evaluator()
         from .repair import catalog_sources, greedy_run_report
         catalog_n = len(catalog_sources(scenario.sources))
-        print(
-            f"Engine: Greedy | Search Budget: Catalog Size (N={catalog_n}) "
-            f"| max_evals={args.max_evals} | Sandbox: {use_sandbox}",
-            file=sys.stderr,
-        )
+        if not quiet:
+            print(
+                f"Engine: Greedy | Search Budget: Catalog Size (N={catalog_n}) "
+                f"| max_evals={args.max_evals} | Sandbox: {use_sandbox}",
+                file=sys.stderr,
+            )
         baseline_res = None
         try:
             from .repair import RepairGenome
@@ -385,8 +457,40 @@ def cmd_evolve(args) -> int:
             pass
 
         from .ui.terminal import StepProgressObserver
-        quiet = getattr(args, "quiet", False)
         step_observer = StepProgressObserver(quiet=quiet)
+
+        telemetry_path = getattr(args, "telemetry_stream", None) or getattr(args, "telemetry_fifo", None)
+        greedy_telemetry_file = None
+        if telemetry_path:
+            import os
+            tp = Path(telemetry_path)
+            if hasattr(os, "mkfifo") and not tp.exists():
+                try:
+                    os.mkfifo(str(tp))
+                except OSError:
+                    pass
+            try:
+                greedy_telemetry_file = open(tp, "a", encoding="utf-8", buffering=1)
+            except Exception:
+                pass
+
+        def _step_callback(step: int, score: float, evals: int, name: str = "") -> None:
+            step_observer.on_step(step, score, evals, name)
+            if greedy_telemetry_file:
+                try:
+                    import time
+                    greedy_telemetry_file.write(json.dumps({
+                        "event": "step",
+                        "step": step,
+                        "score": round(float(score), 4),
+                        "evaluations": int(evals),
+                        "candidate": name,
+                        "timestamp": time.time(),
+                    }) + "\n")
+                    greedy_telemetry_file.flush()
+                except Exception:
+                    pass
+
         from .strategies import get_search_strategy
         strategy = get_search_strategy(
             "greedy",
@@ -394,13 +498,26 @@ def cmd_evolve(args) -> int:
             target_file=scenario.target_file,
             scenario_name=scenario.name,
             max_evals=args.max_evals,
-            on_step=step_observer.on_step,
+            on_step=_step_callback,
         )
         result = strategy.search(evaluator)
         step_observer.complete(
             best_score=float((result.get("best_individual") or {}).get("fitness", 0.0)),
             total_evals=int(result.get("total_candidates_evaluated", 0)),
         )
+        if greedy_telemetry_file:
+            try:
+                import time
+                greedy_telemetry_file.write(json.dumps({
+                    "event": "completed",
+                    "total_evaluations": int(result.get("total_candidates_evaluated", 0)),
+                    "best_score": float((result.get("best_individual") or {}).get("fitness", 0.0)),
+                    "timestamp": time.time(),
+                }) + "\n")
+                greedy_telemetry_file.flush()
+                greedy_telemetry_file.close()
+            except Exception:
+                pass
 
     if getattr(args, "llm", None) and not _hit(result, args.target):
         bi = result.get("best_individual") or {}
@@ -586,26 +703,30 @@ def cmd_evolve(args) -> int:
         else:
             patch_str = f"=== SYNTHESIZED NETLIST TOPOLOGY ===\n{diff_text}\n"
         Path(args.patch_file).write_text(patch_str, encoding="utf-8")
-        print(f"Patch saved     : {args.patch_file}", file=sys.stderr)
+        if not quiet:
+            print(f"Patch saved     : {args.patch_file}", file=sys.stderr)
 
     if getattr(args, "summary_file", None):
         summary_str = format_markdown_summary(result, scenario, diff_text)
         Path(args.summary_file).write_text(summary_str, encoding="utf-8")
-        print(f"Markdown Summary: {args.summary_file}", file=sys.stderr)
+        if not quiet:
+            print(f"Markdown Summary: {args.summary_file}", file=sys.stderr)
 
     if getattr(args, "schematic_file", None) and is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
         if best_g and (hasattr(best_g.genome, "circuit") or hasattr(best_g.genome, "connections") or hasattr(best_g.genome, "get_active_nodes")):
             from experimental.electronics.instruments.schematic import save_circuit_svg
             save_circuit_svg(best_g.genome, args.schematic_file)
-            print(f"Schematic saved : {args.schematic_file}", file=sys.stderr)
+            if not quiet:
+                print(f"Schematic saved : {args.schematic_file}", file=sys.stderr)
 
     if getattr(args, "verilog_file", None) and is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
         if best_g and hasattr(best_g.genome, "to_verilog"):
             v_code = best_g.genome.to_verilog(module_name="synthesized_circuit")
             Path(args.verilog_file).write_text(v_code, encoding="utf-8")
-            print(f"Verilog saved   : {args.verilog_file}", file=sys.stderr)
+            if not quiet:
+                print(f"Verilog saved   : {args.verilog_file}", file=sys.stderr)
 
     if getattr(args, "ui_file", None) and is_electronics and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
@@ -620,7 +741,8 @@ def cmd_evolve(args) -> int:
                 "fpga_target": fpga_target,
             }
             save_workbench_html(best_g.genome, args.ui_file, metadata=meta)
-            print(f"Workbench UI saved: {args.ui_file}", file=sys.stderr)
+            if not quiet:
+                print(f"Workbench UI saved: {args.ui_file}", file=sys.stderr)
 
             if hasattr(best_g.genome, "get_active_nodes"):
                 from evolab.cgp_logic import estimate_fpga_resources
@@ -640,7 +762,7 @@ def cmd_evolve(args) -> int:
     if getattr(args, "apply", False) and scenario is not None and _hit(result, args.target):
         file_mapping = {Path(raw).name: Path(raw) for raw in (args.source or [])}
         applied = apply_in_place(scenario, repaired, create_backup=True, file_mapping=file_mapping)
-        if applied:
+        if applied and not quiet:
             print(f"[In-Place Apply] Successfully patched: {', '.join(applied)} (backup saved with .bak)", file=sys.stderr)
 
     out_format = getattr(args, "format", "console")
@@ -674,6 +796,14 @@ def cmd_evolve(args) -> int:
             print("\n".join(summarize(report)))
         else:
             print(f"Saved to        : {out_path} (use --diagnose for detailed fault analysis & report summary)")
+
+    if "engine" in locals() and engine is not None:
+        fn = getattr(engine, "fitness_fn", None)
+        if hasattr(fn, "close"):
+            try:
+                fn.close()
+            except Exception:
+                pass
 
     report = parse_report(out_path)
     if not report.is_valid:
@@ -752,6 +882,9 @@ def _ensure_evolve_defaults(args) -> None:
         "quiet": False,
         "diagnose": False,
         "verbose": False,
+        "telemetry_stream": None,
+        "telemetry_fifo": None,
+        "external_driver": None,
     }
     for k, v in defaults.items():
         if not hasattr(args, k):
@@ -801,7 +934,7 @@ def cmd_init(args) -> int:
     fmt = getattr(args, "format", "toml")
     target = Path("evolab.toml" if fmt == "toml" else ".evolab.json")
     if target.exists() and not getattr(args, "force", False):
-        print(f"error: {target} already exists. Use --force to overwrite.")
+        print(f"error: {target} already exists. Use --force to overwrite.", file=sys.stderr)
         return 2
     template = generate_default_config(fmt=fmt)
     target.write_text(template, encoding="utf-8")
@@ -944,6 +1077,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_rep.add_argument("--llm", choices=["groq", "gemini", "openai", "mock"], default=None)
     p_rep.add_argument("--llm-model", default=None)
     p_rep.add_argument("--quiet", action="store_true", help="suppress live progress updates")
+    p_rep.add_argument("--telemetry-stream", default=None, help="stream live generation/step telemetry JSONL to file")
+    p_rep.add_argument("--telemetry-fifo", default=None, help="stream live generation/step telemetry JSONL to named pipe/FIFO")
+    p_rep.add_argument("--external-driver", default=None, help="executable path for external JSON-RPC 2.0 evaluation driver")
     p_rep.set_defaults(func=cmd_repair)
 
     # Subcommand: optimize (focused numeric optimization)
@@ -963,6 +1099,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("--diagnose", action="store_true", help="display detailed fitness sharing diagnostics & report summary")
     p_opt.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
     p_opt.add_argument("--quiet", action="store_true", help="suppress live progress updates")
+    p_opt.add_argument("--telemetry-stream", default=None, help="stream live generation telemetry JSONL to file")
+    p_opt.add_argument("--telemetry-fifo", default=None, help="stream live generation telemetry JSONL to named pipe/FIFO")
+    p_opt.add_argument("--external-driver", default=None, help="executable path for external JSON-RPC 2.0 evaluation driver")
     p_opt.set_defaults(func=cmd_optimize)
 
     # Subcommand: evolve (original full command with all 35+ flags organized into structured groups)
@@ -995,6 +1134,9 @@ def build_parser() -> argparse.ArgumentParser:
     g_budget.add_argument("--checkpoint-every", type=int, default=None, help="periodically save state checkpoint every N generations")
     g_budget.add_argument("--checkpoint-dir", default=None, help="directory to store state checkpoints (default: checkpoints/)")
     g_budget.add_argument("--resume", default=None, help="resume execution from a checkpoint JSON file")
+    g_budget.add_argument("--telemetry-stream", default=None, help="stream live generation telemetry JSONL to file")
+    g_budget.add_argument("--telemetry-fifo", default=None, help="stream live generation telemetry JSONL to named pipe/FIFO")
+    g_budget.add_argument("--external-driver", default=None, help="executable path for external JSON-RPC 2.0 evaluation driver")
 
     g_diag = p_evo.add_argument_group("Diagnostics, Output & Reporting")
     g_diag.add_argument("--diff", action="store_true", help="print unified diff")

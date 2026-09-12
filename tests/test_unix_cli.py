@@ -74,12 +74,12 @@ def test_cli_eval_json_format():
 def test_cli_stdout_purity_format_json():
     """Verify stdout contains ONLY parseable JSON without banner or status noise when --format json is used."""
     proc = subprocess.run(
-        [sys.executable, "-m", "evolab.cli", "optimize", "-g", "2", "-p", "4", "-s", "1", "--format", "json", "--quiet"],
+        [sys.executable, "-m", "evolab.cli", "optimize", "-g", "2", "-p", "4", "-s", "1", "--format", "json"],
         capture_output=True,
         text=True,
         cwd=str(ROOT),
     )
-    assert proc.returncode == 1 or proc.returncode == 0  # 1 is normal if fitness < target
+    assert proc.returncode in (0, 1)
     # stdout MUST be valid JSON starting with '{'
     clean_stdout = proc.stdout.strip()
     assert clean_stdout.startswith("{"), f"stdout does not start with '{{': {clean_stdout[:60]}"
@@ -88,6 +88,16 @@ def test_cli_stdout_purity_format_json():
     assert "best_individual" in parsed
     # Banners like 'Engine: ...' must have gone to stderr
     assert "Engine: GA" in proc.stderr
+
+    # Run with --quiet: stderr should be completely silent (Rule of Silence)
+    proc_quiet = subprocess.run(
+        [sys.executable, "-m", "evolab.cli", "optimize", "-g", "2", "-p", "4", "-s", "1", "--format", "json", "--quiet"],
+        capture_output=True,
+        text=True,
+        cwd=str(ROOT),
+    )
+    assert proc_quiet.returncode in (0, 1)
+    assert proc_quiet.stderr == ""
 
 
 def test_cli_inspect_stdin():
@@ -158,3 +168,138 @@ def test_cli_broken_pipe_handling():
     assert proc.returncode == 141
     # Traceback should NOT be printed to stderr
     assert "Traceback" not in proc.stderr
+
+
+def test_cli_telemetry_stream(tmp_path: Path):
+    """Verify --telemetry-stream emits real-time JSONL generation events."""
+    telemetry_file = tmp_path / "telemetry.jsonl"
+    proc = subprocess.run(
+        [
+            sys.executable, "-m", "evolab.cli", "optimize",
+            "-g", "3", "-p", "4", "-s", "42",
+            "--telemetry-stream", str(telemetry_file),
+            "--quiet",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(ROOT),
+    )
+    assert proc.returncode in (0, 1)
+    assert telemetry_file.is_file()
+    lines = [line.strip() for line in telemetry_file.read_text(encoding="utf-8").splitlines() if line.strip()]
+    assert len(lines) >= 3  # At least 3 generation events
+    records = [json.loads(line) for line in lines]
+    gen_records = [r for r in records if r.get("event") == "generation"]
+    assert len(gen_records) == 3
+    assert gen_records[0]["gen"] == 1
+    assert "best_fitness" in gen_records[0]
+    assert "mean_fitness" in gen_records[0]
+    assert "diversity" in gen_records[0]
+
+    complete_records = [r for r in records if r.get("event") == "completed"]
+    assert len(complete_records) == 1
+    assert complete_records[0]["total_generations"] == 3
+
+
+def test_external_process_evaluator_unit(tmp_path: Path):
+    """Unit test for ExternalProcessEvaluator communicating via JSON-RPC 2.0."""
+    from evolab.ipc_evaluator import ExternalProcessEvaluator
+
+    driver_code = (
+        "import sys, json\n"
+        "for line in sys.stdin:\n"
+        "    if not line.strip(): continue\n"
+        "    req = json.loads(line)\n"
+        "    if req.get('method') == 'shutdown': break\n"
+        "    if req.get('method') == 'evaluate':\n"
+        "        cand = req['params']['candidate']\n"
+        "        score = 100.0 if cand == [1.0, 1.0] else 42.0\n"
+        "        resp = {'jsonrpc': '2.0', 'id': req['id'], 'result': {'fitness': score}}\n"
+        "        sys.stdout.write(json.dumps(resp) + '\\n')\n"
+        "        sys.stdout.flush()\n"
+    )
+    driver_script = tmp_path / "mock_driver.py"
+    driver_script.write_text(driver_code, encoding="utf-8")
+
+    evaluator = ExternalProcessEvaluator(driver_cmd=[sys.executable, str(driver_script)])
+    try:
+        res1 = evaluator.evaluate([1.0, 1.0])
+        assert res1.score == 100.0
+
+        res2 = evaluator.evaluate([0.0, 0.0])
+        assert res2.score == 42.0
+    finally:
+        evaluator.close()
+
+
+def test_cli_external_driver(tmp_path: Path):
+    """Verify evolab optimize runs with an external JSON-RPC 2.0 evaluation driver."""
+    driver_code = (
+        "import sys, json\n"
+        "for line in sys.stdin:\n"
+        "    if not line.strip(): continue\n"
+        "    req = json.loads(line)\n"
+        "    if req.get('method') == 'shutdown': break\n"
+        "    if req.get('method') == 'evaluate':\n"
+        "        cand = req['params']['candidate']\n"
+        "        dist = sum(x**2 for x in cand)\n"
+        "        score = round(100.0 / (1.0 + dist), 4)\n"
+        "        resp = {'jsonrpc': '2.0', 'id': req['id'], 'result': {'fitness': score}}\n"
+        "        sys.stdout.write(json.dumps(resp) + '\\n')\n"
+        "        sys.stdout.flush()\n"
+    )
+    driver_script = tmp_path / "ext_driver.py"
+    driver_script.write_text(driver_code, encoding="utf-8")
+
+    driver_cmd = f"{sys.executable} {driver_script}"
+    proc = subprocess.run(
+        [
+            sys.executable, "-m", "evolab.cli", "optimize",
+            "-g", "3", "-p", "4", "-s", "1",
+            "--external-driver", driver_cmd,
+            "--format", "json",
+            "--quiet",
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(ROOT),
+    )
+    assert proc.returncode in (0, 1)
+    data = json.loads(proc.stdout)
+    assert data["total_generations"] == 3
+    assert data["best_individual"]["fitness"] > 0.0
+
+
+def test_cli_repair_stdin_piping(tmp_path: Path):
+    """Verify piping source code to evolab repair via stdin produces clean patch targeting target-file."""
+    test_code = (
+        "def test_calc():\n"
+        "    assert compute(2) == 4\n"
+        "    assert compute(3) == 6\n"
+    )
+    test_file = tmp_path / "test_calc.py"
+    test_file.write_text(test_code, encoding="utf-8")
+
+    buggy_source = "def compute(x):\n    return x + 2\n"
+
+    proc = subprocess.run(
+        [
+            sys.executable, "-m", "evolab.cli", "repair",
+            "--source", "-",
+            "--target-file", "calc.py",
+            "--pytest", str(test_file),
+            "--format", "patch",
+            "--quiet",
+        ],
+        input=buggy_source,
+        capture_output=True,
+        text=True,
+        cwd=str(ROOT),
+    )
+    assert proc.returncode in (0, 1)
+    # Rule of silence: stderr must be completely empty with --quiet
+    assert proc.stderr == ""
+    # stdout should start with patch header or be empty if target reached/unreached
+    if proc.stdout.strip():
+        assert "--- a/calc.py" in proc.stdout
+        assert "+++ b/calc.py" in proc.stdout

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -269,7 +270,8 @@ def load_source_scenario(
     sources: dict[str, str] = {}
     for raw in source_paths:
         if str(raw) == "-":
-            sources["stdin.py"] = sys.stdin.read()
+            fname = target_file or "stdin.py"
+            sources[fname] = sys.stdin.read()
         else:
             fp = Path(raw)
             sources[fp.name] = fp.read_text(encoding="utf-8")
@@ -344,7 +346,8 @@ def load_pytest_scenario(
     sources: dict[str, str] = {}
     for raw in source_paths:
         if str(raw) == "-":
-            sources["stdin.py"] = sys.stdin.read()
+            fname = target_file or "stdin.py"
+            sources[fname] = sys.stdin.read()
         else:
             fp = Path(raw)
             sources[fp.name] = fp.read_text(encoding="utf-8")
