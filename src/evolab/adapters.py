@@ -517,6 +517,9 @@ def get_domain_adapter(name: str) -> DomainAdapter:
     if key in ("evomaze", "maze"):
         from experimental.evomaze.adapter import EvoMazeAdapter
         return EvoMazeAdapter()
+    if key in ("neuromorphic", "drosophila"):
+        from experimental.neuromorphic.adapter import NeuromorphicAdapter
+        return NeuromorphicAdapter()
     if key not in _ADAPTER_REGISTRY:
         raise KeyError(f"Unknown domain adapter {name!r}. Available: {list_domain_adapters()}")
     return _ADAPTER_REGISTRY[key]
@@ -524,5 +527,5 @@ def get_domain_adapter(name: str) -> DomainAdapter:
 
 def list_domain_adapters() -> list[str]:
     """Returns the list of all registered domain adapter names."""
-    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp", "evomaze"})
+    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp", "evomaze", "neuromorphic"})
 

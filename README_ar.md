@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-672%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-680%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **إفصاح الشفافية والأمانة الأكاديمية (Transparency Notice)**:  
 > مشروع `darwin-evolab` هو إطار بحثي مفتوح المصدر بالكامل. جميع المقاييس والنتائج المعلنة تجريبية وقابلة لإعادة الإنتاج بايت-ببايت عبر بذور عشوائية مسجلة مسبقاً، وتخضع للتحقق المستمر والمؤتمت عبر CI العام. جميع التقريبات التحليلية وحدود النمذجة والقيود الفيزيائية مُفصح عنها صراحة. نرحب بالتدقيق الأكاديمي الصارم ونقد الأقران.
@@ -88,6 +88,10 @@ graph TD
 - **توليد المتاهات المكانية الإدراكية والتصميم الإجرائي (`EvoMaze`)** (`experimental/evomaze/`):
   - جينوم طوبولوجي يعتمد شجرة الامتداد الأصغري (MST) لضمان حتمية وجود مسار حل 100% رياضياً ومنع المتاهات المستحيلة.
   - استمثال متعدد الأهداف (طول المسار، تشعب القرارات، النهايات المسدودة، الحلقات الدائرية) مع رسم طرفي ANSI/ASCII وتصدير مصفوفة JSON جاهزة لمحركات الألعاب (Godot 4 / Unity).
+- **الحوسبة النيورومورفية المستلهمة من كونكتوم ذبابة الفاكهة (`Drosophila Neuromorphic CGP`)** (`experimental/neuromorphic/`):
+  - استنباط وتوليد وحدات الحوسبة العصبية المستلهمة من خريطة دماغ ذبابة الفاكهة (Google / Janelia Fruit Fly Connectome) — مثل كاشف الحركة البصرية التناظري (T4/T5 Hassenstein-Reichardt EMD) والتثبيط الشمي الجانبي.
+  - دعم مسجلات التأخير المشبكي المتزامنة مع الساعة ($Z^{-1}$ D-Flip-Flop) والتشابكات التثبيطية ($A \wedge \neg B$) لمعالجة قطارات السيالات العصبية عبر الزمن.
+  - توليد تلقائي لكود Verilog-2001 القابل للتصنيع على رقائق FPGA ورسوم تخطيطية نصية ASCII، مع وسم صريح `physical_claim: false` (نموذج بيولوجي رقمي استكشافي).
 
 ---
 

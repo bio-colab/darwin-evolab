@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-672%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-680%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, and physical bounds are explicitly disclosed. We invite peer audit and critique.
 
@@ -70,6 +70,10 @@ The repository also includes exploratory research prototypes investigating the b
 - **Spatial Graph & Search-Based PCG (`EvoMaze`)** (`experimental/evomaze/`):
   - Minimum Spanning Tree (MST) topological graph genome ensuring 100% solvable spatial maze synthesis.
   - Multi-objective targets (path length, branching entropy, dead ends, cycles) with ANSI terminal visualization and Godot/Unity JSON tilemap export.
+- **Drosophila Connectome Neuromorphic CGP** (`experimental/neuromorphic/`):
+  - Synthesizes temporal neural computation motifs inspired by the Google / Janelia Drosophila fruit fly connectome (T4/T5 visual motion selectivity [Hassenstein-Reichardt EMD] and antennal lobe lateral inhibition).
+  - Integrates clocked delay registers ($Z^{-1}$ D-Flip-Flops) and inhibitory synapses ($A \wedge \neg B$) to process temporal spike trains.
+  - Generates ASCII schematics and synthesizable Verilog-2001 RTL for FPGA deployment. Marked with `physical_claim: false` (exploratory biological digital model).
 
 ---
 
