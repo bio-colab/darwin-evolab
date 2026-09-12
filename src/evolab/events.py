@@ -4,10 +4,13 @@ Decouples evolutionary engine cycles from dashboards, metrics aggregators, and d
 """
 from __future__ import annotations
 
+import logging
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
+
+logger = logging.getLogger("evolab.events")
 
 
 @dataclass(frozen=True)
@@ -75,5 +78,5 @@ class EventBus:
                 for listener in listeners:
                     try:
                         listener(event)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logger.warning("listener %s failed on %s: %s", listener, event_cls.__name__, exc)

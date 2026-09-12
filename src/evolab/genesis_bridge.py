@@ -131,7 +131,12 @@ class MockGenesisSimulator:
             primary_fitness=round(primary, 3),
             task_success=(primary >= 80.0),
             channel_rewards=channel_rewards,
-            metrics={"domain": self.domain, "genome_type": type(g).__name__},
+            metrics={
+                "domain": self.domain,
+                "genome_type": type(g).__name__,
+                "physical_claim": False,
+                "is_mock": True,
+            },
             simulation_steps=100,
             latency_ms=round(elapsed_ms, 2),
         )

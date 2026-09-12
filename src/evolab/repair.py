@@ -9,6 +9,7 @@ import ast
 import copy
 import hashlib
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Any
 
 from .genome import EvolabGenome, Individual
@@ -141,11 +142,17 @@ def catalog_edits(source: str, file: str = "") -> list[RepairEdit]:
     return list(by_locus_kind.values())
 
 
-def catalog_sources(sources: dict[str, str]) -> list[RepairEdit]:
+@lru_cache(maxsize=32)
+def _catalog_sources_cached(sources_items: tuple[tuple[str, str], ...]) -> tuple[RepairEdit, ...]:
     edits: list[RepairEdit] = []
-    for path, source in sources.items():
+    for path, source in sources_items:
         edits.extend(catalog_edits(source, file=path))
-    return edits
+    return tuple(edits)
+
+
+def catalog_sources(sources: dict[str, str]) -> list[RepairEdit]:
+    items = tuple(sorted(sources.items()))
+    return list(_catalog_sources_cached(items))
 
 
 def _parents(tree: ast.AST) -> dict[int, ast.AST]:
@@ -561,7 +568,35 @@ class RepairGenome(EvolabGenome):
             "type": "RepairGenome",
             "edits": [e.serialize() for e in self.edits],
             "code": self.to_code(),
+            "target_file": self.target_file,
+            "sources": dict(self.sources) if self.sources else {},
+            "source": self.source,
         }
+
+    @classmethod
+    def deserialize(cls, data: dict[str, Any]) -> RepairGenome:
+        edits = []
+        for e in data.get("edits", []):
+            raw_payload = e.get("payload", {})
+            payload_tuples = tuple(raw_payload.items()) if isinstance(raw_payload, dict) else tuple(raw_payload)
+            edits.append(
+                RepairEdit(
+                    kind=e["kind"],
+                    file=e.get("file", ""),
+                    lineno=int(e["lineno"]),
+                    col_offset=int(e["col_offset"]),
+                    payload=payload_tuples,
+                )
+            )
+        sources = data.get("sources")
+        target_file = data.get("target_file", "")
+        source = data.get("source", "")
+        if not sources:
+            code = data.get("code", "")
+            target_file = target_file or data.get("file", "<src>")
+            sources = {target_file: code}
+            source = source or code
+        return cls(sources=sources, target_file=target_file, edits=edits, source=source)
 
     def describe(self) -> dict[str, Any]:
         return {
@@ -581,7 +616,7 @@ class RepairGenome(EvolabGenome):
         if not unused:
             return self.clone()
         import random as _random
-        rng = rng or _random.Random()
+        rng = rng or _random.Random(42)
         smap = kwargs.get("suspicion_map")
         chosen = unused[rng.randrange(len(unused))]
         candidates = unused
@@ -743,6 +778,12 @@ def greedy_repair(
                 return (-score, e.file, e.lineno, e.col_offset, e.kind)
             catalog = sorted(catalog, key=_sbfl_key)
 
+    if hasattr(evaluator, "trace_suspicion"):
+        try:
+            evaluator.trace_suspicion = False
+        except Exception:
+            pass
+
     improved = True
     gen = 1
     while improved:
@@ -768,6 +809,11 @@ def greedy_repair(
                     pass
             if max_evals is not None and evaluations >= max_evals:
                 if best_trial is None:
+                    if hasattr(evaluator, "flush"):
+                        try:
+                            evaluator.flush()
+                        except Exception:
+                            pass
                     return current, history, evaluations
                 break
             if score <= best_score:
@@ -821,6 +867,11 @@ def greedy_repair(
                 "action": "parsimony_shrink",
             })
 
+    if hasattr(evaluator, "flush"):
+        try:
+            evaluator.flush()
+        except Exception:
+            pass
     return current, history, evaluations
 
 

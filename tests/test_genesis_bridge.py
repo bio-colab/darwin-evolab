@@ -56,6 +56,8 @@ def test_genesis_mock_simulator_evaluations():
     assert "correctness" in res_cgp.channel_rewards
     assert "delay_eff" in res_cgp.channel_rewards
     assert "power_eff" in res_cgp.channel_rewards
+    assert res_cgp.metrics["physical_claim"] is False
+    assert res_cgp.metrics["is_mock"] is True
 
     # 2. Continuous FloatGenome
     flt = FloatGenome(values=[1.0, -0.5, 0.25])

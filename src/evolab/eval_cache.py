@@ -181,7 +181,10 @@ class EvaluationCache:
         return res
 
     def __call__(self, individual: Any) -> float:
-        return float(self.evaluate(individual).score)
+        res = self.evaluate(individual)
+        if hasattr(res, "score"):
+            return float(res.score)
+        return float(res)
 
     @property
     def deterministic(self) -> bool:
@@ -205,6 +208,21 @@ class EvaluationCache:
 
     def __getattr__(self, attr: str) -> Any:
         return getattr(self.raw, attr)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name in ("raw", "max_entries", "hits", "misses", "bypasses", "_cache", "enabled"):
+            super().__setattr__(name, value)
+        elif hasattr(self, "raw") and hasattr(self.raw, name):
+            setattr(self.raw, name, value)
+        else:
+            super().__setattr__(name, value)
+
+    def flush(self) -> None:
+        if hasattr(self.raw, "flush"):
+            try:
+                self.raw.flush()
+            except Exception:
+                pass
 
 
 def attach_eval_cache(

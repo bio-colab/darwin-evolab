@@ -114,6 +114,9 @@ def _build_engine(args, fitness_fn=None, genome_size=None) -> EvolutionEngine:
     if getattr(args, "external_driver", None) and fitness_fn is None:
         from .ipc_evaluator import ExternalProcessEvaluator
         fitness_fn = ExternalProcessEvaluator(args.external_driver)
+    if fitness_fn is not None and getattr(fitness_fn, "deterministic", False):
+        from .eval_cache import attach_eval_cache
+        fitness_fn = attach_eval_cache(fitness_fn, max_entries=8192)
     engine = EvolutionEngine(
         population_size=args.population,
         early_stop_fitness=args.target,
@@ -379,8 +382,9 @@ def cmd_evolve(args) -> int:
                 return 2
             scenario = loaded
             from .code_fixtures import make_code_population
+            from .eval_cache import attach_eval_cache
             import random
-            evaluator = scenario.create_evaluator()
+            evaluator = attach_eval_cache(scenario.create_evaluator())
             engine = _build_engine(args, fitness_fn=evaluator)
             pop = make_code_population(scenario, args.population, random.Random(args.seed))
             if not quiet:
@@ -429,17 +433,20 @@ def cmd_evolve(args) -> int:
         use_sandbox = args.sandbox or (external and not args.no_sandbox)
         if external and not use_sandbox:
             print("warning: evaluating external code without --sandbox", file=sys.stderr)
+        from .eval_cache import attach_eval_cache
         if use_sandbox:
             from .evaluators import SandboxFunctionTestEvaluator
-            evaluator = SandboxFunctionTestEvaluator(
-                base_sources=scenario.sources,
-                target_file=scenario.target_file,
-                func_name=scenario.func_name,
-                test_cases=scenario.test_cases,
-                holdout_cases=scenario.holdout_cases,
+            evaluator = attach_eval_cache(
+                SandboxFunctionTestEvaluator(
+                    base_sources=scenario.sources,
+                    target_file=scenario.target_file,
+                    func_name=scenario.func_name,
+                    test_cases=scenario.test_cases,
+                    holdout_cases=scenario.holdout_cases,
+                )
             )
         else:
-            evaluator = scenario.create_evaluator()
+            evaluator = attach_eval_cache(scenario.create_evaluator())
         from .repair import catalog_sources, greedy_run_report
         catalog_n = len(catalog_sources(scenario.sources))
         if not quiet:
@@ -863,7 +870,7 @@ def _ensure_evolve_defaults(args) -> None:
         "generations": 30,
         "population": 16,
         "target": 99.7,
-        "seed": None,
+        "seed": 42,
         "patience": 15,
         "mode": "dynamic",
         "frac": 0.667,
@@ -1079,6 +1086,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_rep.add_argument("--quiet", action="store_true", help="suppress live progress updates")
     p_rep.add_argument("--telemetry-stream", default=None, help="stream live generation/step telemetry JSONL to file")
     p_rep.add_argument("--telemetry-fifo", default=None, help="stream live generation/step telemetry JSONL to named pipe/FIFO")
+    p_rep.add_argument("-s", "--seed", type=int, default=42, help="random seed (default: 42)")
     p_rep.add_argument("--external-driver", default=None, help="executable path for external JSON-RPC 2.0 evaluation driver")
     p_rep.set_defaults(func=cmd_repair)
 
@@ -1087,7 +1095,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("-g", "--generations", type=int, default=30, help="number of generations (default: 30)")
     p_opt.add_argument("-p", "--population", type=int, default=16, help="population size (default: 16)")
     p_opt.add_argument("-t", "--target", type=float, default=99.7, help="early-stop fitness target")
-    p_opt.add_argument("-s", "--seed", type=int, default=None, help="random seed")
+    p_opt.add_argument("-s", "--seed", type=int, default=42, help="random seed (default: 42)")
     p_opt.add_argument("-k", "--patience", type=int, default=15, help="stagnation patience")
     p_opt.add_argument("--mode", choices=["off", "static", "dynamic"], default="dynamic", help="fitness sharing mode")
     p_opt.add_argument("--frac", type=float, default=0.667, help="exploitation start fraction")
@@ -1125,7 +1133,7 @@ def build_parser() -> argparse.ArgumentParser:
     g_budget.add_argument("-p", "--population", type=int, default=16)
     g_budget.add_argument("-t", "--target", type=float, default=99.7,
                           help="early-stop / success fitness target")
-    g_budget.add_argument("-s", "--seed", type=int, default=None)
+    g_budget.add_argument("-s", "--seed", type=int, default=42, help="random seed (default: 42)")
     g_budget.add_argument("-k", "--patience", type=int, default=15)
     g_budget.add_argument("--max-evals", type=int, default=None, help="greedy evaluation budget")
     g_budget.add_argument("--mode", choices=["off", "static", "dynamic"],

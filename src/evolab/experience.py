@@ -118,6 +118,8 @@ class ExperienceStore:
     run continues untouched."""
 
     def __init__(self, db_path: str | Path) -> None:
+        self.healthy = False
+        self._pending_commits = 0
         self.path = Path(db_path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._conn = sqlite3.connect(str(self.path))
@@ -128,6 +130,15 @@ class ExperienceStore:
             pass
         self._conn.commit()
         self.healthy = True
+
+    def flush(self) -> None:
+        if getattr(self, "healthy", False) and getattr(self, "_pending_commits", 0) > 0:
+            try:
+                if hasattr(self, "_conn") and self._conn is not None:
+                    self._conn.commit()
+                self._pending_commits = 0
+            except sqlite3.Error:
+                self.healthy = False
 
     def record(self, row: dict[str, Any]) -> None:
         if not self.healthy:
@@ -159,7 +170,10 @@ class ExperienceStore:
                     row.get("created_at") or time.strftime("%Y-%m-%dT%H:%M:%S"),
                 ),
             )
-            self._conn.commit()
+            self._pending_commits += 1
+            if self._pending_commits >= 32:
+                self._conn.commit()
+                self._pending_commits = 0
         except sqlite3.Error:
             self.healthy = False
 
@@ -527,6 +541,7 @@ class ExperienceStore:
         return out
 
     def close(self) -> None:
+        self.flush()
         try:
             self._conn.close()
         except (sqlite3.Error, AttributeError):
@@ -855,7 +870,17 @@ class ExperienceRecorderProxy:
     def cost_estimate(self) -> str:
         return getattr(self.raw, "cost_estimate", "cheap")
 
+    def flush(self) -> None:
+        if hasattr(self.store, "flush"):
+            self.store.flush()
+        if hasattr(self.raw, "flush"):
+            try:
+                self.raw.flush()
+            except Exception:
+                pass
+
     def close(self) -> None:
+        self.flush()
         if hasattr(self.store, "close"):
             self.store.close()
         if hasattr(self.raw, "close"):

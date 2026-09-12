@@ -1450,6 +1450,11 @@ class EvolutionEngine:
             attach_self_assessment(self, report)
         except Exception:
             pass
+        if hasattr(self.fitness_fn, "flush"):
+            try:
+                self.fitness_fn.flush()
+            except Exception:
+                pass
         return report
 
     def evolve(self, num_generations: int | None = None) -> Any:
@@ -1489,6 +1494,11 @@ class EvolutionEngine:
             f"Obsolete Broken={bw.get('obsolete_rules_broken', 0)}; "
             f"Switches={bw.get('mode_switches', 0)}; {bw_status}"
         )
+        if hasattr(self.fitness_fn, "flush"):
+            try:
+                self.fitness_fn.flush()
+            except Exception:
+                pass
         return report
 
     def _evolve_one_generation(self, *args: Any, **kwargs: Any) -> Any:

@@ -334,22 +334,24 @@ def test_recorder_sees_every_call_with_cache_inside():
             run_id=run_id,
             prior_enabled=False,
         )
-        engine = EvolutionEngine(
-            fitness_fn=wired,
-            config=EngineConfig(
-                generations=4, population_size=8, elite_count=1, genome_size=2, seed=7,
-            ),
-        )
-        initial = make_code_population(scenario, 8, random.Random(7))
-        engine.run(generations=4, initial_population=initial)
-        store = ExperienceStore(db)
-        metrics = store.run_metrics(run_id)
-        store.close()
-        # recorder observes every engine call; cache hits record eval_ms 0.0
-        cache = wired.raw
-        assert cache.hits > 0
-        assert metrics["evals_total"] == cache.hits + cache.misses
-        wired.close()
+        try:
+            engine = EvolutionEngine(
+                fitness_fn=wired,
+                config=EngineConfig(
+                    generations=4, population_size=8, elite_count=1, genome_size=2, seed=7,
+                ),
+            )
+            initial = make_code_population(scenario, 8, random.Random(7))
+            engine.run(generations=4, initial_population=initial)
+            store = ExperienceStore(db)
+            metrics = store.run_metrics(run_id)
+            store.close()
+            # recorder observes every engine call; cache hits record eval_ms 0.0
+            cache = wired.raw
+            assert cache.hits > 0
+            assert metrics["evals_total"] == cache.hits + cache.misses
+        finally:
+            wired.close()
 
 
 def test_greedy_repair_with_attach_eval_cache():
@@ -371,3 +373,37 @@ def test_greedy_repair_with_attach_eval_cache():
     assert genome_cached.to_code() == genome_plain.to_code()
     assert n_cached == n_plain
     assert len(hist_cached) == len(hist_plain)
+
+
+def test_eval_cache_attribute_transparency_and_trace_toggle():
+    """Verify that setting attributes on EvaluationCache transparently modifies the underlying raw evaluator."""
+    scenario = SCENARIO_REGISTRY["click_cli_parser"]()
+    raw_ev = scenario.create_evaluator()
+    assert hasattr(raw_ev, "trace_suspicion")
+    assert raw_ev.trace_suspicion is True
+
+    cached_ev = attach_eval_cache(raw_ev)
+    assert cached_ev.trace_suspicion is True
+
+    # Modify through wrapper
+    cached_ev.trace_suspicion = False
+    assert raw_ev.trace_suspicion is False
+    assert cached_ev.trace_suspicion is False
+
+
+def test_catalog_sources_lru_cache():
+    """Verify catalog_sources caches AST parsing and returns identical edit catalogs."""
+    from evolab.repair import catalog_sources, _catalog_sources_cached
+
+    sources = {"test.py": "def foo(x):\n    return x > 0\n"}
+    _catalog_sources_cached.cache_clear()
+    before_info = _catalog_sources_cached.cache_info()
+
+    edits1 = catalog_sources(sources)
+    after_info1 = _catalog_sources_cached.cache_info()
+    assert after_info1.misses == before_info.misses + 1
+
+    edits2 = catalog_sources(sources)
+    after_info2 = _catalog_sources_cached.cache_info()
+    assert after_info2.hits == before_info.hits + 1
+    assert [e.key() for e in edits1] == [e.key() for e in edits2]

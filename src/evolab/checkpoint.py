@@ -67,7 +67,7 @@ def _deserialize_genome(record: dict[str, Any]) -> Any:
         logger.debug("Falling back to FloatGenome or raw data for %s.%s: %s", module_name, cls_name, exc)
         if isinstance(data, list) and all(isinstance(x, (int, float)) for x in data):
             return FloatGenome(values=[float(x) for x in data])
-        return data
+        raise TypeError(f"cannot restore genome of type {cls_name}: {exc}") from exc
 
 
 def serialize_individual(ind: Individual) -> dict[str, Any]:

@@ -103,3 +103,38 @@ def test_engine_deterministic_checkpoint_resumption(tmp_path: Path):
     assert len(report_10["history"]) == 10
     assert engine_resumed.best_ever is not None
     assert engine_resumed.best_ever.fitness >= report_5["best_individual"]["fitness"]
+
+
+def test_repair_genome_checkpoint_serialization_roundtrip(tmp_path: Path):
+    from evolab.repair import RepairGenome, RepairEdit
+
+    edit = RepairEdit(kind="bool_flip", file="main.py", lineno=10, col_offset=4, payload=(("val", True),))
+    genome = RepairGenome(
+        sources={"main.py": "def foo():\n    return False\n"},
+        target_file="main.py",
+        edits=[edit],
+    )
+    ind = Individual(genome=genome, species="spec_code", fitness=95.0)
+
+    rec = serialize_individual(ind)
+    assert rec["genome"]["class_name"] == "RepairGenome"
+    assert "target_file" in rec["genome"]["data"]
+
+    restored = deserialize_individual(rec)
+    assert isinstance(restored.genome, RepairGenome)
+    assert restored.genome.target_file == "main.py"
+    assert len(restored.genome.edits) == 1
+    assert restored.genome.edits[0].kind == "bool_flip"
+    assert restored.genome.edits[0].lineno == 10
+
+
+def test_corrupt_genome_deserialization_raises_type_error():
+    from evolab.checkpoint import _deserialize_genome
+
+    bad_record = {
+        "class_name": "NonExistentGenome",
+        "module": "evolab.nonexistent",
+        "data": {"corrupt": "data"},
+    }
+    with pytest.raises(TypeError, match="cannot restore genome of type NonExistentGenome"):
+        _deserialize_genome(bad_record)

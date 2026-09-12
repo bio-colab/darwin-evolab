@@ -163,6 +163,7 @@ class FunctionTestEvaluator(Evaluator):
         self.timeout_seconds = timeout_seconds
         self.parsimony_weight = float(parsimony_weight)
         self.last_suspicion_map = None
+        self.trace_suspicion = True
 
     #: Observable state that ``evaluate`` mutates as a side effect. The
     #: evaluation cache (evolab.experience.EvaluationCache) snapshots these
@@ -302,7 +303,8 @@ class FunctionTestEvaluator(Evaluator):
 
                 func = namespace[self.func_name]
                 passed, total, failure_details = self._run_cases(func, self.test_cases)
-                self._refresh_suspicion(code, func)
+                if self.trace_suspicion:
+                    self._refresh_suspicion(code, func)
                 test_ratio = passed / total if total > 0 else 1.0
 
                 # Base score: 20 points for compilation + 80 points for test passing ratio
