@@ -358,6 +358,7 @@ def cmd_evolve(args) -> int:
                 checkpoint_every=getattr(args, "checkpoint_every", None),
                 checkpoint_dir=getattr(args, "checkpoint_dir", None),
                 signal_controller=sc,
+                checkpoint_compress=getattr(args, "checkpoint_compress", False),
             )
         result.setdefault("config", {})
         result["config"]["genome"] = "electronics"
@@ -401,6 +402,7 @@ def cmd_evolve(args) -> int:
                     checkpoint_every=getattr(args, "checkpoint_every", None),
                     checkpoint_dir=getattr(args, "checkpoint_dir", None),
                     signal_controller=sc,
+                    checkpoint_compress=getattr(args, "checkpoint_compress", False),
                 )
             result.setdefault("config", {})
             result["config"]["genome"] = "code"
@@ -424,6 +426,7 @@ def cmd_evolve(args) -> int:
                     checkpoint_every=getattr(args, "checkpoint_every", None),
                     checkpoint_dir=getattr(args, "checkpoint_dir", None),
                     signal_controller=sc,
+                    checkpoint_compress=getattr(args, "checkpoint_compress", False),
                 )
     else:
         loaded, external = _load_code_scenario(args)
@@ -1103,6 +1106,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
     p_opt.add_argument("--checkpoint-every", type=int, default=None, help="save state checkpoint every N generations")
     p_opt.add_argument("--checkpoint-dir", default=None, help="directory to store checkpoints (default: checkpoints/)")
+    p_opt.add_argument("--checkpoint-compress", action="store_true", default=False, help="compress state checkpoints using gzip (.json.gz)")
     p_opt.add_argument("--resume", default=None, help="resume execution from a checkpoint JSON file")
     p_opt.add_argument("--diagnose", action="store_true", help="display detailed fitness sharing diagnostics & report summary")
     p_opt.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
@@ -1141,6 +1145,7 @@ def build_parser() -> argparse.ArgumentParser:
     g_budget.add_argument("--frac", type=float, default=0.667)
     g_budget.add_argument("--checkpoint-every", type=int, default=None, help="periodically save state checkpoint every N generations")
     g_budget.add_argument("--checkpoint-dir", default=None, help="directory to store state checkpoints (default: checkpoints/)")
+    g_budget.add_argument("--checkpoint-compress", action="store_true", default=False, help="compress state checkpoints using gzip (.json.gz)")
     g_budget.add_argument("--resume", default=None, help="resume execution from a checkpoint JSON file")
     g_budget.add_argument("--telemetry-stream", default=None, help="stream live generation telemetry JSONL to file")
     g_budget.add_argument("--telemetry-fifo", default=None, help="stream live generation telemetry JSONL to named pipe/FIFO")

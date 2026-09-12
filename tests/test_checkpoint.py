@@ -138,3 +138,79 @@ def test_corrupt_genome_deserialization_raises_type_error():
     }
     with pytest.raises(TypeError, match="cannot restore genome of type NonExistentGenome"):
         _deserialize_genome(bad_record)
+
+
+def test_gzip_checkpoint_save_and_transparent_load(tmp_path: Path):
+    """Verifies that save_checkpoint with compress=True creates valid .json.gz and load_checkpoint reads it."""
+    import random
+    from evolab.checkpoint import save_checkpoint, load_checkpoint
+
+    pop = [Individual(FloatGenome(values=[float(i), float(i * 2)]), species=f"spec_{i}", fitness=float(i * 10)) for i in range(10)]
+    best = pop[-1]
+    rng = random.Random(42)
+
+    uncompressed_path = tmp_path / "plain.json"
+    save_checkpoint(
+        filepath=uncompressed_path,
+        generation=3,
+        total_generations=10,
+        population=pop,
+        best_ever=best,
+        rng=rng,
+        compress=False,
+    )
+    assert uncompressed_path.is_file()
+
+    compressed_path = tmp_path / "compressed.json.gz"
+    save_checkpoint(
+        filepath=compressed_path,
+        generation=3,
+        total_generations=10,
+        population=pop,
+        best_ever=best,
+        rng=rng,
+        compress=True,
+    )
+    assert compressed_path.is_file()
+
+    # Verify size reduction
+    raw_size = uncompressed_path.stat().st_size
+    gz_size = compressed_path.stat().st_size
+    assert gz_size < raw_size
+
+    # Transparent load of compressed file
+    loaded_gz = load_checkpoint(compressed_path)
+    assert loaded_gz.generation == 3
+    assert len(loaded_gz.population) == 10
+    assert loaded_gz.best_ever.fitness == 90.0
+
+    # Transparent load when omitting .gz suffix if file exists as .gz
+    loaded_auto = load_checkpoint(tmp_path / "compressed.json")
+    assert loaded_auto.generation == 3
+    assert len(loaded_auto.population) == 10
+
+
+def test_engine_gzip_checkpoint_resumption(tmp_path: Path):
+    """Verifies that engine saves compressed checkpoints and resumes deterministically."""
+    from evolab.engine import EvolutionEngine
+    from evolab.config import EngineConfig
+
+    cfg = EngineConfig(population_size=8, generations=6, seed=123)
+    engine_initial = EvolutionEngine(config=cfg)
+
+    ckpt_dir = tmp_path / "gz_checkpoints"
+    engine_initial.run(
+        generations=3,
+        checkpoint_every=3,
+        checkpoint_dir=ckpt_dir,
+        checkpoint_compress=True,
+    )
+
+    gz_file = ckpt_dir / "checkpoint_gen_0003.json.gz"
+    assert gz_file.is_file()
+
+    engine_resumed = EvolutionEngine(config=cfg)
+    report = engine_resumed.run(generations=6, resume_from=gz_file)
+    assert report["total_generations"] == 6
+    assert len(report["history"]) == 6
+

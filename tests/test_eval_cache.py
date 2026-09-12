@@ -407,3 +407,82 @@ def test_catalog_sources_lru_cache():
     after_info2 = _catalog_sources_cached.cache_info()
     assert after_info2.hits == before_info.hits + 1
     assert [e.key() for e in edits1] == [e.key() for e in edits2]
+
+
+def test_intra_gen_deduplication_in_engine():
+    """Verify that duplicate individuals within a generation invoke fitness_fn only once."""
+    from evolab.engine import EvolutionEngine
+    from evolab.genome import Individual, FloatGenome
+
+    eval_calls = 0
+
+    def counting_evaluator(ind):
+        nonlocal eval_calls
+        eval_calls += 1
+        return 88.0
+
+    counting_evaluator.deterministic = True
+
+    engine = EvolutionEngine(fitness_fn=counting_evaluator, population_size=6)
+
+    # 4 individuals share identical genome, 2 individuals have distinct genomes
+    shared_genome = FloatGenome(values=[1.0, 2.0])
+    distinct1 = FloatGenome(values=[3.0, 4.0])
+    distinct2 = FloatGenome(values=[5.0, 6.0])
+
+    pop = [
+        Individual(genome=shared_genome.clone(), species="spec_0"),
+        Individual(genome=shared_genome.clone(), species="spec_0"),
+        Individual(genome=shared_genome.clone(), species="spec_0"),
+        Individual(genome=shared_genome.clone(), species="spec_0"),
+        Individual(genome=distinct1, species="spec_0"),
+        Individual(genome=distinct2, species="spec_0"),
+    ]
+
+    engine.evaluate(pop, generation=1)
+
+    # 1 call for shared_genome + 2 calls for distinct = 3 calls instead of 6!
+    assert eval_calls == 3
+    for ind in pop:
+        assert ind.fitness == 88.0
+        assert ind._generation == 1
+
+    # Now verify that when deterministic is False, deduplication is bypassed
+    counting_evaluator.deterministic = False
+    engine.evaluate(pop, generation=2)
+    # 3 existing + 6 new calls = 9 calls total
+    assert eval_calls == 9
+
+
+def test_evaluator_wrapper_cached_lookups():
+    """Verify that EvaluatorWrapper caches method lookups and operates correctly."""
+    from evolab.adapters import EvaluatorWrapper
+    from evolab.evaluators import FitnessResult
+
+    class CustomInner:
+        def __init__(self):
+            self.calls = 0
+
+        def evaluate(self, target, context=None):
+            self.calls += 1
+            return FitnessResult(score=92.5)
+
+    inner = CustomInner()
+    wrapper = EvaluatorWrapper(inner, name="test_cached")
+    assert wrapper._has_evaluate is True
+    assert wrapper._evaluate_method == inner.evaluate
+    assert wrapper._is_callable is False
+
+    res = wrapper.evaluate([1.0, 2.0])
+    assert isinstance(res, FitnessResult)
+    assert res.score == 92.5
+    assert inner.calls == 1
+
+    # Plain callable inner
+    fn_inner = lambda x: 77.0
+    fn_wrapper = EvaluatorWrapper(fn_inner, name="fn_test")
+    assert fn_wrapper._has_evaluate is False
+    assert fn_wrapper._is_callable is True
+    res2 = fn_wrapper.evaluate([1.0])
+    assert res2.score == 77.0
+

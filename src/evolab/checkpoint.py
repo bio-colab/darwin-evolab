@@ -7,6 +7,7 @@ evolutionary engine states (populations, elites, RNG states, telemetry history).
 from __future__ import annotations
 
 import copy
+import gzip
 import importlib
 import json
 import logging
@@ -128,14 +129,21 @@ def save_checkpoint(
     history: list[dict[str, Any]] | None = None,
     species_history: list[dict[str, int]] | None = None,
     metadata: dict[str, Any] | None = None,
+    compress: bool | None = None,
 ) -> Path:
     """
     Atomically saves a full evolutionary engine snapshot to disk.
     
     Uses atomic write (temporary file followed by os.replace) to ensure
     no corrupted checkpoints exist if interrupted mid-save.
+    Supports optional gzip compression via compress=True or .gz extension.
     """
-    target_path = Path(filepath).resolve()
+    path_str = str(filepath)
+    should_compress = path_str.endswith(".gz") if compress is None else bool(compress)
+    if should_compress and not path_str.endswith(".gz"):
+        target_path = Path(path_str + ".gz").resolve()
+    else:
+        target_path = Path(filepath).resolve()
     target_path.parent.mkdir(parents=True, exist_ok=True)
 
     rng_state_raw = rng.getstate() if rng is not None else None
@@ -164,9 +172,15 @@ def save_checkpoint(
 
     # Atomic write pattern
     temp_dir = target_path.parent
-    with tempfile.NamedTemporaryFile("w", dir=temp_dir, delete=False, encoding="utf-8") as tf:
-        json.dump(payload, tf, indent=2)
-        temp_name = tf.name
+    if should_compress:
+        fd, temp_name = tempfile.mkstemp(suffix=".gz", dir=temp_dir)
+        os.close(fd)
+        with gzip.open(temp_name, "wt", encoding="utf-8", compresslevel=6) as gf:
+            json.dump(payload, gf, indent=0)
+    else:
+        with tempfile.NamedTemporaryFile("w", dir=temp_dir, delete=False, encoding="utf-8") as tf:
+            json.dump(payload, tf, indent=2)
+            temp_name = tf.name
 
     os.replace(temp_name, str(target_path))
     return target_path
@@ -175,13 +189,29 @@ def save_checkpoint(
 def load_checkpoint(filepath: str | Path) -> CheckpointData:
     """
     Loads and deserializes an evolutionary state snapshot from disk.
+    Transparently supports both uncompressed (.json) and gzipped (.json.gz) snapshots.
     """
     src_path = Path(filepath).resolve()
     if not src_path.is_file():
-        raise FileNotFoundError(f"Checkpoint file not found: {src_path}")
+        if not str(src_path).endswith(".gz") and Path(str(src_path) + ".gz").is_file():
+            src_path = Path(str(src_path) + ".gz")
+        else:
+            raise FileNotFoundError(f"Checkpoint file not found: {src_path}")
 
-    with open(src_path, "r", encoding="utf-8") as f:
-        payload = json.load(f)
+    # Inspect magic bytes to detect gzip transparently
+    is_gzipped = False
+    try:
+        with open(src_path, "rb") as bf:
+            is_gzipped = (bf.read(2) == b"\x1f\x8b")
+    except Exception:
+        is_gzipped = src_path.suffix == ".gz"
+
+    if is_gzipped:
+        with gzip.open(src_path, "rt", encoding="utf-8") as f:
+            payload = json.load(f)
+    else:
+        with open(src_path, "r", encoding="utf-8") as f:
+            payload = json.load(f)
 
     generation = int(payload["generation"])
     total_generations = int(payload.get("total_generations", generation))

@@ -375,6 +375,27 @@ class EvolutionEngine:
     def rng_seed(self) -> int:
         return -1 if self.seed is None else self.seed
 
+    def _genome_identity_key(self, ind: Individual) -> Any:
+        """Resolve a deterministic hash or key representing the genome identity."""
+        if hasattr(self.fitness_fn, "program_identity"):
+            try:
+                k = self.fitness_fn.program_identity(ind.genome)
+                if k is not None:
+                    return k
+            except Exception:
+                pass
+        if hasattr(ind.genome, "fingerprint") and callable(ind.genome.fingerprint):
+            try:
+                return ind.genome.fingerprint()
+            except Exception:
+                pass
+        if isinstance(ind.genome, (list, tuple)):
+            try:
+                return tuple(ind.genome)
+            except Exception:
+                pass
+        return None
+
     def evaluate(
         self, pop: list[Individual], generation: int, sharing: bool | None = None
     ) -> None:
@@ -385,7 +406,18 @@ class EvolutionEngine:
             self._total_evals += len(pop) * max(int(reps), 1)
         except Exception:
             pass
+
+        dedup_enabled = getattr(self.fitness_fn, "deterministic", True)
+        seen_genomes: dict[Any, float] = {}
+
         for i, ind in enumerate(pop):
+            genome_key = self._genome_identity_key(ind) if dedup_enabled else None
+            if genome_key is not None and genome_key in seen_genomes:
+                ind.fitness = seen_genomes[genome_key]
+                ind._generation = generation
+                ind._index = i
+                continue
+
             vals = []
             for _ in range(reps):
                 v = self.fitness_fn(ind)
@@ -460,6 +492,8 @@ class EvolutionEngine:
             ind.fitness = score
             ind._generation = generation
             ind._index = i
+            if genome_key is not None:
+                seen_genomes[genome_key] = score
 
         # Empirical Unprecedentedness & Paradox Pressure Monitor (Covariance-based Strategy Selection)
         if getattr(self, "causal_layer_enabled", False):
@@ -792,6 +826,7 @@ class EvolutionEngine:
         checkpoint_every: int | None = None,
         checkpoint_dir: str | Path | None = None,
         signal_controller: Any | None = None,
+        checkpoint_compress: bool = False,
     ) -> dict:
         # run contract (audit A11 F-02)
         if type(generations) is not int or isinstance(generations, bool):
@@ -1136,7 +1171,8 @@ class EvolutionEngine:
             if should_save_ckpt:
                 from .checkpoint import save_checkpoint
                 ckpt_folder = Path(checkpoint_dir or "checkpoints")
-                ckpt_file = ckpt_folder / f"checkpoint_gen_{gen:04d}.json"
+                ckpt_ext = ".json.gz" if checkpoint_compress else ".json"
+                ckpt_file = ckpt_folder / f"checkpoint_gen_{gen:04d}{ckpt_ext}"
                 save_checkpoint(
                     filepath=ckpt_file,
                     generation=gen,
@@ -1147,6 +1183,7 @@ class EvolutionEngine:
                     history=history,
                     species_history=species_history,
                     metadata={"engine": "EvolutionEngine", "species_count": len(dist_now)},
+                    compress=checkpoint_compress,
                 )
                 self._decision_log.append({
                     "at_generation": gen,

@@ -33,22 +33,26 @@ class EvaluatorWrapper(Evaluator):
     def __init__(self, inner: Any, name: str = "wrapped_evaluator") -> None:
         self.inner = inner
         self.name = name
+        self._has_evaluate = hasattr(inner, "evaluate")
+        self._evaluate_method = getattr(inner, "evaluate", None)
+        self._is_callable = callable(inner)
 
     @property
     def deterministic(self) -> bool:
         return getattr(self.inner, "deterministic", True)
 
     def evaluate(self, target: Any, context: dict[str, Any] | None = None) -> FitnessResult:
-        if hasattr(self.inner, "evaluate"):
+        if self._has_evaluate:
+            eval_fn = self._evaluate_method
             try:
-                res = self.inner.evaluate(target, context) if context is not None else self.inner.evaluate(target)
+                res = eval_fn(target, context) if context is not None else eval_fn(target)
             except (TypeError, AttributeError):
                 inner_target = getattr(target, "genome", target)
-                res = self.inner.evaluate(inner_target)
+                res = eval_fn(inner_target)
             else:
                 if res == 0.0 and hasattr(target, "genome"):
                     # Retry with unwrapped genome in case inner checks type strictly
-                    retry_res = self.inner.evaluate(target.genome)
+                    retry_res = eval_fn(target.genome)
                     if retry_res != 0.0:
                         res = retry_res
 
