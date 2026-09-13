@@ -22,6 +22,16 @@ from .pdf_extractor import (
     extract_pdf,
     strip_font_subset_prefix,
 )
+from .equivalence import (
+    GateResult,
+    EquivalenceReport,
+    TextIntegrityGate,
+    StructureIntegrityGate,
+    TableOracle,
+    FormattingIntegrityGate,
+    VisualDiffOracle,
+    MultiGateVerifier,
+)
 
 __all__ = [
     "Block",
@@ -41,4 +51,13 @@ __all__ = [
     "extract_pdf",
     "strip_font_subset_prefix",
     "clean_base_font_family",
+    "GateResult",
+    "EquivalenceReport",
+    "TextIntegrityGate",
+    "StructureIntegrityGate",
+    "TableOracle",
+    "FormattingIntegrityGate",
+    "VisualDiffOracle",
+    "MultiGateVerifier",
 ]
+

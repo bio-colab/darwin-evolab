@@ -28,6 +28,11 @@ class Color:
     def is_black(self) -> bool:
         return self.r == 0 and self.g == 0 and self.b == 0
 
+    @property
+    def is_auto(self) -> bool:
+        """Default/automatic color in document rendering is black."""
+        return self.is_black
+
     def to_dict(self) -> dict[str, int]:
         return {"r": self.r, "g": self.g, "b": self.b}
 
@@ -148,6 +153,10 @@ class Cell:
     @property
     def plain_text(self) -> str:
         return "\n".join(p.plain_text for p in self.content)
+
+    @property
+    def paragraphs(self) -> list[Paragraph]:
+        return self.content
 
     def add_paragraph(self, text: str = "", **kwargs: Any) -> Paragraph:
         p = Paragraph(**kwargs)
