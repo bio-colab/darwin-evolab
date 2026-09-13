@@ -11,7 +11,7 @@
           "alignment": "center",
           "space_before_pt": 0.0,
           "space_after_pt": 12.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "GLOBAL SYSTEMS RESEARCH DIRECTIVE",
@@ -33,7 +33,7 @@
           "alignment": "right",
           "space_before_pt": 6.0,
           "space_after_pt": 18.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "Date: September 13, 2026",
@@ -55,7 +55,7 @@
           "alignment": "left",
           "space_before_pt": 6.0,
           "space_after_pt": 12.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "Memorandum for Senior Reviewers",
@@ -77,7 +77,7 @@
           "alignment": "left",
           "space_before_pt": 6.0,
           "space_after_pt": 8.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "This letter serves as formal notification regarding the completion of Phase 4 hardening benchmarks.",
@@ -99,7 +99,7 @@
           "alignment": "left",
           "space_before_pt": 6.0,
           "space_after_pt": 18.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": 15.5,
           "runs": [
             {
               "text": "All empirical criteria established by independent peer audit have been rigorously tested on genuine Word layouts.",
@@ -121,7 +121,7 @@
           "alignment": "left",
           "space_before_pt": 6.0,
           "space_after_pt": 18.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "Office of Architecture and Standards",

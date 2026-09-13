@@ -11,7 +11,7 @@
           "alignment": "left",
           "space_before_pt": 0.0,
           "space_after_pt": 6.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "Quarterly Audit and Performance Ledger",
@@ -33,7 +33,7 @@
           "alignment": "left",
           "space_before_pt": 0.0,
           "space_after_pt": 12.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "Summary of verified computational metrics across benchmark suites:",
@@ -376,7 +376,7 @@
           "alignment": "left",
           "space_before_pt": 12.0,
           "space_after_pt": 12.0,
-          "line_spacing_pt": 13.9,
+          "line_spacing_pt": null,
           "runs": [
             {
               "text": "All values verified through deterministic execution.",

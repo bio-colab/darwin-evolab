@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-13T17:12:08Z",
+  "timestamp": "2026-09-13T17:24:06Z",
   "total_documents": 4,
   "text_integrity_pass_rate": 1.0,
   "overall_pass_rate": 1.0,
@@ -32,7 +32,7 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 19.22,
+      "elapsed_ms": 18.52,
       "diff_count": 0,
       "message": "PASSED: Composite fidelity 99.41%. All gates satisfied."
     },
@@ -54,7 +54,7 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 28.15,
+      "elapsed_ms": 27.3,
       "diff_count": 0,
       "message": "PASSED: Composite fidelity 99.12%. All gates satisfied."
     },
@@ -76,7 +76,7 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 16.76,
+      "elapsed_ms": 15.91,
       "diff_count": 0,
       "message": "PASSED: Composite fidelity 99.12%. All gates satisfied."
     },
@@ -98,7 +98,7 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 13.38,
+      "elapsed_ms": 13.66,
       "diff_count": 0,
       "message": "PASSED: Composite fidelity 98.07%. All gates satisfied."
     }

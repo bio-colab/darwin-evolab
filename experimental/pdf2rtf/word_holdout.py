@@ -81,8 +81,19 @@ def _extract_word_doc_ir(doc) -> Document:
 
         p_ir.space_before_pt = float(p.Format.SpaceBefore)
         p_ir.space_after_pt = float(p.Format.SpaceAfter)
+        # Compute typographical line spacing for multi-line paragraphs using layout baselines
         try:
-            p_ir.line_spacing_pt = float(p.Format.LineSpacing)
+            num_lines = p.Range.ComputeStatistics(1)  # wdStatisticLines = 1
+            if num_lines > 1:
+                y_pos = []
+                for c in range(1, p.Range.Characters.Count):
+                    y = p.Range.Characters(c).Information(6)  # wdVerticalPositionRelativeToPage
+                    if not y_pos or abs(y - y_pos[-1]) > 2.0:
+                        y_pos.append(y)
+                diffs = [y_pos[k + 1] - y_pos[k] for k in range(len(y_pos) - 1)]
+                p_ir.line_spacing_pt = round(sum(diffs) / len(diffs), 2) if diffs else None
+            else:
+                p_ir.line_spacing_pt = None
         except Exception:
             p_ir.line_spacing_pt = None
 
@@ -485,3 +496,9 @@ def load_real_word_holdout(target_dir: str | Path | None = None) -> list[CorpusI
         items.append(CorpusItem(name, desc, pdf_bytes, ref_doc))
 
     return items
+
+
+if __name__ == "__main__":
+    print("Regenerating real Word holdout documents...")
+    res = generate_real_word_holdout()
+    print(f"Generated {len(res)} holdout documents successfully.")
