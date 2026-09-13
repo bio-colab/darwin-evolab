@@ -71,7 +71,7 @@ def test_identical_documents_pass_all_gates():
     assert report.passed is True
     assert report.cascaded_failure is False
     assert report.composite_score == pytest.approx(1.0, abs=1e-3)
-    assert len(report.gates) == 4
+    assert len(report.gates) == 5
     for gate in report.gates:
         assert gate.passed is True
         assert gate.score == pytest.approx(1.0, abs=1e-3)
@@ -225,7 +225,7 @@ def test_equivalence_report_serialization():
     d = report.to_dict()
     assert d["passed"] is True
     assert d["composite_score"] == 1.0
-    assert len(d["gates"]) == 4
+    assert len(d["gates"]) == 5
     assert d["gates"][0]["name"] == "Gate 1: Text Integrity"
     assert "token_similarity" in d["gates"][0]["details"]
 

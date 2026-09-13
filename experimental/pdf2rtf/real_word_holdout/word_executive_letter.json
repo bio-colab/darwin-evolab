@@ -1,0 +1,144 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "center",
+          "space_before_pt": 0.0,
+          "space_after_pt": 12.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "GLOBAL SYSTEMS RESEARCH DIRECTIVE",
+              "font": "Arial",
+              "font_size_pt": 15.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 6.0,
+          "space_after_pt": 18.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Date: September 13, 2026",
+              "font": "Calibri",
+              "font_size_pt": 10.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 6.0,
+          "space_after_pt": 12.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Memorandum for Senior Reviewers",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 6.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "This letter serves as formal notification regarding the completion of Phase 4 hardening benchmarks.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 6.0,
+          "space_after_pt": 18.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "All empirical criteria established by independent peer audit have been rigorously tested on genuine Word layouts.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 6.0,
+          "space_after_pt": 18.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Office of Architecture and Standards",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -22,7 +22,7 @@ def test_strip_font_subset_prefix():
 
 def test_clean_base_font_family():
     assert clean_base_font_family("BAAAAA+Calibri-Bold") == "Calibri"
-    assert clean_base_font_family("XYZABC+TimesNewRoman,Italic") == "TimesNewRoman"
+    assert clean_base_font_family("XYZABC+TimesNewRoman,Italic") == "Times New Roman"
     assert clean_base_font_family("Arial_Black") == "Arial"
     assert clean_base_font_family("Georgia") == "Georgia"
 

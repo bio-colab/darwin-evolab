@@ -1,0 +1,104 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 12.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Advanced Typographic Specification and Formatting",
+              "font": "Times New Roman",
+              "font_size_pt": 16.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 10.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "This section validates that mixed bold runs,",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            },
+            {
+              "text": " italic expression",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            },
+            {
+              "text": "s, and subset font families are preserved with high fidelity.",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 14.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Deterministic extraction ensures that document topology remains invariant under format migration.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

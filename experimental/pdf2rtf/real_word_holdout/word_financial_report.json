@@ -1,0 +1,399 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Quarterly Audit and Performance Ledger",
+              "font": "Calibri",
+              "font_size_pt": 14.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 12.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Summary of verified computational metrics across benchmark suites:",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "alignment": "left",
+          "rows": [
+            {
+              "is_header": true,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Benchmark",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Pass Rate",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Fidelity",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Text Integrity",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "100.0%",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Exact",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Structure Gate",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "98.3%",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "High",
+                          "font": "Calibri",
+                          "font_size_pt": 11.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 12.0,
+          "space_after_pt": 12.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "All values verified through deterministic execution.",
+              "font": "Calibri",
+              "font_size_pt": 10.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

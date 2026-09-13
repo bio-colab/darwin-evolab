@@ -16,8 +16,8 @@ from evolab.engine import EvolutionEngine
 from evolab.evaluators import Evaluator, FitnessResult
 from evolab.genome import Individual
 
-from .benchmark import run_golden_benchmark
-from .corpus import CorpusItem, create_golden_corpus
+from .benchmark import run_golden_benchmark, run_holdout_benchmark
+from .corpus import CorpusItem, create_golden_corpus, create_synthetic_dev_corpus
 from .equivalence import MultiGateVerifier
 from .genome import PARAM_BOUNDS, ProfileGenome, ProfilePolicy
 from .pdf_extractor import PDFExtractor
@@ -136,7 +136,7 @@ def calibrate_golden_profile(
     with open(profile_out, "w", encoding="utf-8") as f:
         json.dump(profile_data, f, indent=2)
 
-    # Run complete verification benchmark using champion policy
+    # Run complete verification benchmark using champion policy on dev set
     benchmark_out = output_benchmark_path or (
         Path(__file__).resolve().parent.parent.parent / "reports" / "pdf2rtf_golden_benchmark.json"
     )
@@ -146,10 +146,25 @@ def calibrate_golden_profile(
         save_report_path=benchmark_out,
     )
 
-    return champion_policy, bench_report.to_dict()
+    # Strictly evaluate the champion policy on the OUT-OF-DISTRIBUTION Real Word Holdout set
+    holdout_out = Path(__file__).resolve().parent.parent.parent / "reports" / "pdf2rtf_real_word_holdout_benchmark.json"
+    holdout_report = run_holdout_benchmark(
+        policy=champion_policy,
+        save_report_path=holdout_out,
+    )
+
+    return champion_policy, {
+        "dev_benchmark": bench_report.to_dict(),
+        "holdout_benchmark": holdout_report.to_dict(),
+    }
 
 
 if __name__ == "__main__":
     policy, bench_results = calibrate_golden_profile()
-    print(f"Calibration Complete! Final Average Composite Score: {bench_results['average_composite_score']:.2%}")
-    print(f"Text Integrity Pass Rate: {bench_results['text_integrity_pass_rate']:.2%}")
+    dev_res = bench_results["dev_benchmark"]
+    hold_res = bench_results["holdout_benchmark"]
+    print(f"Calibration Complete!")
+    print(f"  Dev Synthetic Composite Score: {dev_res['average_composite_score']:.2%}")
+    print(f"  Holdout Real Word Composite Score: {hold_res['average_composite_score']:.2%}")
+    print(f"  Holdout Text Integrity Pass Rate: {hold_res['text_integrity_pass_rate']:.2%}")
+    print(f"  Holdout Overall Pass Rate: {hold_res['overall_pass_rate']:.2%}")

@@ -45,9 +45,9 @@ def _build_article_corpus() -> CorpusItem:
     doc = Document()
     p = Page(1, 612.0, 792.0)
     p.add_paragraph("An Overview of Evolutionary Computing", font="Helvetica", font_size_pt=16.0, bold=True)
-    p.add_paragraph("Section 1: Foundations and Principles", font="Helvetica", font_size_pt=13.0, bold=True)
-    p.add_paragraph("Evolutionary algorithms mimic natural selection to discover robust solutions.", font="Helvetica", font_size_pt=11.0)
-    p.add_paragraph("Through iterative cycles of variation and selection, candidate solutions adapt.", font="Helvetica", font_size_pt=11.0)
+    p.add_paragraph("Section 1: Foundations and Principles", font="Helvetica", font_size_pt=13.0, bold=True, space_before_pt=19.0)
+    p.add_paragraph("Evolutionary algorithms mimic natural selection to discover robust solutions.", font="Helvetica", font_size_pt=11.0, space_before_pt=14.5)
+    p.add_paragraph("Through iterative cycles of variation and selection, candidate solutions adapt.", font="Helvetica", font_size_pt=11.0, space_before_pt=25.0)
     doc.pages.append(p)
 
     return CorpusItem(
@@ -94,7 +94,7 @@ def _build_financial_table_corpus() -> CorpusItem:
     doc = Document()
     p = Page(1, 612.0, 792.0)
     p.add_paragraph("Quarterly Financial Performance", font="Helvetica", font_size_pt=14.0, bold=True)
-    p.add_paragraph("The following table summarizes revenue and operating margins:", font="Helvetica", font_size_pt=11.0)
+    p.add_paragraph("The following table summarizes revenue and operating margins:", font="Helvetica", font_size_pt=11.0, space_before_pt=12.0)
 
     # Reference Table
     tbl = Table(alignment="left")
@@ -159,10 +159,10 @@ def _build_executive_summary_corpus() -> CorpusItem:
     p = Page(1, 612.0, 792.0)
     p1 = p.add_paragraph("Executive Strategy Report", font="Helvetica", font_size_pt=16.0, bold=True)
     p1.alignment = "center"
-    p2 = p.add_paragraph("Date: September 2026", font="Helvetica", font_size_pt=10.0)
+    p2 = p.add_paragraph("Date: September 2026", font="Helvetica", font_size_pt=10.0, space_before_pt=22.5)
     p2.alignment = "right"
-    p.add_paragraph("This summary outlines operational milestones and risk assessments for the upcoming quarter.", font="Helvetica", font_size_pt=11.0)
-    p.add_paragraph("All operational initiatives have achieved pre-registered benchmarks with high fidelity.", font="Helvetica", font_size_pt=11.0)
+    p.add_paragraph("This summary outlines operational milestones and risk assessments for the upcoming quarter.", font="Helvetica", font_size_pt=11.0, space_before_pt=25.0)
+    p.add_paragraph("All operational initiatives have achieved pre-registered benchmarks with high fidelity.", font="Helvetica", font_size_pt=11.0, space_before_pt=25.0)
     doc.pages.append(p)
 
     return CorpusItem(
@@ -192,10 +192,10 @@ def _build_bulleted_memo_corpus() -> CorpusItem:
     doc = Document()
     p = Page(1, 612.0, 792.0)
     p.add_paragraph("Action Items and Engineering Directives", font="Helvetica", font_size_pt=14.0, bold=True)
-    p.add_paragraph("Please review the following core deliverables for this sprint:", font="Helvetica", font_size_pt=11.0)
-    p.add_paragraph("- Harden extraction kernel against font subset variations.", font="Helvetica", font_size_pt=11.0)
-    p.add_paragraph("- Calibrate heuristic hyperparameters using quality-diversity search.", font="Helvetica", font_size_pt=11.0)
-    p.add_paragraph("- Enforce multi-gate verification across all document elements.", font="Helvetica", font_size_pt=11.0)
+    p.add_paragraph("Please review the following core deliverables for this sprint:", font="Helvetica", font_size_pt=11.0, space_before_pt=17.0)
+    p.add_paragraph("- Harden extraction kernel against font subset variations.", font="Helvetica", font_size_pt=11.0, space_before_pt=15.0)
+    p.add_paragraph("- Calibrate heuristic hyperparameters using quality-diversity search.", font="Helvetica", font_size_pt=11.0, space_before_pt=15.0)
+    p.add_paragraph("- Enforce multi-gate verification across all document elements.", font="Helvetica", font_size_pt=11.0, space_before_pt=15.0)
     doc.pages.append(p)
 
     return CorpusItem(
@@ -225,11 +225,11 @@ def _build_subset_font_showcase_corpus() -> CorpusItem:
     p1.add_run("Word Font Subset Normalization Test", font="BAAAAA+Helvetica", font_size_pt=15.0, bold=True)
     p.blocks.append(p1)
 
-    p2 = Paragraph()
+    p2 = Paragraph(space_before_pt=21.5)
     p2.add_run("Verifying that random 6-character subset prefixes are cleaned seamlessly.", font="XYZABC+Helvetica", font_size_pt=11.0)
     p.blocks.append(p2)
 
-    p3 = Paragraph()
+    p3 = Paragraph(space_before_pt=25.0)
     p3.add_run("Font family identity should be preserved in the generated RTF font table.", font="Helvetica", font_size_pt=11.0)
     p.blocks.append(p3)
 
@@ -244,9 +244,9 @@ def _build_subset_font_showcase_corpus() -> CorpusItem:
 
 
 def create_golden_corpus() -> list[CorpusItem]:
-    """Constructs the comprehensive 5-archetype Golden Benchmark Corpus."""
+    """Constructs the synthetic 5-archetype development corpus for unit testing and fast development."""
     if not HAS_FITZ:
-        raise ImportError("PyMuPDF (fitz) is required to generate the Golden Corpus.")
+        raise ImportError("PyMuPDF (fitz) is required to generate the development corpus.")
 
     return [
         _build_article_corpus(),
@@ -255,3 +255,7 @@ def create_golden_corpus() -> list[CorpusItem]:
         _build_bulleted_memo_corpus(),
         _build_subset_font_showcase_corpus(),
     ]
+
+
+# Alias for explicit dev nomenclature
+create_synthetic_dev_corpus = create_golden_corpus

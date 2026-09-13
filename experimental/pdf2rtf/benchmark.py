@@ -13,9 +13,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from .corpus import CorpusItem, create_golden_corpus
+from .corpus import CorpusItem, create_golden_corpus, create_synthetic_dev_corpus
 from .equivalence import MultiGateVerifier
 from .genome import ProfilePolicy
+from .word_holdout import load_real_word_holdout
 from .pdf_extractor import PDFExtractor
 from .rtf_emitter import emit_rtf
 from .rtf_parser import parse_rtf
@@ -149,3 +150,60 @@ def run_golden_benchmark(
         benchmark_report.save_json(save_report_path)
 
     return benchmark_report
+
+
+def run_holdout_benchmark(
+    policy: ProfilePolicy | None = None,
+    verifier: MultiGateVerifier | None = None,
+    save_report_path: str | Path | None = None,
+) -> GoldenBenchmarkReport:
+    """Executes the verification audit across genuine Microsoft Word holdout documents."""
+    holdout_corpus = load_real_word_holdout()
+    return run_golden_benchmark(
+        policy=policy,
+        corpus=holdout_corpus,
+        verifier=verifier,
+        save_report_path=save_report_path,
+    )
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="PDF2RTF Multi-Gate Benchmark Runner")
+    parser.add_argument("--holdout", action="store_true", help="Run against genuine Word Holdout Suite")
+    parser.add_argument("--dev", action="store_true", help="Run against Synthetic Dev Suite")
+    parser.add_argument("--all", action="store_true", help="Run both dev and holdout benchmark suites")
+    parser.add_argument("--save", type=str, default=None, help="Save report JSON path")
+    args = parser.parse_args()
+
+    run_holdout = args.holdout or args.all or (not args.dev and not args.holdout)
+    run_dev = args.dev or args.all or (not args.dev and not args.holdout)
+
+    if run_dev:
+        print("=== Running Synthetic Dev Benchmark Suite ===")
+        dev_rep = run_golden_benchmark()
+        print(f"Dev Documents: {dev_rep.total_documents}")
+        print(f"Text Integrity Pass Rate: {dev_rep.text_integrity_pass_rate:.2%}")
+        print(f"Overall Pass Rate: {dev_rep.overall_pass_rate:.2%}")
+        print(f"Average Composite Score: {dev_rep.average_composite_score:.2%}")
+        for doc in dev_rep.documents:
+            print(f"  [{'PASS' if doc.passed else 'FAIL'}] {doc.name}: {doc.composite_score:.2%} ({doc.elapsed_ms:.1f}ms)")
+        print()
+
+    if run_holdout:
+        print("=== Running Genuine Microsoft Word Holdout Benchmark Suite ===")
+        save_p = args.save or str(
+            Path(__file__).resolve().parent.parent.parent / "reports" / "pdf2rtf_real_word_holdout_benchmark.json"
+        )
+        hold_rep = run_holdout_benchmark(save_report_path=save_p)
+        print(f"Holdout Documents: {hold_rep.total_documents}")
+        print(f"Text Integrity Pass Rate: {hold_rep.text_integrity_pass_rate:.2%}")
+        print(f"Overall Pass Rate: {hold_rep.overall_pass_rate:.2%}")
+        print(f"Average Composite Score: {hold_rep.average_composite_score:.2%}")
+        for doc in hold_rep.documents:
+            print(f"  [{'PASS' if doc.passed else 'FAIL'}] {doc.name}: {doc.composite_score:.2%} ({doc.elapsed_ms:.1f}ms)")
+            for g_name, g_score in doc.gate_scores.items():
+                g_p = "PASS" if doc.gate_pass_status.get(g_name, False) else "FAIL"
+                print(f"      {g_name}: {g_score:.2%} [{g_p}]")
+        print(f"\nHoldout Report Saved: {save_p}")

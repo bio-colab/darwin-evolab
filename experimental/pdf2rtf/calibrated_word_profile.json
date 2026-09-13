@@ -1,7 +1,7 @@
 {
   "name": "calibrated_word_profile",
   "description": "Empirically calibrated heuristic extraction policy for MS Word-generated PDFs",
-  "fitness_score": 0.9907222222222222,
+  "fitness_score": 0.9955416666666667,
   "fingerprint": "cd89bddb1e1591b6",
   "descriptors": {
     "cluster_density": 0.3082,
@@ -17,5 +17,5 @@
     "table_min_rows": 2,
     "table_min_cols": 2
   },
-  "calibrated_at": "2026-09-13T10:05:02Z"
+  "calibrated_at": "2026-09-13T12:26:39Z"
 }

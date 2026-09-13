@@ -39,6 +39,20 @@ def clean_base_font_family(font_name: str) -> str:
     stripped = strip_font_subset_prefix(font_name)
     # Remove style suffixes like -Bold, -Italic, ,Bold, etc.
     base = re.split(r"[-_,]", stripped)[0].strip()
+    # Normalize common Word PostScript font family suffixes (PS, MT, PSMT)
+    base = re.sub(r"(PSMT|PS|MT)$", "", base, flags=re.IGNORECASE).strip()
+    # Map common standard fonts to canonical display names
+    low = base.lower()
+    if low in ("timesnewroman", "times"):
+        return "Times New Roman"
+    if low == "arial":
+        return "Arial"
+    if low == "calibri":
+        return "Calibri"
+    if low == "georgia":
+        return "Georgia"
+    if low in ("helvetica", "helv"):
+        return "Helvetica"
     return base if base else "Calibri"
 
 
@@ -100,7 +114,7 @@ class PDFExtractor:
                 except Exception:
                     pass
 
-            elements_to_place: list[tuple[float, Block]] = []
+            elements_to_place: list[tuple[float, float, Block]] = []
 
             # Process tables into Table IR
             for t in tables_fitz:
@@ -118,7 +132,7 @@ class PDFExtractor:
                             )
                         r_ir.cells.append(c_ir)
                     t_ir.rows.append(r_ir)
-                elements_to_place.append((t.bbox[1], t_ir))
+                elements_to_place.append((t.bbox[1], t.bbox[3], t_ir))
 
             page_data = page_fitz.get_text("dict")
 
@@ -146,19 +160,36 @@ class PDFExtractor:
                 if in_table:
                     continue
 
-                paragraphs = self._process_text_block(
+                para_entries = self._process_text_block(
                     block,
                     page_width=rect.width,
                     margin_left=margin_left,
                     margin_right=margin_right,
                 )
-                for p in paragraphs:
-                    if p.runs:
-                        elements_to_place.append((bbox[1], p))
+                for p_y0, p_y1, p in para_entries:
+                    if p.runs and p.plain_text.strip():
+                        elements_to_place.append((p_y0, p_y1, p))
 
             # Sort all elements (paragraphs and tables) vertically by y0
             elements_to_place.sort(key=lambda item: item[0])
-            for _, el in elements_to_place:
+
+            # Calculate inter-element vertical spacing (space_before_pt and space_after_pt)
+            grid = max(0.1, self.policy.line_spacing_round_pt)
+            for el_idx in range(1, len(elements_to_place)):
+                prev_y1 = elements_to_place[el_idx - 1][1]
+                curr_y0 = elements_to_place[el_idx][0]
+                gap = curr_y0 - prev_y1
+                prev_el = elements_to_place[el_idx - 1][2]
+                curr_el = elements_to_place[el_idx][2]
+                if gap > 2.0:
+                    rounded_gap = round(gap / grid) * grid
+                    clamped_gap = min(rounded_gap, 144.0)
+                    if isinstance(curr_el, Paragraph):
+                        curr_el.space_before_pt = clamped_gap
+                    elif isinstance(prev_el, Paragraph):
+                        prev_el.space_after_pt = clamped_gap
+
+            for _, _, el in elements_to_place:
                 page.blocks.append(el)
 
         return doc
@@ -169,8 +200,8 @@ class PDFExtractor:
         page_width: float = 612.0,
         margin_left: float = 72.0,
         margin_right: float = 72.0,
-    ) -> list[Paragraph]:
-        """Translates a PyMuPDF text block into one or more canonical Paragraphs using policy thresholds."""
+    ) -> list[tuple[float, float, Paragraph]]:
+        """Translates a PyMuPDF text block into canonical Paragraphs with layout bounds and line spacing."""
         raw_lines = block.get("lines", [])
         if not raw_lines:
             return []
@@ -200,12 +231,16 @@ class PDFExtractor:
         if current_group:
             line_groups.append(current_group)
 
-        paragraphs: list[Paragraph] = []
+        paragraphs: list[tuple[float, float, Paragraph]] = []
+        grid = max(0.1, self.policy.line_spacing_round_pt)
+
         for group in line_groups:
             para = Paragraph()
-            # Calculate horizontal bounds to detect alignment
+            # Calculate horizontal and vertical bounds
             x0_min = min((l.get("bbox", (0, 0, 0, 0))[0] for l in group), default=0.0)
             x1_max = max((l.get("bbox", (0, 0, 0, 0))[2] for l in group), default=page_width)
+            y0_min = min((l.get("bbox", (0, 0, 0, 0))[1] for l in group), default=0.0)
+            y1_max = max((l.get("bbox", (0, 0, 0, 0))[3] for l in group), default=0.0)
 
             content_right = page_width - margin_right
             content_center = page_width / 2.0
@@ -214,10 +249,9 @@ class PDFExtractor:
             content_width = max(1.0, content_right - margin_left)
 
             # Heuristic alignment classification
-            if (
-                abs(block_center - content_center) <= self.policy.align_tolerance_pt
-                and line_span_width < (content_width * 0.85)
-            ):
+            is_centered = abs(block_center - content_center) <= self.policy.align_tolerance_pt
+            is_flush_left = abs(x0_min - margin_left) <= 3.0
+            if is_centered and (not is_flush_left or line_span_width < (content_width * 0.95)):
                 para.alignment = "center"
             elif (
                 abs(x1_max - content_right) <= self.policy.align_tolerance_pt
@@ -226,6 +260,18 @@ class PDFExtractor:
                 para.alignment = "right"
             else:
                 para.alignment = "left"
+
+            # Compute inter-line spacing for multi-line paragraphs using line_spacing_round_pt
+            if len(group) > 1:
+                line_y_diffs = [
+                    group[i].get("bbox", (0, 0, 0, 0))[1] - group[i - 1].get("bbox", (0, 0, 0, 0))[1]
+                    for i in range(1, len(group))
+                ]
+                if line_y_diffs:
+                    avg_ls = sum(line_y_diffs) / len(line_y_diffs)
+                    para.line_spacing_pt = round(avg_ls / grid) * grid
+            else:
+                para.line_spacing_pt = None
 
             # Process spans within group
             for l_idx, line in enumerate(group):
@@ -270,7 +316,7 @@ class PDFExtractor:
                     para.runs[-1].text += " "
 
             if para.runs:
-                paragraphs.append(para)
+                paragraphs.append((y0_min, y1_max, para))
 
         return paragraphs
 

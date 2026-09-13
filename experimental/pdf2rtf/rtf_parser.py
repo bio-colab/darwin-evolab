@@ -93,6 +93,10 @@ class RTFParser:
                 if state.in_table:
                     current_cell_paras.append(current_para)
                 else:
+                    if current_table is not None and current_table.rows:
+                        current_page.blocks.append(current_table)
+                        current_table = None
+                        current_row = None
                     current_page.blocks.append(current_para)
             current_para = Paragraph()
 
@@ -210,14 +214,14 @@ class RTFParser:
                     flush_para()
                 elif word == "pard":
                     flush_run()
+                    state.in_table = False
                     state.alignment = "left"
                     state.space_before_pt = 0.0
                     state.space_after_pt = 0.0
                     state.line_spacing_pt = None
-                    if not state.in_table:
-                        state.bold = False
-                        state.italic = False
-                        state.underline = False
+                    state.bold = False
+                    state.italic = False
+                    state.underline = False
                 elif word == "ql":
                     state.alignment = "left"
                 elif word == "qc":
@@ -244,6 +248,15 @@ class RTFParser:
                     if current_table is None:
                         current_table = Table()
                     current_row = current_table.add_row()
+                elif word == "trql":
+                    if current_table is not None:
+                        current_table.alignment = "left"
+                elif word == "trqc":
+                    if current_table is not None:
+                        current_table.alignment = "center"
+                elif word == "trqr":
+                    if current_table is not None:
+                        current_table.alignment = "right"
                 elif word == "intbl":
                     state.in_table = True
                 elif word == "cell":

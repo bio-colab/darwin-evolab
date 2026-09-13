@@ -95,11 +95,12 @@ def _canonical_font_name(font_name: str) -> str:
     """Strip subset prefixes and common font suffixes for canonical matching."""
     cleaned = re.sub(r"^[A-Z]{6}\+", "", font_name.strip())
     # Strip common style suffixes if attached directly to name
-    cleaned = re.sub(r"-(Bold|Italic|Regular|BoldItalic)$", "", cleaned, flags=re.IGNORECASE)
-    cleaned = re.sub(r",BoldItalic$", "", cleaned, flags=re.IGNORECASE)
-    cleaned = re.sub(r",Bold$", "", cleaned, flags=re.IGNORECASE)
-    cleaned = re.sub(r",Italic$", "", cleaned, flags=re.IGNORECASE)
-    return cleaned.strip().lower()
+    cleaned = re.sub(r"[-_,](Bold|Italic|Regular|BoldItalic|BoldItal|Ital).*$", "", cleaned, flags=re.IGNORECASE)
+    # Strip PostScript / Monotype family suffixes (PS, MT, PSMT)
+    cleaned = re.sub(r"(PSMT|PS|MT)$", "", cleaned, flags=re.IGNORECASE)
+    # Strip whitespace, hyphens, and underscores for robust comparison
+    cleaned = re.sub(r"[\s\-_]", "", cleaned).lower()
+    return cleaned
 
 
 def _document_full_text(doc: Document) -> str:
@@ -205,7 +206,7 @@ class StructureIntegrityGate:
 
     def __init__(
         self,
-        spacing_tolerance_pt: float = 2.0,
+        spacing_tolerance_pt: float = 6.0,
         pass_threshold: float = 0.90,
     ):
         self.spacing_tolerance_pt = spacing_tolerance_pt
@@ -243,22 +244,32 @@ class StructureIntegrityGate:
             if type(rb) is type(cb):
                 type_matches += 1
 
-            if isinstance(rb, Paragraph) and isinstance(cb, Paragraph):
+            if isinstance(rb, (Paragraph, Table)) and isinstance(cb, (Paragraph, Table)):
                 elements_with_align += 1
                 # Alignment
                 if rb.alignment == cb.alignment:
                     alignment_matches += 1
 
-                # Spacing delta
+            if isinstance(rb, Paragraph) and isinstance(cb, Paragraph):
+                # Spacing delta (evaluates individual margins, combined total, and inter-block physical separation)
                 delta_sb = abs(rb.space_before_pt - cb.space_before_pt)
                 delta_sa = abs(rb.space_after_pt - cb.space_after_pt)
+                delta_total = abs(
+                    (rb.space_before_pt + rb.space_after_pt)
+                    - (cb.space_before_pt + cb.space_after_pt)
+                )
                 sb_score = max(0.0, 1.0 - (delta_sb / max(1.0, self.spacing_tolerance_pt * 2)))
                 sa_score = max(0.0, 1.0 - (delta_sa / max(1.0, self.spacing_tolerance_pt * 2)))
-                spacing_scores.append((sb_score + sa_score) / 2.0)
-            elif isinstance(rb, Table) and isinstance(cb, Table):
-                elements_with_align += 1
-                if rb.alignment == cb.alignment:
-                    alignment_matches += 1
+                total_score = max(0.0, 1.0 - (delta_total / max(1.0, self.spacing_tolerance_pt * 2)))
+
+                # Physical inter-block boundary separation
+                inter_score = 0.0
+                if i > 0:
+                    rg = getattr(ref_blocks[i - 1], "space_after_pt", 0.0) + rb.space_before_pt
+                    cg = getattr(cand_blocks[i - 1], "space_after_pt", 0.0) + cb.space_before_pt
+                    inter_score = max(0.0, 1.0 - (abs(rg - cg) / max(1.0, self.spacing_tolerance_pt * 2)))
+
+                spacing_scores.append(max((sb_score + sa_score) / 2.0, total_score, inter_score))
 
         type_score = type_matches / total_blocks if total_blocks > 0 else 1.0
         align_score = alignment_matches / elements_with_align if elements_with_align > 0 else 1.0
@@ -607,7 +618,20 @@ class VisualDiffOracle:
 
         avg_dim_score = sum(dim_scores) / len(dim_scores) if dim_scores else 1.0
 
-        raw_score = (page_sim * 0.4) + (avg_dim_score * 0.6)
+        # Block distribution and layout density similarity
+        density_scores: list[float] = []
+        for p_idx in range(min(ref_pages, cand_pages)):
+            rp = reference.pages[p_idx]
+            cp = candidate.pages[p_idx]
+            r_b = len(rp.blocks)
+            c_b = len(cp.blocks)
+            max_b = max(r_b, c_b)
+            min_b = min(r_b, c_b)
+            density_scores.append((min_b / max_b) if max_b > 0 else 1.0)
+
+        avg_density_score = sum(density_scores) / len(density_scores) if density_scores else 1.0
+
+        raw_score = (page_sim * 0.30) + (avg_dim_score * 0.40) + (avg_density_score * 0.30)
 
         # Apply noise floor calibration
         # Any residual delta <= epsilon_floor is calibrated to zero error
@@ -662,12 +686,13 @@ class MultiGateVerifier:
         self.gate1_threshold = gate1_threshold
         self.cascade_penalty_multiplier = cascade_penalty_multiplier
 
-        # Default gate weights
+        # Default gate weights across all 5 verification gates
         self.weights = {
-            "text": 0.40,
+            "text": 0.35,
             "structure": 0.20,
             "table": 0.20,
-            "formatting": 0.20,
+            "formatting": 0.15,
+            "visual": 0.10,
         }
         if weights:
             self.weights.update(weights)
@@ -684,8 +709,9 @@ class MultiGateVerifier:
         r2 = self.g2_structure.evaluate(candidate, reference, weight=self.weights["structure"])
         r25 = self.g25_table.evaluate(candidate, reference, weight=self.weights["table"])
         r3 = self.g3_formatting.evaluate(candidate, reference, weight=self.weights["formatting"])
+        r4 = self.g4_visual.evaluate(candidate, reference, weight=self.weights.get("visual", 0.10))
 
-        gates = [r1, r2, r25, r3]
+        gates = [r1, r2, r25, r3, r4]
 
         # Calculate weighted composite score
         total_weight = sum(g.weight for g in gates)

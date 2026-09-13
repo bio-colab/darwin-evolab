@@ -1,0 +1,166 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "center",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Evolutionary Architecture of Autonomous Agentic Systems",
+              "font": "Arial",
+              "font_size_pt": 16.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "center",
+          "space_before_pt": 0.0,
+          "space_after_pt": 18.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Darwin-Evolab Scientific Research Group",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 12.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "1. Introduction and Architectural Primitives",
+              "font": "Arial",
+              "font_size_pt": 13.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 12.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "Autonomous evolutionary optimization operates by generating bounded hypotheses and verifying them against strict equivalence oracles.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 12.0,
+          "space_after_pt": 4.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "- Invariant core representation of canonical document trees.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 12.0,
+          "space_after_pt": 4.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "- Multi-gate verification with cascading integrity penalties.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 12.0,
+          "space_after_pt": 12.0,
+          "line_spacing_pt": 13.9,
+          "runs": [
+            {
+              "text": "- Empirical calibration against real Word document layouts.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
