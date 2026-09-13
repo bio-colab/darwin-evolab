@@ -107,6 +107,20 @@ class Paragraph:
         underline: bool = False,
         color: Color | None = None,
     ) -> Run:
+        c = color or Color()
+        if self.runs:
+            prev = self.runs[-1]
+            if (
+                prev.font == font
+                and abs(prev.font_size_pt - font_size_pt) < 0.1
+                and prev.bold == bold
+                and prev.italic == italic
+                and prev.underline == underline
+                and prev.color == c
+            ):
+                prev.text += text
+                return prev
+
         run = Run(
             text=text,
             font=font,
@@ -114,7 +128,7 @@ class Paragraph:
             bold=bold,
             italic=italic,
             underline=underline,
-            color=color or Color(),
+            color=c,
         )
         self.runs.append(run)
         return run

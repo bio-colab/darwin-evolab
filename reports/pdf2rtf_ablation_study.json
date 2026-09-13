@@ -1,0 +1,118 @@
+{
+  "timestamp": "2026-09-13T17:49:16Z",
+  "holdout_corpus_size": 12,
+  "champion_performance": {
+    "composite_score": 0.9911,
+    "overall_pass_rate": 1.0,
+    "text_integrity_pass_rate": 1.0,
+    "policy": {
+      "space_gap_ratio": 0.25,
+      "para_split_delta_ratio": 1.4,
+      "align_tolerance_pt": 5.0,
+      "line_spacing_round_pt": 0.5,
+      "table_col_align_tol_pt": 8.0,
+      "table_min_rows": 2,
+      "table_min_cols": 2
+    }
+  },
+  "default_baseline": {
+    "composite_score": 0.9911,
+    "overall_pass_rate": 1.0,
+    "delta_vs_champion": 0.0
+  },
+  "random_baseline": {
+    "num_samples": 3,
+    "mean_composite_score": 0.8447,
+    "sd_composite_score": 0.1359,
+    "median_composite_score": 0.8499,
+    "p25_composite_score": 0.7062,
+    "p75_composite_score": 0.9779,
+    "min_composite_score": 0.7062,
+    "max_composite_score": 0.9779,
+    "delta_vs_champion": 0.1464,
+    "t_statistic": 1.87,
+    "p_value_approximation": "0.062083"
+  },
+  "systematic_ablations": [
+    {
+      "ablation_name": "Ablate line_spacing_round_pt (coarse 5.0pt)",
+      "overrides": {
+        "line_spacing_round_pt": 5.0
+      },
+      "ablated_composite_score": 0.9907,
+      "drop_vs_champion": 0.0003,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate line_spacing_round_pt (zero grid 0.0pt)",
+      "overrides": {
+        "line_spacing_round_pt": 0.0
+      },
+      "ablated_composite_score": 0.9911,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate align_tolerance_pt (zero tolerance 0.0pt)",
+      "overrides": {
+        "align_tolerance_pt": 0.0
+      },
+      "ablated_composite_score": 0.9766,
+      "drop_vs_champion": 0.0144,
+      "overall_pass_rate": 0.4167,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate align_tolerance_pt (loose tolerance 20.0pt)",
+      "overrides": {
+        "align_tolerance_pt": 20.0
+      },
+      "ablated_composite_score": 0.9874,
+      "drop_vs_champion": 0.0037,
+      "overall_pass_rate": 0.9167,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate space_gap_ratio (tight gap 0.10)",
+      "overrides": {
+        "space_gap_ratio": 0.1
+      },
+      "ablated_composite_score": 0.9911,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate space_gap_ratio (loose gap 0.80)",
+      "overrides": {
+        "space_gap_ratio": 0.8
+      },
+      "ablated_composite_score": 0.9911,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate table_col_align_tol_pt (zero tolerance 0.0pt)",
+      "overrides": {
+        "table_col_align_tol_pt": 0.0
+      },
+      "ablated_composite_score": 0.9911,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate para_split_delta_ratio (low split 0.20)",
+      "overrides": {
+        "para_split_delta_ratio": 0.2
+      },
+      "ablated_composite_score": 0.9764,
+      "drop_vs_champion": 0.0146,
+      "overall_pass_rate": 0.5,
+      "text_integrity_pass_rate": 0.5
+    }
+  ]
+}

@@ -1,0 +1,526 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "center",
+          "space_before_pt": 0.0,
+          "space_after_pt": 10.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "CLINICAL OBSERVATION AND ADMISSION SUMMARY",
+              "font": "Arial",
+              "font_size_pt": 15.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Patient Demographics & Triage Record",
+              "font": "Arial",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "alignment": "left",
+          "rows": [
+            {
+              "is_header": true,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Vital Sign",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Observed Value",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Clinical Status",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Resting Heart Rate",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "68 bpm",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Normal Range",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Systolic / Diastolic",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "118 / 76 mmHg",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Optimal Baseline",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Core Temperature",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "36.8 C",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Normothermic",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 8.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Patient exhibits stable post-operative recovery metrics with no hemodynamic abnormalities.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 8.0,
+          "space_after_pt": 4.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Medical Notice: Confidential clinical summary for attending staff only.",
+              "font": "Calibri",
+              "font_size_pt": 9.0,
+              "bold": false,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

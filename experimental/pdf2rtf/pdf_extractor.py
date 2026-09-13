@@ -250,8 +250,20 @@ class PDFExtractor:
 
             # Heuristic alignment classification
             is_centered = abs(block_center - content_center) <= self.policy.align_tolerance_pt
-            is_flush_left = abs(x0_min - margin_left) <= 3.0
-            if is_centered and (not is_flush_left or line_span_width < (content_width * 0.95)):
+            is_flush_left = abs(x0_min - margin_left) <= max(3.0, self.policy.align_tolerance_pt)
+            is_justified = (
+                len(group) > 1
+                and is_flush_left
+                and any(
+                    abs(l.get("bbox", (0, 0, 0, 0))[2] - content_right) <= self.policy.align_tolerance_pt
+                    for l in group[:-1]
+                )
+                and (content_right - group[-1].get("bbox", (0, 0, 0, 0))[2]) > (self.policy.align_tolerance_pt * 2)
+            )
+
+            if is_justified:
+                para.alignment = "justify"
+            elif is_centered and (not is_flush_left or line_span_width < (content_width * 0.95)):
                 para.alignment = "center"
             elif (
                 abs(x1_max - content_right) <= self.policy.align_tolerance_pt
