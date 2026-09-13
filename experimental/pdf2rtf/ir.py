@@ -158,10 +158,28 @@ class Cell:
     def paragraphs(self) -> list[Paragraph]:
         return self.content
 
-    def add_paragraph(self, text: str = "", **kwargs: Any) -> Paragraph:
+    def add_paragraph(
+        self,
+        text: str = "",
+        font: str = "Calibri",
+        font_size_pt: float = 11.0,
+        bold: bool = False,
+        italic: bool = False,
+        underline: bool = False,
+        color: Color | None = None,
+        **kwargs: Any,
+    ) -> Paragraph:
         p = Paragraph(**kwargs)
         if text:
-            p.add_run(text)
+            p.add_run(
+                text=text,
+                font=font,
+                font_size_pt=font_size_pt,
+                bold=bold,
+                italic=italic,
+                underline=underline,
+                color=color or Color(),
+            )
         self.content.append(p)
         return p
 
@@ -268,10 +286,28 @@ class Page:
     def plain_text(self) -> str:
         return "\n\n".join(b.plain_text for b in self.blocks)
 
-    def add_paragraph(self, text: str = "", **kwargs: Any) -> Paragraph:
+    def add_paragraph(
+        self,
+        text: str = "",
+        font: str = "Calibri",
+        font_size_pt: float = 11.0,
+        bold: bool = False,
+        italic: bool = False,
+        underline: bool = False,
+        color: Color | None = None,
+        **kwargs: Any,
+    ) -> Paragraph:
         p = Paragraph(**kwargs)
         if text:
-            p.add_run(text)
+            p.add_run(
+                text=text,
+                font=font,
+                font_size_pt=font_size_pt,
+                bold=bold,
+                italic=italic,
+                underline=underline,
+                color=color or Color(),
+            )
         self.blocks.append(p)
         return p
 

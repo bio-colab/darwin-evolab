@@ -33,6 +33,9 @@ from .equivalence import (
     MultiGateVerifier,
 )
 
+from .genome import PARAM_BOUNDS, ProfileGenome, ProfilePolicy
+from .adapter import PDF2RTFAdapter, PDF2RTFEvaluator, PDF2RTFSpec
+
 __all__ = [
     "Block",
     "Color",
@@ -59,5 +62,11 @@ __all__ = [
     "FormattingIntegrityGate",
     "VisualDiffOracle",
     "MultiGateVerifier",
+    "PARAM_BOUNDS",
+    "ProfileGenome",
+    "ProfilePolicy",
+    "PDF2RTFAdapter",
+    "PDF2RTFEvaluator",
+    "PDF2RTFSpec",
 ]
 

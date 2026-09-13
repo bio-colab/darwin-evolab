@@ -19,6 +19,7 @@ except ImportError:
     HAS_FITZ = False
 
 from .ir import Color, Document, Page, Paragraph, Run
+from .genome import ProfilePolicy
 
 
 def strip_font_subset_prefix(font_name: str) -> str:
@@ -42,15 +43,24 @@ def clean_base_font_family(font_name: str) -> str:
 
 
 class PDFExtractor:
-    """Extracts structured Document IR from PDF documents using PyMuPDF."""
+    """Extracts structured Document IR from PDF documents using PyMuPDF and tunable heuristic policies."""
 
-    def __init__(self, space_gap_threshold_ratio: float = 0.25) -> None:
+    def __init__(
+        self,
+        space_gap_threshold_ratio: float = 0.25,
+        policy: ProfilePolicy | None = None,
+    ) -> None:
         if not HAS_FITZ:
             raise ImportError(
                 "PyMuPDF (fitz) is required for PDFExtractor. "
                 "Install via: pip install pymupdf"
             )
-        self.space_gap_threshold_ratio = space_gap_threshold_ratio
+        if policy is not None:
+            self.policy = policy
+            self.space_gap_threshold_ratio = policy.space_gap_ratio
+        else:
+            self.space_gap_threshold_ratio = space_gap_threshold_ratio
+            self.policy = ProfilePolicy(space_gap_ratio=space_gap_threshold_ratio)
 
     def extract(self, source: Union[str, Path, bytes, BinaryIO]) -> Document:
         """Extracts Document IR from file path, raw bytes, or stream."""
@@ -80,65 +90,115 @@ class PDFExtractor:
                 if block.get("type") != 0:
                     continue
 
-                para = self._process_text_block(block)
-                if para.runs:
-                    page.blocks.append(para)
+                paragraphs = self._process_text_block(block, page_width=rect.width)
+                for p in paragraphs:
+                    if p.runs:
+                        page.blocks.append(p)
 
         return doc
 
-    def _process_text_block(self, block: dict) -> Paragraph:
-        """Translates a PyMuPDF text block into a canonical Paragraph IR."""
-        para = Paragraph()
-        lines = block.get("lines", [])
-        if not lines:
-            return para
+    def _process_text_block(self, block: dict, page_width: float = 612.0) -> list[Paragraph]:
+        """Translates a PyMuPDF text block into one or more canonical Paragraphs using policy thresholds."""
+        raw_lines = block.get("lines", [])
+        if not raw_lines:
+            return []
 
-        for l_idx, line in enumerate(lines):
-            spans = line.get("spans", [])
-            for s_idx, span in enumerate(spans):
-                text = span.get("text", "")
-                if not text:
-                    continue
+        # Group lines into paragraphs based on vertical line spacing delta
+        line_groups: list[list[dict]] = []
+        current_group: list[dict] = []
 
-                raw_font = span.get("font", "Calibri")
-                clean_font = clean_base_font_family(raw_font)
-                font_size = float(span.get("size", 11.0))
-                flags = span.get("flags", 0)
+        for l_idx, line in enumerate(raw_lines):
+            if not current_group:
+                current_group.append(line)
+                continue
 
-                # Flag 2 = italic, Flag 16 = bold
-                is_bold = bool(flags & 16) or "bold" in raw_font.lower()
-                is_italic = bool(flags & 2) or "italic" in raw_font.lower() or "oblique" in raw_font.lower()
+            prev_line = current_group[-1]
+            prev_bbox = prev_line.get("bbox", (0, 0, 0, 0))
+            curr_bbox = line.get("bbox", (0, 0, 0, 0))
+            line_height = max(1.0, prev_bbox[3] - prev_bbox[1])
+            dy = curr_bbox[1] - prev_bbox[3]
 
-                # Color parsing from integer sRGB
-                c_int = span.get("color", 0)
-                r = (c_int >> 16) & 255
-                g = (c_int >> 8) & 255
-                b = c_int & 255
-                color = Color(r=r, g=g, b=b)
+            # If vertical gap exceeds the policy threshold, split into new paragraph
+            if dy > (line_height * self.policy.para_split_delta_ratio):
+                line_groups.append(current_group)
+                current_group = [line]
+            else:
+                current_group.append(line)
 
-                # Check if we need to insert a space before this span due to horizontal gap
-                if s_idx > 0 and para.runs:
-                    prev_bbox = spans[s_idx - 1].get("bbox", (0, 0, 0, 0))
-                    curr_bbox = span.get("bbox", (0, 0, 0, 0))
-                    dx = curr_bbox[0] - prev_bbox[2]
-                    threshold = font_size * self.space_gap_threshold_ratio
-                    if dx > threshold and not para.runs[-1].text.endswith(" ") and not text.startswith(" "):
-                        text = " " + text
+        if current_group:
+            line_groups.append(current_group)
 
-                para.add_run(
-                    text=text,
-                    font=clean_font,
-                    font_size_pt=font_size,
-                    bold=is_bold,
-                    italic=is_italic,
-                    color=color,
-                )
+        paragraphs: list[Paragraph] = []
+        for group in line_groups:
+            para = Paragraph()
+            # Calculate horizontal bounds to detect alignment
+            x0_min = min((l.get("bbox", (0, 0, 0, 0))[0] for l in group), default=0.0)
+            x1_max = max((l.get("bbox", (0, 0, 0, 0))[2] for l in group), default=page_width)
 
-            # Between lines in the same block, ensure word separation
-            if l_idx < len(lines) - 1 and para.runs and not para.runs[-1].text.endswith(" "):
-                para.runs[-1].text += " "
+            left_margin = x0_min
+            right_margin = page_width - x1_max
+            line_span_width = x1_max - x0_min
 
-        return para
+            # Heuristic alignment classification
+            if (
+                abs(left_margin - right_margin) <= self.policy.align_tolerance_pt
+                and line_span_width < (page_width * 0.85)
+            ):
+                para.alignment = "center"
+            elif (
+                right_margin <= self.policy.align_tolerance_pt
+                and left_margin > (self.policy.align_tolerance_pt * 2)
+            ):
+                para.alignment = "right"
+            else:
+                para.alignment = "left"
+
+            # Process spans within group
+            for l_idx, line in enumerate(group):
+                spans = line.get("spans", [])
+                for s_idx, span in enumerate(spans):
+                    text = span.get("text", "")
+                    if not text:
+                        continue
+
+                    raw_font = span.get("font", "Calibri")
+                    clean_font = clean_base_font_family(raw_font)
+                    font_size = float(span.get("size", 11.0))
+                    flags = span.get("flags", 0)
+
+                    is_bold = bool(flags & 16) or "bold" in raw_font.lower()
+                    is_italic = bool(flags & 2) or "italic" in raw_font.lower() or "oblique" in raw_font.lower()
+
+                    c_int = span.get("color", 0)
+                    r = (c_int >> 16) & 255
+                    g = (c_int >> 8) & 255
+                    b = c_int & 255
+                    color = Color(r=r, g=g, b=b)
+
+                    if s_idx > 0 and para.runs:
+                        prev_bbox = spans[s_idx - 1].get("bbox", (0, 0, 0, 0))
+                        curr_bbox = span.get("bbox", (0, 0, 0, 0))
+                        dx = curr_bbox[0] - prev_bbox[2]
+                        threshold = font_size * self.space_gap_threshold_ratio
+                        if dx > threshold and not para.runs[-1].text.endswith(" ") and not text.startswith(" "):
+                            text = " " + text
+
+                    para.add_run(
+                        text=text,
+                        font=clean_font,
+                        font_size_pt=font_size,
+                        bold=is_bold,
+                        italic=is_italic,
+                        color=color,
+                    )
+
+                if l_idx < len(group) - 1 and para.runs and not para.runs[-1].text.endswith(" "):
+                    para.runs[-1].text += " "
+
+            if para.runs:
+                paragraphs.append(para)
+
+        return paragraphs
 
 
 def extract_pdf(source: Union[str, Path, bytes, BinaryIO]) -> Document:
