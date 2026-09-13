@@ -36,7 +36,20 @@
           "line_spacing_pt": 13.9,
           "runs": [
             {
-              "text": "This section validates that mixed bold runs,",
+              "text": "This section validates that ",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            },
+            {
+              "text": "mixed bold runs",
               "font": "Times New Roman",
               "font_size_pt": 12.0,
               "bold": true,
@@ -49,10 +62,23 @@
               }
             },
             {
-              "text": " italic expression",
+              "text": ", ",
               "font": "Times New Roman",
               "font_size_pt": 12.0,
-              "bold": true,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            },
+            {
+              "text": "italic expressions",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": false,
               "italic": true,
               "underline": false,
               "color": {
@@ -62,10 +88,10 @@
               }
             },
             {
-              "text": "s, and subset font families are preserved with high fidelity.",
+              "text": ", and subset font families are preserved with high fidelity.",
               "font": "Times New Roman",
               "font_size_pt": 12.0,
-              "bold": true,
+              "bold": false,
               "italic": false,
               "underline": false,
               "color": {
@@ -87,7 +113,7 @@
               "text": "Deterministic extraction ensures that document topology remains invariant under format migration.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
+              "bold": false,
               "italic": false,
               "underline": false,
               "color": {

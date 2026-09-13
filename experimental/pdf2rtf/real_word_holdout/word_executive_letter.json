@@ -39,7 +39,7 @@
               "text": "Date: September 13, 2026",
               "font": "Calibri",
               "font_size_pt": 10.0,
-              "bold": true,
+              "bold": false,
               "italic": false,
               "underline": false,
               "color": {
@@ -83,7 +83,7 @@
               "text": "This letter serves as formal notification regarding the completion of Phase 4 hardening benchmarks.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
+              "bold": false,
               "italic": false,
               "underline": false,
               "color": {
@@ -105,7 +105,7 @@
               "text": "All empirical criteria established by independent peer audit have been rigorously tested on genuine Word layouts.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
+              "bold": false,
               "italic": false,
               "underline": false,
               "color": {

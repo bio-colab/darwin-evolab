@@ -39,7 +39,7 @@
               "text": "Summary of verified computational metrics across benchmark suites:",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
+              "bold": false,
               "italic": false,
               "underline": false,
               "color": {
@@ -183,7 +183,7 @@
                           "text": "Text Integrity",
                           "font": "Calibri",
                           "font_size_pt": 11.0,
-                          "bold": true,
+                          "bold": false,
                           "italic": false,
                           "underline": false,
                           "color": {
@@ -216,7 +216,7 @@
                           "text": "100.0%",
                           "font": "Calibri",
                           "font_size_pt": 11.0,
-                          "bold": true,
+                          "bold": false,
                           "italic": false,
                           "underline": false,
                           "color": {
@@ -249,7 +249,7 @@
                           "text": "Exact",
                           "font": "Calibri",
                           "font_size_pt": 11.0,
-                          "bold": true,
+                          "bold": false,
                           "italic": false,
                           "underline": false,
                           "color": {
@@ -288,7 +288,7 @@
                           "text": "Structure Gate",
                           "font": "Calibri",
                           "font_size_pt": 11.0,
-                          "bold": true,
+                          "bold": false,
                           "italic": false,
                           "underline": false,
                           "color": {
@@ -321,7 +321,7 @@
                           "text": "98.3%",
                           "font": "Calibri",
                           "font_size_pt": 11.0,
-                          "bold": true,
+                          "bold": false,
                           "italic": false,
                           "underline": false,
                           "color": {
@@ -354,7 +354,7 @@
                           "text": "High",
                           "font": "Calibri",
                           "font_size_pt": 11.0,
-                          "bold": true,
+                          "bold": false,
                           "italic": false,
                           "underline": false,
                           "color": {
@@ -382,7 +382,7 @@
               "text": "All values verified through deterministic execution.",
               "font": "Calibri",
               "font_size_pt": 10.0,
-              "bold": true,
+              "bold": false,
               "italic": true,
               "underline": false,
               "color": {

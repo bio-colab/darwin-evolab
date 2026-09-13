@@ -146,6 +146,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p1.Range.Font.Name = "Arial"
         p1.Range.Font.Size = 16
         p1.Range.Font.Bold = True
+        p1.Range.Font.Italic = False
         p1.Alignment = 1  # Center
         p1.Format.SpaceAfter = 6.0
         p1.Range.InsertParagraphAfter()
@@ -154,6 +155,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p2.Range.Text = "Darwin-Evolab Scientific Research Group"
         p2.Range.Font.Name = "Calibri"
         p2.Range.Font.Size = 11
+        p2.Range.Font.Bold = False
         p2.Range.Font.Italic = True
         p2.Alignment = 1  # Center
         p2.Format.SpaceAfter = 18.0
@@ -164,6 +166,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p3.Range.Font.Name = "Arial"
         p3.Range.Font.Size = 13
         p3.Range.Font.Bold = True
+        p3.Range.Font.Italic = False
         p3.Alignment = 0  # Left
         p3.Format.SpaceBefore = 12.0
         p3.Format.SpaceAfter = 6.0
@@ -173,6 +176,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p4.Range.Text = "Autonomous evolutionary optimization operates by generating bounded hypotheses and verifying them against strict equivalence oracles."
         p4.Range.Font.Name = "Calibri"
         p4.Range.Font.Size = 11
+        p4.Range.Font.Bold = False
+        p4.Range.Font.Italic = False
         p4.Alignment = 0  # Left
         p4.Format.SpaceAfter = 6.0
         p4.Range.InsertParagraphAfter()
@@ -181,6 +186,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p5.Range.Text = "- Invariant core representation of canonical document trees."
         p5.Range.Font.Name = "Calibri"
         p5.Range.Font.Size = 11
+        p5.Range.Font.Bold = False
+        p5.Range.Font.Italic = False
         p5.Alignment = 0
         p5.Format.SpaceAfter = 4.0
         p5.Range.InsertParagraphAfter()
@@ -189,6 +196,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p6.Range.Text = "- Multi-gate verification with cascading integrity penalties."
         p6.Range.Font.Name = "Calibri"
         p6.Range.Font.Size = 11
+        p6.Range.Font.Bold = False
+        p6.Range.Font.Italic = False
         p6.Alignment = 0
         p6.Format.SpaceAfter = 4.0
         p6.Range.InsertParagraphAfter()
@@ -197,6 +206,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p7.Range.Text = "- Empirical calibration against real Word document layouts."
         p7.Range.Font.Name = "Calibri"
         p7.Range.Font.Size = 11
+        p7.Range.Font.Bold = False
+        p7.Range.Font.Italic = False
         p7.Alignment = 0
         p7.Format.SpaceAfter = 12.0
         p7.Range.InsertParagraphAfter()
@@ -225,6 +236,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 14
         p.Range.Font.Bold = True
+        p.Range.Font.Italic = False
         p.Format.SpaceAfter = 6.0
         p.Range.InsertParagraphAfter()
 
@@ -232,6 +244,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Text = "Summary of verified computational metrics across benchmark suites:"
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 11
+        p.Range.Font.Bold = False
+        p.Range.Font.Italic = False
         p.Format.SpaceAfter = 12.0
         p.Range.InsertParagraphAfter()
 
@@ -239,25 +253,39 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         rng = doc2.Range(doc2.Content.End - 1, doc2.Content.End - 1)
         tbl = doc2.Tables.Add(rng, 3, 3)
         tbl.Borders.Enable = True
-        tbl.Cell(1, 1).Range.Text = "Benchmark"
-        tbl.Cell(1, 1).Range.Font.Bold = True
-        tbl.Cell(1, 2).Range.Text = "Pass Rate"
-        tbl.Cell(1, 2).Range.Font.Bold = True
-        tbl.Cell(1, 3).Range.Text = "Fidelity"
-        tbl.Cell(1, 3).Range.Font.Bold = True
+        
+        # Row 1 (Header - Bold)
+        for c_i, header_txt in enumerate(["Benchmark", "Pass Rate", "Fidelity"], 1):
+            cell_rng = tbl.Cell(1, c_i).Range
+            cell_rng.Text = header_txt
+            cell_rng.Font.Name = "Calibri"
+            cell_rng.Font.Size = 11
+            cell_rng.Font.Bold = True
+            cell_rng.Font.Italic = False
 
-        tbl.Cell(2, 1).Range.Text = "Text Integrity"
-        tbl.Cell(2, 2).Range.Text = "100.0%"
-        tbl.Cell(2, 3).Range.Text = "Exact"
+        # Row 2 (Data - Normal)
+        for c_i, data_txt in enumerate(["Text Integrity", "100.0%", "Exact"], 1):
+            cell_rng = tbl.Cell(2, c_i).Range
+            cell_rng.Text = data_txt
+            cell_rng.Font.Name = "Calibri"
+            cell_rng.Font.Size = 11
+            cell_rng.Font.Bold = False
+            cell_rng.Font.Italic = False
 
-        tbl.Cell(3, 1).Range.Text = "Structure Gate"
-        tbl.Cell(3, 2).Range.Text = "98.3%"
-        tbl.Cell(3, 3).Range.Text = "High"
+        # Row 3 (Data - Normal)
+        for c_i, data_txt in enumerate(["Structure Gate", "98.3%", "High"], 1):
+            cell_rng = tbl.Cell(3, c_i).Range
+            cell_rng.Text = data_txt
+            cell_rng.Font.Name = "Calibri"
+            cell_rng.Font.Size = 11
+            cell_rng.Font.Bold = False
+            cell_rng.Font.Italic = False
 
         p_end = doc2.Paragraphs.Add()
         p_end.Range.Text = "All values verified through deterministic execution."
         p_end.Range.Font.Name = "Calibri"
         p_end.Range.Font.Size = 10
+        p_end.Range.Font.Bold = False
         p_end.Range.Font.Italic = True
         p_end.Format.SpaceBefore = 12.0
         p_end.Range.InsertParagraphAfter()
@@ -286,6 +314,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Font.Name = "Arial"
         p.Range.Font.Size = 15
         p.Range.Font.Bold = True
+        p.Range.Font.Italic = False
         p.Alignment = 1  # Center
         p.Format.SpaceAfter = 12.0
         p.Range.InsertParagraphAfter()
@@ -294,6 +323,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Text = "Date: September 13, 2026"
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 10
+        p.Range.Font.Bold = False
+        p.Range.Font.Italic = False
         p.Alignment = 2  # Right
         p.Format.SpaceBefore = 6.0
         p.Format.SpaceAfter = 18.0
@@ -304,6 +335,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 11
         p.Range.Font.Bold = True
+        p.Range.Font.Italic = False
         p.Alignment = 0  # Left
         p.Format.SpaceAfter = 12.0
         p.Range.InsertParagraphAfter()
@@ -312,6 +344,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Text = "This letter serves as formal notification regarding the completion of Phase 4 hardening benchmarks."
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 11
+        p.Range.Font.Bold = False
+        p.Range.Font.Italic = False
         p.Alignment = 0
         p.Format.SpaceAfter = 8.0
         p.Range.InsertParagraphAfter()
@@ -320,6 +354,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Text = "All empirical criteria established by independent peer audit have been rigorously tested on genuine Word layouts."
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 11
+        p.Range.Font.Bold = False
+        p.Range.Font.Italic = False
         p.Alignment = 0
         p.Format.SpaceAfter = 18.0
         p.Range.InsertParagraphAfter()
@@ -329,6 +365,7 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 11
         p.Range.Font.Bold = True
+        p.Range.Font.Italic = False
         p.Alignment = 0
         p.Range.InsertParagraphAfter()
 
@@ -356,16 +393,31 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Font.Name = "Times New Roman"
         p.Range.Font.Size = 16
         p.Range.Font.Bold = True
+        p.Range.Font.Italic = False
         p.Format.SpaceAfter = 12.0
         p.Range.InsertParagraphAfter()
 
         p = doc4.Paragraphs.Add()
-        p.Range.Text = "This section validates that mixed bold runs, italic expressions, and subset font families are preserved with high fidelity."
+        text_p2 = "This section validates that mixed bold runs, italic expressions, and subset font families are preserved with high fidelity."
+        p.Range.Text = text_p2
         p.Range.Font.Name = "Times New Roman"
         p.Range.Font.Size = 12
-        # Apply mixed bold/italic
-        doc4.Range(p.Range.Start + 27, p.Range.Start + 42).Bold = True
-        doc4.Range(p.Range.Start + 44, p.Range.Start + 62).Italic = True
+        p.Range.Font.Bold = False
+        p.Range.Font.Italic = False
+        
+        idx_bold_start = text_p2.find("mixed bold runs")
+        idx_bold_end = idx_bold_start + len("mixed bold runs")
+        idx_ital_start = text_p2.find("italic expressions")
+        idx_ital_end = idx_ital_start + len("italic expressions")
+        
+        rng_bold = doc4.Range(p.Range.Start + idx_bold_start, p.Range.Start + idx_bold_end)
+        rng_bold.Bold = True
+        rng_bold.Italic = False
+        
+        rng_ital = doc4.Range(p.Range.Start + idx_ital_start, p.Range.Start + idx_ital_end)
+        rng_ital.Bold = False
+        rng_ital.Italic = True
+        
         p.Format.SpaceAfter = 10.0
         p.Range.InsertParagraphAfter()
 
@@ -373,6 +425,8 @@ def generate_real_word_holdout(output_dir: str | Path | None = None) -> list[Cor
         p.Range.Text = "Deterministic extraction ensures that document topology remains invariant under format migration."
         p.Range.Font.Name = "Calibri"
         p.Range.Font.Size = 11
+        p.Range.Font.Bold = False
+        p.Range.Font.Italic = False
         p.Format.SpaceBefore = 14.0
         p.Format.SpaceAfter = 8.0
         p.Range.InsertParagraphAfter()

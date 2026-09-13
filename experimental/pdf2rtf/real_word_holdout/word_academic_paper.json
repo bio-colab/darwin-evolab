@@ -39,7 +39,7 @@
               "text": "Darwin-Evolab Scientific Research Group",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
+              "bold": false,
               "italic": true,
               "underline": false,
               "color": {
@@ -62,7 +62,7 @@
               "font": "Arial",
               "font_size_pt": 13.0,
               "bold": true,
-              "italic": true,
+              "italic": false,
               "underline": false,
               "color": {
                 "r": 0,
@@ -83,8 +83,8 @@
               "text": "Autonomous evolutionary optimization operates by generating bounded hypotheses and verifying them against strict equivalence oracles.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
-              "italic": true,
+              "bold": false,
+              "italic": false,
               "underline": false,
               "color": {
                 "r": 0,
@@ -105,8 +105,8 @@
               "text": "- Invariant core representation of canonical document trees.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
-              "italic": true,
+              "bold": false,
+              "italic": false,
               "underline": false,
               "color": {
                 "r": 0,
@@ -127,8 +127,8 @@
               "text": "- Multi-gate verification with cascading integrity penalties.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
-              "italic": true,
+              "bold": false,
+              "italic": false,
               "underline": false,
               "color": {
                 "r": 0,
@@ -149,8 +149,8 @@
               "text": "- Empirical calibration against real Word document layouts.",
               "font": "Calibri",
               "font_size_pt": 11.0,
-              "bold": true,
-              "italic": true,
+              "bold": false,
+              "italic": false,
               "underline": false,
               "color": {
                 "r": 0,
