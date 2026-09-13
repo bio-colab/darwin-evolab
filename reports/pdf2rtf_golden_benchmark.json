@@ -1,0 +1,118 @@
+{
+  "timestamp": "2026-09-13T10:05:02Z",
+  "total_documents": 5,
+  "text_integrity_pass_rate": 1.0,
+  "overall_pass_rate": 1.0,
+  "average_composite_score": 0.9907,
+  "policy_used": {
+    "space_gap_ratio": 0.25,
+    "para_split_delta_ratio": 1.4,
+    "align_tolerance_pt": 5.0,
+    "line_spacing_round_pt": 0.5,
+    "table_col_align_tol_pt": 8.0,
+    "table_min_rows": 2,
+    "table_min_cols": 2
+  },
+  "documents": [
+    {
+      "name": "article_standard",
+      "passed": true,
+      "composite_score": 0.9917,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9583
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true
+      },
+      "elapsed_ms": 9.86,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 99.17%. All gates satisfied."
+    },
+    {
+      "name": "financial_table",
+      "passed": true,
+      "composite_score": 0.975,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 0.9167,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9583
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true
+      },
+      "elapsed_ms": 16.6,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 97.50%. All gates satisfied."
+    },
+    {
+      "name": "executive_summary",
+      "passed": true,
+      "composite_score": 0.9958,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9792
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true
+      },
+      "elapsed_ms": 9.45,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 99.58%. All gates satisfied."
+    },
+    {
+      "name": "bulleted_memo",
+      "passed": true,
+      "composite_score": 0.9967,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9833
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true
+      },
+      "elapsed_ms": 10.2,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 99.67%. All gates satisfied."
+    },
+    {
+      "name": "subset_font_stress",
+      "passed": true,
+      "composite_score": 0.9944,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9722
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true
+      },
+      "elapsed_ms": 9.43,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 99.44%. All gates satisfied."
+    }
+  ]
+}

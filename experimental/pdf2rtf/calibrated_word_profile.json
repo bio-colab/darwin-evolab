@@ -1,0 +1,21 @@
+{
+  "name": "calibrated_word_profile",
+  "description": "Empirically calibrated heuristic extraction policy for MS Word-generated PDFs",
+  "fitness_score": 0.9907222222222222,
+  "fingerprint": "cd89bddb1e1591b6",
+  "descriptors": {
+    "cluster_density": 0.3082,
+    "table_sensitivity": 0.2609,
+    "table_min_rows": 2
+  },
+  "policy": {
+    "space_gap_ratio": 0.25,
+    "para_split_delta_ratio": 1.4,
+    "align_tolerance_pt": 5.0,
+    "line_spacing_round_pt": 0.5,
+    "table_col_align_tol_pt": 8.0,
+    "table_min_rows": 2,
+    "table_min_cols": 2
+  },
+  "calibrated_at": "2026-09-13T10:05:02Z"
+}

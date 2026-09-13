@@ -18,7 +18,7 @@ try:
 except ImportError:
     HAS_FITZ = False
 
-from .ir import Color, Document, Page, Paragraph, Run
+from .ir import Block, Cell, Color, Document, Page, Paragraph, Row, Run, Table
 from .genome import ProfilePolicy
 
 
@@ -83,21 +83,93 @@ class PDFExtractor:
             page_fitz = doc_fitz[page_idx]
             rect = page_fitz.rect
             page = doc.add_page(width_pts=rect.width, height_pts=rect.height)
+
+            # Detect tables on this page
+            tables_fitz = []
+            table_bboxes = []
+            if hasattr(page_fitz, "find_tables"):
+                try:
+                    tabs = page_fitz.find_tables()
+                    for t in getattr(tabs, "tables", []):
+                        if (
+                            t.row_count >= self.policy.table_min_rows
+                            and t.col_count >= self.policy.table_min_cols
+                        ):
+                            tables_fitz.append(t)
+                            table_bboxes.append(t.bbox)
+                except Exception:
+                    pass
+
+            elements_to_place: list[tuple[float, Block]] = []
+
+            # Process tables into Table IR
+            for t in tables_fitz:
+                t_ir = Table(alignment="left")
+                extracted_data = t.extract()
+                for r_idx, row_cells in enumerate(extracted_data):
+                    is_hdr = (r_idx == 0)
+                    r_ir = Row(is_header=is_hdr)
+                    for cell_val in row_cells:
+                        val_str = str(cell_val or "").strip()
+                        c_ir = Cell(width_twips=2880)
+                        if val_str:
+                            c_ir.add_paragraph(
+                                val_str, font="Calibri", font_size_pt=10.0, bold=is_hdr
+                            )
+                        r_ir.cells.append(c_ir)
+                    t_ir.rows.append(r_ir)
+                elements_to_place.append((t.bbox[1], t_ir))
+
             page_data = page_fitz.get_text("dict")
+
+            # Estimate page margins from text blocks
+            text_blocks_bboxes = [
+                b["bbox"] for b in page_data.get("blocks", []) if b.get("type") == 0
+            ]
+            min_x0 = min((b[0] for b in text_blocks_bboxes), default=72.0)
+            margin_left = min_x0 if min_x0 >= 10.0 else 72.0
+            margin_right = margin_left
 
             for block in page_data.get("blocks", []):
                 # type 0 = text block, 1 = image block
                 if block.get("type") != 0:
                     continue
 
-                paragraphs = self._process_text_block(block, page_width=rect.width)
+                bbox = block.get("bbox", (0, 0, 0, 0))
+                # Skip text block if its center falls inside a recognized table
+                bx_center = (bbox[0] + bbox[2]) / 2.0
+                by_center = (bbox[1] + bbox[3]) / 2.0
+                in_table = any(
+                    (tb[0] <= bx_center <= tb[2] and tb[1] <= by_center <= tb[3])
+                    for tb in table_bboxes
+                )
+                if in_table:
+                    continue
+
+                paragraphs = self._process_text_block(
+                    block,
+                    page_width=rect.width,
+                    margin_left=margin_left,
+                    margin_right=margin_right,
+                )
                 for p in paragraphs:
                     if p.runs:
-                        page.blocks.append(p)
+                        elements_to_place.append((bbox[1], p))
+
+            # Sort all elements (paragraphs and tables) vertically by y0
+            elements_to_place.sort(key=lambda item: item[0])
+            for _, el in elements_to_place:
+                page.blocks.append(el)
 
         return doc
 
-    def _process_text_block(self, block: dict, page_width: float = 612.0) -> list[Paragraph]:
+    def _process_text_block(
+        self,
+        block: dict,
+        page_width: float = 612.0,
+        margin_left: float = 72.0,
+        margin_right: float = 72.0,
+    ) -> list[Paragraph]:
         """Translates a PyMuPDF text block into one or more canonical Paragraphs using policy thresholds."""
         raw_lines = block.get("lines", [])
         if not raw_lines:
@@ -135,19 +207,21 @@ class PDFExtractor:
             x0_min = min((l.get("bbox", (0, 0, 0, 0))[0] for l in group), default=0.0)
             x1_max = max((l.get("bbox", (0, 0, 0, 0))[2] for l in group), default=page_width)
 
-            left_margin = x0_min
-            right_margin = page_width - x1_max
+            content_right = page_width - margin_right
+            content_center = page_width / 2.0
+            block_center = (x0_min + x1_max) / 2.0
             line_span_width = x1_max - x0_min
+            content_width = max(1.0, content_right - margin_left)
 
             # Heuristic alignment classification
             if (
-                abs(left_margin - right_margin) <= self.policy.align_tolerance_pt
-                and line_span_width < (page_width * 0.85)
+                abs(block_center - content_center) <= self.policy.align_tolerance_pt
+                and line_span_width < (content_width * 0.85)
             ):
                 para.alignment = "center"
             elif (
-                right_margin <= self.policy.align_tolerance_pt
-                and left_margin > (self.policy.align_tolerance_pt * 2)
+                abs(x1_max - content_right) <= self.policy.align_tolerance_pt
+                and (x0_min - margin_left) > (self.policy.align_tolerance_pt * 2)
             ):
                 para.alignment = "right"
             else:
