@@ -1,0 +1,752 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": 18.5,
+          "runs": [
+            {
+              "text": "CONSOLIDATED QUARTERLY LIQUIDITY AND ASSET ALLOCATION MATRIX",
+              "font": "Times New Roman",
+              "font_size_pt": 14.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "alignment": "left",
+          "rows": [
+            {
+              "is_header": true,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Asset Class",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Q1 Allocation",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Q2 Allocation",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Variance",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Cash & Equiv",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$1,450,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$1,620,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "+11.7%",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Sovereign Debt",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$4,200,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$3,950,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "-5.9%",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Corporate Debt",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$2,800,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$2,910,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "+3.9%",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Total Assets",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$8,450,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "$8,480,000",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 2880,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "+0.3%",
+                          "font": "Calibri",
+                          "font_size_pt": 9.5,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 4.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "All allocation variances remain within statutory macro-prudential thresholds.",
+              "font": "Calibri",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

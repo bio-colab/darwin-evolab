@@ -15,7 +15,10 @@
     "line_spacing_round_pt": 0.5,
     "table_col_align_tol_pt": 8.0,
     "table_min_rows": 2,
-    "table_min_cols": 2
+    "table_min_cols": 2,
+    "para_split_short_line_factor": 0.0,
+    "para_split_indent_factor": 0.0,
+    "para_split_font_weight": 0.0
   },
   "calibrated_at": "2026-09-13T12:26:39Z"
 }

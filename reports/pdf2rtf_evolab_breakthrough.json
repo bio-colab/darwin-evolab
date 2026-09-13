@@ -1,0 +1,230 @@
+{
+  "experiment": "Unseeded Tabula Rasa MAP-Elites Breakthrough",
+  "timestamp": "2026-09-13T18:09:55Z",
+  "evolution_budget": {
+    "population_size": 16,
+    "generations": 8,
+    "seed": 42,
+    "unseeded": true,
+    "elapsed_seconds": 14.34,
+    "archive_niches_filled": 2
+  },
+  "baseline_performance": {
+    "dilemma_composite_score": 0.9306,
+    "dilemma_pass_rate": 0.25,
+    "holdout_composite_score": 0.9911,
+    "holdout_pass_rate": 1.0,
+    "dilemma_documents": [
+      {
+        "name": "word_dilemma_tight_lead",
+        "passed": false,
+        "composite_score": 0.8608,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 0.9982,
+          "Gate 2: Structure Integrity": 0.4156,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 0.9556,
+          "Gate 4: Visual / Geometry Oracle": 0.85
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": false,
+          "Gate 2: Structure Integrity": false,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": false
+        },
+        "elapsed_ms": 32.78,
+        "diff_count": 0,
+        "message": "FAILED: Composite fidelity 86.08%. One or more gates below threshold."
+      },
+      {
+        "name": "word_dilemma_compact_list",
+        "passed": false,
+        "composite_score": 0.9125,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 0.9982,
+          "Gate 2: Structure Integrity": 0.6422,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 0.9646,
+          "Gate 4: Visual / Geometry Oracle": 0.9
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": false,
+          "Gate 2: Structure Integrity": false,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 26.42,
+        "diff_count": 0,
+        "message": "FAILED: Composite fidelity 91.25%. One or more gates below threshold."
+      },
+      {
+        "name": "word_dilemma_mixed_scale",
+        "passed": false,
+        "composite_score": 0.9527,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 0.9994,
+          "Gate 2: Structure Integrity": 0.7769,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 0.99,
+          "Gate 4: Visual / Geometry Oracle": 0.99
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": false,
+          "Gate 2: Structure Integrity": false,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 20.56,
+        "diff_count": 0,
+        "message": "FAILED: Composite fidelity 95.27%. One or more gates below threshold."
+      },
+      {
+        "name": "word_dilemma_dense_table",
+        "passed": true,
+        "composite_score": 0.9962,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 1.0,
+          "Gate 2: Structure Integrity": 0.9812,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 1.0,
+          "Gate 4: Visual / Geometry Oracle": 1.0
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": true,
+          "Gate 2: Structure Integrity": true,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 77.26,
+        "diff_count": 0,
+        "message": "PASSED: Composite fidelity 99.62%. All gates satisfied."
+      }
+    ]
+  },
+  "evolved_champion_performance": {
+    "training_fitness": 0.9918,
+    "dilemma_composite_score": 0.9864,
+    "dilemma_pass_rate": 0.75,
+    "holdout_composite_score": 0.9905,
+    "holdout_pass_rate": 1.0,
+    "delta_dilemma_score": 0.0559,
+    "delta_dilemma_pass_rate": 0.5,
+    "evolved_policy": {
+      "space_gap_ratio": 0.42441702452277874,
+      "para_split_delta_ratio": 0.72051399614087,
+      "align_tolerance_pt": 6.551369146493329,
+      "line_spacing_round_pt": 1.6346416926364853,
+      "table_col_align_tol_pt": 4.543835175420306,
+      "table_min_rows": 3,
+      "table_min_cols": 3,
+      "para_split_short_line_factor": 0.9797838015377421,
+      "para_split_indent_factor": 0.5488309585901362,
+      "para_split_font_weight": 0.5723469257015416
+    },
+    "dilemma_documents": [
+      {
+        "name": "word_dilemma_tight_lead",
+        "passed": false,
+        "composite_score": 0.9747,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 1.0,
+          "Gate 2: Structure Integrity": 0.8735,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 1.0,
+          "Gate 4: Visual / Geometry Oracle": 1.0
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": true,
+          "Gate 2: Structure Integrity": false,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 26.94,
+        "diff_count": 0,
+        "message": "FAILED: Composite fidelity 97.47%. One or more gates below threshold."
+      },
+      {
+        "name": "word_dilemma_compact_list",
+        "passed": true,
+        "composite_score": 0.9922,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 1.0,
+          "Gate 2: Structure Integrity": 0.9608,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 1.0,
+          "Gate 4: Visual / Geometry Oracle": 1.0
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": true,
+          "Gate 2: Structure Integrity": true,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 27.32,
+        "diff_count": 0,
+        "message": "PASSED: Composite fidelity 99.22%. All gates satisfied."
+      },
+      {
+        "name": "word_dilemma_mixed_scale",
+        "passed": true,
+        "composite_score": 0.9819,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 1.0,
+          "Gate 2: Structure Integrity": 0.9096,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 1.0,
+          "Gate 4: Visual / Geometry Oracle": 1.0
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": true,
+          "Gate 2: Structure Integrity": true,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 24.03,
+        "diff_count": 0,
+        "message": "PASSED: Composite fidelity 98.19%. All gates satisfied."
+      },
+      {
+        "name": "word_dilemma_dense_table",
+        "passed": true,
+        "composite_score": 0.9969,
+        "gate_scores": {
+          "Gate 1: Text Integrity": 1.0,
+          "Gate 2: Structure Integrity": 0.9845,
+          "Gate 2.5: Table Oracle": 1.0,
+          "Gate 3: Formatting Integrity": 1.0,
+          "Gate 4: Visual / Geometry Oracle": 1.0
+        },
+        "gate_pass_status": {
+          "Gate 1: Text Integrity": true,
+          "Gate 2: Structure Integrity": true,
+          "Gate 2.5: Table Oracle": true,
+          "Gate 3: Formatting Integrity": true,
+          "Gate 4: Visual / Geometry Oracle": true
+        },
+        "elapsed_ms": 76.55,
+        "diff_count": 0,
+        "message": "PASSED: Composite fidelity 99.69%. All gates satisfied."
+      }
+    ]
+  },
+  "emergent_analysis": {
+    "para_split_delta_ratio": 0.72051399614087,
+    "para_split_short_line_factor": 0.9797838015377421,
+    "para_split_indent_factor": 0.5488309585901362,
+    "para_split_font_weight": 0.5723469257015416,
+    "align_tolerance_pt": 6.551369146493329,
+    "space_gap_ratio": 0.42441702452277874,
+    "table_col_align_tol_pt": 4.543835175420306,
+    "line_spacing_round_pt": 1.6346416926364853,
+    "emergent_phenomenon": "Evolab autonomously discovered that coupling a lower base split threshold (0.721) with an active short-line early termination boost (0.980) and indentation sensitivity (0.549) resolves the fundamental trade-off between tight-leading paragraph separation and multi-line body coherence without human heuristic intervention."
+  }
+}

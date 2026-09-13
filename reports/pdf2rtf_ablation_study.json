@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-13T17:49:16Z",
+  "timestamp": "2026-09-13T18:12:32Z",
   "holdout_corpus_size": 12,
   "champion_performance": {
     "composite_score": 0.9911,
@@ -12,7 +12,10 @@
       "line_spacing_round_pt": 0.5,
       "table_col_align_tol_pt": 8.0,
       "table_min_rows": 2,
-      "table_min_cols": 2
+      "table_min_cols": 2,
+      "para_split_short_line_factor": 0.0,
+      "para_split_indent_factor": 0.0,
+      "para_split_font_weight": 0.0
     }
   },
   "default_baseline": {
@@ -22,16 +25,16 @@
   },
   "random_baseline": {
     "num_samples": 3,
-    "mean_composite_score": 0.8447,
-    "sd_composite_score": 0.1359,
+    "mean_composite_score": 0.8418,
+    "sd_composite_score": 0.1403,
     "median_composite_score": 0.8499,
-    "p25_composite_score": 0.7062,
+    "p25_composite_score": 0.6977,
     "p75_composite_score": 0.9779,
-    "min_composite_score": 0.7062,
+    "min_composite_score": 0.6977,
     "max_composite_score": 0.9779,
-    "delta_vs_champion": 0.1464,
-    "t_statistic": 1.87,
-    "p_value_approximation": "0.062083"
+    "delta_vs_champion": 0.1493,
+    "t_statistic": 1.84,
+    "p_value_approximation": "0.065354"
   },
   "systematic_ablations": [
     {

@@ -1,0 +1,122 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "DEPARTMENT OF QUANTUM INFORMATION & COMPUTING",
+              "font": "Times New Roman",
+              "font_size_pt": 14.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 2.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Doctoral Defense Schedule and Colloquium Notice",
+              "font": "Times New Roman",
+              "font_size_pt": 16.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 2.0,
+          "line_spacing_pt": 16.0,
+          "runs": [
+            {
+              "text": "Candidate: Dr. Marcus Vance. Title: Non-Equilibrium Phase Transitions in Superconducting Qubits.",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 2.0,
+          "line_spacing_pt": 14.75,
+          "runs": [
+            {
+              "text": "Abstract: We investigate boundary state evolution in open quantum systems driven by dissipative Lindblad operators. The observed critical phenomena demonstrate robust protection against decoherence.",
+              "font": "Times New Roman",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 2.0,
+          "line_spacing_pt": 14.5,
+          "runs": [
+            {
+              "text": "Notice: Attendance is restricted to credentialed department members. Recording devices prohibited under Faculty Bylaw 8.1.",
+              "font": "Times New Roman",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": true,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

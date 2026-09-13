@@ -221,8 +221,39 @@ class PDFExtractor:
             line_height = max(1.0, prev_bbox[3] - prev_bbox[1])
             dy = curr_bbox[1] - prev_bbox[3]
 
+            # Compute context-adaptive split threshold
+            thresh = self.policy.para_split_delta_ratio
+
+            # 1. Short line early termination on previous line
+            content_right = page_width - margin_right
+            prev_x1 = prev_bbox[2]
+            right_gap = content_right - prev_x1
+            if right_gap > 20.0 and self.policy.para_split_short_line_factor > 0:
+                short_ratio = min(1.0, right_gap / max(1.0, (content_right - margin_left) * 0.4))
+                thresh -= self.policy.para_split_short_line_factor * short_ratio * 0.85
+
+            # 2. Indentation shift on current line (e.g. list item, new paragraph indent)
+            curr_x0 = curr_bbox[0]
+            prev_x0 = prev_bbox[0]
+            indent_shift = abs(curr_x0 - prev_x0)
+            if indent_shift > 8.0 and self.policy.para_split_indent_factor > 0:
+                thresh -= self.policy.para_split_indent_factor * 0.50
+
+            # 3. Font size or weight change between adjacent lines (e.g. heading preceding body)
+            prev_spans = prev_line.get("spans", [{}])
+            curr_spans = line.get("spans", [{}])
+            prev_size = prev_spans[0].get("size", 11.0) if prev_spans else 11.0
+            curr_size = curr_spans[0].get("size", 11.0) if curr_spans else 11.0
+            size_diff = abs(prev_size - curr_size)
+            prev_bold = bool(prev_spans[0].get("flags", 0) & 16) if prev_spans else False
+            curr_bold = bool(curr_spans[0].get("flags", 0) & 16) if curr_spans else False
+            if (size_diff > 1.0 or prev_bold != curr_bold) and self.policy.para_split_font_weight > 0:
+                thresh -= self.policy.para_split_font_weight * 0.45
+
+            thresh = max(0.08, thresh)
+
             # If vertical gap exceeds the policy threshold, split into new paragraph
-            if dy > (line_height * self.policy.para_split_delta_ratio):
+            if dy > (line_height * thresh):
                 line_groups.append(current_group)
                 current_group = [line]
             else:
