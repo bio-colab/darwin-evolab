@@ -119,12 +119,16 @@ def _extract_word_doc_ir(doc) -> Document:
         try:
             p_bold = p.Range.Font.Bold
             p_italic = p.Range.Font.Italic
+            p_underline = p.Range.Font.Underline
+            p_strike = p.Range.Font.StrikeThrough
             p_size = p.Range.Font.Size
             p_font = p.Range.Font.Name
             p_scaps = p.Range.Font.SmallCaps
             is_uniform = (
                 p_bold in (0, -1, True, False)
                 and p_italic in (0, -1, True, False)
+                and p_underline in (0, -1, 1, True, False)
+                and p_strike in (0, -1, 1, True, False)
                 and p_scaps in (0, -1, True, False)
                 and p_size not in (9999999, None)
                 and p_font not in (9999999, None)
@@ -143,8 +147,10 @@ def _extract_word_doc_ir(doc) -> Document:
                 full_txt,
                 font=str(p_font),
                 font_size_pt=float(p_size),
-                bold=bool(p_bold),
-                italic=bool(p_italic),
+                bold=bool(p_bold in (1, -1, True)),
+                italic=bool(p_italic in (1, -1, True)),
+                underline=bool(p_underline in (1, -1, True) or (isinstance(p_underline, int) and p_underline > 0)),
+                strikethrough=bool(p_strike in (1, -1, True) or (isinstance(p_strike, int) and p_strike > 0)),
             )
         else:
             # Extract character runs for paragraphs with mixed formatting
@@ -158,11 +164,21 @@ def _extract_word_doc_ir(doc) -> Document:
                 except Exception:
                     is_sc = False
                 ch_val = full_txt[idx].upper() if is_sc else full_txt[idx]
+                try:
+                    u_val = bool(ch_rng.Font.Underline in (1, -1, True) or (isinstance(ch_rng.Font.Underline, int) and ch_rng.Font.Underline > 0))
+                except Exception:
+                    u_val = False
+                try:
+                    s_val = bool(ch_rng.Font.StrikeThrough in (1, -1, True) or (isinstance(ch_rng.Font.StrikeThrough, int) and ch_rng.Font.StrikeThrough > 0))
+                except Exception:
+                    s_val = False
                 props = (
                     str(ch_rng.Font.Name),
                     float(ch_rng.Font.Size),
-                    bool(ch_rng.Font.Bold),
-                    bool(ch_rng.Font.Italic),
+                    bool(ch_rng.Font.Bold in (1, -1, True)),
+                    bool(ch_rng.Font.Italic in (1, -1, True)),
+                    u_val,
+                    s_val,
                 )
                 if current_props is None:
                     current_props = props
@@ -170,14 +186,14 @@ def _extract_word_doc_ir(doc) -> Document:
                 elif props == current_props:
                     current_text.append(ch_val)
                 else:
-                    f_name, f_sz, bld, itl = current_props
-                    p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl)
+                    f_name, f_sz, bld, itl, und, stk = current_props
+                    p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl, underline=und, strikethrough=stk)
                     current_props = props
                     current_text = [ch_val]
 
             if current_text and current_props:
-                f_name, f_sz, bld, itl = current_props
-                p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl)
+                f_name, f_sz, bld, itl, und, stk = current_props
+                p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl, underline=und, strikethrough=stk)
 
         elements_by_pos.append((pg_num, p.Range.Start, p_ir))
 

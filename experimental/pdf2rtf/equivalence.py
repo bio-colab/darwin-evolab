@@ -373,8 +373,9 @@ class TableOracle:
             min_rows = min(len(rt.rows), len(ct.rows))
             row_sim = min_rows / max_rows if max_rows > 0 else 1.0
 
-            # 2. Cell text comparison across grid
+            # 2. Cell text and merge comparison across grid
             matches = 0
+            merge_matches = 0
             total_ref_cells = sum(len(r.cells) for r in rt.rows)
             total_cand_cells = sum(len(r.cells) for r in ct.rows)
 
@@ -384,8 +385,10 @@ class TableOracle:
                 c_row = ct.rows[r]
                 common_cells = min(len(r_row.cells), len(c_row.cells))
                 for c in range(common_cells):
-                    rt_text = r_row.cells[c].plain_text.strip()
-                    ct_text = c_row.cells[c].plain_text.strip()
+                    rt_cell = r_row.cells[c]
+                    ct_cell = c_row.cells[c]
+                    rt_text = rt_cell.plain_text.strip()
+                    ct_text = ct_cell.plain_text.strip()
                     if rt_text == ct_text and rt_text != "":
                         matches += 1
                     elif rt_text == ct_text:  # both empty
@@ -396,9 +399,13 @@ class TableOracle:
                         if sim > 0.8:
                             matches += sim
 
+                    if rt_cell.vmerge == ct_cell.vmerge and rt_cell.grid_span == ct_cell.grid_span:
+                        merge_matches += 1
+
             precision = matches / total_cand_cells if total_cand_cells > 0 else 1.0
             recall = matches / total_ref_cells if total_ref_cells > 0 else 1.0
             f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+            merge_sim = merge_matches / total_ref_cells if total_ref_cells > 0 else 1.0
 
             cell_precision_list.append(precision)
             cell_recall_list.append(recall)
@@ -416,7 +423,7 @@ class TableOracle:
                     diff = sum(abs(a - b) for a, b in zip(r_norm, c_norm))
                     width_sim = max(0.0, 1.0 - (diff / 2.0))
 
-            t_score = (row_sim * 0.30) + (f1 * 0.50) + (width_sim * 0.20)
+            t_score = (row_sim * 0.25) + (f1 * 0.45) + (width_sim * 0.15) + (merge_sim * 0.15)
             table_scores.append(t_score)
 
         avg_table_score = sum(table_scores) / len(table_scores) if table_scores else 0.0
@@ -519,13 +526,14 @@ class FormattingIntegrityGate:
             else:
                 size_scores.append(max(0.0, 1.0 - (delta_size / 6.0)))
 
-            # 3. Styles (bold, italic, underline)
+            # 3. Styles (bold, italic, underline, strikethrough)
             flags_matching = (
                 (1 if rr.bold == cr.bold else 0)
                 + (1 if rr.italic == cr.italic else 0)
                 + (1 if rr.underline == cr.underline else 0)
+                + (1 if rr.strikethrough == cr.strikethrough else 0)
             )
-            style_matches += flags_matching / 3.0
+            style_matches += flags_matching / 4.0
 
             # 4. Color
             if rr.color.is_auto and cr.color.is_auto:

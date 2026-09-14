@@ -718,13 +718,7 @@ def run_benchmark_54(
 ) -> dict[str, Any]:
     """Runs MultiGateVerifier across all 54 items with group-by-group breakdowns."""
     items = corpus_items or load_corpus_54()
-    pol = policy or ProfilePolicy(
-        para_split_delta_ratio=0.60,
-        para_split_short_line_factor=0.85,
-        para_split_indent_factor=0.60,
-        para_split_font_weight=0.60,
-        table_col_align_tol_pt=8.0,
-    )
+    pol = policy or ProfilePolicy()
 
     extractor = PDFExtractor(policy=pol)
     verifier = MultiGateVerifier()

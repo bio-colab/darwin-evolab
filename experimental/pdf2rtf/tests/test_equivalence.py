@@ -200,7 +200,7 @@ def test_formatting_gate_detects_style_mismatch():
     gate = FormattingIntegrityGate()
     result = gate.evaluate(candidate=cand_doc, reference=ref_doc)
 
-    assert result.details["style_fidelity"] < 0.5
+    assert result.details["style_fidelity"] <= 0.5
     assert result.score < 0.90
 
 

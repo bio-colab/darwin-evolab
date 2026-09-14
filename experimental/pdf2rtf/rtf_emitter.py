@@ -164,6 +164,8 @@ class RTFEmitter:
             out.write(r"\i")
         if run.underline:
             out.write(r"\ul")
+        if run.strikethrough:
+            out.write(r"\strike")
         if not run.color.is_black and run.color in self.color_table:
             c_idx = self.color_table[run.color]
             out.write(f"\\cf{c_idx}")
@@ -192,6 +194,10 @@ class RTFEmitter:
             acc_x = 0
             for cell in row.cells:
                 acc_x += cell.width_twips
+                if cell.vmerge == "restart":
+                    out.write(r"\clvmgf")
+                elif cell.vmerge == "continue":
+                    out.write(r"\clvmrg")
                 # Cell borders
                 if cell.borders.get("top", True):
                     out.write(r"\clbrdrt\brdrs\brdrw10")

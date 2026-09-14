@@ -22,6 +22,7 @@ class _FormatState:
     bold: bool = False
     italic: bool = False
     underline: bool = False
+    strikethrough: bool = False
     color_idx: int = 0
     alignment: str = "left"
     space_before_pt: float = 0.0
@@ -59,6 +60,8 @@ class RTFParser:
         current_table: Table | None = None
         current_row: Row | None = None
         current_cell_paras: list[Paragraph] = []
+        pending_cell_defs: list[dict[str, Any]] = []
+        current_cell_def: dict[str, Any] = {}
 
         i = 0
         n = len(self.raw)
@@ -77,6 +80,7 @@ class RTFParser:
                         bold=state.bold,
                         italic=state.italic,
                         underline=state.underline,
+                        strikethrough=state.strikethrough,
                         color=col,
                     )
                     current_para.runs.append(run)
@@ -113,6 +117,7 @@ class RTFParser:
                         bold=state.bold,
                         italic=state.italic,
                         underline=state.underline,
+                        strikethrough=state.strikethrough,
                         color_idx=state.color_idx,
                         alignment=state.alignment,
                         space_before_pt=state.space_before_pt,
@@ -199,6 +204,12 @@ class RTFParser:
                 elif word == "ulnone":
                     flush_run()
                     state.underline = False
+                elif word == "strike":
+                    flush_run()
+                    state.strikethrough = (arg is None or arg != 0)
+                elif word == "strike0":
+                    flush_run()
+                    state.strikethrough = False
                 elif word == "fs":
                     flush_run()
                     if arg is not None:
@@ -224,6 +235,7 @@ class RTFParser:
                     state.bold = False
                     state.italic = False
                     state.underline = False
+                    state.strikethrough = False
                 elif word == "ql":
                     state.alignment = "left"
                 elif word == "qc":
@@ -252,9 +264,18 @@ class RTFParser:
                 elif word == "trowd":
                     flush_para()
                     state.in_table = True
+                    pending_cell_defs = []
+                    current_cell_def = {}
                     if current_table is None:
                         current_table = Table()
                     current_row = current_table.add_row()
+                elif word == "clvmgf":
+                    current_cell_def["vmerge"] = "restart"
+                elif word == "clvmrg":
+                    current_cell_def["vmerge"] = "continue"
+                elif word == "cellx":
+                    pending_cell_defs.append(dict(current_cell_def))
+                    current_cell_def = {}
                 elif word == "trql":
                     if current_table is not None:
                         current_table.alignment = "left"
@@ -273,6 +294,9 @@ class RTFParser:
                         current_para = Paragraph()
                     if current_row is not None:
                         cell = current_row.add_cell()
+                        if pending_cell_defs:
+                            c_def = pending_cell_defs.pop(0)
+                            cell.vmerge = c_def.get("vmerge")
                         cell.content = list(current_cell_paras)
                     current_cell_paras = []
                 elif word == "row":

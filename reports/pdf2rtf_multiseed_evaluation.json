@@ -2,24 +2,24 @@
   "num_seeds": 2,
   "population_size": 4,
   "generations": 1,
-  "timestamp": "2026-09-14T12:23:06Z",
+  "timestamp": "2026-09-14T13:04:57Z",
   "summary": {
-    "mean_holdout_composite": 0.9912,
+    "mean_holdout_composite": 0.9906,
     "sd_holdout_composite": 0.0,
     "se_holdout_composite": 0.0,
-    "ci_95_low": 0.9912,
-    "ci_95_high": 0.9912,
-    "min_holdout_composite": 0.9912,
-    "max_holdout_composite": 0.9912,
-    "mean_dev_composite": 0.9959,
+    "ci_95_low": 0.9906,
+    "ci_95_high": 0.9906,
+    "min_holdout_composite": 0.9906,
+    "max_holdout_composite": 0.9906,
+    "mean_dev_composite": 0.9969,
     "all_holdout_passed_rate": 1.0,
     "text_integrity_pass_rate": 1.0
   },
   "seeds": [
     {
       "seed": 1,
-      "dev_composite_score": 0.9959,
-      "holdout_composite_score": 0.9912,
+      "dev_composite_score": 0.9969,
+      "holdout_composite_score": 0.9906,
       "text_integrity_pass_rate": 1.0,
       "holdout_all_passed": true,
       "parameters": {
@@ -34,12 +34,12 @@
         "para_split_indent_factor": 0.0,
         "para_split_font_weight": 0.0
       },
-      "elapsed_sec": 1.06
+      "elapsed_sec": 1.11
     },
     {
       "seed": 2,
-      "dev_composite_score": 0.9959,
-      "holdout_composite_score": 0.9912,
+      "dev_composite_score": 0.9969,
+      "holdout_composite_score": 0.9906,
       "text_integrity_pass_rate": 1.0,
       "holdout_all_passed": true,
       "parameters": {
@@ -54,7 +54,7 @@
         "para_split_indent_factor": 0.0,
         "para_split_font_weight": 0.0
       },
-      "elapsed_sec": 1.04
+      "elapsed_sec": 1.1
     }
   ]
 }

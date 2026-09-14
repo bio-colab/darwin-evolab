@@ -50,6 +50,7 @@ class Run:
     bold: bool = False
     italic: bool = False
     underline: bool = False
+    strikethrough: bool = False
     color: Color = field(default_factory=Color)
 
     def clean_font_name(self) -> str:
@@ -68,6 +69,7 @@ class Run:
             "bold": self.bold,
             "italic": self.italic,
             "underline": self.underline,
+            "strikethrough": self.strikethrough,
             "color": self.color.to_dict(),
         }
 
@@ -80,6 +82,7 @@ class Run:
             bold=bool(d.get("bold", False)),
             italic=bool(d.get("italic", False)),
             underline=bool(d.get("underline", False)),
+            strikethrough=bool(d.get("strikethrough", False)),
             color=Color.from_dict(d.get("color", {})),
         )
 
@@ -105,6 +108,7 @@ class Paragraph:
         bold: bool = False,
         italic: bool = False,
         underline: bool = False,
+        strikethrough: bool = False,
         color: Color | None = None,
     ) -> Run:
         c = color or Color()
@@ -116,6 +120,7 @@ class Paragraph:
                 and prev.bold == bold
                 and prev.italic == italic
                 and prev.underline == underline
+                and prev.strikethrough == strikethrough
                 and prev.color == c
             ):
                 prev.text += text
@@ -128,6 +133,7 @@ class Paragraph:
             bold=bold,
             italic=italic,
             underline=underline,
+            strikethrough=strikethrough,
             color=c,
         )
         self.runs.append(run)
@@ -160,6 +166,8 @@ class Cell:
     """Table cell containing one or more paragraphs."""
     content: list[Paragraph] = field(default_factory=list)
     width_twips: int = 1440  # 1 inch default (72pt * 20)
+    grid_span: int = 1  # Number of columns spanned (hmerge)
+    vmerge: str | None = None  # None | "restart" (top of vertical merge) | "continue" (merged below)
     borders: dict[str, bool] = field(
         default_factory=lambda: {"top": True, "bottom": True, "left": True, "right": True}
     )
@@ -180,6 +188,7 @@ class Cell:
         bold: bool = False,
         italic: bool = False,
         underline: bool = False,
+        strikethrough: bool = False,
         color: Color | None = None,
         **kwargs: Any,
     ) -> Paragraph:
@@ -192,6 +201,7 @@ class Cell:
                 bold=bold,
                 italic=italic,
                 underline=underline,
+                strikethrough=strikethrough,
                 color=color or Color(),
             )
         self.content.append(p)
@@ -200,6 +210,8 @@ class Cell:
     def to_dict(self) -> dict[str, Any]:
         return {
             "width_twips": self.width_twips,
+            "grid_span": self.grid_span,
+            "vmerge": self.vmerge,
             "borders": dict(self.borders),
             "content": [p.to_dict() for p in self.content],
         }
@@ -208,6 +220,8 @@ class Cell:
     def from_dict(cls, d: dict[str, Any]) -> Cell:
         c = cls(
             width_twips=int(d.get("width_twips", 1440)),
+            grid_span=int(d.get("grid_span", 1)),
+            vmerge=d.get("vmerge"),
             borders=d.get("borders", {"top": True, "bottom": True, "left": True, "right": True}),
         )
         c.content = [Paragraph.from_dict(p) for p in d.get("content", [])]

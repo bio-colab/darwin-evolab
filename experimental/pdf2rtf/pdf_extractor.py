@@ -159,13 +159,20 @@ class PDFExtractor:
             rect = page_fitz.rect
             page = doc.add_page(width_pts=rect.width, height_pts=rect.height)
 
+            # Collect vector drawings for underline & strikethrough detection
+            # Word renders text decorations as thin horizontal rectangles/lines
+            page_drawings = [
+                d["rect"] for d in page_fitz.get_drawings()
+                if d["rect"].height <= 3.5 and d["rect"].width > 4.0
+            ]
+
             # Detect tables on this page using policy-tuned column tolerances and borderless fallback
             tables_fitz = self._detect_tables_on_page(page_fitz)
             table_bboxes = [t.bbox for t in tables_fitz]
 
             elements_to_place: list[tuple[float, float, Block]] = []
 
-            page_data = page_fitz.get_text("dict")
+            page_data = page_fitz.get_text("rawdict")
 
             # Collect all raw text spans on page to extract exact cell typography
             all_page_spans = []
@@ -203,7 +210,7 @@ class PDFExtractor:
                         if cell_spans:
                             cp = Paragraph()
                             for s_idx, sp in enumerate(cell_spans):
-                                sp_text = sp.get("text", "")
+                                sp_text = "".join(c["c"] for c in sp.get("chars", [])) if "chars" in sp else sp.get("text", "")
                                 if not sp_text:
                                     continue
                                 raw_f = sp.get("font", "Calibri")
@@ -235,7 +242,11 @@ class PDFExtractor:
             raw_text_blocks = [b for b in page_data.get("blocks", []) if b.get("type") == 0]
             outside_blocks = []
             for blk in raw_text_blocks:
-                has_text = any(sp.get("text", "").strip() for ln in blk.get("lines", []) for sp in ln.get("spans", []))
+                has_text = any(
+                    ("".join(c["c"] for c in sp.get("chars", [])) if "chars" in sp else sp.get("text", "")).strip()
+                    for ln in blk.get("lines", [])
+                    for sp in ln.get("spans", [])
+                )
                 if not has_text:
                     continue
                 bbox = blk.get("bbox", (0, 0, 0, 0))
@@ -256,6 +267,7 @@ class PDFExtractor:
             margin_right = 72.0 if max_x1 <= (rect.width - 65.0) else max(18.0, rect.width - max_x1)
             content_right = rect.width - margin_right
             content_center = rect.width / 2.0
+            tol = self.policy.align_tolerance_pt
 
             # Cross-block merging for PyMuPDF fragmented paragraphs
             merged_blocks = []
@@ -269,9 +281,9 @@ class PDFExtractor:
 
                 prev_mid = (prev_bbox[0] + prev_bbox[2]) / 2.0
                 curr_mid = (curr_bbox[0] + curr_bbox[2]) / 2.0
-                is_both_centered = (abs(prev_mid - content_center) <= 20.0 and abs(curr_mid - content_center) <= 20.0)
-                is_both_right = (abs(prev_bbox[2] - content_right) <= 8.0 and abs(curr_bbox[2] - content_right) <= 8.0)
-                is_both_left = (abs(prev_bbox[0] - margin_left) <= 6.0 and abs(curr_bbox[0] - margin_left) <= 6.0)
+                is_both_centered = (abs(prev_mid - content_center) <= tol * 3.5 and abs(curr_mid - content_center) <= tol * 3.5)
+                is_both_right = (abs(prev_bbox[2] - content_right) <= tol * 1.5 and abs(curr_bbox[2] - content_right) <= tol * 1.5)
+                is_both_left = (abs(prev_bbox[0] - margin_left) <= max(3.0, tol) and abs(curr_bbox[0] - margin_left) <= max(3.0, tol))
 
                 dy = curr_bbox[1] - prev_bbox[3]
                 line_h = max(1.0, prev_bbox[3] - prev_bbox[1])
@@ -318,6 +330,7 @@ class PDFExtractor:
                     page_width=rect.width,
                     margin_left=margin_left,
                     margin_right=margin_right,
+                    drawings=page_drawings,
                 )
                 for p_y0, p_y1, p in para_entries:
                     if p.runs and p.plain_text.strip():
@@ -353,11 +366,16 @@ class PDFExtractor:
         page_width: float = 612.0,
         margin_left: float = 72.0,
         margin_right: float = 72.0,
+        drawings: list | None = None,
     ) -> list[tuple[float, float, Paragraph]]:
         """Translates a PyMuPDF text block into canonical Paragraphs with layout bounds and line spacing."""
+        drawings = drawings or []
         raw_lines = [
             l for l in block.get("lines", [])
-            if any(s.get("text", "").strip() for s in l.get("spans", []))
+            if any(
+                ("".join(c["c"] for c in s.get("chars", [])) if "chars" in s else s.get("text", "")).strip()
+                for s in l.get("spans", [])
+            )
         ]
         if not raw_lines:
             return []
@@ -368,6 +386,8 @@ class PDFExtractor:
 
         content_right = page_width - margin_right
         content_center = page_width / 2.0
+        tol = self.policy.align_tolerance_pt
+        base_split_ratio = self.policy.para_split_delta_ratio
 
         for l_idx, line in enumerate(raw_lines):
             if not current_group:
@@ -390,9 +410,9 @@ class PDFExtractor:
 
             prev_mid = (prev_bbox[0] + prev_bbox[2]) / 2.0
             curr_mid = (curr_bbox[0] + curr_bbox[2]) / 2.0
-            is_centered_pair = (abs(prev_mid - content_center) <= 20.0 and abs(curr_mid - content_center) <= 20.0)
-            is_right_pair = (abs(prev_bbox[2] - content_right) <= 8.0 and abs(curr_bbox[2] - content_right) <= 8.0)
-            same_left = abs(curr_bbox[0] - prev_bbox[0]) <= 4.0
+            is_centered_pair = (abs(prev_mid - content_center) <= tol * 3.5 and abs(curr_mid - content_center) <= tol * 3.5)
+            is_right_pair = (abs(prev_bbox[2] - content_right) <= tol * 1.5 and abs(curr_bbox[2] - content_right) <= tol * 1.5)
+            same_left = abs(curr_bbox[0] - prev_bbox[0]) <= max(3.0, tol * 0.8)
 
             same_line_gap = False
             if len(current_group) >= 2:
@@ -402,17 +422,22 @@ class PDFExtractor:
             prev_right_gap = content_right - prev_bbox[2]
             prev_ended_early = prev_right_gap > 30.0 and not is_centered_pair and not is_right_pair and not (same_left and dy <= 3.5)
 
+            # Active context-aware modulation of split thresholds
+            font_mod = 1.0 - 0.7 * self.policy.para_split_font_weight
+            short_mod = 1.0 - 0.7 * self.policy.para_split_short_line_factor
+            indent_mod = 1.0 - 0.5 * self.policy.para_split_indent_factor
+
             should_split = False
-            if font_change and dy > 2.0:
+            if font_change and dy > max(1.5, line_height * base_split_ratio * font_mod * 0.1):
                 should_split = True
-            elif prev_ended_early and dy > 2.0:
+            elif prev_ended_early and dy > max(1.5, line_height * base_split_ratio * short_mod * 0.1):
                 should_split = True
-            elif dy > line_height * 2.3:
+            elif dy > line_height * (base_split_ratio + 0.9):
                 should_split = True
-            elif dy > line_height * 0.65 and not same_line_gap and not (same_left and dy <= line_height * 1.9):
+            elif dy > line_height * (base_split_ratio * 0.46) and not same_line_gap and not (same_left and dy <= line_height * (base_split_ratio + 0.5)):
                 should_split = True
-            elif abs(curr_bbox[0] - prev_bbox[0]) > 8.0 and not is_centered_pair and not is_right_pair:
-                if len(current_group) == 1 and dy <= line_height * 1.5:
+            elif abs(curr_bbox[0] - prev_bbox[0]) > max(6.0, tol * 1.5) and not is_centered_pair and not is_right_pair:
+                if len(current_group) == 1 and dy <= line_height * (base_split_ratio * indent_mod):
                     should_split = False
                 else:
                     should_split = True
@@ -437,11 +462,11 @@ class PDFExtractor:
             y0_min = min((l.get("bbox", (0, 0, 0, 0))[1] for l in group), default=0.0)
             y1_max = max((l.get("bbox", (0, 0, 0, 0))[3] for l in group), default=0.0)
 
-            is_fl_left = abs(x0_min - margin_left) <= 6.0
-            is_fl_right = abs(x1_max - content_right) <= 8.0
+            is_fl_left = abs(x0_min - margin_left) <= max(4.0, tol * 1.2)
+            is_fl_right = abs(x1_max - content_right) <= max(5.0, tol * 1.5)
 
             all_lines_centered = all(
-                abs((l.get("bbox", (0, 0, 0, 0))[0] + l.get("bbox", (0, 0, 0, 0))[2]) / 2.0 - content_center) <= 18.0
+                abs((l.get("bbox", (0, 0, 0, 0))[0] + l.get("bbox", (0, 0, 0, 0))[2]) / 2.0 - content_center) <= max(6.0, tol * 3.5)
                 for l in group
             )
 
@@ -449,16 +474,15 @@ class PDFExtractor:
             if len(group) >= 2:
                 x0_p = group[0].get("bbox", (0, 0, 0, 0))[0]
                 x1_p = group[0].get("bbox", (0, 0, 0, 0))[2]
-                all_non_last_match_right = all(abs(l.get("bbox", (0, 0, 0, 0))[2] - x1_p) <= 3.0 for l in group[:-1])
-                all_start_same = all(abs(l.get("bbox", (0, 0, 0, 0))[0] - x0_p) <= 3.0 for l in group)
+                all_non_last_match_right = all(abs(l.get("bbox", (0, 0, 0, 0))[2] - x1_p) <= max(2.0, tol * 0.6) for l in group[:-1])
+                all_start_same = all(abs(l.get("bbox", (0, 0, 0, 0))[0] - x0_p) <= max(2.0, tol * 0.6) for l in group)
                 last_short = (x1_p - group[-1].get("bbox", (0, 0, 0, 0))[2]) > 15.0
 
                 if len(group) >= 3 and all_non_last_match_right and all_start_same and last_short:
                     is_justified = True
                 elif len(group) == 2:
-                    if 541.5 <= x1_p <= 543.5 and last_short and (all_start_same or (group[1].get("bbox", (0, 0, 0, 0))[0] >= group[0].get("bbox", (0, 0, 0, 0))[0])):
-                        is_justified = True
-                    elif abs(x1_p - 505.6) <= 2.0 and last_short and all_start_same:
+                    # Deterministic margin check: non-last line touches right margin within tolerance
+                    if (content_right - 1.5 <= x1_p <= content_right + tol) and last_short and (all_start_same or (group[1].get("bbox", (0, 0, 0, 0))[0] >= group[0].get("bbox", (0, 0, 0, 0))[0])):
                         is_justified = True
 
             if all_lines_centered and not is_fl_left:
@@ -486,10 +510,7 @@ class PDFExtractor:
             for l_idx, line in enumerate(group):
                 spans = line.get("spans", [])
                 for s_idx, span in enumerate(spans):
-                    text = span.get("text", "")
-                    if not text:
-                        continue
-
+                    chars = span.get("chars", [])
                     raw_font = span.get("font", "Calibri")
                     clean_font = clean_base_font_family(raw_font)
                     font_size = float(span.get("size", 11.0))
@@ -504,22 +525,75 @@ class PDFExtractor:
                     b = c_int & 255
                     color = Color(r=r, g=g, b=b)
 
-                    if s_idx > 0 and para.runs:
-                        prev_bbox = spans[s_idx - 1].get("bbox", (0, 0, 0, 0))
-                        curr_bbox = span.get("bbox", (0, 0, 0, 0))
-                        dx = curr_bbox[0] - prev_bbox[2]
-                        threshold = font_size * self.space_gap_threshold_ratio
-                        if dx > threshold and not para.runs[-1].text.endswith(" ") and not text.startswith(" "):
-                            text = " " + text
+                    if not chars:
+                        text = span.get("text", "")
+                        if not text:
+                            continue
+                        para.add_run(
+                            text=text,
+                            font=clean_font,
+                            font_size_pt=font_size,
+                            bold=is_bold,
+                            italic=is_italic,
+                            color=color,
+                        )
+                        continue
 
-                    para.add_run(
-                        text=text,
-                        font=clean_font,
-                        font_size_pt=font_size,
-                        bold=is_bold,
-                        italic=is_italic,
-                        color=color,
-                    )
+                    # Classify each char for underline and strikethrough using drawings
+                    char_records = []
+                    for c in chars:
+                        cx0, cy0, cx1, cy1 = c["bbox"]
+                        cmx = (cx0 + cx1) / 2.0
+                        cmy = (cy0 + cy1) / 2.0
+                        c_ul = False
+                        c_st = False
+                        for d_rect in drawings:
+                            if d_rect.x0 - 0.5 <= cmx <= d_rect.x1 + 0.5:
+                                if abs(d_rect.y0 - cy1) <= 2.2 or abs(d_rect.y1 - cy1) <= 2.2 or (d_rect.y0 >= cmy and d_rect.y1 <= cy1 + 2.0):
+                                    c_ul = True
+                                elif abs((d_rect.y0 + d_rect.y1) / 2.0 - cmy) <= 2.0:
+                                    c_st = True
+                        char_records.append((c["c"], c_ul, c_st))
+
+                    # Group consecutive characters by style
+                    sub_runs = []
+                    cur_text = []
+                    cur_style = None
+                    for ch, u, s in char_records:
+                        style = (u, s)
+                        if cur_style is None:
+                            cur_style = style
+                            cur_text.append(ch)
+                        elif style == cur_style:
+                            cur_text.append(ch)
+                        else:
+                            sub_runs.append(("".join(cur_text), cur_style[0], cur_style[1]))
+                            cur_style = style
+                            cur_text = [ch]
+                    if cur_text and cur_style is not None:
+                        sub_runs.append(("".join(cur_text), cur_style[0], cur_style[1]))
+
+                    for sr_idx, (sr_text, sr_ul, sr_st) in enumerate(sub_runs):
+                        if not sr_text:
+                            continue
+                        if s_idx > 0 and sr_idx == 0 and para.runs:
+                            prev_bbox = spans[s_idx - 1].get("bbox", (0, 0, 0, 0))
+                            curr_bbox = span.get("bbox", (0, 0, 0, 0))
+                            dx = curr_bbox[0] - prev_bbox[2]
+                            threshold = font_size * self.space_gap_threshold_ratio
+                            if dx > threshold and not para.runs[-1].text.endswith(" ") and not sr_text.startswith(" "):
+                                sr_text = " " + sr_text
+
+                        para.add_run(
+                            text=sr_text,
+                            font=clean_font,
+                            font_size_pt=font_size,
+                            bold=is_bold,
+                            italic=is_italic,
+                            underline=sr_ul,
+                            strikethrough=sr_st,
+                            color=color,
+                        )
 
                 if l_idx < len(group) - 1 and para.runs and not para.runs[-1].text.endswith(" "):
                     para.runs[-1].text += " "
