@@ -55,8 +55,12 @@ def _extract_word_doc_ir(doc) -> Document:
             row_obj = t.Rows(r_idx)
             for c_idx in range(1, row_obj.Cells.Count + 1):
                 cell_obj = row_obj.Cells(c_idx)
-                raw_txt = cell_obj.Range.Text.strip("\r\x07 ")
-                c_ir = Cell(width_twips=2880)
+                try:
+                    c_width_twips = int(round(float(cell_obj.Width) * 20.0))
+                except Exception:
+                    c_width_twips = 2880
+                c_ir = Cell(width_twips=max(720, c_width_twips))
+                raw_txt = cell_obj.Range.Text.strip("\r\x07\x0c ")
                 if raw_txt:
                     c_ir.add_paragraph(
                         raw_txt,

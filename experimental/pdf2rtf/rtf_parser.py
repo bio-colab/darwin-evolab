@@ -27,6 +27,7 @@ class _FormatState:
     space_before_pt: float = 0.0
     space_after_pt: float = 0.0
     line_spacing_pt: float | None = None
+    slmult: bool = False
     in_table: bool = False
     ignore_group: bool = False
 
@@ -219,6 +220,7 @@ class RTFParser:
                     state.space_before_pt = 0.0
                     state.space_after_pt = 0.0
                     state.line_spacing_pt = None
+                    state.slmult = False
                     state.bold = False
                     state.italic = False
                     state.underline = False
@@ -236,9 +238,14 @@ class RTFParser:
                 elif word == "sb":
                     if arg is not None:
                         state.space_before_pt = arg / 20.0
+                elif word == "slmult":
+                    state.slmult = (arg is None or arg != 0)
                 elif word == "sl":
                     if arg is not None:
-                        state.line_spacing_pt = arg / 20.0
+                        if state.slmult:
+                            state.line_spacing_pt = (abs(arg) / 240.0) * 12.0
+                        else:
+                            state.line_spacing_pt = abs(arg) / 20.0
                 elif word == "page":
                     flush_para()
                     current_page = doc.add_page()

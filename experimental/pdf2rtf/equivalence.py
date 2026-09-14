@@ -467,18 +467,21 @@ class FormattingIntegrityGate:
         self.pass_threshold = pass_threshold
 
     def evaluate(self, candidate: Document, reference: Document, weight: float = 0.20) -> GateResult:
-        ref_runs: list[Run] = []
-        cand_runs: list[Run] = []
+        def _collect_all_runs(doc: Document) -> list[Run]:
+            runs: list[Run] = []
+            for page in doc.pages:
+                for blk in page.blocks:
+                    if isinstance(blk, Paragraph):
+                        runs.extend(blk.runs)
+                    elif isinstance(blk, Table):
+                        for row in blk.rows:
+                            for cell in row.cells:
+                                for cell_p in cell.paragraphs:
+                                    runs.extend(cell_p.runs)
+            return runs
 
-        for p in reference.pages:
-            for b in p.blocks:
-                if isinstance(b, Paragraph):
-                    ref_runs.extend(b.runs)
-
-        for p in candidate.pages:
-            for b in p.blocks:
-                if isinstance(b, Paragraph):
-                    cand_runs.extend(b.runs)
+        ref_runs = _collect_all_runs(reference)
+        cand_runs = _collect_all_runs(candidate)
 
         if not ref_runs and not cand_runs:
             return GateResult(

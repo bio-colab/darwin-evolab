@@ -137,7 +137,8 @@ class RTFEmitter:
         if para.space_after_pt > 0:
             out.write(f"\\sa{int(round(para.space_after_pt * 20.0))}")
         if para.line_spacing_pt is not None and para.line_spacing_pt > 0:
-            out.write(f"\\sl{int(round(para.line_spacing_pt * 20.0))}\\slmult1")
+            twips = int(round(para.line_spacing_pt * 20.0))
+            out.write(f"\\sl{twips}\\slmult0")
 
         out.write(" ")
 

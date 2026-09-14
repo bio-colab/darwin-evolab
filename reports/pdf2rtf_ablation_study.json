@@ -1,58 +1,78 @@
 {
-  "timestamp": "2026-09-13T18:12:32Z",
+  "timestamp": "2026-09-14T09:51:37Z",
   "holdout_corpus_size": 12,
   "champion_performance": {
-    "composite_score": 0.9911,
+    "composite_score": 0.9905,
     "overall_pass_rate": 1.0,
     "text_integrity_pass_rate": 1.0,
     "policy": {
-      "space_gap_ratio": 0.25,
-      "para_split_delta_ratio": 1.4,
-      "align_tolerance_pt": 5.0,
-      "line_spacing_round_pt": 0.5,
-      "table_col_align_tol_pt": 8.0,
-      "table_min_rows": 2,
-      "table_min_cols": 2,
-      "para_split_short_line_factor": 0.0,
-      "para_split_indent_factor": 0.0,
-      "para_split_font_weight": 0.0
+      "space_gap_ratio": 0.4244,
+      "para_split_delta_ratio": 0.7205,
+      "align_tolerance_pt": 6.5514,
+      "line_spacing_round_pt": 1.6346,
+      "table_col_align_tol_pt": 4.5438,
+      "table_min_rows": 3,
+      "table_min_cols": 3,
+      "para_split_short_line_factor": 0.9798,
+      "para_split_indent_factor": 0.5488,
+      "para_split_font_weight": 0.5723
     }
   },
   "default_baseline": {
     "composite_score": 0.9911,
     "overall_pass_rate": 1.0,
-    "delta_vs_champion": 0.0
+    "delta_vs_champion": -0.0006
   },
   "random_baseline": {
     "num_samples": 3,
-    "mean_composite_score": 0.8418,
-    "sd_composite_score": 0.1403,
-    "median_composite_score": 0.8499,
-    "p25_composite_score": 0.6977,
-    "p75_composite_score": 0.9779,
-    "min_composite_score": 0.6977,
-    "max_composite_score": 0.9779,
-    "delta_vs_champion": 0.1493,
-    "t_statistic": 1.84,
-    "p_value_approximation": "0.065354"
+    "mean_composite_score": 0.818,
+    "sd_composite_score": 0.108,
+    "median_composite_score": 0.8493,
+    "p25_composite_score": 0.6978,
+    "p75_composite_score": 0.907,
+    "min_composite_score": 0.6978,
+    "max_composite_score": 0.907,
+    "delta_vs_champion": 0.1725,
+    "t_statistic": 2.77,
+    "p_value_approximation": "0.005685"
   },
   "systematic_ablations": [
     {
-      "ablation_name": "Ablate line_spacing_round_pt (coarse 5.0pt)",
+      "ablation_name": "Ablate space_gap_ratio (tight gap 0.10)",
       "overrides": {
-        "line_spacing_round_pt": 5.0
+        "space_gap_ratio": 0.1
       },
-      "ablated_composite_score": 0.9907,
-      "drop_vs_champion": 0.0003,
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
       "overall_pass_rate": 1.0,
       "text_integrity_pass_rate": 1.0
     },
     {
-      "ablation_name": "Ablate line_spacing_round_pt (zero grid 0.0pt)",
+      "ablation_name": "Ablate space_gap_ratio (loose gap 0.80)",
       "overrides": {
-        "line_spacing_round_pt": 0.0
+        "space_gap_ratio": 0.8
       },
-      "ablated_composite_score": 0.9911,
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate para_split_delta_ratio (low split 0.20)",
+      "overrides": {
+        "para_split_delta_ratio": 0.2
+      },
+      "ablated_composite_score": 0.976,
+      "drop_vs_champion": 0.0146,
+      "overall_pass_rate": 0.5,
+      "text_integrity_pass_rate": 0.5
+    },
+    {
+      "ablation_name": "Ablate para_split_delta_ratio (high split 3.00)",
+      "overrides": {
+        "para_split_delta_ratio": 3.0
+      },
+      "ablated_composite_score": 0.9905,
       "drop_vs_champion": 0.0,
       "overall_pass_rate": 1.0,
       "text_integrity_pass_rate": 1.0
@@ -63,7 +83,7 @@
         "align_tolerance_pt": 0.0
       },
       "ablated_composite_score": 0.9766,
-      "drop_vs_champion": 0.0144,
+      "drop_vs_champion": 0.0139,
       "overall_pass_rate": 0.4167,
       "text_integrity_pass_rate": 1.0
     },
@@ -72,28 +92,28 @@
       "overrides": {
         "align_tolerance_pt": 20.0
       },
-      "ablated_composite_score": 0.9874,
-      "drop_vs_champion": 0.0037,
+      "ablated_composite_score": 0.9873,
+      "drop_vs_champion": 0.0032,
       "overall_pass_rate": 0.9167,
       "text_integrity_pass_rate": 1.0
     },
     {
-      "ablation_name": "Ablate space_gap_ratio (tight gap 0.10)",
+      "ablation_name": "Ablate line_spacing_round_pt (zero grid 0.0pt)",
       "overrides": {
-        "space_gap_ratio": 0.1
+        "line_spacing_round_pt": 0.0
       },
-      "ablated_composite_score": 0.9911,
-      "drop_vs_champion": 0.0,
+      "ablated_composite_score": 0.9906,
+      "drop_vs_champion": -0.0,
       "overall_pass_rate": 1.0,
       "text_integrity_pass_rate": 1.0
     },
     {
-      "ablation_name": "Ablate space_gap_ratio (loose gap 0.80)",
+      "ablation_name": "Ablate line_spacing_round_pt (coarse 5.0pt)",
       "overrides": {
-        "space_gap_ratio": 0.8
+        "line_spacing_round_pt": 5.0
       },
-      "ablated_composite_score": 0.9911,
-      "drop_vs_champion": 0.0,
+      "ablated_composite_score": 0.9902,
+      "drop_vs_champion": 0.0003,
       "overall_pass_rate": 1.0,
       "text_integrity_pass_rate": 1.0
     },
@@ -102,20 +122,160 @@
       "overrides": {
         "table_col_align_tol_pt": 0.0
       },
-      "ablated_composite_score": 0.9911,
+      "ablated_composite_score": 0.9905,
       "drop_vs_champion": 0.0,
       "overall_pass_rate": 1.0,
       "text_integrity_pass_rate": 1.0
     },
     {
-      "ablation_name": "Ablate para_split_delta_ratio (low split 0.20)",
+      "ablation_name": "Ablate table_col_align_tol_pt (loose tolerance 25.0pt)",
       "overrides": {
-        "para_split_delta_ratio": 0.2
+        "table_col_align_tol_pt": 25.0
       },
-      "ablated_composite_score": 0.9764,
-      "drop_vs_champion": 0.0146,
-      "overall_pass_rate": 0.5,
-      "text_integrity_pass_rate": 0.5
+      "ablated_composite_score": 0.7767,
+      "drop_vs_champion": 0.2138,
+      "overall_pass_rate": 0.75,
+      "text_integrity_pass_rate": 0.75
+    },
+    {
+      "ablation_name": "Ablate table_min_rows (single row 1)",
+      "overrides": {
+        "table_min_rows": 1
+      },
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate table_min_rows (strict threshold 10)",
+      "overrides": {
+        "table_min_rows": 10
+      },
+      "ablated_composite_score": 0.7059,
+      "drop_vs_champion": 0.2847,
+      "overall_pass_rate": 0.6667,
+      "text_integrity_pass_rate": 0.6667
+    },
+    {
+      "ablation_name": "Ablate table_min_cols (single col 1)",
+      "overrides": {
+        "table_min_cols": 1
+      },
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate table_min_cols (strict threshold 10)",
+      "overrides": {
+        "table_min_cols": 10
+      },
+      "ablated_composite_score": 0.7059,
+      "drop_vs_champion": 0.2847,
+      "overall_pass_rate": 0.6667,
+      "text_integrity_pass_rate": 0.6667
+    },
+    {
+      "ablation_name": "Ablate para_split_short_line_factor (disabled 0.0)",
+      "overrides": {
+        "para_split_short_line_factor": 0.0
+      },
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate para_split_indent_factor (disabled 0.0)",
+      "overrides": {
+        "para_split_indent_factor": 0.0
+      },
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
+    },
+    {
+      "ablation_name": "Ablate para_split_font_weight (disabled 0.0)",
+      "overrides": {
+        "para_split_font_weight": 0.0
+      },
+      "ablated_composite_score": 0.9905,
+      "drop_vs_champion": 0.0,
+      "overall_pass_rate": 1.0,
+      "text_integrity_pass_rate": 1.0
     }
-  ]
+  ],
+  "qd_metrics": {
+    "total_cells": 16,
+    "filled_cells": 2,
+    "archive_coverage": 0.125,
+    "qd_score": 1.9913,
+    "max_fitness": 0.9958,
+    "mean_fitness": 0.9957,
+    "parameter_consensus": {
+      "space_gap_ratio": {
+        "mean": 0.3112,
+        "sd": 0.2669,
+        "min": 0.1225,
+        "max": 0.5
+      },
+      "para_split_delta_ratio": {
+        "mean": 1.9107,
+        "sd": 0.1132,
+        "min": 1.8307,
+        "max": 1.9908
+      },
+      "align_tolerance_pt": {
+        "mean": 6.2752,
+        "sd": 3.1461,
+        "min": 4.0506,
+        "max": 8.4998
+      },
+      "line_spacing_round_pt": {
+        "mean": 0.9803,
+        "sd": 1.0328,
+        "min": 0.25,
+        "max": 1.7106
+      },
+      "table_col_align_tol_pt": {
+        "mean": 9.9357,
+        "sd": 11.2227,
+        "min": 2.0,
+        "max": 17.8713
+      },
+      "table_min_rows": {
+        "mean": 2.5,
+        "sd": 0.7071,
+        "min": 2,
+        "max": 3
+      },
+      "table_min_cols": {
+        "mean": 2.5,
+        "sd": 0.7071,
+        "min": 2,
+        "max": 3
+      },
+      "para_split_short_line_factor": {
+        "mean": 0.7993,
+        "sd": 0.2839,
+        "min": 0.5985,
+        "max": 1.0
+      },
+      "para_split_indent_factor": {
+        "mean": 0.6314,
+        "sd": 0.5212,
+        "min": 0.2629,
+        "max": 1.0
+      },
+      "para_split_font_weight": {
+        "mean": 0.1478,
+        "sd": 0.2091,
+        "min": 0.0,
+        "max": 0.2957
+      }
+    }
+  }
 }

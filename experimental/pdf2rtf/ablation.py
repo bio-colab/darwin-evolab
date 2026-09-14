@@ -1,9 +1,10 @@
-"""ablation.py — Baseline Comparison and Systematic Parameter Ablation Study.
+"""ablation.py — Baseline Comparison, Systematic 10-D Ablation, and QD Metrics.
 
 Compares the Evolved Champion against:
 1. Default / Naive Heuristic Profile
-2. Random Guessing Monte Carlo Distribution (M=50 random policies)
-3. Systematic Single-Parameter Ablations
+2. Random Guessing Monte Carlo Distribution (M=50 random policies across all 10 dimensions)
+3. Systematic Single-Parameter Ablations across all 10 genomic dimensions
+4. MAP-Elites Quality-Diversity (QD) Metrics (Archive Coverage, QD-Score, Parameter Consensus)
 
 Quantifies the empirical delta, statistical significance (p-value, t-statistic),
 and isolates the contribution of each heuristic dimension to holdout generalization.
@@ -19,7 +20,12 @@ import random
 import time
 from typing import Any
 
+from evolab.engine import EvolutionEngine
+from evolab.genome import Individual
+
 from .benchmark import run_golden_benchmark
+from .calibrate import MultiDocumentCorpusEvaluator
+from .corpus import create_synthetic_dev_corpus
 from .genome import PARAM_BOUNDS, ProfileGenome, ProfilePolicy
 from .word_holdout import load_real_word_holdout
 
@@ -27,32 +33,32 @@ from .word_holdout import load_real_word_holdout
 def run_ablation_study(
     num_random_samples: int = 50,
     seed: int = 42,
+    compute_qd_metrics: bool = True,
     save_report_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Executes the full baseline and ablation suite against the 12-document real Word holdout."""
+    """Executes the full baseline, 10-D ablation, and QD analysis suite against the 12-document holdout."""
     holdout_corpus = load_real_word_holdout()
     rng = random.Random(seed)
 
-    print("=== Running Baseline Comparison and Systematic Ablation Study ===")
+    print("=== Running Baseline Comparison, 10-D Ablation, and QD Metrics Suite ===")
 
     # -------------------------------------------------------------
     # 1. Default Naive Baseline
     # -------------------------------------------------------------
     print("\n1. Evaluating Default Heuristic Baseline Profile...")
     default_policy = ProfilePolicy()
-    t0 = time.perf_counter()
     rep_default = run_golden_benchmark(policy=default_policy, corpus=holdout_corpus)
     default_score = rep_default.average_composite_score
     print(f"  Default Profile Composite Score: {default_score:.2%} (Pass Rate: {rep_default.overall_pass_rate:.2%})")
 
     # -------------------------------------------------------------
-    # 2. Random Guessing Monte Carlo Baseline
+    # 2. Random Guessing Monte Carlo Baseline (All 10 Dimensions)
     # -------------------------------------------------------------
-    print(f"\n2. Evaluating Random Guessing Distribution (M={num_random_samples} random policies)...")
+    print(f"\n2. Evaluating Random Guessing Distribution (M={num_random_samples} random policies across 10D)...")
     random_scores: list[float] = []
     random_pass_rates: list[float] = []
 
-    for r_idx in range(num_random_samples):
+    for _ in range(num_random_samples):
         rand_policy = ProfilePolicy(
             space_gap_ratio=rng.uniform(*PARAM_BOUNDS["space_gap_ratio"]),
             para_split_delta_ratio=rng.uniform(*PARAM_BOUNDS["para_split_delta_ratio"]),
@@ -61,6 +67,9 @@ def run_ablation_study(
             table_col_align_tol_pt=rng.uniform(*PARAM_BOUNDS["table_col_align_tol_pt"]),
             table_min_rows=int(round(rng.uniform(*PARAM_BOUNDS["table_min_rows"]))),
             table_min_cols=int(round(rng.uniform(*PARAM_BOUNDS["table_min_cols"]))),
+            para_split_short_line_factor=rng.uniform(*PARAM_BOUNDS["para_split_short_line_factor"]),
+            para_split_indent_factor=rng.uniform(*PARAM_BOUNDS["para_split_indent_factor"]),
+            para_split_font_weight=rng.uniform(*PARAM_BOUNDS["para_split_font_weight"]),
         )
         rep_rand = run_golden_benchmark(policy=rand_policy, corpus=holdout_corpus)
         random_scores.append(rep_rand.average_composite_score)
@@ -75,7 +84,7 @@ def run_ablation_study(
     p25_random = sorted_random[int(m * 0.25)]
     p75_random = sorted_random[int(m * 0.75)]
 
-    print(f"  Random Policies Mean:   {mean_random:.2%} ± {sd_random:.4f}")
+    print(f"  Random Policies Mean:   {mean_random:.2%} +/- {sd_random:.4f}")
     print(f"  Random Policies Median: {median_random:.2%} (P25: {p25_random:.2%}, P75: {p75_random:.2%})")
     print(f"  Random Policies Range:  [{min(random_scores):.2%}, {max(random_scores):.2%}]")
 
@@ -90,13 +99,16 @@ def run_ablation_study(
         champ_policy = ProfilePolicy.from_dict(champ_data.get("policy", champ_data))
     else:
         champ_policy = ProfilePolicy(
-            space_gap_ratio=0.35,
-            para_split_delta_ratio=0.55,
-            align_tolerance_pt=4.0,
-            line_spacing_round_pt=0.5,
-            table_col_align_tol_pt=3.0,
-            table_min_rows=2,
-            table_min_cols=2,
+            space_gap_ratio=0.4244,
+            para_split_delta_ratio=0.7205,
+            align_tolerance_pt=6.5514,
+            line_spacing_round_pt=1.6346,
+            table_col_align_tol_pt=4.5438,
+            table_min_rows=3,
+            table_min_cols=3,
+            para_split_short_line_factor=0.9798,
+            para_split_indent_factor=0.5488,
+            para_split_font_weight=0.5723,
         )
 
     rep_champ = run_golden_benchmark(policy=champ_policy, corpus=holdout_corpus)
@@ -107,9 +119,7 @@ def run_ablation_study(
     delta_vs_random_mean = champ_score - mean_random
 
     # Welch's t-statistic for champion vs random distribution
-    # Treat champion as target value against normal approximation of random
     t_stat = (champ_score - mean_random) / (sd_random / math.sqrt(m)) if sd_random > 0 else float("inf")
-    # Approximate two-tailed p-value for large t
     if abs(t_stat) > 6.0:
         p_val_str = "< 1e-9"
     elif abs(t_stat) > 4.0:
@@ -122,20 +132,29 @@ def run_ablation_study(
     print(f"  Statistical t-stat:   {t_stat:.2f} (p-value: {p_val_str})")
 
     # -------------------------------------------------------------
-    # 4. Systematic Single-Parameter Ablations
+    # 4. Systematic Single-Parameter Ablations (All 10 Dimensions)
     # -------------------------------------------------------------
-    print("\n4. Running Systematic Parameter Ablation Study...")
+    print("\n4. Running Systematic 10-Parameter Ablation Study...")
     ablation_experiments: list[dict[str, Any]] = []
 
     ablation_cases = [
-        ("Ablate line_spacing_round_pt (coarse 5.0pt)", {"line_spacing_round_pt": 5.0}),
-        ("Ablate line_spacing_round_pt (zero grid 0.0pt)", {"line_spacing_round_pt": 0.0}),
-        ("Ablate align_tolerance_pt (zero tolerance 0.0pt)", {"align_tolerance_pt": 0.0}),
-        ("Ablate align_tolerance_pt (loose tolerance 20.0pt)", {"align_tolerance_pt": 20.0}),
         ("Ablate space_gap_ratio (tight gap 0.10)", {"space_gap_ratio": 0.10}),
         ("Ablate space_gap_ratio (loose gap 0.80)", {"space_gap_ratio": 0.80}),
-        ("Ablate table_col_align_tol_pt (zero tolerance 0.0pt)", {"table_col_align_tol_pt": 0.0}),
         ("Ablate para_split_delta_ratio (low split 0.20)", {"para_split_delta_ratio": 0.20}),
+        ("Ablate para_split_delta_ratio (high split 3.00)", {"para_split_delta_ratio": 3.00}),
+        ("Ablate align_tolerance_pt (zero tolerance 0.0pt)", {"align_tolerance_pt": 0.0}),
+        ("Ablate align_tolerance_pt (loose tolerance 20.0pt)", {"align_tolerance_pt": 20.0}),
+        ("Ablate line_spacing_round_pt (zero grid 0.0pt)", {"line_spacing_round_pt": 0.0}),
+        ("Ablate line_spacing_round_pt (coarse 5.0pt)", {"line_spacing_round_pt": 5.0}),
+        ("Ablate table_col_align_tol_pt (zero tolerance 0.0pt)", {"table_col_align_tol_pt": 0.0}),
+        ("Ablate table_col_align_tol_pt (loose tolerance 25.0pt)", {"table_col_align_tol_pt": 25.0}),
+        ("Ablate table_min_rows (single row 1)", {"table_min_rows": 1}),
+        ("Ablate table_min_rows (strict threshold 10)", {"table_min_rows": 10}),
+        ("Ablate table_min_cols (single col 1)", {"table_min_cols": 1}),
+        ("Ablate table_min_cols (strict threshold 10)", {"table_min_cols": 10}),
+        ("Ablate para_split_short_line_factor (disabled 0.0)", {"para_split_short_line_factor": 0.0}),
+        ("Ablate para_split_indent_factor (disabled 0.0)", {"para_split_indent_factor": 0.0}),
+        ("Ablate para_split_font_weight (disabled 0.0)", {"para_split_font_weight": 0.0}),
     ]
 
     for label, param_overrides in ablation_cases:
@@ -156,7 +175,94 @@ def run_ablation_study(
             "text_integrity_pass_rate": round(rep_abl.text_integrity_pass_rate, 4),
         }
         ablation_experiments.append(rec)
-        print(f"  {label:<52}: {abl_score:.2%} (Drop: -{drop:.2%}, Pass: {rep_abl.overall_pass_rate:.2%})")
+        print(f"  {label:<54}: {abl_score:.2%} (Drop: -{drop:.2%}, Pass: {rep_abl.overall_pass_rate:.2%})")
+
+    # -------------------------------------------------------------
+    # 5. Quality-Diversity (QD) Archive Metrics
+    # -------------------------------------------------------------
+    qd_summary: dict[str, Any] = {}
+    if compute_qd_metrics:
+        print("\n5. Computing MAP-Elites Quality-Diversity (QD) Metrics...")
+        dev_corpus = create_synthetic_dev_corpus()
+        evaluator = MultiDocumentCorpusEvaluator(dev_corpus)
+
+        pop: list[Individual] = [
+            Individual(genome=ProfileGenome.from_policy(champ_policy), species="spec_pdf_profile")
+        ]
+        for _ in range(15):
+            pop.append(Individual(
+                genome=ProfileGenome(
+                    space_gap_ratio=rng.uniform(*PARAM_BOUNDS["space_gap_ratio"]),
+                    para_split_delta_ratio=rng.uniform(*PARAM_BOUNDS["para_split_delta_ratio"]),
+                    align_tolerance_pt=rng.uniform(*PARAM_BOUNDS["align_tolerance_pt"]),
+                    line_spacing_round_pt=rng.uniform(*PARAM_BOUNDS["line_spacing_round_pt"]),
+                    table_col_align_tol_pt=rng.uniform(*PARAM_BOUNDS["table_col_align_tol_pt"]),
+                    table_min_rows=int(round(rng.uniform(*PARAM_BOUNDS["table_min_rows"]))),
+                    table_min_cols=int(round(rng.uniform(*PARAM_BOUNDS["table_min_cols"]))),
+                    para_split_short_line_factor=rng.uniform(*PARAM_BOUNDS["para_split_short_line_factor"]),
+                    para_split_indent_factor=rng.uniform(*PARAM_BOUNDS["para_split_indent_factor"]),
+                    para_split_font_weight=rng.uniform(*PARAM_BOUNDS["para_split_font_weight"]),
+                ),
+                species="spec_pdf_profile",
+            ))
+
+        engine = EvolutionEngine(
+            evaluator=evaluator,
+            population_size=16,
+            generations=3,
+            mutation_rate=0.45,
+            me_grid_x=4,
+            me_grid_y=4,
+            descriptors=[
+                lambda g: g.describe()["cluster_density"],
+                lambda g: g.describe()["table_sensitivity"],
+            ],
+            seed=seed,
+        )
+        engine.run(generations=3, initial_population=pop)
+
+        archive = engine._archive
+        total_cells = 4 * 4
+        filled_cells = len(archive)
+        archive_coverage = filled_cells / total_cells
+        qd_score = sum(ind.fitness for ind in archive.values())
+        archive_fitnesses = [ind.fitness for ind in archive.values()]
+        max_fitness = max(archive_fitnesses) if archive_fitnesses else 0.0
+        mean_fitness = sum(archive_fitnesses) / len(archive_fitnesses) if archive_fitnesses else 0.0
+
+        # Parameter consensus across archive elites
+        param_names = [
+            "space_gap_ratio", "para_split_delta_ratio", "align_tolerance_pt",
+            "line_spacing_round_pt", "table_col_align_tol_pt", "table_min_rows",
+            "table_min_cols", "para_split_short_line_factor", "para_split_indent_factor",
+            "para_split_font_weight",
+        ]
+        param_consensus: dict[str, dict[str, float]] = {}
+        for pname in param_names:
+            vals = [getattr(ind.genome, pname) for ind in archive.values() if hasattr(ind.genome, pname)]
+            if vals:
+                p_mean = sum(vals) / len(vals)
+                p_var = sum((v - p_mean) ** 2 for v in vals) / max(1, len(vals) - 1)
+                p_sd = math.sqrt(p_var)
+                param_consensus[pname] = {
+                    "mean": round(p_mean, 4),
+                    "sd": round(p_sd, 4),
+                    "min": round(min(vals), 4),
+                    "max": round(max(vals), 4),
+                }
+
+        qd_summary = {
+            "total_cells": total_cells,
+            "filled_cells": filled_cells,
+            "archive_coverage": round(archive_coverage, 4),
+            "qd_score": round(qd_score, 4),
+            "max_fitness": round(max_fitness, 4),
+            "mean_fitness": round(mean_fitness, 4),
+            "parameter_consensus": param_consensus,
+        }
+        print(f"  Archive Coverage: {archive_coverage:.2%} ({filled_cells}/{total_cells} niches)")
+        print(f"  QD-Score:         {qd_score:.4f}")
+        print(f"  Archive Max Fit:  {max_fitness:.2%}")
 
     report = {
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -186,6 +292,7 @@ def run_ablation_study(
             "p_value_approximation": p_val_str,
         },
         "systematic_ablations": ablation_experiments,
+        "qd_metrics": qd_summary,
     }
 
     save_path = save_report_path or (

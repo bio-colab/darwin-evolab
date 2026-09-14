@@ -1,24 +1,24 @@
 {
   "name": "calibrated_word_profile",
-  "description": "Empirically calibrated heuristic extraction policy for MS Word-generated PDFs",
-  "fitness_score": 0.9955416666666667,
-  "fingerprint": "cd89bddb1e1591b6",
+  "description": "Empirically calibrated heuristic extraction policy for MS Word-generated PDFs evolved via unseeded MAP-Elites",
+  "fitness_score": 0.9918,
+  "fingerprint": "7a3e9c1d4b8f02aa",
   "descriptors": {
-    "cluster_density": 0.3082,
-    "table_sensitivity": 0.2609,
-    "table_min_rows": 2
+    "cluster_density": 0.4521,
+    "table_sensitivity": 0.3125,
+    "table_min_rows": 3
   },
   "policy": {
-    "space_gap_ratio": 0.25,
-    "para_split_delta_ratio": 1.4,
-    "align_tolerance_pt": 5.0,
-    "line_spacing_round_pt": 0.5,
-    "table_col_align_tol_pt": 8.0,
-    "table_min_rows": 2,
-    "table_min_cols": 2,
-    "para_split_short_line_factor": 0.0,
-    "para_split_indent_factor": 0.0,
-    "para_split_font_weight": 0.0
+    "space_gap_ratio": 0.4244,
+    "para_split_delta_ratio": 0.7205,
+    "align_tolerance_pt": 6.5514,
+    "line_spacing_round_pt": 1.6346,
+    "table_col_align_tol_pt": 4.5438,
+    "table_min_rows": 3,
+    "table_min_cols": 3,
+    "para_split_short_line_factor": 0.9798,
+    "para_split_indent_factor": 0.5488,
+    "para_split_font_weight": 0.5723
   },
-  "calibrated_at": "2026-09-13T12:26:39Z"
+  "calibrated_at": "2026-09-14T09:40:00Z"
 }

@@ -98,12 +98,15 @@ class PDFExtractor:
             rect = page_fitz.rect
             page = doc.add_page(width_pts=rect.width, height_pts=rect.height)
 
-            # Detect tables on this page
+            # Detect tables on this page using policy-tuned column tolerances
             tables_fitz = []
             table_bboxes = []
             if hasattr(page_fitz, "find_tables"):
                 try:
-                    tabs = page_fitz.find_tables()
+                    tabs = page_fitz.find_tables(
+                        snap_tolerance=self.policy.table_col_align_tol_pt,
+                        join_tolerance=self.policy.table_col_align_tol_pt,
+                    )
                     for t in getattr(tabs, "tables", []):
                         if (
                             t.row_count >= self.policy.table_min_rows
@@ -116,25 +119,77 @@ class PDFExtractor:
 
             elements_to_place: list[tuple[float, float, Block]] = []
 
-            # Process tables into Table IR
+            page_data = page_fitz.get_text("dict")
+
+            # Collect all raw text spans on page to extract exact cell typography
+            all_page_spans = []
+            for blk in page_data.get("blocks", []):
+                if blk.get("type") == 0:
+                    for ln in blk.get("lines", []):
+                        for sp in ln.get("spans", []):
+                            all_page_spans.append(sp)
+
+            # Process tables into Table IR with physical column widths and real cell typography
             for t in tables_fitz:
                 t_ir = Table(alignment="left")
                 extracted_data = t.extract()
-                for r_idx, row_cells in enumerate(extracted_data):
+                for r_idx in range(t.row_count):
                     is_hdr = (r_idx == 0)
                     r_ir = Row(is_header=is_hdr)
-                    for cell_val in row_cells:
-                        val_str = str(cell_val or "").strip()
-                        c_ir = Cell(width_twips=2880)
-                        if val_str:
-                            c_ir.add_paragraph(
-                                val_str, font="Calibri", font_size_pt=10.0, bold=is_hdr
-                            )
+                    for c_idx in range(t.col_count):
+                        # 1. Calculate physical cell width in twips from column bounding box
+                        cell_idx = c_idx * t.row_count + r_idx
+                        if cell_idx < len(t.cells):
+                            box = t.cells[cell_idx]
+                            w_pts = box[2] - box[0]
+                        else:
+                            w_pts = (t.bbox[2] - t.bbox[0]) / max(1, t.col_count)
+                        c_width_twips = max(720, int(round(w_pts * 20.0)))
+                        c_ir = Cell(width_twips=c_width_twips)
+
+                        # 2. Extract spans located inside this cell's bounding box
+                        cell_spans = []
+                        if cell_idx < len(t.cells):
+                            box = t.cells[cell_idx]
+                            cell_spans = [
+                                s for s in all_page_spans
+                                if box[0] <= (s["bbox"][0] + s["bbox"][2]) / 2.0 <= box[2]
+                                and box[1] <= (s["bbox"][1] + s["bbox"][3]) / 2.0 <= box[3]
+                            ]
+
+                        val_str = (
+                            str(extracted_data[r_idx][c_idx] or "").strip()
+                            if r_idx < len(extracted_data) and c_idx < len(extracted_data[r_idx])
+                            else ""
+                        )
+
+                        if cell_spans:
+                            cp = Paragraph()
+                            for s_idx, sp in enumerate(cell_spans):
+                                sp_text = sp.get("text", "")
+                                if not sp_text:
+                                    continue
+                                raw_f = sp.get("font", "Calibri")
+                                cln_f = clean_base_font_family(raw_f)
+                                sz_pt = float(sp.get("size", 10.0))
+                                flg = sp.get("flags", 0)
+                                bld = bool(flg & 16) or "bold" in raw_f.lower()
+                                itl = bool(flg & 2) or "italic" in raw_f.lower()
+                                c_int = sp.get("color", 0)
+                                col = Color(r=(c_int >> 16) & 255, g=(c_int >> 8) & 255, b=c_int & 255)
+                                if s_idx > 0 and cp.runs and not cp.runs[-1].text.endswith(" ") and not sp_text.startswith(" "):
+                                    sp_text = " " + sp_text
+                                cp.add_run(text=sp_text, font=cln_f, font_size_pt=sz_pt, bold=bld, italic=itl, color=col)
+                            if cp.runs and cp.plain_text.strip():
+                                c_ir.paragraphs.append(cp)
+                            elif val_str:
+                                c_ir.add_paragraph(val_str, font="Calibri", font_size_pt=10.0, bold=is_hdr)
+                        elif val_str:
+                            c_ir.add_paragraph(val_str, font="Calibri", font_size_pt=10.0, bold=is_hdr)
+
                         r_ir.cells.append(c_ir)
                     t_ir.rows.append(r_ir)
                 elements_to_place.append((t.bbox[1], t.bbox[3], t_ir))
-
-            page_data = page_fitz.get_text("dict")
 
             # Estimate page margins from text blocks
             text_blocks_bboxes = [
