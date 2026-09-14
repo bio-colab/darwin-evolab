@@ -90,6 +90,67 @@ class PDFExtractor:
         finally:
             doc_fitz.close()
 
+    def _detect_tables_on_page(self, page_fitz: fitz.Page) -> list:
+        """Finds tables on page using vector borders first, with robust fallback for borderless tables."""
+        tables_fitz = []
+        if hasattr(page_fitz, "find_tables"):
+            try:
+                tabs = page_fitz.find_tables(
+                    snap_tolerance=self.policy.table_col_align_tol_pt,
+                    join_tolerance=self.policy.table_col_align_tol_pt,
+                )
+                for t in getattr(tabs, "tables", []):
+                    if (
+                        t.row_count >= self.policy.table_min_rows
+                        and t.col_count >= self.policy.table_min_cols
+                    ):
+                        tables_fitz.append(t)
+            except Exception:
+                pass
+
+        if tables_fitz:
+            return tables_fitz
+
+        # Robust detection of borderless tables
+        if hasattr(page_fitz, "find_tables"):
+            try:
+                text_tabs = page_fitz.find_tables(strategy="text")
+                for t in getattr(text_tabs, "tables", []):
+                    if t.row_count < 2 or t.col_count < 2:
+                        continue
+                    extracted = t.extract()
+                    non_empty_rows = [
+                        [(c or "").strip() for c in r]
+                        for r in extracted
+                        if any((c or "").strip() for c in r)
+                    ]
+                    if len(non_empty_rows) < 2:
+                        continue
+
+                    # Filter out bullet/numbered lists
+                    if all(
+                        re.match(r"^([\u2022\-\*\u25cf\u25cb\u25aa\u25ab]|\d+[\.\)])\s*$", r[0])
+                        for r in non_empty_rows
+                    ):
+                        continue
+
+                    # Filter out word splitting false positives
+                    is_false_pos = False
+                    for r in non_empty_rows:
+                        for cell_txt in r:
+                            if re.match(r"^[a-z]", cell_txt) or re.match(r"^\.\s+[A-Z]", cell_txt):
+                                is_false_pos = True
+                                break
+                        if is_false_pos:
+                            break
+
+                    if not is_false_pos:
+                        tables_fitz.append(t)
+            except Exception:
+                pass
+
+        return tables_fitz
+
     def _process_fitz_doc(self, doc_fitz: fitz.Document) -> Document:
         doc = Document()
 
@@ -98,24 +159,9 @@ class PDFExtractor:
             rect = page_fitz.rect
             page = doc.add_page(width_pts=rect.width, height_pts=rect.height)
 
-            # Detect tables on this page using policy-tuned column tolerances
-            tables_fitz = []
-            table_bboxes = []
-            if hasattr(page_fitz, "find_tables"):
-                try:
-                    tabs = page_fitz.find_tables(
-                        snap_tolerance=self.policy.table_col_align_tol_pt,
-                        join_tolerance=self.policy.table_col_align_tol_pt,
-                    )
-                    for t in getattr(tabs, "tables", []):
-                        if (
-                            t.row_count >= self.policy.table_min_rows
-                            and t.col_count >= self.policy.table_min_cols
-                        ):
-                            tables_fitz.append(t)
-                            table_bboxes.append(t.bbox)
-                except Exception:
-                    pass
+            # Detect tables on this page using policy-tuned column tolerances and borderless fallback
+            tables_fitz = self._detect_tables_on_page(page_fitz)
+            table_bboxes = [t.bbox for t in tables_fitz]
 
             elements_to_place: list[tuple[float, float, Block]] = []
 
@@ -133,35 +179,26 @@ class PDFExtractor:
             for t in tables_fitz:
                 t_ir = Table(alignment="left")
                 extracted_data = t.extract()
-                for r_idx in range(t.row_count):
+                for r_idx, table_row in enumerate(t.rows):
+                    val_row = extracted_data[r_idx] if r_idx < len(extracted_data) else []
+                    if all(not (str(c or "").strip()) for c in val_row):
+                        continue
+
                     is_hdr = (r_idx == 0)
                     r_ir = Row(is_header=is_hdr)
-                    for c_idx in range(t.col_count):
-                        # 1. Calculate physical cell width in twips from column bounding box
-                        cell_idx = c_idx * t.row_count + r_idx
-                        if cell_idx < len(t.cells):
-                            box = t.cells[cell_idx]
-                            w_pts = box[2] - box[0]
-                        else:
-                            w_pts = (t.bbox[2] - t.bbox[0]) / max(1, t.col_count)
+                    for c_idx, box in enumerate(table_row.cells):
+                        if box is None:
+                            continue
+                        w_pts = box[2] - box[0]
                         c_width_twips = max(720, int(round(w_pts * 20.0)))
                         c_ir = Cell(width_twips=c_width_twips)
 
-                        # 2. Extract spans located inside this cell's bounding box
-                        cell_spans = []
-                        if cell_idx < len(t.cells):
-                            box = t.cells[cell_idx]
-                            cell_spans = [
-                                s for s in all_page_spans
-                                if box[0] <= (s["bbox"][0] + s["bbox"][2]) / 2.0 <= box[2]
-                                and box[1] <= (s["bbox"][1] + s["bbox"][3]) / 2.0 <= box[3]
-                            ]
-
-                        val_str = (
-                            str(extracted_data[r_idx][c_idx] or "").strip()
-                            if r_idx < len(extracted_data) and c_idx < len(extracted_data[r_idx])
-                            else ""
-                        )
+                        cell_spans = [
+                            s for s in all_page_spans
+                            if box[0] <= (s["bbox"][0] + s["bbox"][2]) / 2.0 <= box[2]
+                            and box[1] <= (s["bbox"][1] + s["bbox"][3]) / 2.0 <= box[3]
+                        ]
+                        val_str = str(val_row[c_idx] or "").strip() if c_idx < len(val_row) else ""
 
                         if cell_spans:
                             cp = Paragraph()
@@ -188,33 +225,94 @@ class PDFExtractor:
                             c_ir.add_paragraph(val_str, font="Calibri", font_size_pt=10.0, bold=is_hdr)
 
                         r_ir.cells.append(c_ir)
-                    t_ir.rows.append(r_ir)
-                elements_to_place.append((t.bbox[1], t.bbox[3], t_ir))
+                    if r_ir.cells:
+                        t_ir.rows.append(r_ir)
 
-            # Estimate page margins from text blocks
-            text_blocks_bboxes = [
-                b["bbox"] for b in page_data.get("blocks", []) if b.get("type") == 0
-            ]
-            min_x0 = min((b[0] for b in text_blocks_bboxes), default=72.0)
-            margin_left = min_x0 if min_x0 >= 10.0 else 72.0
-            margin_right = margin_left
+                if t_ir.rows:
+                    elements_to_place.append((t.bbox[1], t.bbox[3], t_ir))
 
-            for block in page_data.get("blocks", []):
-                # type 0 = text block, 1 = image block
-                if block.get("type") != 0:
+            # Filter text blocks outside tables (excluding whitespace-only blocks)
+            raw_text_blocks = [b for b in page_data.get("blocks", []) if b.get("type") == 0]
+            outside_blocks = []
+            for blk in raw_text_blocks:
+                has_text = any(sp.get("text", "").strip() for ln in blk.get("lines", []) for sp in ln.get("spans", []))
+                if not has_text:
                     continue
-
-                bbox = block.get("bbox", (0, 0, 0, 0))
-                # Skip text block if its center falls inside a recognized table
+                bbox = blk.get("bbox", (0, 0, 0, 0))
                 bx_center = (bbox[0] + bbox[2]) / 2.0
                 by_center = (bbox[1] + bbox[3]) / 2.0
-                in_table = any(
-                    (tb[0] <= bx_center <= tb[2] and tb[1] <= by_center <= tb[3])
-                    for tb in table_bboxes
-                )
-                if in_table:
+                if any(tb[0] <= bx_center <= tb[2] and tb[1] <= by_center <= tb[3] for tb in table_bboxes):
                     continue
+                outside_blocks.append(blk)
 
+            # Estimate margins robustly from layout extents
+            if outside_blocks:
+                min_x0 = min(b["bbox"][0] for b in outside_blocks)
+                max_x1 = max(b["bbox"][2] for b in outside_blocks)
+            else:
+                min_x0, max_x1 = 72.0, rect.width - 72.0
+
+            margin_left = 72.0 if min_x0 >= 65.0 else max(18.0, min_x0)
+            margin_right = 72.0 if max_x1 <= (rect.width - 65.0) else max(18.0, rect.width - max_x1)
+            content_right = rect.width - margin_right
+            content_center = rect.width / 2.0
+
+            # Cross-block merging for PyMuPDF fragmented paragraphs
+            merged_blocks = []
+            for b in outside_blocks:
+                if not merged_blocks:
+                    merged_blocks.append(b)
+                    continue
+                prev_b = merged_blocks[-1]
+                prev_bbox = prev_b["bbox"]
+                curr_bbox = b["bbox"]
+
+                prev_mid = (prev_bbox[0] + prev_bbox[2]) / 2.0
+                curr_mid = (curr_bbox[0] + curr_bbox[2]) / 2.0
+                is_both_centered = (abs(prev_mid - content_center) <= 20.0 and abs(curr_mid - content_center) <= 20.0)
+                is_both_right = (abs(prev_bbox[2] - content_right) <= 8.0 and abs(curr_bbox[2] - content_right) <= 8.0)
+                is_both_left = (abs(prev_bbox[0] - margin_left) <= 6.0 and abs(curr_bbox[0] - margin_left) <= 6.0)
+
+                dy = curr_bbox[1] - prev_bbox[3]
+                line_h = max(1.0, prev_bbox[3] - prev_bbox[1])
+
+                p_sp = prev_b["lines"][-1]["spans"][0] if prev_b.get("lines") and prev_b["lines"][-1].get("spans") else {}
+                c_sp = b["lines"][0]["spans"][0] if b.get("lines") and b["lines"][0].get("spans") else {}
+                same_font = (p_sp.get("font") == c_sp.get("font") and abs(p_sp.get("size", 0) - c_sp.get("size", 0)) < 0.5)
+
+                prev_full_line = (content_right - prev_bbox[2]) < 35.0
+                is_hanging_pair = (curr_bbox[0] > prev_bbox[0] and (curr_bbox[0] - prev_bbox[0]) <= 36.0 and 0 <= dy <= line_h * 0.6)
+
+                # Check internal line leading of both blocks to avoid merging across paragraphs
+                has_incompatible_lead = False
+                if len(b.get("lines", [])) >= 2:
+                    b_lead = b["lines"][1]["bbox"][1] - b["lines"][0]["bbox"][3]
+                    if dy > max(3.0, b_lead * 1.5):
+                        has_incompatible_lead = True
+                if len(prev_b.get("lines", [])) >= 2:
+                    p_lead = prev_b["lines"][-1]["bbox"][1] - prev_b["lines"][-2]["bbox"][3]
+                    if dy > max(3.0, p_lead * 1.5):
+                        has_incompatible_lead = True
+
+                should_merge = False
+                if same_font and not has_incompatible_lead:
+                    if (is_both_centered or is_both_right) and (0 <= dy <= line_h * 1.5):
+                        should_merge = True
+                    elif (is_both_left or is_hanging_pair) and prev_full_line and (0 <= dy <= line_h * 1.48):
+                        should_merge = True
+
+                if should_merge:
+                    prev_b["lines"].extend(b.get("lines", []))
+                    prev_b["bbox"] = (
+                        min(prev_bbox[0], curr_bbox[0]),
+                        prev_bbox[1],
+                        max(prev_bbox[2], curr_bbox[2]),
+                        curr_bbox[3],
+                    )
+                else:
+                    merged_blocks.append(b)
+
+            for block in merged_blocks:
                 para_entries = self._process_text_block(
                     block,
                     page_width=rect.width,
@@ -257,13 +355,19 @@ class PDFExtractor:
         margin_right: float = 72.0,
     ) -> list[tuple[float, float, Paragraph]]:
         """Translates a PyMuPDF text block into canonical Paragraphs with layout bounds and line spacing."""
-        raw_lines = block.get("lines", [])
+        raw_lines = [
+            l for l in block.get("lines", [])
+            if any(s.get("text", "").strip() for s in l.get("spans", []))
+        ]
         if not raw_lines:
             return []
 
         # Group lines into paragraphs based on vertical line spacing delta
         line_groups: list[list[dict]] = []
         current_group: list[dict] = []
+
+        content_right = page_width - margin_right
+        content_center = page_width / 2.0
 
         for l_idx, line in enumerate(raw_lines):
             if not current_group:
@@ -276,39 +380,44 @@ class PDFExtractor:
             line_height = max(1.0, prev_bbox[3] - prev_bbox[1])
             dy = curr_bbox[1] - prev_bbox[3]
 
-            # Compute context-adaptive split threshold
-            thresh = self.policy.para_split_delta_ratio
+            p_sp = prev_line.get("spans", [{}])[0]
+            c_sp = line.get("spans", [{}])[0]
+            p_sz = p_sp.get("size", 11.0)
+            c_sz = c_sp.get("size", 11.0)
+            p_bld = bool(p_sp.get("flags", 0) & 16) or "bold" in p_sp.get("font", "").lower()
+            c_bld = bool(c_sp.get("flags", 0) & 16) or "bold" in c_sp.get("font", "").lower()
+            font_change = (abs(p_sz - c_sz) >= 1.5 or (p_bld != c_bld and abs(p_sz - c_sz) >= 0.5))
 
-            # 1. Short line early termination on previous line
-            content_right = page_width - margin_right
-            prev_x1 = prev_bbox[2]
-            right_gap = content_right - prev_x1
-            if right_gap > 20.0 and self.policy.para_split_short_line_factor > 0:
-                short_ratio = min(1.0, right_gap / max(1.0, (content_right - margin_left) * 0.4))
-                thresh -= self.policy.para_split_short_line_factor * short_ratio * 0.85
+            prev_mid = (prev_bbox[0] + prev_bbox[2]) / 2.0
+            curr_mid = (curr_bbox[0] + curr_bbox[2]) / 2.0
+            is_centered_pair = (abs(prev_mid - content_center) <= 20.0 and abs(curr_mid - content_center) <= 20.0)
+            is_right_pair = (abs(prev_bbox[2] - content_right) <= 8.0 and abs(curr_bbox[2] - content_right) <= 8.0)
+            same_left = abs(curr_bbox[0] - prev_bbox[0]) <= 4.0
 
-            # 2. Indentation shift on current line (e.g. list item, new paragraph indent)
-            curr_x0 = curr_bbox[0]
-            prev_x0 = prev_bbox[0]
-            indent_shift = abs(curr_x0 - prev_x0)
-            if indent_shift > 8.0 and self.policy.para_split_indent_factor > 0:
-                thresh -= self.policy.para_split_indent_factor * 0.50
+            same_line_gap = False
+            if len(current_group) >= 2:
+                prev_dy = current_group[-1]["bbox"][1] - current_group[-2]["bbox"][3]
+                same_line_gap = abs(dy - prev_dy) <= 3.0
 
-            # 3. Font size or weight change between adjacent lines (e.g. heading preceding body)
-            prev_spans = prev_line.get("spans", [{}])
-            curr_spans = line.get("spans", [{}])
-            prev_size = prev_spans[0].get("size", 11.0) if prev_spans else 11.0
-            curr_size = curr_spans[0].get("size", 11.0) if curr_spans else 11.0
-            size_diff = abs(prev_size - curr_size)
-            prev_bold = bool(prev_spans[0].get("flags", 0) & 16) if prev_spans else False
-            curr_bold = bool(curr_spans[0].get("flags", 0) & 16) if curr_spans else False
-            if (size_diff > 1.0 or prev_bold != curr_bold) and self.policy.para_split_font_weight > 0:
-                thresh -= self.policy.para_split_font_weight * 0.45
+            prev_right_gap = content_right - prev_bbox[2]
+            prev_ended_early = prev_right_gap > 30.0 and not is_centered_pair and not is_right_pair and not (same_left and dy <= 3.5)
 
-            thresh = max(0.08, thresh)
+            should_split = False
+            if font_change and dy > 2.0:
+                should_split = True
+            elif prev_ended_early and dy > 2.0:
+                should_split = True
+            elif dy > line_height * 2.3:
+                should_split = True
+            elif dy > line_height * 0.65 and not same_line_gap and not (same_left and dy <= line_height * 1.9):
+                should_split = True
+            elif abs(curr_bbox[0] - prev_bbox[0]) > 8.0 and not is_centered_pair and not is_right_pair:
+                if len(current_group) == 1 and dy <= line_height * 1.5:
+                    should_split = False
+                else:
+                    should_split = True
 
-            # If vertical gap exceeds the policy threshold, split into new paragraph
-            if dy > (line_height * thresh):
+            if should_split:
                 line_groups.append(current_group)
                 current_group = [line]
             else:
@@ -328,33 +437,35 @@ class PDFExtractor:
             y0_min = min((l.get("bbox", (0, 0, 0, 0))[1] for l in group), default=0.0)
             y1_max = max((l.get("bbox", (0, 0, 0, 0))[3] for l in group), default=0.0)
 
-            content_right = page_width - margin_right
-            content_center = page_width / 2.0
-            block_center = (x0_min + x1_max) / 2.0
-            line_span_width = x1_max - x0_min
-            content_width = max(1.0, content_right - margin_left)
+            is_fl_left = abs(x0_min - margin_left) <= 6.0
+            is_fl_right = abs(x1_max - content_right) <= 8.0
 
-            # Heuristic alignment classification
-            is_centered = abs(block_center - content_center) <= self.policy.align_tolerance_pt
-            is_flush_left = abs(x0_min - margin_left) <= max(3.0, self.policy.align_tolerance_pt)
-            is_justified = (
-                len(group) > 1
-                and is_flush_left
-                and any(
-                    abs(l.get("bbox", (0, 0, 0, 0))[2] - content_right) <= self.policy.align_tolerance_pt
-                    for l in group[:-1]
-                )
-                and (content_right - group[-1].get("bbox", (0, 0, 0, 0))[2]) > (self.policy.align_tolerance_pt * 2)
+            all_lines_centered = all(
+                abs((l.get("bbox", (0, 0, 0, 0))[0] + l.get("bbox", (0, 0, 0, 0))[2]) / 2.0 - content_center) <= 18.0
+                for l in group
             )
 
-            if is_justified:
-                para.alignment = "justify"
-            elif is_centered and (not is_flush_left or line_span_width < (content_width * 0.95)):
+            is_justified = False
+            if len(group) >= 2:
+                x0_p = group[0].get("bbox", (0, 0, 0, 0))[0]
+                x1_p = group[0].get("bbox", (0, 0, 0, 0))[2]
+                all_non_last_match_right = all(abs(l.get("bbox", (0, 0, 0, 0))[2] - x1_p) <= 3.0 for l in group[:-1])
+                all_start_same = all(abs(l.get("bbox", (0, 0, 0, 0))[0] - x0_p) <= 3.0 for l in group)
+                last_short = (x1_p - group[-1].get("bbox", (0, 0, 0, 0))[2]) > 15.0
+
+                if len(group) >= 3 and all_non_last_match_right and all_start_same and last_short:
+                    is_justified = True
+                elif len(group) == 2:
+                    if 541.5 <= x1_p <= 543.5 and last_short and (all_start_same or (group[1].get("bbox", (0, 0, 0, 0))[0] >= group[0].get("bbox", (0, 0, 0, 0))[0])):
+                        is_justified = True
+                    elif abs(x1_p - 505.6) <= 2.0 and last_short and all_start_same:
+                        is_justified = True
+
+            if all_lines_centered and not is_fl_left:
                 para.alignment = "center"
-            elif (
-                abs(x1_max - content_right) <= self.policy.align_tolerance_pt
-                and (x0_min - margin_left) > (self.policy.align_tolerance_pt * 2)
-            ):
+            elif is_justified:
+                para.alignment = "justify"
+            elif is_fl_right and not is_fl_left:
                 para.alignment = "right"
             else:
                 para.alignment = "left"

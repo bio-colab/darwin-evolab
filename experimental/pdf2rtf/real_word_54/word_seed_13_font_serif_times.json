@@ -1,0 +1,62 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Times New Roman Serif Typestyle",
+              "font": "Times New Roman",
+              "font_size_pt": 14.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 14.0,
+          "runs": [
+            {
+              "text": "This paragraph is rendered entirely in Times New Roman at 12 points. Serif typography features small decorative strokes at the ends of character stems, traditional in books and press.",
+              "font": "Times New Roman",
+              "font_size_pt": 12.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "name": "word_seed_13_font_serif_times",
+    "group": "B",
+    "group_name": "Typography & Formatting (12 files)",
+    "description": "Times New Roman 12pt serif typography"
+  }
+}

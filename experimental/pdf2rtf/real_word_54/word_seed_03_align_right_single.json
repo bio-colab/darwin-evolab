@@ -1,0 +1,62 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 0.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Right Aligned Document Header",
+              "font": "Calibri",
+              "font_size_pt": 14.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.5,
+          "runs": [
+            {
+              "text": "This text is aligned strictly to the right margin of the document. Right alignment is common for dates, signatures, invoice metadata, and page footers.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "name": "word_seed_03_align_right_single",
+    "group": "A",
+    "group_name": "Alignment & Spacing (12 files)",
+    "description": "Right alignment with single line spacing"
+  }
+}

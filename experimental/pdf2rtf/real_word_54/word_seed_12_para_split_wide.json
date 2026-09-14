@@ -1,0 +1,84 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 24.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Wide Paragraphs Block 1",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 24.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "This paragraph is separated from the next by a generous 24 points space after.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 24.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "This second paragraph has another 24 points space after, verifying wide split calibration.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "name": "word_seed_12_para_split_wide",
+    "group": "A",
+    "group_name": "Alignment & Spacing (12 files)",
+    "description": "Wide paragraphs separated by 24pt spacing"
+  }
+}

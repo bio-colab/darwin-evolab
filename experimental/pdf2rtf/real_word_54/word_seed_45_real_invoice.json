@@ -1,0 +1,421 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "TAX INVOICE",
+              "font": "Calibri",
+              "font_size_pt": 16.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Invoice Number: INV-2026-0954",
+              "font": "Calibri",
+              "font_size_pt": 10.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 0.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Date: September 14, 2026",
+              "font": "Calibri",
+              "font_size_pt": 10.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "alignment": "left",
+          "rows": [
+            {
+              "is_header": true,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Description",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Hours",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Total",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": true,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Calibration Engineering",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "40",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "4000.00",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "is_header": false,
+              "height_twips": null,
+              "cells": [
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "Oracle Verification",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "20",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "width_twips": 3120,
+                  "borders": {
+                    "top": true,
+                    "bottom": true,
+                    "left": true,
+                    "right": true
+                  },
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "alignment": "left",
+                      "space_before_pt": 0.0,
+                      "space_after_pt": 0.0,
+                      "line_spacing_pt": null,
+                      "runs": [
+                        {
+                          "text": "2000.00",
+                          "font": "Calibri",
+                          "font_size_pt": 10.0,
+                          "bold": false,
+                          "italic": false,
+                          "underline": false,
+                          "color": {
+                            "r": 0,
+                            "g": 0,
+                            "b": 0
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "right",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Total Due: $6,000.00",
+              "font": "Calibri",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

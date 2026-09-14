@@ -154,8 +154,10 @@ class TextIntegrityGate:
         matcher = difflib.SequenceMatcher(None, ref_tokens, cand_tokens)
         token_similarity = matcher.ratio()
 
-        # Levenshtein-like character level ratio
-        char_matcher = difflib.SequenceMatcher(None, ref_text, cand_text)
+        # Levenshtein-like character level ratio on whitespace-normalized text
+        ref_norm_text = re.sub(r"\s+", " ", ref_text).strip()
+        cand_norm_text = re.sub(r"\s+", " ", cand_text).strip()
+        char_matcher = difflib.SequenceMatcher(None, ref_norm_text, cand_norm_text)
         char_similarity = char_matcher.ratio()
 
         # Composite score
@@ -700,7 +702,7 @@ class MultiGateVerifier:
         if weights:
             self.weights.update(weights)
 
-        self.g1_text = TextIntegrityGate()
+        self.g1_text = TextIntegrityGate(pass_threshold=self.gate1_threshold, token_pass_threshold=self.gate1_threshold)
         self.g2_structure = StructureIntegrityGate()
         self.g25_table = TableOracle()
         self.g3_formatting = FormattingIntegrityGate()

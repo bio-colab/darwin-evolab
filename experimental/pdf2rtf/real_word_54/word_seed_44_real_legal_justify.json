@@ -1,0 +1,106 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "center",
+          "space_before_pt": 0.0,
+          "space_after_pt": 8.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "CONFIDENTIAL SERVICE AGREEMENT",
+              "font": "Calibri",
+              "font_size_pt": 14.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "justify",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.5,
+          "runs": [
+            {
+              "text": "This Service Agreement (the Agreement) is entered into as of the Effective Date by and between Provider and Client.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 4.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "1. Scope of Services",
+              "font": "Calibri",
+              "font_size_pt": 12.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "justify",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.5,
+          "runs": [
+            {
+              "text": "Provider agrees to perform engineering calibration, regression auditing, and equivalence verification in accordance with industry benchmarks.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "name": "word_seed_44_real_legal_justify",
+    "group": "E",
+    "group_name": "Realistic Integration (12 files)",
+    "description": "Confidential legal service agreement with clauses"
+  }
+}

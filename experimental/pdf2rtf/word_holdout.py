@@ -115,32 +115,69 @@ def _extract_word_doc_ir(doc) -> Document:
         except Exception:
             p_ir.line_spacing_pt = None
 
-        # Extract character runs
-        start = p.Range.Start
-        current_text = []
-        current_props = None
-        for idx in range(len(full_txt)):
-            ch_rng = doc.Range(start + idx, start + idx + 1)
-            props = (
-                str(ch_rng.Font.Name),
-                float(ch_rng.Font.Size),
-                bool(ch_rng.Font.Bold),
-                bool(ch_rng.Font.Italic),
+        # Check if entire paragraph has uniform formatting (massive COM speedup)
+        try:
+            p_bold = p.Range.Font.Bold
+            p_italic = p.Range.Font.Italic
+            p_size = p.Range.Font.Size
+            p_font = p.Range.Font.Name
+            p_scaps = p.Range.Font.SmallCaps
+            is_uniform = (
+                p_bold in (0, -1, True, False)
+                and p_italic in (0, -1, True, False)
+                and p_scaps in (0, -1, True, False)
+                and p_size not in (9999999, None)
+                and p_font not in (9999999, None)
             )
-            if current_props is None:
-                current_props = props
-                current_text.append(full_txt[idx])
-            elif props == current_props:
-                current_text.append(full_txt[idx])
-            else:
+        except Exception:
+            is_uniform = False
+
+        try:
+            if p.Range.Font.SmallCaps in (1, -1, True):
+                full_txt = full_txt.upper()
+        except Exception:
+            pass
+
+        if is_uniform:
+            p_ir.add_run(
+                full_txt,
+                font=str(p_font),
+                font_size_pt=float(p_size),
+                bold=bool(p_bold),
+                italic=bool(p_italic),
+            )
+        else:
+            # Extract character runs for paragraphs with mixed formatting
+            start = p.Range.Start
+            current_text = []
+            current_props = None
+            for idx in range(len(full_txt)):
+                ch_rng = doc.Range(start + idx, start + idx + 1)
+                try:
+                    is_sc = ch_rng.Font.SmallCaps in (1, -1, True)
+                except Exception:
+                    is_sc = False
+                ch_val = full_txt[idx].upper() if is_sc else full_txt[idx]
+                props = (
+                    str(ch_rng.Font.Name),
+                    float(ch_rng.Font.Size),
+                    bool(ch_rng.Font.Bold),
+                    bool(ch_rng.Font.Italic),
+                )
+                if current_props is None:
+                    current_props = props
+                    current_text.append(ch_val)
+                elif props == current_props:
+                    current_text.append(ch_val)
+                else:
+                    f_name, f_sz, bld, itl = current_props
+                    p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl)
+                    current_props = props
+                    current_text = [ch_val]
+
+            if current_text and current_props:
                 f_name, f_sz, bld, itl = current_props
                 p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl)
-                current_props = props
-                current_text = [full_txt[idx]]
-
-        if current_text and current_props:
-            f_name, f_sz, bld, itl = current_props
-            p_ir.add_run("".join(current_text), font=f_name, font_size_pt=f_sz, bold=bld, italic=itl)
 
         elements_by_pos.append((pg_num, p.Range.Start, p_ir))
 

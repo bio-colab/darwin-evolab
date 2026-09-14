@@ -1,0 +1,62 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Underline and Strikethrough",
+              "font": "Calibri",
+              "font_size_pt": 13.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "This text has underlined concepts and superseded strikethrough items.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "name": "word_seed_19_style_underline_strike",
+    "group": "B",
+    "group_name": "Typography & Formatting (12 files)",
+    "description": "Underline and strikethrough character styles"
+  }
+}

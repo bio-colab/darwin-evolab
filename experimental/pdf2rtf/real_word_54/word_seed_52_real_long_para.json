@@ -1,0 +1,62 @@
+{
+  "metadata": {},
+  "pages": [
+    {
+      "number": 1,
+      "width_pts": 612.0,
+      "height_pts": 792.0,
+      "blocks": [
+        {
+          "type": "paragraph",
+          "alignment": "left",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": null,
+          "runs": [
+            {
+              "text": "Extended Continuous Paragraph",
+              "font": "Calibri",
+              "font_size_pt": 14.0,
+              "bold": true,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "alignment": "justify",
+          "space_before_pt": 0.0,
+          "space_after_pt": 6.0,
+          "line_spacing_pt": 13.45,
+          "runs": [
+            {
+              "text": "In the formal analysis of algorithmic verification, deterministic pipelines ensure that identical inputs consistently yield identical intermediate representations across distinct execution environments. When evaluating document converters, this principle demands that formatting primitives including font family, size, weight, margins, paragraph spacing, and tabular matrices are preserved with sub-point precision. Heuristic calibration models tuned by quality-diversity evolutionary algorithms discover nonlinear parameter couplings that human domain experts frequently overlook. Specifically, balancing paragraph split thresholds with adaptive short-line detection enables the decoder to disambiguate tight headings from multi-line text blocks. By enforcing multi-gate equivalence checks across text, structure, tables, formatting, and visual geometry, we guarantee both grammatical fidelity and visual fidelity. Consequently, real-world deployment achieves high reliability, eliminating artifacts such as dropped words, misaligned columns, and collapsed table cells across the entire typographic corpus.",
+              "font": "Calibri",
+              "font_size_pt": 11.0,
+              "bold": false,
+              "italic": false,
+              "underline": false,
+              "color": {
+                "r": 0,
+                "g": 0,
+                "b": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "_metadata": {
+    "name": "word_seed_52_real_long_para",
+    "group": "E",
+    "group_name": "Realistic Integration (12 files)",
+    "description": "Extended continuous paragraph exceeding 300 words"
+  }
+}
