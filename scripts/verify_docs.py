@@ -173,6 +173,49 @@ def verify_documentation() -> bool:
         except Exception as e:
             errors.append(f"Comparative benchmark check error: {e}")
 
+    # Check 8: Causal Attribution Benchmark (pdf2rtf_map_elites_vs_random_search.json)
+    causal_path = REPORTS_DIR / "pdf2rtf_map_elites_vs_random_search.json"
+    if causal_path.exists():
+        try:
+            causal = load_json("pdf2rtf_map_elites_vs_random_search.json")
+            proto = causal["preregistered_protocol"]
+            b_evals = proto["budget_evaluations"]
+            n_seeds = proto["num_seeds"]
+            if b_evals < 5000 or n_seeds < 5:
+                errors.append(f"Causal benchmark requires budget >= 5000 and seeds >= 5 (got {b_evals}, {n_seeds})")
+            else:
+                checks_passed += 1
+                print(f"[OK] Causal Benchmark verified with B={b_evals} evaluations across K={n_seeds} seeds.")
+
+            me_cov = causal["comparative_summary"]["coverage_pct"]["map_elites"]["mean"]
+            rs_cov = causal["comparative_summary"]["coverage_pct"]["random_search"]["mean"]
+            me_qd = causal["comparative_summary"]["qd_score"]["map_elites"]["mean"]
+            rs_qd = causal["comparative_summary"]["qd_score"]["random_search"]["mean"]
+
+            if f"{me_cov:.1f}%" not in doc_text and f"{me_cov}%" not in doc_text:
+                errors.append(f"README does not contain MAP-Elites coverage {me_cov}%")
+            else:
+                checks_passed += 1
+
+            if f"{rs_cov:.1f}%" not in doc_text and f"{rs_cov}%" not in doc_text:
+                errors.append(f"README does not contain Random Search coverage {rs_cov}%")
+            else:
+                checks_passed += 1
+
+            if str(me_qd) not in doc_text and f"{me_qd:.2f}" not in doc_text:
+                errors.append(f"README does not contain MAP-Elites QD-score {me_qd}")
+            else:
+                checks_passed += 1
+
+            if str(rs_qd) not in doc_text and f"{rs_qd:.2f}" not in doc_text:
+                errors.append(f"README does not contain Random Search QD-score {rs_qd}")
+            else:
+                checks_passed += 1
+
+            print(f"[OK] Causal Attribution claims verified (ME Cov: {me_cov}%, RS Cov: {rs_cov}%, ME QD: {me_qd}, RS QD: {rs_qd}).")
+        except Exception as e:
+            errors.append(f"Causal benchmark check error: {e}")
+
     print("\n" + "-" * 60)
     if errors:
         print(f"[ERROR] Verification failed with {len(errors)} error(s):")

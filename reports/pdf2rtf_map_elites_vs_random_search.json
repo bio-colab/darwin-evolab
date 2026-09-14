@@ -1,0 +1,604 @@
+{
+  "title": "Causal Attribution Benchmark: MAP-Elites Evolution vs. Uniform Random Search",
+  "timestamp": "2026-09-14T23:44:07Z",
+  "preregistered_protocol": {
+    "budget_evaluations": 5000,
+    "seeds": [
+      42,
+      137,
+      256,
+      512,
+      1024
+    ],
+    "num_seeds": 5,
+    "grid_dimensions": [
+      10,
+      10
+    ],
+    "total_niches": 100,
+    "population_size": 100,
+    "evaluator_description": "Deterministic MultiDocumentCorpusEvaluator (Golden Archetypes: Article + Financial Table)"
+  },
+  "comparative_summary": {
+    "coverage_pct": {
+      "map_elites": {
+        "mean": 99.8,
+        "std": 0.45
+      },
+      "random_search": {
+        "mean": 100.0,
+        "std": 0.0
+      },
+      "difference": -0.2,
+      "paired_test": {
+        "mean_diff": -0.2,
+        "t_stat": -1.0,
+        "p_val": 0.317311,
+        "cohens_d": -0.4472
+      },
+      "causal_significance": false
+    },
+    "qd_score": {
+      "map_elites": {
+        "mean": 98.55,
+        "std": 0.4
+      },
+      "random_search": {
+        "mean": 99.16,
+        "std": 0.0
+      },
+      "difference": -0.61,
+      "paired_test": {
+        "mean_diff": -0.6063,
+        "t_stat": -3.3889,
+        "p_val": 0.000702,
+        "cohens_d": -1.5156
+      },
+      "causal_significance": false
+    },
+    "max_fitness": {
+      "map_elites": {
+        "mean": 0.99,
+        "std": 0.0
+      },
+      "random_search": {
+        "mean": 0.99,
+        "std": 0.0
+      },
+      "difference": 0.0,
+      "paired_test": {
+        "mean_diff": 0.0008,
+        "t_stat": 1.0,
+        "p_val": 0.317311,
+        "cohens_d": 0.4472
+      }
+    },
+    "mean_elite_fitness": {
+      "map_elites": {
+        "mean": 0.99,
+        "std": 0.0
+      },
+      "random_search": {
+        "mean": 0.99,
+        "std": 0.0
+      },
+      "difference": 0.0
+    }
+  },
+  "illumination_trajectory": [
+    {
+      "evaluations": 500,
+      "map_elites_coverage_mean": 90.0,
+      "random_search_coverage_mean": 93.0,
+      "coverage_advantage": -3.0,
+      "map_elites_qd_score_mean": 86.98,
+      "random_search_qd_score_mean": 88.38,
+      "qd_score_advantage": -1.4
+    },
+    {
+      "evaluations": 1000,
+      "map_elites_coverage_mean": 98.2,
+      "random_search_coverage_mean": 97.0,
+      "coverage_advantage": 1.2,
+      "map_elites_qd_score_mean": 96.54,
+      "random_search_qd_score_mean": 94.16,
+      "qd_score_advantage": 2.38
+    }
+  ],
+  "seed_level_runs": {
+    "map_elites": [
+      {
+        "algorithm": "map_elites",
+        "seed": 42,
+        "budget": 5000,
+        "generations": 50,
+        "population_size": 100,
+        "elapsed_seconds": 319.04,
+        "evaluations_per_second": 15.67,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 98.3547,
+          "mean_fitness": 0.9835,
+          "max_fitness": 0.996
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 91,
+            "coverage_pct": 91.0,
+            "qd_score": 87.7656,
+            "max_fitness": 0.996,
+            "mean_fitness": 0.9645
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 96.3686,
+            "max_fitness": 0.996,
+            "mean_fitness": 0.9834
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 137,
+        "budget": 5000,
+        "generations": 50,
+        "population_size": 100,
+        "elapsed_seconds": 328.01,
+        "evaluations_per_second": 15.24,
+        "final_metrics": {
+          "occupied_niches": 99,
+          "coverage_pct": 99.0,
+          "qd_score": 98.1659,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 88,
+            "coverage_pct": 88.0,
+            "qd_score": 86.3809,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9816
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 95.7477,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9871
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 256,
+        "budget": 5000,
+        "generations": 50,
+        "population_size": 100,
+        "elapsed_seconds": 330.79,
+        "evaluations_per_second": 15.12,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 98.3315,
+          "mean_fitness": 0.9833,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 93,
+            "coverage_pct": 93.0,
+            "qd_score": 89.3093,
+            "max_fitness": 0.9917,
+            "mean_fitness": 0.9603
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 95.9195,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9788
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 512,
+        "budget": 5000,
+        "generations": 50,
+        "population_size": 100,
+        "elapsed_seconds": 335.53,
+        "evaluations_per_second": 14.9,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 99.156,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 92,
+            "coverage_pct": 92.0,
+            "qd_score": 88.251,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9593
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 97.8946,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9789
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 1024,
+        "budget": 5000,
+        "generations": 50,
+        "population_size": 100,
+        "elapsed_seconds": 314.98,
+        "evaluations_per_second": 15.87,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 98.7535,
+          "mean_fitness": 0.9875,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 86,
+            "coverage_pct": 86.0,
+            "qd_score": 83.1956,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9674
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 96.7659,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9874
+          }
+        }
+      }
+    ],
+    "random_search": [
+      {
+        "algorithm": "random_search",
+        "seed": 42,
+        "budget": 5000,
+        "elapsed_seconds": 1017.79,
+        "evaluations_per_second": 4.91,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 99.1591,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 94,
+            "coverage_pct": 94.0,
+            "qd_score": 87.3665,
+            "max_fitness": 0.9917,
+            "mean_fitness": 0.9294
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 92.4274,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9529
+          },
+          "2000": {
+            "evaluations": 2000,
+            "occupied_niches": 99,
+            "coverage_pct": 99.0,
+            "qd_score": 97.749,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9874
+          },
+          "3000": {
+            "evaluations": 3000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 98.7457,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9875
+          },
+          "4000": {
+            "evaluations": 4000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1546,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9915
+          },
+          "5000": {
+            "evaluations": 5000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1591,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 137,
+        "budget": 5000,
+        "elapsed_seconds": 1066.26,
+        "evaluations_per_second": 4.69,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 99.157,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 93,
+            "coverage_pct": 93.0,
+            "qd_score": 88.9,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9559
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 94.4942,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9742
+          },
+          "2000": {
+            "evaluations": 2000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 98.3078,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9831
+          },
+          "3000": {
+            "evaluations": 3000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 98.7479,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9875
+          },
+          "4000": {
+            "evaluations": 4000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 98.7505,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9875
+          },
+          "5000": {
+            "evaluations": 5000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.157,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 256,
+        "budget": 5000,
+        "elapsed_seconds": 1068.6,
+        "evaluations_per_second": 4.68,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 99.1592,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 93,
+            "coverage_pct": 93.0,
+            "qd_score": 88.885,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9558
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 94.4783,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.974
+          },
+          "2000": {
+            "evaluations": 2000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1473,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9915
+          },
+          "3000": {
+            "evaluations": 3000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1537,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9915
+          },
+          "4000": {
+            "evaluations": 4000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1568,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          },
+          "5000": {
+            "evaluations": 5000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1592,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 512,
+        "budget": 5000,
+        "elapsed_seconds": 1040.08,
+        "evaluations_per_second": 4.81,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 99.1597,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 95,
+            "coverage_pct": 95.0,
+            "qd_score": 90.8544,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9564
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 96,
+            "coverage_pct": 96.0,
+            "qd_score": 94.3394,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9827
+          },
+          "2000": {
+            "evaluations": 2000,
+            "occupied_niches": 99,
+            "coverage_pct": 99.0,
+            "qd_score": 98.1578,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9915
+          },
+          "3000": {
+            "evaluations": 3000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1529,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9915
+          },
+          "4000": {
+            "evaluations": 4000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.157,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          },
+          "5000": {
+            "evaluations": 5000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1597,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 1024,
+        "budget": 5000,
+        "elapsed_seconds": 1045.24,
+        "evaluations_per_second": 4.78,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 99.1581,
+          "mean_fitness": 0.9916,
+          "max_fitness": 0.9918
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 90,
+            "coverage_pct": 90.0,
+            "qd_score": 85.8933,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9544
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 95.0679,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9701
+          },
+          "2000": {
+            "evaluations": 2000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 97.041,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9704
+          },
+          "3000": {
+            "evaluations": 3000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.153,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9915
+          },
+          "4000": {
+            "evaluations": 4000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1563,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          },
+          "5000": {
+            "evaluations": 5000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 99.1581,
+            "max_fitness": 0.9918,
+            "mean_fitness": 0.9916
+          }
+        }
+      }
+    ]
+  }
+}
