@@ -20,6 +20,7 @@ except ImportError:
 
 from .ir import Block, Cell, Color, Document, Page, Paragraph, Row, Run, Table
 from .genome import ProfilePolicy
+from .map_elites_archive import MAPElitesArchive, MAPElitesPolicyDispatcher
 
 
 def strip_font_subset_prefix(font_name: str) -> str:
@@ -63,27 +64,53 @@ class PDFExtractor:
         self,
         space_gap_threshold_ratio: float = 0.25,
         policy: ProfilePolicy | None = None,
+        archive: MAPElitesArchive | str | Path | None = None,
     ) -> None:
         if not HAS_FITZ:
             raise ImportError(
                 "PyMuPDF (fitz) is required for PDFExtractor. "
                 "Install via: pip install pymupdf"
             )
+        self.dispatcher: MAPElitesPolicyDispatcher | None = None
+        if archive is not None:
+            self.dispatcher = MAPElitesPolicyDispatcher(archive)
+
         if policy is not None:
             self.policy = policy
             self.space_gap_threshold_ratio = policy.space_gap_ratio
+        elif self.dispatcher is not None:
+            champ = self.dispatcher.archive.get_champion()
+            self.policy = champ.policy if champ else ProfilePolicy(space_gap_ratio=space_gap_threshold_ratio)
+            self.space_gap_threshold_ratio = self.policy.space_gap_ratio
         else:
             self.space_gap_threshold_ratio = space_gap_threshold_ratio
             self.policy = ProfilePolicy(space_gap_ratio=space_gap_threshold_ratio)
 
+        self.last_dispatched_cell: Any | None = None
+        self.last_dispatched_exact: bool = False
+
     def extract(self, source: Union[str, Path, bytes, BinaryIO]) -> Document:
         """Extracts Document IR from file path, raw bytes, or stream."""
+        # Read raw bytes if archive dispatcher is active
+        raw_bytes: bytes | None = None
         if isinstance(source, (str, Path)):
-            doc_fitz = fitz.open(str(source))
+            with open(source, "rb") as f:
+                raw_bytes = f.read()
+            doc_fitz = fitz.open(stream=raw_bytes, filetype="pdf")
         elif isinstance(source, bytes):
+            raw_bytes = source
             doc_fitz = fitz.open(stream=source, filetype="pdf")
         else:
-            doc_fitz = fitz.open(stream=source.read(), filetype="pdf")
+            raw_bytes = source.read()
+            doc_fitz = fitz.open(stream=raw_bytes, filetype="pdf")
+
+        # If archive dispatcher is available, dynamically dispatch specialized niche policy
+        if self.dispatcher is not None and raw_bytes is not None:
+            dispatched_pol, cell, exact = self.dispatcher.dispatch(raw_bytes)
+            self.policy = dispatched_pol
+            self.space_gap_threshold_ratio = dispatched_pol.space_gap_ratio
+            self.last_dispatched_cell = cell
+            self.last_dispatched_exact = exact
 
         try:
             return self._process_fitz_doc(doc_fitz)

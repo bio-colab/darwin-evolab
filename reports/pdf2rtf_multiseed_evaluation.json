@@ -2,7 +2,7 @@
   "num_seeds": 2,
   "population_size": 4,
   "generations": 1,
-  "timestamp": "2026-09-14T13:04:57Z",
+  "timestamp": "2026-09-14T19:12:46Z",
   "summary": {
     "mean_holdout_composite": 0.9906,
     "sd_holdout_composite": 0.0,
@@ -34,7 +34,7 @@
         "para_split_indent_factor": 0.0,
         "para_split_font_weight": 0.0
       },
-      "elapsed_sec": 1.11
+      "elapsed_sec": 1.08
     },
     {
       "seed": 2,
@@ -54,7 +54,7 @@
         "para_split_indent_factor": 0.0,
         "para_split_font_weight": 0.0
       },
-      "elapsed_sec": 1.1
+      "elapsed_sec": 1.05
     }
   ]
 }

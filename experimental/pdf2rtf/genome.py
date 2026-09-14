@@ -58,9 +58,9 @@ PARAM_BOUNDS: dict[str, tuple[float, float]] = {
     "para_split_delta_ratio": (0.20, 2.50),
     "align_tolerance_pt": (1.0, 15.0),
     "line_spacing_round_pt": (0.25, 2.0),
-    "table_col_align_tol_pt": (2.0, 25.0),
-    "table_min_rows": (2.0, 5.0),
-    "table_min_cols": (2.0, 5.0),
+    "table_col_align_tol_pt": (2.0, 15.0),
+    "table_min_rows": (1.0, 2.0),
+    "table_min_cols": (1.0, 2.0),
     "para_split_short_line_factor": (0.0, 1.0),
     "para_split_indent_factor": (0.0, 1.0),
     "para_split_font_weight": (0.0, 1.0),
@@ -91,9 +91,9 @@ class ProfileGenome(EvolabGenome):
         self.para_split_delta_ratio = max(0.20, min(2.50, float(self.para_split_delta_ratio)))
         self.align_tolerance_pt = max(1.0, min(15.0, float(self.align_tolerance_pt)))
         self.line_spacing_round_pt = max(0.25, min(2.0, float(self.line_spacing_round_pt)))
-        self.table_col_align_tol_pt = max(2.0, min(25.0, float(self.table_col_align_tol_pt)))
-        self.table_min_rows = max(2, min(5, int(round(self.table_min_rows))))
-        self.table_min_cols = max(2, min(5, int(round(self.table_min_cols))))
+        self.table_col_align_tol_pt = max(2.0, min(15.0, float(self.table_col_align_tol_pt)))
+        self.table_min_rows = max(1, min(2, int(round(self.table_min_rows))))
+        self.table_min_cols = max(1, min(2, int(round(self.table_min_cols))))
         self.para_split_short_line_factor = max(0.0, min(1.0, float(self.para_split_short_line_factor)))
         self.para_split_indent_factor = max(0.0, min(1.0, float(self.para_split_indent_factor)))
         self.para_split_font_weight = max(0.0, min(1.0, float(self.para_split_font_weight)))

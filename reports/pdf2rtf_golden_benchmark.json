@@ -1,28 +1,31 @@
 {
-  "timestamp": "2026-09-13T12:29:38Z",
+  "timestamp": "2026-09-14T18:52:20Z",
   "total_documents": 5,
   "text_integrity_pass_rate": 1.0,
   "overall_pass_rate": 1.0,
-  "average_composite_score": 0.9955,
+  "average_composite_score": 0.9968,
   "policy_used": {
-    "space_gap_ratio": 0.25,
-    "para_split_delta_ratio": 1.4,
-    "align_tolerance_pt": 5.0,
-    "line_spacing_round_pt": 0.5,
-    "table_col_align_tol_pt": 8.0,
+    "space_gap_ratio": 0.10459240877712786,
+    "para_split_delta_ratio": 1.8576601845284475,
+    "align_tolerance_pt": 10.543945166372048,
+    "line_spacing_round_pt": 1.1896980782153914,
+    "table_col_align_tol_pt": 5.468727469383056,
     "table_min_rows": 2,
-    "table_min_cols": 2
+    "table_min_cols": 1,
+    "para_split_short_line_factor": 0.434765250669105,
+    "para_split_indent_factor": 0.45372370632920644,
+    "para_split_font_weight": 0.9538159275210801
   },
   "documents": [
     {
       "name": "article_standard",
       "passed": true,
-      "composite_score": 0.9937,
+      "composite_score": 0.9952,
       "gate_scores": {
         "Gate 1: Text Integrity": 1.0,
-        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2: Structure Integrity": 0.9996,
         "Gate 2.5: Table Oracle": 1.0,
-        "Gate 3: Formatting Integrity": 0.9583,
+        "Gate 3: Formatting Integrity": 0.9687,
         "Gate 4: Visual / Geometry Oracle": 1.0
       },
       "gate_pass_status": {
@@ -32,19 +35,19 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 14.4,
+      "elapsed_ms": 20.06,
       "diff_count": 0,
-      "message": "PASSED: Composite fidelity 99.37%. All gates satisfied."
+      "message": "PASSED: Composite fidelity 99.52%. All gates satisfied."
     },
     {
       "name": "financial_table",
       "passed": true,
-      "composite_score": 0.9937,
+      "composite_score": 0.9965,
       "gate_scores": {
         "Gate 1: Text Integrity": 1.0,
-        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2: Structure Integrity": 0.9994,
         "Gate 2.5: Table Oracle": 1.0,
-        "Gate 3: Formatting Integrity": 0.9583,
+        "Gate 3: Formatting Integrity": 0.9773,
         "Gate 4: Visual / Geometry Oracle": 1.0
       },
       "gate_pass_status": {
@@ -54,17 +57,61 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 18.05,
+      "elapsed_ms": 17.93,
       "diff_count": 0,
-      "message": "PASSED: Composite fidelity 99.37%. All gates satisfied."
+      "message": "PASSED: Composite fidelity 99.65%. All gates satisfied."
     },
     {
       "name": "executive_summary",
       "passed": true,
-      "composite_score": 0.9969,
+      "composite_score": 0.9976,
       "gate_scores": {
         "Gate 1: Text Integrity": 1.0,
-        "Gate 2: Structure Integrity": 1.0,
+        "Gate 2: Structure Integrity": 0.9998,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9844,
+        "Gate 4: Visual / Geometry Oracle": 1.0
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true,
+        "Gate 4: Visual / Geometry Oracle": true
+      },
+      "elapsed_ms": 17.23,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 99.76%. All gates satisfied."
+    },
+    {
+      "name": "bulleted_memo",
+      "passed": true,
+      "composite_score": 0.9977,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 0.9979,
+        "Gate 2.5: Table Oracle": 1.0,
+        "Gate 3: Formatting Integrity": 0.9875,
+        "Gate 4: Visual / Geometry Oracle": 1.0
+      },
+      "gate_pass_status": {
+        "Gate 1: Text Integrity": true,
+        "Gate 2: Structure Integrity": true,
+        "Gate 2.5: Table Oracle": true,
+        "Gate 3: Formatting Integrity": true,
+        "Gate 4: Visual / Geometry Oracle": true
+      },
+      "elapsed_ms": 26.22,
+      "diff_count": 0,
+      "message": "PASSED: Composite fidelity 99.77%. All gates satisfied."
+    },
+    {
+      "name": "subset_font_stress",
+      "passed": true,
+      "composite_score": 0.9968,
+      "gate_scores": {
+        "Gate 1: Text Integrity": 1.0,
+        "Gate 2: Structure Integrity": 0.9998,
         "Gate 2.5: Table Oracle": 1.0,
         "Gate 3: Formatting Integrity": 0.9792,
         "Gate 4: Visual / Geometry Oracle": 1.0
@@ -76,53 +123,9 @@
         "Gate 3: Formatting Integrity": true,
         "Gate 4: Visual / Geometry Oracle": true
       },
-      "elapsed_ms": 9.7,
+      "elapsed_ms": 17.06,
       "diff_count": 0,
-      "message": "PASSED: Composite fidelity 99.69%. All gates satisfied."
-    },
-    {
-      "name": "bulleted_memo",
-      "passed": true,
-      "composite_score": 0.9975,
-      "gate_scores": {
-        "Gate 1: Text Integrity": 1.0,
-        "Gate 2: Structure Integrity": 1.0,
-        "Gate 2.5: Table Oracle": 1.0,
-        "Gate 3: Formatting Integrity": 0.9833,
-        "Gate 4: Visual / Geometry Oracle": 1.0
-      },
-      "gate_pass_status": {
-        "Gate 1: Text Integrity": true,
-        "Gate 2: Structure Integrity": true,
-        "Gate 2.5: Table Oracle": true,
-        "Gate 3: Formatting Integrity": true,
-        "Gate 4: Visual / Geometry Oracle": true
-      },
-      "elapsed_ms": 9.65,
-      "diff_count": 0,
-      "message": "PASSED: Composite fidelity 99.75%. All gates satisfied."
-    },
-    {
-      "name": "subset_font_stress",
-      "passed": true,
-      "composite_score": 0.9958,
-      "gate_scores": {
-        "Gate 1: Text Integrity": 1.0,
-        "Gate 2: Structure Integrity": 1.0,
-        "Gate 2.5: Table Oracle": 1.0,
-        "Gate 3: Formatting Integrity": 0.9722,
-        "Gate 4: Visual / Geometry Oracle": 1.0
-      },
-      "gate_pass_status": {
-        "Gate 1: Text Integrity": true,
-        "Gate 2: Structure Integrity": true,
-        "Gate 2.5: Table Oracle": true,
-        "Gate 3: Formatting Integrity": true,
-        "Gate 4: Visual / Geometry Oracle": true
-      },
-      "elapsed_ms": 10.13,
-      "diff_count": 0,
-      "message": "PASSED: Composite fidelity 99.58%. All gates satisfied."
+      "message": "PASSED: Composite fidelity 99.68%. All gates satisfied."
     }
   ]
 }

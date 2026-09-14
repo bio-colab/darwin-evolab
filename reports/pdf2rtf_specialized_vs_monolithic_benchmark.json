@@ -1,0 +1,1132 @@
+{
+  "title": "Monolithic Champion vs. MAP-Elites Niche-Specialized Dispatch Benchmark",
+  "timestamp": "2026-09-14T18:52:53Z",
+  "total_documents": 54,
+  "archive_metrics": {
+    "total_niches": 100,
+    "occupied_niches": 100,
+    "coverage_percentage": 100.0,
+    "qd_score": 99.7112
+  },
+  "summary": {
+    "monolithic_average_score": 0.9918,
+    "specialized_average_score": 0.9906,
+    "score_improvement": -0.0011,
+    "monolithic_pass_rate": 0.9444,
+    "specialized_pass_rate": 0.9074
+  },
+  "group_breakdown": {
+    "A": {
+      "monolithic_average": 0.9878,
+      "specialized_average": 0.9881,
+      "delta": 0.0003,
+      "items_count": 12
+    },
+    "B": {
+      "monolithic_average": 0.9916,
+      "specialized_average": 0.9914,
+      "delta": -0.0002,
+      "items_count": 12
+    },
+    "C": {
+      "monolithic_average": 0.9941,
+      "specialized_average": 0.9884,
+      "delta": -0.0057,
+      "items_count": 6
+    },
+    "D": {
+      "monolithic_average": 0.9991,
+      "specialized_average": 0.9989,
+      "delta": -0.0002,
+      "items_count": 12
+    },
+    "E": {
+      "monolithic_average": 0.9874,
+      "specialized_average": 0.9852,
+      "delta": -0.0022,
+      "items_count": 12
+    }
+  },
+  "documents": [
+    {
+      "name": "word_seed_01_align_left_single",
+      "group": "A",
+      "description": "Left alignment with single line spacing",
+      "descriptors": {
+        "cluster_density": 0.5937,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9916,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 39.7
+    },
+    {
+      "name": "word_seed_02_align_center_single",
+      "group": "A",
+      "description": "Center alignment with single line spacing",
+      "descriptors": {
+        "cluster_density": 0.5819,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9666,
+      "specialized_score": 0.9666,
+      "score_delta": -0.0001,
+      "monolithic_passed": false,
+      "specialized_passed": false,
+      "elapsed_ms": 31.97
+    },
+    {
+      "name": "word_seed_03_align_right_single",
+      "group": "A",
+      "description": "Right alignment with single line spacing",
+      "descriptors": {
+        "cluster_density": 0.5937,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9916,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 32.65
+    },
+    {
+      "name": "word_seed_04_align_justify_single",
+      "group": "A",
+      "description": "Justified alignment with single line spacing",
+      "descriptors": {
+        "cluster_density": 0.6014,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9916,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 40.35
+    },
+    {
+      "name": "word_seed_05_align_justify_1.15",
+      "group": "A",
+      "description": "Default Word style justified with 1.15 spacing",
+      "descriptors": {
+        "cluster_density": 0.7453,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        7,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9924,
+      "score_delta": 0.0008,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 76.68
+    },
+    {
+      "name": "word_seed_06_align_left_1.5_space6",
+      "group": "A",
+      "description": "Left alignment with 1.5 line spacing and 6pt space after",
+      "descriptors": {
+        "cluster_density": 0.7453,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        7,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9666,
+      "specialized_score": 0.9674,
+      "score_delta": 0.0008,
+      "monolithic_passed": false,
+      "specialized_passed": false,
+      "elapsed_ms": 68.67
+    },
+    {
+      "name": "word_seed_07_align_left_double_space12",
+      "group": "A",
+      "description": "Left alignment with double spacing and 12pt space after",
+      "descriptors": {
+        "cluster_density": 0.98,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        9,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9934,
+      "specialized_score": 0.9934,
+      "score_delta": 0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 47.29
+    },
+    {
+      "name": "word_seed_08_indent_firstline",
+      "group": "A",
+      "description": "Paragraphs with 36pt first-line indentation",
+      "descriptors": {
+        "cluster_density": 0.7388,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        7,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9924,
+      "score_delta": 0.0008,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 66.13
+    },
+    {
+      "name": "word_seed_09_indent_left_right",
+      "group": "A",
+      "description": "Paragraph with 36pt left and right indentation",
+      "descriptors": {
+        "cluster_density": 0.7388,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        7,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9924,
+      "score_delta": 0.0008,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 43.69
+    },
+    {
+      "name": "word_seed_10_indent_hanging",
+      "group": "A",
+      "description": "Hanging indent reference formatting",
+      "descriptors": {
+        "cluster_density": 0.7358,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        7,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9924,
+      "score_delta": 0.0008,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 37.29
+    },
+    {
+      "name": "word_seed_11_para_split_tight",
+      "group": "A",
+      "description": "Tight paragraphs separated by 2pt spacing",
+      "descriptors": {
+        "cluster_density": 0.3351,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        3,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9942,
+      "specialized_score": 0.9948,
+      "score_delta": 0.0006,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 46.88
+    },
+    {
+      "name": "word_seed_12_para_split_wide",
+      "group": "A",
+      "description": "Wide paragraphs separated by 24pt spacing",
+      "descriptors": {
+        "cluster_density": 0.98,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        9,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9914,
+      "specialized_score": 0.9912,
+      "score_delta": -0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 40.27
+    },
+    {
+      "name": "word_seed_13_font_serif_times",
+      "group": "B",
+      "description": "Times New Roman 12pt serif typography",
+      "descriptors": {
+        "cluster_density": 0.4341,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9946,
+      "specialized_score": 0.9941,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 40.81
+    },
+    {
+      "name": "word_seed_14_font_sans_calibri",
+      "group": "B",
+      "description": "Calibri 11pt sans-serif typography",
+      "descriptors": {
+        "cluster_density": 0.5937,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9916,
+      "specialized_score": 0.9916,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 34.09
+    },
+    {
+      "name": "word_seed_15_font_mono_courier",
+      "group": "B",
+      "description": "Consolas 10.5pt monospace code typography",
+      "descriptors": {
+        "cluster_density": 0.6791,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9932,
+      "specialized_score": 0.9934,
+      "score_delta": 0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 25.61
+    },
+    {
+      "name": "word_seed_16_style_bold_only",
+      "group": "B",
+      "description": "Uniform bold styled paragraph",
+      "descriptors": {
+        "cluster_density": 0.6076,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9933,
+      "specialized_score": 0.9932,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 28.34
+    },
+    {
+      "name": "word_seed_17_style_italic_only",
+      "group": "B",
+      "description": "Uniform italic styled paragraph",
+      "descriptors": {
+        "cluster_density": 0.6076,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9933,
+      "specialized_score": 0.9932,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 31.9
+    },
+    {
+      "name": "word_seed_18_style_bold_italic_mixed",
+      "group": "B",
+      "description": "Mixed inline runs (regular, bold, italic, bold italic)",
+      "descriptors": {
+        "cluster_density": 0.622,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9933,
+      "specialized_score": 0.9932,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 26.76
+    },
+    {
+      "name": "word_seed_19_style_underline_strike",
+      "group": "B",
+      "description": "Underline and strikethrough character styles",
+      "descriptors": {
+        "cluster_density": 0.5993,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9883,
+      "specialized_score": 0.9883,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 20.28
+    },
+    {
+      "name": "word_seed_20_size_mixed_small_large",
+      "group": "B",
+      "description": "Mixed font sizes from 8pt to 22pt",
+      "descriptors": {
+        "cluster_density": 0.5525,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.993,
+      "specialized_score": 0.993,
+      "score_delta": -0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 39.72
+    },
+    {
+      "name": "word_seed_21_heading_hierarchy",
+      "group": "B",
+      "description": "Structured heading hierarchy (Title, H1, H2, Body)",
+      "descriptors": {
+        "cluster_density": 0.4927,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9939,
+      "specialized_score": 0.9936,
+      "score_delta": -0.0003,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 34.02
+    },
+    {
+      "name": "word_seed_22_color_highlight",
+      "group": "B",
+      "description": "Color font and text highlighting",
+      "descriptors": {
+        "cluster_density": 0.6127,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9896,
+      "specialized_score": 0.9895,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 17.48
+    },
+    {
+      "name": "word_seed_23_superscript_subscript",
+      "group": "B",
+      "description": "Mathematical superscript and chemical subscript",
+      "descriptors": {
+        "cluster_density": 0.6898,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9898,
+      "specialized_score": 0.9892,
+      "score_delta": -0.0006,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 19.77
+    },
+    {
+      "name": "word_seed_24_allcaps_smallcaps",
+      "group": "B",
+      "description": "SmallCaps and AllCaps typography",
+      "descriptors": {
+        "cluster_density": 0.7756,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        7,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9848,
+      "specialized_score": 0.9843,
+      "score_delta": -0.0005,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 14.82
+    },
+    {
+      "name": "word_seed_25_list_bullets",
+      "group": "C",
+      "description": "Standard bulleted list",
+      "descriptors": {
+        "cluster_density": 0.4727,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9942,
+      "specialized_score": 0.9939,
+      "score_delta": -0.0003,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 52.82
+    },
+    {
+      "name": "word_seed_26_list_numbered",
+      "group": "C",
+      "description": "Standard numbered procedure list",
+      "descriptors": {
+        "cluster_density": 0.4727,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9942,
+      "specialized_score": 0.9939,
+      "score_delta": -0.0003,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 55.28
+    },
+    {
+      "name": "word_seed_27_list_multilevel",
+      "group": "C",
+      "description": "Multilevel hierarchical section list",
+      "descriptors": {
+        "cluster_density": 0.3961,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        3,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9929,
+      "specialized_score": 0.9935,
+      "score_delta": 0.0006,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 28.78
+    },
+    {
+      "name": "word_seed_28_list_bullet_with_indent",
+      "group": "C",
+      "description": "Bullet list with custom generous left indent",
+      "descriptors": {
+        "cluster_density": 0.6076,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9936,
+      "specialized_score": 0.9935,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 27.73
+    },
+    {
+      "name": "word_seed_29_list_numbered_justify",
+      "group": "C",
+      "description": "Numbered list with justified multi-line wrapping",
+      "descriptors": {
+        "cluster_density": 0.6162,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9936,
+      "specialized_score": 0.9602,
+      "score_delta": -0.0334,
+      "monolithic_passed": true,
+      "specialized_passed": false,
+      "elapsed_ms": 85.06
+    },
+    {
+      "name": "word_seed_30_list_mixed",
+      "group": "C",
+      "description": "Mixed list with numbered and bulleted sections",
+      "descriptors": {
+        "cluster_density": 0.6162,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9961,
+      "specialized_score": 0.9954,
+      "score_delta": -0.0007,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 136.82
+    },
+    {
+      "name": "word_seed_31_table_simple_2x2",
+      "group": "D",
+      "description": "Simple minimal 2x2 table",
+      "descriptors": {
+        "cluster_density": 0.6729,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        6,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9995,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 68.92
+    },
+    {
+      "name": "word_seed_32_table_simple_5x4",
+      "group": "D",
+      "description": "5x4 data matrix table",
+      "descriptors": {
+        "cluster_density": 0.7134,
+        "table_sensitivity": 0.95
+      },
+      "dispatched_niche": [
+        7,
+        9
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9997,
+      "score_delta": -0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 123.06
+    },
+    {
+      "name": "word_seed_33_table_merged_cells",
+      "group": "D",
+      "description": "Table with horizontally merged header cells",
+      "descriptors": {
+        "cluster_density": 0.6096,
+        "table_sensitivity": 0.95
+      },
+      "dispatched_niche": [
+        6,
+        9
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9964,
+      "specialized_score": 0.9964,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 60.65
+    },
+    {
+      "name": "word_seed_34_table_header_shaded",
+      "group": "D",
+      "description": "Table with shaded header row",
+      "descriptors": {
+        "cluster_density": 0.702,
+        "table_sensitivity": 0.95
+      },
+      "dispatched_niche": [
+        7,
+        9
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9986,
+      "specialized_score": 0.999,
+      "score_delta": 0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 37.77
+    },
+    {
+      "name": "word_seed_35_table_align_left",
+      "group": "D",
+      "description": "Left-aligned table",
+      "descriptors": {
+        "cluster_density": 0.6729,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        6,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9995,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 32.22
+    },
+    {
+      "name": "word_seed_36_table_align_center",
+      "group": "D",
+      "description": "Center-aligned table",
+      "descriptors": {
+        "cluster_density": 0.6729,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        6,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9995,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 35.88
+    },
+    {
+      "name": "word_seed_37_table_align_right",
+      "group": "D",
+      "description": "Right-aligned table",
+      "descriptors": {
+        "cluster_density": 0.6729,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        6,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9995,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 34.4
+    },
+    {
+      "name": "word_seed_38_table_numbers_right",
+      "group": "D",
+      "description": "Numeric table with right-aligned cell amounts",
+      "descriptors": {
+        "cluster_density": 0.7027,
+        "table_sensitivity": 0.95
+      },
+      "dispatched_niche": [
+        7,
+        9
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9997,
+      "score_delta": -0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 69.71
+    },
+    {
+      "name": "word_seed_39_table_borders_none",
+      "group": "D",
+      "description": "Borderless table",
+      "descriptors": {
+        "cluster_density": 0.6639,
+        "table_sensitivity": 0.2
+      },
+      "dispatched_niche": [
+        6,
+        2
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9971,
+      "specialized_score": 0.9968,
+      "score_delta": -0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 52.43
+    },
+    {
+      "name": "word_seed_40_table_borders_all",
+      "group": "D",
+      "description": "Full border grid table",
+      "descriptors": {
+        "cluster_density": 0.702,
+        "table_sensitivity": 0.95
+      },
+      "dispatched_niche": [
+        7,
+        9
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9999,
+      "specialized_score": 0.9997,
+      "score_delta": -0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 60.44
+    },
+    {
+      "name": "word_seed_41_table_nested_text",
+      "group": "D",
+      "description": "Table with multi-line paragraphs in cells",
+      "descriptors": {
+        "cluster_density": 0.6019,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        6,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9995,
+      "specialized_score": 0.9991,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 56.26
+    },
+    {
+      "name": "word_seed_42_table_multi_tables",
+      "group": "D",
+      "description": "Multiple tables on the same page",
+      "descriptors": {
+        "cluster_density": 0.7024,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        7,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9984,
+      "specialized_score": 0.9984,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 80.03
+    },
+    {
+      "name": "word_seed_43_real_academic",
+      "group": "E",
+      "description": "Academic paper with abstract and introduction",
+      "descriptors": {
+        "cluster_density": 0.4555,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9962,
+      "specialized_score": 0.996,
+      "score_delta": -0.0002,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 69.28
+    },
+    {
+      "name": "word_seed_44_real_legal_justify",
+      "group": "E",
+      "description": "Confidential legal service agreement with clauses",
+      "descriptors": {
+        "cluster_density": 0.6032,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9943,
+      "specialized_score": 0.9692,
+      "score_delta": -0.0251,
+      "monolithic_passed": true,
+      "specialized_passed": false,
+      "elapsed_ms": 116.07
+    },
+    {
+      "name": "word_seed_45_real_invoice",
+      "group": "E",
+      "description": "Commercial tax invoice with line items and totals",
+      "descriptors": {
+        "cluster_density": 0.8333,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        8,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9151,
+      "specialized_score": 0.915,
+      "score_delta": -0.0002,
+      "monolithic_passed": false,
+      "specialized_passed": false,
+      "elapsed_ms": 118.78
+    },
+    {
+      "name": "word_seed_46_real_medical",
+      "group": "E",
+      "description": "Clinical patient encounter summary and vitals",
+      "descriptors": {
+        "cluster_density": 0.6934,
+        "table_sensitivity": 0.85
+      },
+      "dispatched_niche": [
+        6,
+        8
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9937,
+      "specialized_score": 0.9936,
+      "score_delta": -0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 104.59
+    },
+    {
+      "name": "word_seed_47_real_newsletter_blockquote",
+      "group": "E",
+      "description": "Editorial newsletter with blockquote pull quote",
+      "descriptors": {
+        "cluster_density": 0.5747,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9958,
+      "specialized_score": 0.9958,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 68.7
+    },
+    {
+      "name": "word_seed_48_real_technical_code",
+      "group": "E",
+      "description": "Microkernel IPC specification with Consolas code",
+      "descriptors": {
+        "cluster_density": 0.4753,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9951,
+      "specialized_score": 0.9946,
+      "score_delta": -0.0006,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 109.31
+    },
+    {
+      "name": "word_seed_49_real_scientific_greek",
+      "group": "E",
+      "description": "Scientific paper with Greek symbols and formulas",
+      "descriptors": {
+        "cluster_density": 0.5916,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9955,
+      "specialized_score": 0.9955,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 53.76
+    },
+    {
+      "name": "word_seed_50_real_multipage_breaks",
+      "group": "E",
+      "description": "Multi-page report spanning 3 pages with real page breaks",
+      "descriptors": {
+        "cluster_density": 0.5837,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        5,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9933,
+      "specialized_score": 0.9933,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 81.73
+    },
+    {
+      "name": "word_seed_51_real_empty_para",
+      "group": "E",
+      "description": "Document with deliberate blank empty paragraphs",
+      "descriptors": {
+        "cluster_density": 0.6127,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        6,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.988,
+      "specialized_score": 0.988,
+      "score_delta": -0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 39.87
+    },
+    {
+      "name": "word_seed_52_real_long_para",
+      "group": "E",
+      "description": "Extended continuous paragraph exceeding 300 words",
+      "descriptors": {
+        "cluster_density": 0.1775,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        1,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9933,
+      "specialized_score": 0.9934,
+      "score_delta": 0.0001,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 344.11
+    },
+    {
+      "name": "word_seed_53_real_currency_symbols",
+      "group": "E",
+      "description": "Multi-currency financial portfolio ($, \u20ac, \u00a3, \u00a5)",
+      "descriptors": {
+        "cluster_density": 0.4679,
+        "table_sensitivity": 0.05
+      },
+      "dispatched_niche": [
+        4,
+        0
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.9953,
+      "specialized_score": 0.995,
+      "score_delta": -0.0004,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 64.39
+    },
+    {
+      "name": "word_seed_54_real_mixed_all",
+      "group": "E",
+      "description": "Comprehensive composite stress test combining all features",
+      "descriptors": {
+        "cluster_density": 0.6588,
+        "table_sensitivity": 0.95
+      },
+      "dispatched_niche": [
+        6,
+        9
+      ],
+      "niche_exact_match": true,
+      "monolithic_score": 0.993,
+      "specialized_score": 0.993,
+      "score_delta": 0.0,
+      "monolithic_passed": true,
+      "specialized_passed": true,
+      "elapsed_ms": 88.83
+    }
+  ]
+}
