@@ -121,6 +121,58 @@ def verify_documentation() -> bool:
         except Exception as e:
             errors.append(f"Archive stats check error: {e}")
 
+    # Check 5: Ablation Study (pdf2rtf_ablation_study.json)
+    try:
+        abl = load_json("pdf2rtf_ablation_study.json")
+        m_samples = abl["random_baseline"]["num_samples"]
+        if m_samples < 50:
+            errors.append(f"Ablation study has only M={m_samples} samples; must have M>=50 genuine samples!")
+        else:
+            checks_passed += 1
+            print(f"[OK] Ablation Study verified with M={m_samples} genuine random samples (>= 50).")
+
+        # Assert document mentions M = 50
+        if f"M = {m_samples}" not in doc_text and f"M={m_samples}" not in doc_text:
+            errors.append(f"Document does not correctly mention Ablation sample count M = {m_samples}")
+        else:
+            checks_passed += 1
+    except Exception as e:
+        errors.append(f"Ablation study check error: {e}")
+
+    # Check 6: Multi-Seed Evaluation (pdf2rtf_multiseed_evaluation.json)
+    try:
+        ms = load_json("pdf2rtf_multiseed_evaluation.json")
+        k_seeds = ms["num_seeds"]
+        if k_seeds < 20:
+            errors.append(f"Multi-seed evaluation has only K={k_seeds} seeds; must have K>=20 independent seeds!")
+        else:
+            checks_passed += 1
+            print(f"[OK] Multi-Seed Evaluation verified with K={k_seeds} independent seeds (>= 20).")
+
+        if f"K = {k_seeds}" not in doc_text and f"K={k_seeds}" not in doc_text:
+            errors.append(f"Document does not correctly mention Multi-seed count K = {k_seeds}")
+        else:
+            checks_passed += 1
+    except Exception as e:
+        errors.append(f"Multi-seed check error: {e}")
+
+    # Check 7: Comparative Benchmark (pdf2rtf_specialized_vs_monolithic_benchmark.json)
+    comp_path = REPORTS_DIR / "pdf2rtf_specialized_vs_monolithic_benchmark.json"
+    if comp_path.exists():
+        try:
+            comp = load_json("pdf2rtf_specialized_vs_monolithic_benchmark.json")
+            m_score = comp["summary"]["monolithic_average_score"] * 100.0
+            s_score = comp["summary"]["specialized_average_score"] * 100.0
+            delta = comp["summary"]["score_improvement"] * 100.0
+
+            if f"{m_score:.2f}%" not in doc_text or f"{s_score:.2f}%" not in doc_text:
+                errors.append(f"Comparative benchmark scores (Mono: {m_score:.2f}%, QD: {s_score:.2f}%) not reflected in README")
+            else:
+                checks_passed += 1
+            print(f"[OK] Comparative Benchmark verified (Mono {m_score:.2f}% vs QD {s_score:.2f}%, delta {delta:+.2f}%).")
+        except Exception as e:
+            errors.append(f"Comparative benchmark check error: {e}")
+
     print("\n" + "-" * 60)
     if errors:
         print(f"[ERROR] Verification failed with {len(errors)} error(s):")

@@ -81,21 +81,26 @@ def test_individual_word_holdout_gate_fidelities():
         assert doc.gate_pass_status["Gate 4: Visual / Geometry Oracle"] is True
 
 
-def test_multiseed_evaluation_mini_run():
+def test_multiseed_evaluation_mini_run(tmp_path):
     from experimental.pdf2rtf.statistical_eval import run_multiseed_evaluation
-    # Test a mini 2-seed run to verify statistical pipeline contract
-    res = run_multiseed_evaluation(num_seeds=2, population_size=4, generations=1)
+    # Test a mini 2-seed run to verify statistical pipeline contract without clobbering production reports
+    tmp_out = tmp_path / "test_multiseed.json"
+    res = run_multiseed_evaluation(num_seeds=2, population_size=4, generations=1, save_report_path=tmp_out)
     assert res["num_seeds"] == 2
     assert res["summary"]["mean_holdout_composite"] >= 0.95
     assert res["summary"]["text_integrity_pass_rate"] == 1.0
+    assert tmp_out.exists()
 
 
-def test_ablation_study_mini_run():
+def test_ablation_study_mini_run(tmp_path):
     from experimental.pdf2rtf.ablation import run_ablation_study
-    # Test a mini ablation with 3 random samples
-    res = run_ablation_study(num_random_samples=3)
+    # Test a mini ablation with 3 random samples without clobbering production reports
+    tmp_out = tmp_path / "test_ablation.json"
+    res = run_ablation_study(num_random_samples=3, save_report_path=tmp_out)
     assert "champion_performance" in res
     assert "random_baseline" in res
     assert "systematic_ablations" in res
     assert res["champion_performance"]["composite_score"] >= 0.98
+    assert tmp_out.exists()
+
 
