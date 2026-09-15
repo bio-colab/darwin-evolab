@@ -397,6 +397,16 @@ class Document:
         return paras
 
     @property
+    def paragraph_count(self) -> int:
+        """Returns the total number of paragraphs across all pages and table cells."""
+        return len(self.all_paragraphs)
+
+    @property
+    def table_count(self) -> int:
+        """Returns the total number of tables across all pages."""
+        return len(self.all_tables)
+
+    @property
     def all_tables(self) -> list[Table]:
         tables: list[Table] = []
         for page in self.pages:

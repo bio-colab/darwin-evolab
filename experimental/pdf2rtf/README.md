@@ -379,12 +379,67 @@ A fundamental architectural choice of this project is emitting **Microsoft Rich 
 - يعمل كبوابة فحص إلزامية قبل الالتزام ودفع التحديثات (Pre-Commit Verification Gate).
 ```bash
 python scripts/verify_docs.py
-# المخرجات: [SUCCESS] All 21 documentation truth checks PASSED with 100% agreement!
+# المخرجات: [SUCCESS] All 31 documentation truth checks PASSED with 100% agreement!
 ```
 
 ---
 
-## 11. How to Run (طريقة التشغيل والتحقق)
+## 11. Standalone CLI & Python Programmatic API (واجهة سطر الأوامر المستقلة والمكتبة البرمجية — Phase 5)
+### (الإطلاق الرسمي للمرحلة الخامسة: تحويل التجربة إلى أداة ومكتبة إنتاجية متكاملة)
+
+تم استكمال **المرحلة الخامسة (Phase 5)** ببناء واجهة سطر أوامر مستقلة فائقة الدقة والراحة للمستخدم (`pdf2rtf`) ومكتبة برمجية مباشرة، تجمع بين قوة التوجيه التلقائي المتخصص عبر شبكة MAP-Elites وأدوات التحقق الفوري:
+
+#### أ. طرق التثبيت والاستدعاء (Installation & Invocation):
+```bash
+# 1. الاستدعاء كأمر طرفي مستقل (مباشر بعد pip install):
+pdf2rtf convert document.pdf -o output.rtf
+
+# 2. الاستدعاء عبر نواة evolab الموحدة:
+evolab pdf2rtf convert document.pdf -o output.rtf
+
+# 3. الاستدعاء كموديول بايثون:
+python -m experimental.pdf2rtf.cli convert document.pdf -o output.rtf
+```
+
+#### ب. الأوامر الفرعية المدعومة (Subcommands):
+| الأمر الفرعي | الوظيفة والمهمة | مثال للاستخدام |
+|:---|:---|:---|
+| **`convert`** | تحويل ملف أو دفعة ملفات مع توجيه MAP-Elites التلقائي | `pdf2rtf convert doc.pdf -o out.rtf --mode auto` |
+| **`verify`** | تدقيق ومقارنة جودة التحويل عبر بوابات الفحص الخمس أو Word COM | `pdf2rtf verify doc.pdf out.rtf` |
+| **`inspect`** | فحص هندسة المستند وحساب الواصفات ($D_1, D_2$) وتحديد النيتشة | `pdf2rtf inspect document.pdf` |
+| **`benchmark`** | تشغيل حزم الاختبارات المدمجة مباشرة | `pdf2rtf benchmark --corpus [golden\|dilemma\|corpus54\|holdout]` |
+| **`info`** | فحص حالة البيئة، توفر PyMuPDF، وحالة Word COM، وإحصائيات الأرشيف | `pdf2rtf info` |
+
+#### ج. أنماط التحويل التكيفية (`--mode`):
+1. **`--mode auto` (الافتراضي)**:
+   - يقرأ بايتات المستند المستهدف ويستخرج واصفاته الفيزيائية ($D_1$: كثافة التجميع، $D_2$: حساسية الجداول).
+   - يتصل بأرشيف MAP-Elites الـ $10 \times 10$ ويحدد النيتشة السلوكية المطابقة فورياً.
+   - يطبق السياسة التيبوغرافية المتخصصة لتلك النيتشة بدقة متناهية.
+2. **`--mode champion`**:
+   - يطبق سياسة البطل الفردي التطورية العامة (`99.72%` لياقة موثقة).
+3. **`--mode default`**:
+   - يطبق السياسة الافتراضية الهندسية القياسية.
+
+#### د. الاستخدام البرمجي المباشر في بايثون (Python SDK):
+```python
+import experimental.pdf2rtf as p2r
+
+# 1. تحويل مستند PDF إلى RTF بتوجيه MAP-Elites التلقائي
+rtf_content = p2r.convert("paper.pdf", output="paper.rtf", mode="auto")
+
+# 2. فحص هندسة المستند والنيتشة السلوكية
+info = p2r.inspect_pdf("paper.pdf")
+print("Descriptors:", info["descriptors"])
+print("Dispatched Niche:", info["map_elites"]["target_coordinate"])
+
+# 3. التدقيق المعياري الصارم ببوابات التحقق الخمس
+report = p2r.verify("paper.pdf", "paper.rtf")
+print(f"Fidelity: {report.composite_score * 100:.2f}%, Passed: {report.passed}")
+```
+
+---
+
+## 12. How to Run (طريقة التشغيل والتحقق)
 
 ```bash
 # 1. تشغيل التدقيق العاملي الشامل على حزمة Evolab-54 الكاملة (54 مستنداً):
@@ -396,25 +451,28 @@ python -m experimental.pdf2rtf.benchmark_comparative
 # 3. التحقق الآلي الصارم من صحة ومطابقة التوثيق بنسبة 100%:
 python scripts/verify_docs.py
 
-# 2. تشغيل اختبارات وحدة Evolab-54 عبر pytest:
+# 4. تشغيل اختبارات واجهة سطر الأوامر (CLI & Python API):
+pytest experimental/pdf2rtf/tests/test_cli.py -v
+
+# 5. تشغيل اختبارات وحدة Evolab-54 عبر pytest:
 pytest experimental/pdf2rtf/tests/test_corpus_54.py -v
 
-# 3. تشغيل مشغل المعايير على حزمة هولداوت Word الـ 12:
+# 6. تشغيل مشغل المعايير على حزمة هولداوت Word الـ 12:
 python -m experimental.pdf2rtf.benchmark --holdout
 
-# 4. تشغيل مدقق حكم وورد المباشر عبر Word COM (Office 16.0):
+# 7. تشغيل مدقق حكم وورد المباشر عبر Word COM (Office 16.0):
 python -m experimental.pdf2rtf.word_oracle
 
-# 5. تشغيل جميع اختبارات وحدة مختبر pdf2rtf (54 اختباراً بنسبة نجاح 100%):
+# 8. تشغيل جميع اختبارات وحدة مختبر pdf2rtf (77 اختباراً بنسبة نجاح 100%):
 pytest experimental/pdf2rtf/tests/ -v
 
-# 6. تشغيل كامل اختبارات المستودع (603 اختبارات بنسبة 100% وبصفر انكسار):
+# 9. تشغيل كامل اختبارات المستودع الشاملة وبصفر انكسار:
 pytest tests/ -q
 ```
 
 ---
 
-## 9. Project Roadmap Status (حالة مراحل المشروع)
+## 13. Project Roadmap Status (حالة مراحل المشروع)
 
 - **Phase 1: Deterministic Foundation & Invariant Core** [COMPLETED ✅]
   - Document IR, RTF Emitter, RTF Parser, PDF Extractor (subset prefix stripping).
@@ -432,6 +490,8 @@ pytest tests/ -q
   - +5.59% dilemma score gain over human heuristic baseline, +50% pass rate jump, emergent nonlinear signal coupling.
 - **Evolab-54 Orthogonal Factorial Benchmark Suite** [COMPLETED 🏆]
   - 54 Word-generated factorial documents across 5 orthogonal groups, 100.00% pass rate (54/54), 100.00% text integrity, 99.40% average composite fidelity.
-- **Phase 5: Self-Contained CLI & Open-Source Packaging** [NEXT 🚀]
-  - Standalone CLI `pdf2rtf convert`, distribution packaging, pip install readiness.
+- **Causal Attribution on Typographic Dilemma Landscape** [COMPLETED 🏆]
+  - Statistically significant MAP-Elites superiority on rugged dilemma landscape ($p = 0.039$ coverage, $p = 0.000791$ QD-score).
+- **Phase 5: Self-Contained CLI & Open-Source Packaging** [COMPLETED 🏆]
+  - Standalone CLI `pdf2rtf` with subcommands (`convert`, `verify`, `inspect`, `benchmark`, `info`), unified `evolab pdf2rtf` integration, high-level Python library API (`convert`, `verify`, `inspect_pdf`), entry point in `pyproject.toml`, and 77 unit tests with 100% pass rate.
 

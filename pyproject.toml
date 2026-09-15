@@ -28,6 +28,7 @@ dependencies = []
 
 [project.scripts]
 evolab = "evolab.cli:main"
+pdf2rtf = "experimental.pdf2rtf.cli:main"
 
 [project.entry-points.pytest11]
 evolab = "evolab.pytest_plugin"

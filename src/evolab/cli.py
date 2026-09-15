@@ -1054,6 +1054,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_init.add_argument("--force", action="store_true", help="overwrite existing configuration file")
     p_init.set_defaults(func=cmd_init)
 
+    # Subcommand: pdf2rtf (forward to experimental.pdf2rtf.cli)
+    p_p2r = sub.add_parser("pdf2rtf", help="self-calibrating PDF-to-RTF converter subsystem")
+    p_p2r.add_argument("pdf2rtf_args", nargs=argparse.REMAINDER, help="arguments forwarded to pdf2rtf CLI")
+
+    def _cmd_pdf2rtf(args: argparse.Namespace) -> int:
+        from experimental.pdf2rtf.cli import main as pdf2rtf_main
+        return pdf2rtf_main(getattr(args, "pdf2rtf_args", []))
+
+    p_p2r.set_defaults(func=_cmd_pdf2rtf)
+
     # Subcommand: audit
     p_audit = sub.add_parser("audit", help="run autonomous self-audit and governance verification")
     p_audit.add_argument("--full", action="store_true", help="run full 30-seed benchmark suite")
@@ -1243,6 +1253,11 @@ def _run_cli(argv: list[str] | None = None) -> int:
         return cmd_wizard(args)
     if cmd == "init":
         return cmd_init(args)
+    if cmd == "pdf2rtf":
+        from experimental.pdf2rtf.cli import main as pdf2rtf_main
+        return pdf2rtf_main(getattr(args, "pdf2rtf_args", []))
+    if hasattr(args, "func"):
+        return args.func(args)
     return 2
 
 

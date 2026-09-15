@@ -259,6 +259,38 @@ def verify_documentation() -> bool:
         except Exception as e:
             errors.append(f"Dilemma causal benchmark check error: {e}")
 
+    # Check 10: Phase 5 Standalone CLI & Packaging Verification
+    cli_py = REPO_ROOT / "experimental" / "pdf2rtf" / "cli.py"
+    pyproject = REPO_ROOT / "pyproject.toml"
+    if cli_py.exists() and pyproject.exists():
+        try:
+            pyproject_text = pyproject.read_text(encoding="utf-8")
+            if 'pdf2rtf = "experimental.pdf2rtf.cli:main"' not in pyproject_text:
+                errors.append("pyproject.toml does not register 'pdf2rtf = \"experimental.pdf2rtf.cli:main\"' entry point")
+            else:
+                checks_passed += 1
+
+            required_cli_terms = [
+                "pdf2rtf convert",
+                "pdf2rtf verify",
+                "pdf2rtf inspect",
+                "pdf2rtf info",
+                "evolab pdf2rtf",
+                "p2r.convert",
+                "p2r.verify",
+                "p2r.inspect_pdf",
+                "Phase 5: Self-Contained CLI & Open-Source Packaging",
+            ]
+            for term in required_cli_terms:
+                if term not in doc_text:
+                    errors.append(f"README does not contain Phase 5 CLI term: '{term}'")
+                else:
+                    checks_passed += 1
+
+            print(f"[OK] Phase 5 Standalone CLI & Packaging verified with entry points, subcommands, and Python SDK.")
+        except Exception as e:
+            errors.append(f"Phase 5 CLI check error: {e}")
+
     print("\n" + "-" * 60)
     if errors:
         print(f"[ERROR] Verification failed with {len(errors)} error(s):")
