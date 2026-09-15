@@ -274,6 +274,18 @@ def compute_paired_statistics(
     }
 
 
+def load_benchmark_corpus(corpus_name: str = "golden") -> List[Any]:
+    """Loads benchmark evaluation corpus by identifier."""
+    if corpus_name in ("dilemma", "dilemma_2"):
+        from .word_dilemma import load_word_dilemma_corpus
+        return load_word_dilemma_corpus()[:2]
+    elif corpus_name == "dilemma_full":
+        from .word_dilemma import load_word_dilemma_corpus
+        return load_word_dilemma_corpus()
+    else:
+        return create_golden_corpus()[:2]
+
+
 def run_comparative_benchmark(
     budget: int = 5000,
     seeds: List[int] | None = None,
@@ -281,16 +293,18 @@ def run_comparative_benchmark(
     grid_x: int = 10,
     grid_y: int = 10,
     parallel: bool = True,
+    corpus_name: str = "golden",
     save_report_path: Path | str | None = None,
 ) -> Dict[str, Any]:
     """Executes the full preregistered paired benchmark across all seeds."""
     if seeds is None:
         seeds = [42, 137, 256, 512, 1024]
 
-    corpus = create_golden_corpus()[:2]
+    corpus = load_benchmark_corpus(corpus_name)
 
     print("=================================================================")
     print(" Causal Attribution: MAP-Elites Evolution vs. Random Search")
+    print(f" Corpus Target:  {corpus_name} ({len(corpus)} documents)")
     print(f" Budget per Run: {budget} evaluations")
     print(f" Seeds ({len(seeds)}): {seeds}")
     print(f" Grid Niches:   {grid_x} x {grid_y} ({grid_x * grid_y} niches)")
@@ -427,10 +441,11 @@ def run_comparative_benchmark(
             "budget_evaluations": budget,
             "seeds": seeds,
             "num_seeds": len(seeds),
+            "corpus_target": corpus_name,
             "grid_dimensions": [grid_x, grid_y],
             "total_niches": grid_x * grid_y,
             "population_size": pop_size,
-            "evaluator_description": "Deterministic MultiDocumentCorpusEvaluator (Golden Archetypes: Article + Financial Table)",
+            "evaluator_description": f"Deterministic MultiDocumentCorpusEvaluator ({corpus_name})",
         },
         "comparative_summary": {
             "coverage_pct": {
@@ -466,13 +481,23 @@ def run_comparative_benchmark(
         },
     }
 
-    out_path = Path(save_report_path or (Path(__file__).resolve().parent.parent.parent / "reports" / "pdf2rtf_map_elites_vs_random_search.json"))
+    if save_report_path:
+        out_path = Path(save_report_path)
+    else:
+        filename = (
+            "pdf2rtf_map_elites_vs_random_search_dilemma.json"
+            if corpus_name in ("dilemma", "dilemma_2", "dilemma_full")
+            else "pdf2rtf_map_elites_vs_random_search.json"
+        )
+        out_path = Path(__file__).resolve().parent.parent.parent / "reports" / filename
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
 
     print("\n=================================================================")
     print(" BENCHMARK COMPLETED")
+    print(f" Target:    {corpus_name}")
     print(f" Coverage:  MAP-Elites {me_cov_m}% ± {me_cov_s}% vs. Random {rs_cov_m}% ± {rs_cov_s}% (Diff: {me_cov_m - rs_cov_m:+.2f}%, p={stats_cov['p_val']})")
     print(f" QD-Score:  MAP-Elites {me_qd_m} ± {me_qd_s} vs. Random {rs_qd_m} ± {rs_qd_s} (Diff: {me_qd_m - rs_qd_m:+.2f}, p={stats_qd['p_val']})")
     print(f" Max Fit:   MAP-Elites {me_max_m}% vs. Random {rs_max_m}%")
@@ -486,6 +511,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run MAP-Elites vs. Random Search Causal Benchmark.")
     parser.add_argument("--budget", type=int, default=5000, help="Evaluation budget per run.")
     parser.add_argument("--seeds", type=int, nargs="+", default=[42, 137, 256, 512, 1024], help="List of random seeds.")
+    parser.add_argument("--corpus", type=str, default="golden", choices=["golden", "dilemma", "dilemma_full"], help="Corpus target.")
     parser.add_argument("--no-parallel", dest="parallel", action="store_false", help="Disable parallel execution.")
     parser.add_argument("--out", type=str, default=None, help="Output report JSON path.")
     args = parser.parse_args()
@@ -493,6 +519,7 @@ if __name__ == "__main__":
     run_comparative_benchmark(
         budget=args.budget,
         seeds=args.seeds,
+        corpus_name=args.corpus,
         parallel=args.parallel,
         save_report_path=args.out,
     )

@@ -216,6 +216,49 @@ def verify_documentation() -> bool:
         except Exception as e:
             errors.append(f"Causal benchmark check error: {e}")
 
+    # Check 9: Typographic Dilemma Causal Attribution Benchmark (pdf2rtf_map_elites_vs_random_search_dilemma.json)
+    dilemma_causal_path = REPORTS_DIR / "pdf2rtf_map_elites_vs_random_search_dilemma.json"
+    if dilemma_causal_path.exists():
+        try:
+            d_causal = load_json("pdf2rtf_map_elites_vs_random_search_dilemma.json")
+            d_proto = d_causal["preregistered_protocol"]
+            d_b_evals = d_proto["budget_evaluations"]
+            d_n_seeds = d_proto["num_seeds"]
+            if d_b_evals < 1000 or d_n_seeds < 5:
+                errors.append(f"Dilemma causal benchmark requires budget >= 1000 and seeds >= 5 (got {d_b_evals}, {d_n_seeds})")
+            else:
+                checks_passed += 1
+                print(f"[OK] Dilemma Causal Benchmark verified with B={d_b_evals} evaluations across K={d_n_seeds} seeds.")
+
+            d_me_cov = d_causal["comparative_summary"]["coverage_pct"]["map_elites"]["mean"]
+            d_rs_cov = d_causal["comparative_summary"]["coverage_pct"]["random_search"]["mean"]
+            d_me_qd = d_causal["comparative_summary"]["qd_score"]["map_elites"]["mean"]
+            d_rs_qd = d_causal["comparative_summary"]["qd_score"]["random_search"]["mean"]
+
+            if f"{d_me_cov:.1f}%" not in doc_text and f"{d_me_cov}%" not in doc_text:
+                errors.append(f"README does not contain Dilemma MAP-Elites coverage {d_me_cov}%")
+            else:
+                checks_passed += 1
+
+            if f"{d_rs_cov:.1f}%" not in doc_text and f"{d_rs_cov}%" not in doc_text:
+                errors.append(f"README does not contain Dilemma Random Search coverage {d_rs_cov}%")
+            else:
+                checks_passed += 1
+
+            if str(d_me_qd) not in doc_text and f"{d_me_qd:.2f}" not in doc_text:
+                errors.append(f"README does not contain Dilemma MAP-Elites QD-score {d_me_qd}")
+            else:
+                checks_passed += 1
+
+            if str(d_rs_qd) not in doc_text and f"{d_rs_qd:.2f}" not in doc_text:
+                errors.append(f"README does not contain Dilemma Random Search QD-score {d_rs_qd}")
+            else:
+                checks_passed += 1
+
+            print(f"[OK] Dilemma Causal Attribution claims verified (ME Cov: {d_me_cov}%, RS Cov: {d_rs_cov}%, ME QD: {d_me_qd}, RS QD: {d_rs_qd}).")
+        except Exception as e:
+            errors.append(f"Dilemma causal benchmark check error: {e}")
+
     print("\n" + "-" * 60)
     if errors:
         print(f"[ERROR] Verification failed with {len(errors)} error(s):")

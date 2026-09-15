@@ -1,0 +1,445 @@
+{
+  "title": "Causal Attribution Benchmark: MAP-Elites Evolution vs. Uniform Random Search",
+  "timestamp": "2026-09-15T00:51:19Z",
+  "preregistered_protocol": {
+    "budget_evaluations": 1000,
+    "seeds": [
+      42,
+      137,
+      256,
+      512,
+      1024
+    ],
+    "num_seeds": 5,
+    "corpus_target": "dilemma",
+    "grid_dimensions": [
+      10,
+      10
+    ],
+    "total_niches": 100,
+    "population_size": 100,
+    "evaluator_description": "Deterministic MultiDocumentCorpusEvaluator (dilemma: word_dilemma_tight_lead + word_dilemma_compact_list)"
+  },
+  "comparative_summary": {
+    "coverage_pct": {
+      "map_elites": {
+        "mean": 98.4,
+        "std": 1.14
+      },
+      "random_search": {
+        "mean": 97.0,
+        "std": 0.71
+      },
+      "difference": 1.4,
+      "paired_test": {
+        "mean_diff": 1.4,
+        "t_stat": 2.0642,
+        "p_val": 0.039,
+        "cohens_d": 0.9231
+      },
+      "causal_significance": true
+    },
+    "qd_score": {
+      "map_elites": {
+        "mean": 94.48,
+        "std": 1.08
+      },
+      "random_search": {
+        "mean": 92.73,
+        "std": 0.62
+      },
+      "difference": 1.75,
+      "paired_test": {
+        "mean_diff": 1.7493,
+        "t_stat": 3.3559,
+        "p_val": 0.000791,
+        "cohens_d": 1.5008
+      },
+      "causal_significance": true
+    },
+    "max_fitness": {
+      "map_elites": {
+        "mean": 0.96,
+        "std": 0.01
+      },
+      "random_search": {
+        "mean": 0.96,
+        "std": 0.0
+      },
+      "difference": 0.0,
+      "paired_test": {
+        "mean_diff": 0.0027,
+        "t_stat": 1.0283,
+        "p_val": 0.30383,
+        "cohens_d": 0.4598
+      }
+    },
+    "mean_elite_fitness": {
+      "map_elites": {
+        "mean": 0.96,
+        "std": 0.0
+      },
+      "random_search": {
+        "mean": 0.96,
+        "std": 0.0
+      },
+      "difference": 0.0
+    }
+  },
+  "illumination_trajectory": [
+    {
+      "evaluations": 500,
+      "map_elites_coverage_mean": 91.2,
+      "random_search_coverage_mean": 93.0,
+      "coverage_advantage": -1.8,
+      "map_elites_qd_score_mean": 87.1,
+      "random_search_qd_score_mean": 88.65,
+      "qd_score_advantage": -1.55
+    },
+    {
+      "evaluations": 1000,
+      "map_elites_coverage_mean": 98.4,
+      "random_search_coverage_mean": 97.0,
+      "coverage_advantage": 1.4,
+      "map_elites_qd_score_mean": 94.48,
+      "random_search_qd_score_mean": 92.73,
+      "qd_score_advantage": 1.75
+    }
+  ],
+  "seed_level_runs": {
+    "map_elites": [
+      {
+        "algorithm": "map_elites",
+        "seed": 42,
+        "budget": 1000,
+        "generations": 10,
+        "population_size": 100,
+        "elapsed_seconds": 849.52,
+        "evaluations_per_second": 1.18,
+        "final_metrics": {
+          "occupied_niches": 98,
+          "coverage_pct": 98.0,
+          "qd_score": 94.1054,
+          "mean_fitness": 0.9603,
+          "max_fitness": 0.9616
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 90,
+            "coverage_pct": 90.0,
+            "qd_score": 86.3434,
+            "max_fitness": 0.9614,
+            "mean_fitness": 0.9594
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 94.1054,
+            "max_fitness": 0.9616,
+            "mean_fitness": 0.9603
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 137,
+        "budget": 1000,
+        "generations": 10,
+        "population_size": 100,
+        "elapsed_seconds": 868.94,
+        "evaluations_per_second": 1.15,
+        "final_metrics": {
+          "occupied_niches": 97,
+          "coverage_pct": 97.0,
+          "qd_score": 93.1579,
+          "mean_fitness": 0.9604,
+          "max_fitness": 0.9748
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 91,
+            "coverage_pct": 91.0,
+            "qd_score": 86.8508,
+            "max_fitness": 0.9748,
+            "mean_fitness": 0.9544
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 93.1579,
+            "max_fitness": 0.9748,
+            "mean_fitness": 0.9604
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 256,
+        "budget": 1000,
+        "generations": 10,
+        "population_size": 100,
+        "elapsed_seconds": 899.06,
+        "evaluations_per_second": 1.11,
+        "final_metrics": {
+          "occupied_niches": 100,
+          "coverage_pct": 100.0,
+          "qd_score": 95.9927,
+          "mean_fitness": 0.9599,
+          "max_fitness": 0.9615
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 93,
+            "coverage_pct": 93.0,
+            "qd_score": 89.1457,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9586
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 100,
+            "coverage_pct": 100.0,
+            "qd_score": 95.9927,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9599
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 512,
+        "budget": 1000,
+        "generations": 10,
+        "population_size": 100,
+        "elapsed_seconds": 902.09,
+        "evaluations_per_second": 1.11,
+        "final_metrics": {
+          "occupied_niches": 99,
+          "coverage_pct": 99.0,
+          "qd_score": 95.0751,
+          "mean_fitness": 0.9604,
+          "max_fitness": 0.9616
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 94,
+            "coverage_pct": 94.0,
+            "qd_score": 89.2507,
+            "max_fitness": 0.9616,
+            "mean_fitness": 0.9495
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 99,
+            "coverage_pct": 99.0,
+            "qd_score": 95.0751,
+            "max_fitness": 0.9616,
+            "mean_fitness": 0.9604
+          }
+        }
+      },
+      {
+        "algorithm": "map_elites",
+        "seed": 1024,
+        "budget": 1000,
+        "generations": 10,
+        "population_size": 100,
+        "elapsed_seconds": 851.45,
+        "evaluations_per_second": 1.17,
+        "final_metrics": {
+          "occupied_niches": 98,
+          "coverage_pct": 98.0,
+          "qd_score": 94.0674,
+          "mean_fitness": 0.9599,
+          "max_fitness": 0.9616
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 88,
+            "coverage_pct": 88.0,
+            "qd_score": 83.9045,
+            "max_fitness": 0.9616,
+            "mean_fitness": 0.9535
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 94.0674,
+            "max_fitness": 0.9616,
+            "mean_fitness": 0.9599
+          }
+        }
+      }
+    ],
+    "random_search": [
+      {
+        "algorithm": "random_search",
+        "seed": 42,
+        "budget": 1000,
+        "elapsed_seconds": 839.69,
+        "evaluations_per_second": 1.19,
+        "final_metrics": {
+          "occupied_niches": 97,
+          "coverage_pct": 97.0,
+          "qd_score": 92.9877,
+          "mean_fitness": 0.9586,
+          "max_fitness": 0.9615
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 94,
+            "coverage_pct": 94.0,
+            "qd_score": 89.5867,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9531
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 92.9877,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9586
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 137,
+        "budget": 1000,
+        "elapsed_seconds": 873.11,
+        "evaluations_per_second": 1.15,
+        "final_metrics": {
+          "occupied_niches": 97,
+          "coverage_pct": 97.0,
+          "qd_score": 92.1118,
+          "mean_fitness": 0.9496,
+          "max_fitness": 0.9615
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 93,
+            "coverage_pct": 93.0,
+            "qd_score": 88.6541,
+            "max_fitness": 0.9612,
+            "mean_fitness": 0.9533
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 92.1118,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9496
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 256,
+        "budget": 1000,
+        "elapsed_seconds": 885.33,
+        "evaluations_per_second": 1.13,
+        "final_metrics": {
+          "occupied_niches": 97,
+          "coverage_pct": 97.0,
+          "qd_score": 92.9952,
+          "mean_fitness": 0.9587,
+          "max_fitness": 0.9615
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 93,
+            "coverage_pct": 93.0,
+            "qd_score": 88.6371,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9531
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 97,
+            "coverage_pct": 97.0,
+            "qd_score": 92.9952,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9587
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 512,
+        "budget": 1000,
+        "elapsed_seconds": 853.38,
+        "evaluations_per_second": 1.17,
+        "final_metrics": {
+          "occupied_niches": 96,
+          "coverage_pct": 96.0,
+          "qd_score": 92.0619,
+          "mean_fitness": 0.959,
+          "max_fitness": 0.9616
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 95,
+            "coverage_pct": 95.0,
+            "qd_score": 90.1381,
+            "max_fitness": 0.9615,
+            "mean_fitness": 0.9488
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 96,
+            "coverage_pct": 96.0,
+            "qd_score": 92.0619,
+            "max_fitness": 0.9616,
+            "mean_fitness": 0.959
+          }
+        }
+      },
+      {
+        "algorithm": "random_search",
+        "seed": 1024,
+        "budget": 1000,
+        "elapsed_seconds": 840.78,
+        "evaluations_per_second": 1.19,
+        "final_metrics": {
+          "occupied_niches": 98,
+          "coverage_pct": 98.0,
+          "qd_score": 93.4952,
+          "mean_fitness": 0.954,
+          "max_fitness": 0.9614
+        },
+        "snapshots": {
+          "500": {
+            "evaluations": 500,
+            "occupied_niches": 90,
+            "coverage_pct": 90.0,
+            "qd_score": 86.2311,
+            "max_fitness": 0.9614,
+            "mean_fitness": 0.9581
+          },
+          "1000": {
+            "evaluations": 1000,
+            "occupied_niches": 98,
+            "coverage_pct": 98.0,
+            "qd_score": 93.4952,
+            "max_fitness": 0.9614,
+            "mean_fitness": 0.954
+          }
+        }
+      }
+    ]
+  }
+}
