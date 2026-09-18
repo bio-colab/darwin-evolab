@@ -310,6 +310,15 @@ _LAZY: dict[str, tuple[str, str]] = {
     "YosysCellReport": (".silicon", "YosysCellReport"),
     "YosysComparisonReport": (".silicon", "YosysComparisonReport"),
     "YosysSynthesisBridge": (".silicon", "YosysSynthesisBridge"),
+    # Replay Simulator & Discovery Trees (Dream-RSI)
+    "DiscoveryNode": (".replay_simulator", "DiscoveryNode"),
+    "DiscoveryTree": (".replay_simulator", "DiscoveryTree"),
+    "ReplaySimulator": (".replay_simulator", "ReplaySimulator"),
+    "ReplayObjective": (".replay_simulator", "ReplayObjective"),
+    "ExplorationPolicy": (".replay_simulator", "ExplorationPolicy"),
+    "GreedyBestFirstPolicy": (".replay_simulator", "GreedyBestFirstPolicy"),
+    "BreadthFirstPolicy": (".replay_simulator", "BreadthFirstPolicy"),
+    "AdaptivePlateauPolicy": (".replay_simulator", "AdaptivePlateauPolicy"),
 }
 
 
