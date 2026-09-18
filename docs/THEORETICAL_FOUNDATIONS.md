@@ -21,23 +21,22 @@ This document articulates the formal theoretical grounding of the three operatio
 ## 2. Cartesian Genetic Programming (CGP) & Neutral Drift
 
 ### 2.1 Theoretical Formulation (Miller, 1999, 2011)
-Cartesian Genetic Programming represents computational graphs as a two-dimensional grid of $N_r 	imes N_c$ nodes, where each node $n_i$ computes a function $f \in \mathcal{F}$ over inputs selected from previous columns (strictly feed-forward, acyclic directed graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$).
+Cartesian Genetic Programming represents computational graphs as a two-dimensional grid of $N_r \times N_c$ nodes, where each node $n_i$ computes a function $f \in \mathcal{F}$ over inputs selected from previous columns (strictly feed-forward, acyclic directed graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$).
 
 The defining mathematical property of CGP is the distinction between:
-- **Genotype ($\mathcal{G}_{	ext{geno}}$)**: The complete array of encoded nodes and interconnects, of fixed cardinality $|\mathcal{V}|$.
-- **Phenotype ($\mathcal{G}_{	ext{pheno}}$)**: The active sub-DAG obtained via backward reachability analysis from primary outputs $\mathcal{O}$:
-  $$\mathcal{V}_{	ext{active}} = \{ v \in \mathcal{V} \mid \exists w \in \mathcal{O} 	ext{ such that } v ightsquigarrow w \}$$
+- **Genotype ($\mathcal{G}_{\text{geno}}$)**: The complete array of encoded nodes and interconnects, of fixed cardinality $|\mathcal{V}|$.
+- **Phenotype ($\mathcal{G}_{\text{pheno}}$)**: The active sub-DAG obtained via backward reachability analysis from primary outputs $\mathcal{O}$:
+  $$\mathcal{V}_{\text{active}} = \{ v \in \mathcal{V} \mid \exists w \in \mathcal{O} \text{ such that } v ightsquigarrow w \}$$
 
 ### 2.2 Neutral Genetic Drift & Escape from Local Extrema
-In standard Genetic Algorithms, search plateaus ($
-abla f = 0$) induce stagnation. Miller demonstrated that the non-coding nodes ($\mathcal{V}_{	ext{neutral}} = \mathcal{V} \setminus \mathcal{V}_{	ext{active}}$) act as an unconstrained reservoir for neutral genetic drift.
+In standard Genetic Algorithms, search plateaus ($\nabla f = 0$) induce stagnation. Miller demonstrated that the non-coding nodes ($\mathcal{V}_{\text{neutral}} = \mathcal{V} \setminus \mathcal{V}_{\text{active}}$) act as an unconstrained reservoir for neutral genetic drift.
 
 Under Miller's canonical $(1 + \lambda)$ Evolutionary Strategy:
-$$\mathcal{P}_{t+1} = egin{cases} 
-\mathcal{C}^* & 	ext{if } f(\mathcal{C}^*) \ge f(\mathcal{P}_t) \
-\mathcal{P}_t & 	ext{otherwise}
+$$\mathcal{P}_{t+1} = \begin{cases} 
+\mathcal{C}^* & \text{if } f(\mathcal{C}^*) \ge f(\mathcal{P}_t) \
+\mathcal{P}_t & \text{otherwise}
 \end{cases}$$
-where $\mathcal{C}^* = rg\max_{c \in \{\mathcal{C}_1, \dots, \mathcal{C}_\lambda\}} f(c)$.
+where $\mathcal{C}^* = \arg\max_{c \in \{\mathcal{C}_1, \dots, \mathcal{C}_\lambda\}} f(c)$.
 
 The strict weak inequality ($\ge$) permits the parent to be replaced by an offspring of identical phenotypic fitness ($\Delta f = 0$), allowing the genotype to traverse neutral networks in genotype space until discovering an escape portal to higher fitness basins.
 
@@ -59,8 +58,8 @@ Koza formalized computer program synthesis as natural selection over executable 
 
 ### 3.2 Parsimony Pressure & Code Bloat Mitigation
 In program evolution, genotypes tend to grow monotonically with unexecuted or functionally redundant code fragments (syntactic introns or "bloat"). Koza established parsimony pressure to penalize excessive structural complexity:
-$$f_{	ext{parsimonious}}(P) = f_{	ext{empirical}}(P) - lpha \cdot \Omega(P)$$
-where $\Omega(P)$ denotes a structural complexity measure (e.g., node count or edit distance), and $lpha > 0$ governs parsimony regularization.
+$$f_{\text{parsimonious}}(P) = f_{\text{empirical}}(P) - \alpha \cdot \Omega(P)$$
+where $\Omega(P)$ denotes a structural complexity measure (e.g., node count or edit distance), and $\alpha > 0$ governs parsimony regularization.
 
 ### 3.3 Analog Synthesis via SPICE-in-the-Loop
 In *Genetic Programming III* (Koza et al., 1999), Koza demonstrated the automated synthesis of analog circuits (such as operational amplifiers and elliptic filters) using embryonic electrical nodes modified by developmental transforms and evaluated via SPICE circuit simulations.
@@ -77,11 +76,11 @@ In *Genetic Programming III* (Koza et al., 1999), Koza demonstrated the automate
 
 ### 4.1 Theoretical Formulation (Holland, 1975)
 Holland provided the foundational mathematical framework for adaptation in natural and artificial systems. Central to this framework is the **Schema Theorem**:
-$$\mathbb{E}[m(H, t+1)] \ge m(H, t) \cdot rac{f(H)}{ar{f}(t)} \left[ 1 - p_c rac{\delta(H)}{l - 1} - o(H) p_m ight]$$
+$$\mathbb{E}[m(H, t+1)] \ge m(H, t) \cdot \frac{f(H)}{\bar{f}(t)} \left[ 1 - p_c \frac{\delta(H)}{l - 1} - o(H) p_m ight]$$
 where:
 - $m(H, t)$ is the representation count of schema $H$ at generation $t$,
 - $f(H)$ is the mean fitness of individuals sampling schema $H$,
-- $ar{f}(t)$ is the population mean fitness,
+- $\bar{f}(t)$ is the population mean fitness,
 - $\delta(H)$ is the defining length of the schema,
 - $o(H)$ is the schema order,
 - $p_c, p_m$ denote crossover and mutation probabilities.
@@ -95,9 +94,9 @@ Furthermore, Holland's Bucket Brigade algorithm established the formal mechanism
 
 ### 4.3 Implementation in `darwin-evolab`
 - **Module**: `src/evolab/engine.py`, `src/evolab/causal.py`, & `src/evolab/priors.py`
-- **Causal Delta Tracking**: `_causal_events` logs the empirical fitness transition $\Delta f = f_{	ext{child}} - ar{f}_{	ext{parents}}$ attributable to specific mutation classes.
+- **Causal Delta Tracking**: `_causal_events` logs the empirical fitness transition $\Delta f = f_{\text{child}} - \bar{f}_{\text{parents}}$ attributable to specific mutation classes.
 - **Empirical Experience Prior**: `ExperienceMutationPrior` computes Laplace-smoothed sampling weights:
-  $$w_k = (1 - \lambda) + \lambda \cdot rac{s_k + lpha}{n_k + 2lpha}$$
+  $$w_k = (1 - \lambda) + \lambda \cdot \frac{s_k + \alpha}{n_k + 2\alpha}$$
   instantiating Holland's adaptive trial allocation over AST mutation operators with explicit zero-signal gating ($M_6$).
 
 ---

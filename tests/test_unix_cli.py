@@ -10,6 +10,7 @@ Validates:
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -71,13 +72,20 @@ def test_cli_eval_json_format():
     assert data["artifacts"]["dimension"] == 2
 
 
-def test_cli_stdout_purity_format_json():
+def test_cli_stdout_purity_format_json(tmp_path: Path):
     """Verify stdout contains ONLY parseable JSON without banner or status noise when --format json is used."""
+    rep_out = tmp_path / "run_report.json"
     proc = subprocess.run(
-        [sys.executable, "-m", "evolab.cli", "optimize", "-g", "2", "-p", "4", "-s", "1", "--format", "json"],
+        [
+            sys.executable, "-m", "evolab.cli", "optimize",
+            "-g", "2", "-p", "4", "-s", "1",
+            "--format", "json",
+            "-o", str(rep_out),
+        ],
         capture_output=True,
         text=True,
-        cwd=str(ROOT),
+        cwd=str(tmp_path),
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONIOENCODING": "utf-8"},
     )
     assert proc.returncode in (0, 1)
     # stdout MUST be valid JSON starting with '{'
@@ -90,11 +98,19 @@ def test_cli_stdout_purity_format_json():
     assert "Engine: GA" in proc.stderr
 
     # Run with --quiet: stderr should be completely silent (Rule of Silence)
+    rep_quiet = tmp_path / "run_report_quiet.json"
     proc_quiet = subprocess.run(
-        [sys.executable, "-m", "evolab.cli", "optimize", "-g", "2", "-p", "4", "-s", "1", "--format", "json", "--quiet"],
+        [
+            sys.executable, "-m", "evolab.cli", "optimize",
+            "-g", "2", "-p", "4", "-s", "1",
+            "--format", "json",
+            "--quiet",
+            "-o", str(rep_quiet),
+        ],
         capture_output=True,
         text=True,
-        cwd=str(ROOT),
+        cwd=str(tmp_path),
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONIOENCODING": "utf-8"},
     )
     assert proc_quiet.returncode in (0, 1)
     assert proc_quiet.stderr == ""
@@ -173,16 +189,19 @@ def test_cli_broken_pipe_handling():
 def test_cli_telemetry_stream(tmp_path: Path):
     """Verify --telemetry-stream emits real-time JSONL generation events."""
     telemetry_file = tmp_path / "telemetry.jsonl"
+    rep_out = tmp_path / "run_report.json"
     proc = subprocess.run(
         [
             sys.executable, "-m", "evolab.cli", "optimize",
             "-g", "3", "-p", "4", "-s", "42",
             "--telemetry-stream", str(telemetry_file),
             "--quiet",
+            "-o", str(rep_out),
         ],
         capture_output=True,
         text=True,
-        cwd=str(ROOT),
+        cwd=str(tmp_path),
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONIOENCODING": "utf-8"},
     )
     assert proc.returncode in (0, 1)
     assert telemetry_file.is_file()
@@ -252,6 +271,7 @@ def test_cli_external_driver(tmp_path: Path):
     driver_script.write_text(driver_code, encoding="utf-8")
 
     driver_cmd = f"{sys.executable} {driver_script}"
+    rep_out = tmp_path / "run_report.json"
     proc = subprocess.run(
         [
             sys.executable, "-m", "evolab.cli", "optimize",
@@ -259,10 +279,12 @@ def test_cli_external_driver(tmp_path: Path):
             "--external-driver", driver_cmd,
             "--format", "json",
             "--quiet",
+            "-o", str(rep_out),
         ],
         capture_output=True,
         text=True,
-        cwd=str(ROOT),
+        cwd=str(tmp_path),
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONIOENCODING": "utf-8"},
     )
     assert proc.returncode in (0, 1)
     data = json.loads(proc.stdout)
@@ -282,6 +304,7 @@ def test_cli_repair_stdin_piping(tmp_path: Path):
 
     buggy_source = "def compute(x):\n    return x + 2\n"
 
+    report_out = tmp_path / "run_report.json"
     proc = subprocess.run(
         [
             sys.executable, "-m", "evolab.cli", "repair",
@@ -290,11 +313,13 @@ def test_cli_repair_stdin_piping(tmp_path: Path):
             "--pytest", str(test_file),
             "--format", "patch",
             "--quiet",
+            "-o", str(report_out),
         ],
         input=buggy_source,
         capture_output=True,
         text=True,
-        cwd=str(ROOT),
+        cwd=str(tmp_path),
+        env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONIOENCODING": "utf-8"},
     )
     assert proc.returncode in (0, 1)
     # Rule of silence: stderr must be completely empty with --quiet

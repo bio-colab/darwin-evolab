@@ -275,6 +275,12 @@ class NGSpiceBridge:
                 tmp.unlink()
             except OSError:
                 pass
+            b3log = Path("b3v33check.log")
+            if b3log.exists():
+                try:
+                    b3log.unlink()
+                except OSError:
+                    pass
         log = (proc.stdout or "") + "\n" + (proc.stderr or "")
         art = parse_tran_table(log)
         meta = dict(art.metadata)
@@ -372,6 +378,12 @@ class NGSpiceBridge:
                 tmp_cir.unlink()
             except OSError:
                 pass
+            b3log = Path("b3v33check.log")
+            if b3log.exists():
+                try:
+                    b3log.unlink()
+                except OSError:
+                    pass
 
     # ---- NEW: config-driven file execution (opensource-analog-circuits style) ----
 

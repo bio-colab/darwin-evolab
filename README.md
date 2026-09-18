@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-772%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-777%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, and physical bounds are explicitly disclosed. We invite peer audit and critique.
 
@@ -147,9 +147,9 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 
 ```
 tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Genesis Shim, UNIX Toolchain) : 603 passed, 1 skipped (100%)
-experimental/ (Electronics, EvoMaze, Neuromorphic CGP, PDF2RTF, Genesis Bridge)                    : 169 passed (100%)
+experimental/ (Electronics, EvoMaze, Neuromorphic CGP, PDF2RTF, Genesis Bridge)                    : 174 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                        : 772 passed (100%)
+Total Automated Test Suite                                                                        : 778 automated tests (777 passed, 1 skipped)
 ```
 
 ---

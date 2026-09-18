@@ -136,10 +136,12 @@ def test_swe_bench_export_solution(tmp_path):
 def test_cli_swe_bench_execution(tmp_path):
     patch_out = tmp_path / "cli_swe.patch"
     fixture_path = FIXTURES_DIR / "sympy__sympy_13480.json"
+    rep_out = tmp_path / "run_report.json"
     cmd = [
         "evolve",
         "--swe-bench", str(fixture_path),
         "--patch-out", str(patch_out),
+        "-o", str(rep_out),
     ]
     ret = main(cmd)
     assert ret == 0

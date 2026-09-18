@@ -361,7 +361,7 @@ def test_cli_evolve_end_to_end(tmp_path):
         [sys.executable, str(root / "run.py"), "evolve",
          "-g", "3", "-p", "8", "-s", "1", "-t", "200",
          "-k", "2", "--mode", "static", "-o", str(out)],
-        capture_output=True, text=True, cwd=tmp_path,
+        capture_output=True, text=True, encoding="utf-8", cwd=tmp_path,
         env={**os.environ, "PYTHONIOENCODING": "utf-8"},
     )
     assert proc.returncode == 0, proc.stderr
@@ -645,7 +645,7 @@ def test_cli_module_end_to_end(tmp_path):
         [sys.executable, "-m", "evolab.cli", "evolve",
          "-g", "2", "-p", "6", "-s", "2", "-t", "200",
          "--mode", "static", "-o", str(out)],
-        capture_output=True, text=True, cwd=tmp_path, env=env,
+        capture_output=True, text=True, encoding="utf-8", cwd=tmp_path, env=env,
     )
     assert proc.returncode == 0, proc.stderr
     rep = parse_report(out)

@@ -76,7 +76,7 @@ Single-edit AST catalog mutations successfully repair localized semantic errors 
 
 In accordance with scientific integrity standards, we disclose negative results where proposed theoretical mechanisms failed to produce statistically significant performance gains over simpler baselines.
 
-### 3.1 M7: Transition Sequence Prior (`scripts/ab_sequence_memory.py`)
+### 3.1 M7: Transition Sequence Prior (`scripts/historical/ab_sequence_memory.py`)
 - **Hypothesis**: Conditioning mutation probabilities on sequential edit pairs ($k_1 \to k_2$) would outperform marginal mutation probabilities.
 - **Protocol**: 480 paired trials (30 student seeds × 4 scenarios × 4 arms) with Fisher's Exact test.
 - **Measured Result**:
@@ -87,7 +87,7 @@ In accordance with scientific integrity standards, we disclose negative results 
 - **Verdict**: **No statistically significant effect** ($p = 0.879$ head-to-head vs marginal prior). Sequence prior remains strictly opt-in.
 - **Raw Report**: [`reports/ab_sequence_memory.json`](../reports/ab_sequence_memory.json).
 
-### 3.2 M8: Genetic Initialization Memory & Dead Gate Avoidance (`scripts/ab_genetic_init_memory.py`)
+### 3.2 M8: Genetic Initialization Memory & Dead Gate Avoidance (`scripts/historical/ab_genetic_init_memory.py`)
 - **Hypothesis**: Pre-mining fatal 1-edit mutations from teacher runs and avoiding them in Generation 0 would accelerate convergence.
 - **Protocol**: 480 runs comparing control, redraw baseline, and two avoidance thresholds.
 - **Measured Result**:
@@ -99,7 +99,7 @@ In accordance with scientific integrity standards, we disclose negative results 
 - **Verdict**: **No statistically significant benefit**. Left disabled by default.
 - **Raw Report**: [`reports/ab_genetic_init_memory.json`](../reports/ab_genetic_init_memory.json).
 
-### 3.3 M9: Multi-Edit Composition Seeding (`scripts/ab_composition_seeding.py`)
+### 3.3 M9: Multi-Edit Composition Seeding (`scripts/historical/ab_composition_seeding.py`)
 - **Hypothesis**: Seeding partial fragments of historical winning multi-edit compositions into the initial population would jump-start search.
 - **Protocol**: 480 student runs + 96 teacher runs across 4 arms.
 - **Measured Result**:
@@ -110,7 +110,7 @@ In accordance with scientific integrity standards, we disclose negative results 
 - **Verdict**: Memory seeding achieved $+8$ resolutions over random warm-start ($94$ vs $86$), indicating positive directional bias, but did not clear the pre-registered statistical proof threshold ($p = 0.297$). Maintained as opt-in.
 - **Raw Report**: [`reports/ab_composition_seeding.json`](../reports/ab_composition_seeding.json).
 
-### 3.4 BF-1 & BF-2: Budget Frontier & Stagnation Plateaus (`scripts/ab_budget_frontier.py`)
+### 3.4 BF-1 & BF-2: Budget Frontier & Stagnation Plateaus (`scripts/historical/ab_budget_frontier.py`)
 - **Hypothesis**: Increasing the generation ladder from 8 to 16 to 32 generations would continuously yield more repairs.
 - **Measured Result**:
   - Across 120 trials, search converged or stagnated within $\le 193$ evaluations.
@@ -172,6 +172,15 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 | [`reports/budget_frontier.json`](../reports/budget_frontier.json) | Generation ladder evaluation budget frontier | 120 runs |
 | [`reports/budget_frontier_full_consumption.json`](../reports/budget_frontier_full_consumption.json) | Budget frontier under suspended stagnation governors | 120 runs |
 | [`reports/self_benchmark.json`](../reports/self_benchmark.json) | Autonomous self-model and governor decision audit (`REJECT` verdict) | Pre-registered suite |
+| [`reports/pdf2rtf_real_word_holdout_benchmark.json`](../reports/pdf2rtf_real_word_holdout_benchmark.json) | Real Microsoft Word Holdout Benchmark | $N=12$ documents |
+| [`reports/pdf2rtf_word_oracle_audit.json`](../reports/pdf2rtf_word_oracle_audit.json) | Word-in-the-Loop Oracle Live COM Audit | $N=12$ documents, 100% pass |
+| [`reports/pdf2rtf_corpus_54_benchmark.json`](../reports/pdf2rtf_corpus_54_benchmark.json) | Comprehensive Evolab-54 Multi-Disciplinary Corpus Benchmark | $N=54$ documents |
+| [`reports/pdf2rtf_map_elites_archive_stats.json`](../reports/pdf2rtf_map_elites_archive_stats.json) | MAP-Elites Quality Diversity Archive Statistics (100% coverage, QD 99.71) | 100 niches |
+| [`reports/pdf2rtf_ablation_study.json`](../reports/pdf2rtf_ablation_study.json) | Parameter Ablation Study across Behavioral Spectrum | $M=50$ random configurations |
+| [`reports/pdf2rtf_multiseed_evaluation.json`](../reports/pdf2rtf_multiseed_evaluation.json) | Multi-Seed Robustness Evaluation | $K=20$ independent seeds |
+| [`reports/pdf2rtf_specialized_vs_monolithic_benchmark.json`](../reports/pdf2rtf_specialized_vs_monolithic_benchmark.json) | Specialized Niche Policies vs Monolithic Optimizer Comparison | 12 holdout documents |
+| [`reports/pdf2rtf_map_elites_vs_random_search.json`](../reports/pdf2rtf_map_elites_vs_random_search.json) | Causal Attribution Benchmark (Matched Budget $B=5000$) | $K=5$ seeds |
+| [`reports/pdf2rtf_map_elites_vs_random_search_dilemma.json`](../reports/pdf2rtf_map_elites_vs_random_search_dilemma.json) | Deceptive Trap Dilemma Causal Attribution Benchmark ($B=1000$) | $K=5$ seeds |
 
 ---
 
@@ -192,7 +201,10 @@ python run.py evolve --scenario requests_http_helper --diff
 python run.py evolve --scenario lru_cache_logic --diff
 python run.py evolve --scenario multi_file_config --diff
 
-# 4. Verify Complete Automated Test Suite (598 passed)
-pytest tests/ -q
-pytest experimental/electronics/tests/ -q
+# 4. Verify Complete Automated Test Suite (778 tests: 777 passed, 1 skipped)
+pytest tests/ -q           # 603 passed, 1 skipped
+pytest experimental/ -q    # 174 passed
+
+# 5. Verify Truth in Documentation
+python scripts/verify_docs.py
 ```
