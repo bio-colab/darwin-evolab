@@ -325,6 +325,12 @@ _LAZY: dict[str, tuple[str, str]] = {
     "DreamReweightingResult": (".dream", "DreamReweightingResult"),
     "sample_dirichlet_weights": (".dream", "sample_dirichlet_weights"),
     "run_dream_reweighting": (".dream", "run_dream_reweighting"),
+    # Dream Subsystem: Budget Elasticity & Stagnation Breaking (Idea 2)
+    "ElasticityConfig": (".dream", "ElasticityConfig"),
+    "BudgetElasticityPolicy": (".dream", "BudgetElasticityPolicy"),
+    "BudgetElasticityOptimizer": (".dream", "BudgetElasticityOptimizer"),
+    "DreamElasticityResult": (".dream", "DreamElasticityResult"),
+    "run_budget_elasticity_dreaming": (".dream", "run_budget_elasticity_dreaming"),
 }
 
 

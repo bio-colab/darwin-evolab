@@ -1,0 +1,136 @@
+{
+  "timestamp_utc": "2026-09-18T21:23:24.392397+00:00",
+  "total_candidates_sampled": 10000,
+  "optimal_config": {
+    "patience": 1,
+    "min_delta": 0.1,
+    "burst_multiplier": 3,
+    "breakthrough_threshold": 70.0,
+    "max_stagnant_depth": 8
+  },
+  "governor_verdict": {
+    "decision": "ACCEPT",
+    "reasons": [
+      "all_gates_passed"
+    ],
+    "mean_b": 64.77,
+    "mean_c": 64.84,
+    "median_b": 74.72,
+    "median_c": 74.745,
+    "worst_b": 9.97,
+    "worst_c": 9.97,
+    "regressions": 0,
+    "delta_mean": 0.07,
+    "delta_median": 0.025
+  },
+  "p_value": 0.14701,
+  "cohen_d": 0.3425,
+  "mean_baseline_value": 64.77,
+  "mean_optimal_value": 64.84,
+  "delta_mean_value": 0.07,
+  "mean_evaluations_saved_percent": 28.0,
+  "instances_evaluated": 10,
+  "instances_retained_percent": 100.0,
+  "per_instance_records": [
+    {
+      "instance_name": "marshmallow-code__marshmallow-1343",
+      "baseline_evals": 1,
+      "optimal_evals": 1,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 9.97,
+      "optimal_v": 9.97,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "pallets__click-1608",
+      "baseline_evals": 19,
+      "optimal_evals": 6,
+      "evals_saved": 13,
+      "evals_saved_percent": 68.42,
+      "baseline_v": 49.07,
+      "optimal_v": 49.72,
+      "delta_v": 0.65
+    },
+    {
+      "instance_name": "pallets__flask-4992",
+      "baseline_evals": 5,
+      "optimal_evals": 5,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 99.77,
+      "optimal_v": 99.77,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "pallets__jinja-1155",
+      "baseline_evals": 3,
+      "optimal_evals": 3,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 99.87,
+      "optimal_v": 99.87,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "psf__black-2964",
+      "baseline_evals": 2,
+      "optimal_evals": 2,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 19.92,
+      "optimal_v": 19.92,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "psf__requests-3367",
+      "baseline_evals": 4,
+      "optimal_evals": 4,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 99.82,
+      "optimal_v": 99.82,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "pytest-dev__pytest-5227",
+      "baseline_evals": 4,
+      "optimal_evals": 4,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 99.82,
+      "optimal_v": 99.82,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "sphinx-doc__sphinx-8721",
+      "baseline_evals": 2,
+      "optimal_evals": 2,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 19.92,
+      "optimal_v": 19.92,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "sympy__sympy-13480",
+      "baseline_evals": 3,
+      "optimal_evals": 3,
+      "evals_saved": 0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 99.87,
+      "optimal_v": 99.87,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "urllib3__urllib3-2168",
+      "baseline_evals": 7,
+      "optimal_evals": 6,
+      "evals_saved": 1,
+      "evals_saved_percent": 14.29,
+      "baseline_v": 49.67,
+      "optimal_v": 49.72,
+      "delta_v": 0.05
+    }
+  ]
+}
