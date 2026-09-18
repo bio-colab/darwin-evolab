@@ -1,14 +1,14 @@
 """
-genesis_bridge.py — Backward-compatibility forwarding shim.
+experimental/genesis_bridge — Genesis physics simulator & foundation model evolutionary bridge.
 
-NOTE: The Genesis & Foundation Model Evolutionary Bridge has been transitioned to
-a frozen exploratory research track located at `experimental.genesis_bridge`.
-This module re-exports all symbols to guarantee zero breakage for existing imports
-or external integrations.
+Status: FROZEN / EXPLORATORY RESEARCH TRACK (physical_claim: false)
+This exploratory research track bridges the universal evolutionary kernel with external physical
+simulation environments (Genesis) and foundation models via tensor and GNN representations.
+Preserved in a frozen state under experimental/ for academic reproducibility.
 """
 from __future__ import annotations
 
-from experimental.genesis_bridge import (
+from .bridge import (
     FoundationModelPrior,
     GenesisBridge,
     GenesisEnvironment,

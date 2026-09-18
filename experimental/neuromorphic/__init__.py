@@ -1,9 +1,10 @@
 """
 experimental/neuromorphic — Drosophila connectome neuromorphic circuits module.
 
+Status: FROZEN / EXPLORATORY RESEARCH TRACK (physical_claim: false)
 Provides biological neural motif synthesis (Hassenstein-Reichardt EMD, Olfactory
 lateral inhibition) using Cartesian Genetic Programming with synthesizable
-Verilog-2001 export.
+Verilog-2001 export. Preserved in a frozen state under experimental/ for academic reproducibility.
 """
 from .adapter import NeuromorphicAdapter
 from .evaluator import NeuromorphicEvaluator
