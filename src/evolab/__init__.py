@@ -319,6 +319,12 @@ _LAZY: dict[str, tuple[str, str]] = {
     "GreedyBestFirstPolicy": (".replay_simulator", "GreedyBestFirstPolicy"),
     "BreadthFirstPolicy": (".replay_simulator", "BreadthFirstPolicy"),
     "AdaptivePlateauPolicy": (".replay_simulator", "AdaptivePlateauPolicy"),
+    # Dream Subsystem: Autonomous Operator Reweighting & Governor Verification (Dream-RSI)
+    "OperatorDistribution": (".dream", "OperatorDistribution"),
+    "OperatorReweighter": (".dream", "OperatorReweighter"),
+    "DreamReweightingResult": (".dream", "DreamReweightingResult"),
+    "sample_dirichlet_weights": (".dream", "sample_dirichlet_weights"),
+    "run_dream_reweighting": (".dream", "run_dream_reweighting"),
 }
 
 

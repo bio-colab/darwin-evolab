@@ -172,6 +172,7 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 | [`reports/budget_frontier.json`](../reports/budget_frontier.json) | Generation ladder evaluation budget frontier | 120 runs |
 | [`reports/budget_frontier_full_consumption.json`](../reports/budget_frontier_full_consumption.json) | Budget frontier under suspended stagnation governors | 120 runs |
 | [`reports/self_benchmark.json`](../reports/self_benchmark.json) | Autonomous self-model and governor decision audit (`REJECT` verdict) | Pre-registered suite |
+| [`reports/dream_operator_reweighting.json`](../reports/dream_operator_reweighting.json) | Dream-RSI Autonomous Operator Reweighting via Replay Simulation (`ACCEPT` verdict) | 10,000 Dirichlet candidates |
 | [`reports/pdf2rtf_real_word_holdout_benchmark.json`](../reports/pdf2rtf_real_word_holdout_benchmark.json) | Real Microsoft Word Holdout Benchmark | $N=12$ documents |
 | [`reports/pdf2rtf_word_oracle_audit.json`](../reports/pdf2rtf_word_oracle_audit.json) | Word-in-the-Loop Oracle Live COM Audit | $N=12$ documents, 100% pass |
 | [`reports/pdf2rtf_corpus_54_benchmark.json`](../reports/pdf2rtf_corpus_54_benchmark.json) | Comprehensive Evolab-54 Multi-Disciplinary Corpus Benchmark | $N=54$ documents |
@@ -201,8 +202,8 @@ python run.py evolve --scenario requests_http_helper --diff
 python run.py evolve --scenario lru_cache_logic --diff
 python run.py evolve --scenario multi_file_config --diff
 
-# 4. Verify Complete Automated Test Suite (788 tests: 787 passed, 1 skipped)
-pytest tests/ -q           # 613 passed, 1 skipped
+# 4. Verify Complete Automated Test Suite (795 tests: 794 passed, 1 skipped)
+pytest tests/ -q           # 620 passed, 1 skipped
 pytest experimental/ -q    # 174 passed
 
 # 5. Verify Truth in Documentation

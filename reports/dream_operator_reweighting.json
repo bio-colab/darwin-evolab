@@ -1,0 +1,156 @@
+{
+  "timestamp_utc": "2026-09-18T06:59:09.623705+00:00",
+  "total_candidates_sampled": 10000,
+  "operators": [
+    "InsertGuard",
+    "BoundaryFlip",
+    "SwapCondition",
+    "DeleteStatement",
+    "OffByOne",
+    "BinOpFlip",
+    "ConstantMutate"
+  ],
+  "baseline_weights": {
+    "InsertGuard": 0.142857,
+    "BoundaryFlip": 0.142857,
+    "SwapCondition": 0.142857,
+    "DeleteStatement": 0.142857,
+    "OffByOne": 0.142857,
+    "BinOpFlip": 0.142857,
+    "ConstantMutate": 0.142857
+  },
+  "optimal_weights": {
+    "InsertGuard": 0.150228,
+    "BoundaryFlip": 0.152956,
+    "SwapCondition": 0.113554,
+    "DeleteStatement": 0.162571,
+    "OffByOne": 0.16694,
+    "BinOpFlip": 0.183441,
+    "ConstantMutate": 0.070309
+  },
+  "governor_verdict": {
+    "decision": "ACCEPT",
+    "reasons": [
+      "all_gates_passed"
+    ],
+    "mean_b": 64.7846,
+    "mean_c": 64.7918,
+    "median_b": 74.7342,
+    "median_c": 74.7519,
+    "worst_b": 9.97,
+    "worst_c": 9.97,
+    "regressions": 0,
+    "delta_mean": 0.0072,
+    "delta_median": 0.0177
+  },
+  "p_value": 0.008057,
+  "cohen_d": 0.9239,
+  "mean_baseline_value": 64.7846,
+  "mean_optimal_value": 64.7918,
+  "delta_mean_value": 0.0072,
+  "mean_evaluations_saved_percent": 3.71,
+  "instances_evaluated": 10,
+  "instances_retained_percent": 100.0,
+  "per_instance_records": [
+    {
+      "instance_name": "marshmallow-code__marshmallow-1343",
+      "best_score": 10.0,
+      "baseline_evals": 1.0,
+      "optimal_evals": 1.0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 9.97,
+      "optimal_v": 9.97,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "pallets__click-1608",
+      "best_score": 50.0,
+      "baseline_evals": 19.0,
+      "optimal_evals": 19.12,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 49.088,
+      "optimal_v": 49.0824,
+      "delta_v": -0.0056
+    },
+    {
+      "instance_name": "pallets__flask-4992",
+      "best_score": 100.0,
+      "baseline_evals": 5.0,
+      "optimal_evals": 4.75,
+      "evals_saved_percent": 4.91,
+      "baseline_v": 99.7833,
+      "optimal_v": 99.794,
+      "delta_v": 0.0106
+    },
+    {
+      "instance_name": "pallets__jinja-1155",
+      "best_score": 100.0,
+      "baseline_evals": 3.0,
+      "optimal_evals": 2.85,
+      "evals_saved_percent": 4.91,
+      "baseline_v": 99.88,
+      "optimal_v": 99.8859,
+      "delta_v": 0.0059
+    },
+    {
+      "instance_name": "psf__black-2964",
+      "best_score": 20.0,
+      "baseline_evals": 2.0,
+      "optimal_evals": 1.76,
+      "evals_saved_percent": 12.13,
+      "baseline_v": 19.94,
+      "optimal_v": 19.9473,
+      "delta_v": 0.0073
+    },
+    {
+      "instance_name": "psf__requests-3367",
+      "best_score": 100.0,
+      "baseline_evals": 4.0,
+      "optimal_evals": 3.8,
+      "evals_saved_percent": 4.91,
+      "baseline_v": 99.84,
+      "optimal_v": 99.8479,
+      "delta_v": 0.0079
+    },
+    {
+      "instance_name": "pytest-dev__pytest-5227",
+      "best_score": 100.0,
+      "baseline_evals": 4.0,
+      "optimal_evals": 3.8,
+      "evals_saved_percent": 4.91,
+      "baseline_v": 99.84,
+      "optimal_v": 99.8479,
+      "delta_v": 0.0079
+    },
+    {
+      "instance_name": "sphinx-doc__sphinx-8721",
+      "best_score": 20.0,
+      "baseline_evals": 2.0,
+      "optimal_evals": 1.76,
+      "evals_saved_percent": 12.13,
+      "baseline_v": 19.94,
+      "optimal_v": 19.9473,
+      "delta_v": 0.0073
+    },
+    {
+      "instance_name": "sympy__sympy-13480",
+      "best_score": 100.0,
+      "baseline_evals": 3.0,
+      "optimal_evals": 2.85,
+      "evals_saved_percent": 4.91,
+      "baseline_v": 99.88,
+      "optimal_v": 99.8859,
+      "delta_v": 0.0059
+    },
+    {
+      "instance_name": "urllib3__urllib3-2168",
+      "best_score": 50.0,
+      "baseline_evals": 7.0,
+      "optimal_evals": 6.45,
+      "evals_saved_percent": 7.91,
+      "baseline_v": 49.685,
+      "optimal_v": 49.7099,
+      "delta_v": 0.0249
+    }
+  ]
+}

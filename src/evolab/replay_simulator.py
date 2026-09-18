@@ -334,6 +334,18 @@ class ReplayObjective:
     beta1: float = 0.05
     beta2: float = 0.02
 
+    def compute_raw(
+        self,
+        max_score: float,
+        n_attempts: float,
+        rounds_completed: int,
+    ) -> float:
+        """Computes replay objective score directly from raw metrics."""
+        cost_penalty = self.beta1 * n_attempts
+        k_star = max(1, rounds_completed)
+        parallel_bonus = self.beta2 * (n_attempts / k_star) if rounds_completed > 0 else 0.0
+        return float(max_score - cost_penalty + parallel_bonus)
+
     def compute(
         self,
         revealed_tree: DiscoveryTree,
@@ -346,18 +358,8 @@ class ReplayObjective:
         # Best solution quality attained in revealed subtree
         best = revealed_tree.best_node()
         max_score = best.score if best else 0.0
-
-        # Number of revealed non-root attempts
         n_attempts = max(0, revealed_tree.size() - 1)
-
-        # Cost penalty
-        cost_penalty = self.beta1 * n_attempts
-
-        # Parallelism reward: average attempts per decision round
-        k_star = max(1, rounds_completed)
-        parallel_bonus = self.beta2 * (n_attempts / k_star) if rounds_completed > 0 else 0.0
-
-        return float(max_score - cost_penalty + parallel_bonus)
+        return self.compute_raw(max_score, float(n_attempts), rounds_completed)
 
     def evaluate_mean_score(
         self,
