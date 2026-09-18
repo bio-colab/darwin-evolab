@@ -12,12 +12,14 @@ to past discovery trajectories.
 Dream-RSI solves this through:
 1. Holdout Tree Separation: Strict train/test partition D_train and D_test (D_train ∩ D_test = ∅).
 2. Offline Seed Mining: Extracting high-utility composition motifs and dead gate filters exclusively from D_train.
-3. Adaptive Affinity Gating: Computing instance-seed affinity α(S, T). Seeding is only activated when
-   α >= τ; otherwise, the search gracefully falls back to unseeded exploration, eliminating deceptive traps.
+3. Adaptive Affinity Gating: Computing instance-seed affinity α(S, T) using strictly root-level (T^0)
+   problem metadata, with zero lookahead into unrevealed or future search steps.
 4. K-Fold Holdout Cross-Validation: Each fold's instances are evaluated strictly out-of-fold, ensuring
    zero contamination between seed discovery and performance evaluation.
-5. Strict Holdout Governor Verification: Out-of-fold test evaluations are submitted to the Phase 5 Governor
-   (govern_modification) to achieve an official ACCEPT decision (p < 0.05, 0 regressions).
+5. Rigorous Parameter Optimization: Each fold conducts multi-sample optimization on D_train to find
+   the optimal affinity threshold and bonus ratio before evaluating unseen D_test.
+6. Scientific Integrity & Disclosures: Evaluated via the Dream-RSI replay cost-model prototype with
+   explicit auditing disclosures and clear provenance.
 """
 
 from __future__ import annotations
@@ -273,13 +275,21 @@ def mine_seeds_from_trees(
 
 
 def compute_seed_affinity(seed: SeedCandidate, tree: DiscoveryTree) -> float:
-    """Calculates affinity score in [0.0, 1.0] between a seed candidate and a target tree."""
+    """Calculates affinity score in [0.0, 1.0] using STRICTLY root-level (T^0) metadata.
+
+    Zero Information Leakage Guarantee:
+    - Never inspects child nodes or unrevealed search trajectory nodes.
+    - Never looks ahead into future mutation operators.
+    - Evaluates solely the problem specification available prior to search initiation:
+      repository identity, target file, and problem statement text.
+    """
+    root = tree.get_node(tree.root_id)
     tree_repo = _infer_repo_from_tree(tree).lower()
     seed_repo = seed.source_repo.lower()
 
-    affinity = 0.15  # Baseline prior
+    affinity = 0.15  # Baseline neutral prior
 
-    # 1. Exact repository match
+    # 1. Exact repository match (e.g. pallets/flask vs pallets/flask)
     if seed_repo and tree_repo and (seed_repo in tree_repo or tree_repo in seed_repo):
         affinity += 0.50
     else:
@@ -289,7 +299,7 @@ def compute_seed_affinity(seed: SeedCandidate, tree: DiscoveryTree) -> float:
         if seed_ns and tree_ns and seed_ns == tree_ns and seed_ns != "generic":
             affinity += 0.40
 
-    # 3. Domain / Ecosystem similarity (e.g. web/http networking vs command-line/testing)
+    # 3. Domain / Ecosystem similarity (web/http networking vs cli/parsing vs testing)
     http_stack = {"requests", "urllib3", "flask", "aiohttp"}
     cli_stack = {"click", "black", "jinja", "marshmallow"}
     test_stack = {"pytest", "sphinx", "unittest"}
@@ -302,15 +312,24 @@ def compute_seed_affinity(seed: SeedCandidate, tree: DiscoveryTree) -> float:
             affinity += 0.25
             break
 
-    # 4. Operator relevance check
-    tree_ops = {
-        str(n.metadata.get("operator", ""))
-        for n in tree.nodes.values()
-        if n.node_id != tree.root_id
-    }
-    overlap = set(seed.target_operators) & tree_ops
-    if overlap:
-        affinity += min(0.20, 0.10 * len(overlap))
+    # 4. Problem statement semantic hints (evaluated strictly on root node T^0 text)
+    prob_stmt = ""
+    if root and isinstance(root.workspace_snapshot, dict):
+        prob_stmt = str(root.workspace_snapshot.get("problem_statement", "")).lower()
+    if not prob_stmt and root and isinstance(root.metadata, dict):
+        prob_stmt = str(root.metadata.get("problem_statement", "")).lower()
+
+    if prob_stmt:
+        for op in seed.target_operators:
+            if op == "InsertGuard" and any(w in prob_stmt for w in ("guard", "none", "null", "missing", "keyerror", "empty", "nested")):
+                affinity += 0.15
+                break
+            elif op in ("BoundaryFlip", "SwapCondition") and any(w in prob_stmt for w in ("boundary", "condition", "inequality", "inclusive", "exclusive", "disjunction")):
+                affinity += 0.15
+                break
+            elif op == "OffByOne" and any(w in prob_stmt for w in ("off-by-one", "slice", "index", "length", "split", "pagination")):
+                affinity += 0.15
+                break
 
     return round(min(1.0, max(0.0, affinity)), 3)
 
@@ -379,11 +398,10 @@ class CrossValidatedSeedingResult:
 
     timestamp_utc: str
     validation_mode: str
+    methodological_status: str
     total_instances_evaluated: int
-    train_instances: list[str]
-    test_instances: list[str]
-    mined_seeds_count: int
-    selected_seed_ids: list[str]
+    k_folds: int
+    folds: list[dict[str, Any]]
     optimal_config: dict[str, Any]
     governor_verdict: dict[str, Any]
     p_value: float
@@ -395,6 +413,7 @@ class CrossValidatedSeedingResult:
     test_regressions: int
     per_instance_test_records: list[dict[str, Any]]
     historical_comparison: dict[str, Any]
+    scientific_disclosures: dict[str, str]
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -422,21 +441,20 @@ class CrossValidatedSeedingOptimizer:
         for t in self.trees:
             _annotate_tree_operators_if_needed(t)
 
-        self.mined_seeds = mine_seeds_from_trees(self.trees, min_score=70.0)
-
     def _evaluate_single_tree(
         self,
         tree: DiscoveryTree,
         config: SeedingConfig,
         seeds: list[SeedCandidate],
     ) -> tuple[float, float, float, float]:
-        """Evaluates baseline and counterfactual values for a single tree."""
+        """Evaluates baseline and counterfactual values for a single tree using strictly T^0 affinity."""
         best = tree.best_node()
         oracle_score = best.score if best else 0.0
         n_base = float(max(1, tree.size() - 1))
         r_b = max(1, math.ceil(n_base / self.batch_width))
         vb = self.objective.compute_raw(oracle_score, n_base, r_b)
 
+        # Compute affinity using ONLY root metadata (T^0)
         matching = [
             s for s in seeds
             if compute_seed_affinity(s, tree) >= config.affinity_threshold
@@ -470,26 +488,23 @@ class CrossValidatedSeedingOptimizer:
         n_trees = len(self.trees)
         k_folds = min(self.k_folds, n_trees) if self.k_folds > 1 else 1
 
-        # Search optimal hyperparameter configuration across sampled candidates
-        threshold_choices = [0.40, 0.45, 0.50, 0.55]
-        bonus_choices = [0.20, 0.25, 0.30]
-        cfg = SeedingConfig(
-            affinity_threshold=0.45,
-            dead_gate_filtering=True,
-            warm_start_bonus_ratio=0.25,
-            composition_depth=2,
-            max_active_seeds=3,
-        )
+        threshold_pool = [0.35, 0.40, 0.45, 0.50, 0.55]
+        bonus_pool = [0.15, 0.20, 0.25, 0.30]
+        depth_pool = [1, 2, 3]
+        active_k_pool = [1, 2, 3, 4]
+
+        samples_per_fold = max(50, n_samples // max(1, k_folds))
 
         test_vb_all: list[float] = []
         test_vc_all: list[float] = []
         test_eb_all: list[float] = []
         test_ec_all: list[float] = []
         all_test_trees: list[DiscoveryTree] = []
-        train_tree_names: set[str] = set()
+
+        folds_records: list[dict[str, Any]] = []
+        best_overall_cfg = SeedingConfig()
 
         if k_folds > 1:
-            # K-Fold Cross-Validation: Each fold acts as held-out test world
             fold_size = max(1, n_trees // k_folds)
             for fold in range(k_folds):
                 start = fold * fold_size
@@ -499,35 +514,124 @@ class CrossValidatedSeedingOptimizer:
 
                 train_trees = [self.trees[i] for i in train_idx]
                 test_trees = [self.trees[i] for i in test_idx]
-
-                train_tree_names.update(t.name for t in train_trees)
                 all_test_trees.extend(test_trees)
 
                 # Mine seeds strictly on train_trees
                 fold_seeds = mine_seeds_from_trees(train_trees, min_score=70.0)
 
-                # Evaluate strictly on held-out test_trees
+                # Multi-sample optimization search on train_trees exclusively
+                best_fold_cfg = SeedingConfig()
+                best_fold_seeds = list(fold_seeds[:3])
+                best_fold_v = -float("inf")
+
+                for _ in range(samples_per_fold):
+                    cand_cfg = SeedingConfig(
+                        affinity_threshold=rng.choice(threshold_pool),
+                        warm_start_bonus_ratio=rng.choice(bonus_pool),
+                        dead_gate_filtering=rng.choice([True, False]),
+                        composition_depth=rng.choice(depth_pool),
+                        max_active_seeds=rng.choice(active_k_pool),
+                    )
+                    sample_k = min(len(fold_seeds), cand_cfg.max_active_seeds)
+                    cand_active = rng.sample(fold_seeds, sample_k) if sample_k > 0 else []
+
+                    # Evaluate on train_trees
+                    train_vals = []
+                    for t in train_trees:
+                        _, vc, _, _ = self._evaluate_single_tree(t, cand_cfg, cand_active)
+                        train_vals.append(vc)
+                    mean_tr = sum(train_vals) / max(1, len(train_vals))
+                    if mean_tr > best_fold_v:
+                        best_fold_v = mean_tr
+                        best_fold_cfg = cand_cfg
+                        best_fold_seeds = cand_active
+
+                best_overall_cfg = best_fold_cfg
+
+                # Evaluate on held-out test_trees strictly with the chosen configuration
+                fold_test_records: list[dict[str, Any]] = []
                 for t in test_trees:
-                    vb, vc, eb, ec = self._evaluate_single_tree(t, cfg, fold_seeds)
+                    vb, vc, eb, ec = self._evaluate_single_tree(t, best_fold_cfg, best_fold_seeds)
                     test_vb_all.append(vb)
                     test_vc_all.append(vc)
                     test_eb_all.append(eb)
                     test_ec_all.append(ec)
+                    fold_test_records.append({
+                        "instance": t.name,
+                        "baseline_evals": eb,
+                        "candidate_evals": ec,
+                        "baseline_v": round(vb, 4),
+                        "candidate_v": round(vc, 4),
+                        "delta_v": round(vc - vb, 4),
+                    })
+
+                folds_records.append({
+                    "fold_index": fold,
+                    "train_instances": [t.name for t in train_trees],
+                    "test_instances": [t.name for t in test_trees],
+                    "mined_seeds_count": len(fold_seeds),
+                    "selected_seeds": [s.seed_id for s in best_fold_seeds],
+                    "optimal_fold_config": best_fold_cfg.to_dict(),
+                    "fold_test_evaluations": fold_test_records,
+                })
+
             val_mode = f"{k_folds}-fold Out-of-Fold Holdout Cross-Validation"
         else:
-            # Single train/test split
             train_trees, test_trees = train_test_split_trees(
                 self.trees, train_ratio=self.train_ratio, seed=seed
             )
-            train_tree_names = {t.name for t in train_trees}
             all_test_trees = test_trees
             fold_seeds = mine_seeds_from_trees(train_trees, min_score=70.0)
+
+            best_fold_cfg = SeedingConfig()
+            best_fold_seeds = list(fold_seeds[:3])
+            best_fold_v = -float("inf")
+
+            for _ in range(n_samples):
+                cand_cfg = SeedingConfig(
+                    affinity_threshold=rng.choice(threshold_pool),
+                    warm_start_bonus_ratio=rng.choice(bonus_pool),
+                    dead_gate_filtering=rng.choice([True, False]),
+                    composition_depth=rng.choice(depth_pool),
+                    max_active_seeds=rng.choice(active_k_pool),
+                )
+                sample_k = min(len(fold_seeds), cand_cfg.max_active_seeds)
+                cand_active = rng.sample(fold_seeds, sample_k) if sample_k > 0 else []
+
+                train_vals = [self._evaluate_single_tree(t, cand_cfg, cand_active)[1] for t in train_trees]
+                mean_tr = sum(train_vals) / max(1, len(train_vals))
+                if mean_tr > best_fold_v:
+                    best_fold_v = mean_tr
+                    best_fold_cfg = cand_cfg
+                    best_fold_seeds = cand_active
+
+            best_overall_cfg = best_fold_cfg
+
+            fold_test_records = []
             for t in test_trees:
-                vb, vc, eb, ec = self._evaluate_single_tree(t, cfg, fold_seeds)
+                vb, vc, eb, ec = self._evaluate_single_tree(t, best_fold_cfg, best_fold_seeds)
                 test_vb_all.append(vb)
                 test_vc_all.append(vc)
                 test_eb_all.append(eb)
                 test_ec_all.append(ec)
+                fold_test_records.append({
+                    "instance": t.name,
+                    "baseline_evals": eb,
+                    "candidate_evals": ec,
+                    "baseline_v": round(vb, 4),
+                    "candidate_v": round(vc, 4),
+                    "delta_v": round(vc - vb, 4),
+                })
+
+            folds_records.append({
+                "fold_index": 0,
+                "train_instances": [t.name for t in train_trees],
+                "test_instances": [t.name for t in test_trees],
+                "mined_seeds_count": len(fold_seeds),
+                "selected_seeds": [s.seed_id for s in best_fold_seeds],
+                "optimal_fold_config": best_fold_cfg.to_dict(),
+                "fold_test_evaluations": fold_test_records,
+            })
             val_mode = "Single Holdout Train/Test Partition"
 
         # Check regressions on test set
@@ -558,6 +662,13 @@ class CrossValidatedSeedingOptimizer:
             }
             records.append(rec)
 
+        disclosures = {
+            "methodological_classification": "Holdout Generalization Scaffold & Replay Cost-Model Prototype",
+            "future_information_leakage": "Remediated. compute_seed_affinity strictly inspects root T^0 metadata (repo, target_file, problem_statement). Child nodes and unrevealed operators are strictly inaccessible.",
+            "oracle_score_assumption": "Evaluation models the cost reduction of warm start while holding solution quality constant (derived from historical discovery node). Dynamic search rollout without assumed solution preservation is pending full multi-branch discovery trees.",
+            "online_validation_roadmap": "A definitive empirical verdict on M8/M9 requires live multi-seed online execution on frozen unseen scenarios without retrospective replay assumptions.",
+        }
+
         hist_comp = {
             "historical_phase": "Phase 4/5 M8 & M9 Baseline (ab_composition_seeding.json)",
             "historical_evaluation": "Blind Seeding without Holdout Separation",
@@ -565,10 +676,10 @@ class CrossValidatedSeedingOptimizer:
             "historical_p_value": 0.2967,
             "historical_governor_verdict": "REJECT (classified as 'warm_start_or_noise')",
             "dream_rsi_phase": "Phase 5 Idea 3 Holdout-Separated Cross-Validated Seeding",
-            "dream_rsi_test_holdout_verdict": verdict["decision"],
+            "dream_rsi_test_holdout_verdict": f"{verdict['decision']} (Replay Cost-Model Prototype)",
             "dream_rsi_test_p_value": round(p_val, 6),
             "dream_rsi_test_cohen_d": round(cohen_d, 4),
-            "reasons": "Holdout partition D_train ∩ D_test = ∅ and adaptive affinity gating eliminate deceptive local optima.",
+            "reasons": "Holdout partition D_train ∩ D_test = ∅ and root-level adaptive affinity gating eliminate deceptive local optima.",
         }
 
         mean_base = sum(test_vb_all) / max(1, len(test_vb_all))
@@ -577,12 +688,11 @@ class CrossValidatedSeedingOptimizer:
         return CrossValidatedSeedingResult(
             timestamp_utc=datetime.now(timezone.utc).isoformat(),
             validation_mode=val_mode,
+            methodological_status="Holdout Generalization Scaffold (Replay Cost-Model Prototype)",
             total_instances_evaluated=len(all_test_trees),
-            train_instances=sorted(train_tree_names),
-            test_instances=[t.name for t in all_test_trees],
-            mined_seeds_count=len(self.mined_seeds),
-            selected_seed_ids=[s.seed_id for s in self.mined_seeds[:cfg.max_active_seeds]],
-            optimal_config=cfg.to_dict(),
+            k_folds=k_folds,
+            folds=folds_records,
+            optimal_config=best_overall_cfg.to_dict(),
             governor_verdict=verdict,
             p_value=round(p_val, 6),
             cohen_d=round(cohen_d, 4),
@@ -593,6 +703,7 @@ class CrossValidatedSeedingOptimizer:
             test_regressions=regressions,
             per_instance_test_records=records,
             historical_comparison=hist_comp,
+            scientific_disclosures=disclosures,
         )
 
     @staticmethod

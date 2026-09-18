@@ -1,43 +1,261 @@
 {
-  "timestamp_utc": "2026-09-18T21:47:57.713070+00:00",
+  "timestamp_utc": "2026-09-18T22:03:52.904095+00:00",
   "validation_mode": "5-fold Out-of-Fold Holdout Cross-Validation",
+  "methodological_status": "Holdout Generalization Scaffold (Replay Cost-Model Prototype)",
   "total_instances_evaluated": 10,
-  "train_instances": [
-    "marshmallow-code__marshmallow-1343",
-    "pallets__click-1608",
-    "pallets__flask-4992",
-    "pallets__jinja-1155",
-    "psf__black-2964",
-    "psf__requests-3367",
-    "pytest-dev__pytest-5227",
-    "sphinx-doc__sphinx-8721",
-    "sympy__sympy-13480",
-    "urllib3__urllib3-2168"
-  ],
-  "test_instances": [
-    "marshmallow-code__marshmallow-1343",
-    "pallets__click-1608",
-    "pallets__flask-4992",
-    "pallets__jinja-1155",
-    "psf__black-2964",
-    "psf__requests-3367",
-    "pytest-dev__pytest-5227",
-    "sphinx-doc__sphinx-8721",
-    "sympy__sympy-13480",
-    "urllib3__urllib3-2168"
-  ],
-  "mined_seeds_count": 5,
-  "selected_seed_ids": [
-    "seed_comp_pallets__flask-4992_0",
-    "seed_comp_pallets__jinja-1155_1",
-    "seed_comp_psf__requests-3367_2"
+  "k_folds": 5,
+  "folds": [
+    {
+      "fold_index": 0,
+      "train_instances": [
+        "pallets__flask-4992",
+        "pallets__jinja-1155",
+        "psf__black-2964",
+        "psf__requests-3367",
+        "pytest-dev__pytest-5227",
+        "sphinx-doc__sphinx-8721",
+        "sympy__sympy-13480",
+        "urllib3__urllib3-2168"
+      ],
+      "test_instances": [
+        "marshmallow-code__marshmallow-1343",
+        "pallets__click-1608"
+      ],
+      "mined_seeds_count": 5,
+      "selected_seeds": [
+        "seed_comp_pytest-dev__pytest-5227_3",
+        "seed_comp_sympy__sympy-13480_4",
+        "seed_comp_psf__requests-3367_2",
+        "seed_comp_pallets__flask-4992_0"
+      ],
+      "optimal_fold_config": {
+        "affinity_threshold": 0.4,
+        "dead_gate_filtering": true,
+        "composition_depth": 2,
+        "warm_start_bonus_ratio": 0.3,
+        "max_active_seeds": 4
+      },
+      "fold_test_evaluations": [
+        {
+          "instance": "marshmallow-code__marshmallow-1343",
+          "baseline_evals": 1.0,
+          "candidate_evals": 1.0,
+          "baseline_v": 9.97,
+          "candidate_v": 9.97,
+          "delta_v": 0.0
+        },
+        {
+          "instance": "pallets__click-1608",
+          "baseline_evals": 19.0,
+          "candidate_evals": 15.01,
+          "baseline_v": 49.088,
+          "candidate_v": 49.287,
+          "delta_v": 0.199
+        }
+      ]
+    },
+    {
+      "fold_index": 1,
+      "train_instances": [
+        "marshmallow-code__marshmallow-1343",
+        "pallets__click-1608",
+        "psf__black-2964",
+        "psf__requests-3367",
+        "pytest-dev__pytest-5227",
+        "sphinx-doc__sphinx-8721",
+        "sympy__sympy-13480",
+        "urllib3__urllib3-2168"
+      ],
+      "test_instances": [
+        "pallets__flask-4992",
+        "pallets__jinja-1155"
+      ],
+      "mined_seeds_count": 3,
+      "selected_seeds": [
+        "seed_comp_sympy__sympy-13480_2",
+        "seed_comp_psf__requests-3367_0",
+        "seed_comp_pytest-dev__pytest-5227_1"
+      ],
+      "optimal_fold_config": {
+        "affinity_threshold": 0.35,
+        "dead_gate_filtering": true,
+        "composition_depth": 1,
+        "warm_start_bonus_ratio": 0.3,
+        "max_active_seeds": 3
+      },
+      "fold_test_evaluations": [
+        {
+          "instance": "pallets__flask-4992",
+          "baseline_evals": 5.0,
+          "candidate_evals": 4.0,
+          "baseline_v": 99.7833,
+          "candidate_v": 99.84,
+          "delta_v": 0.0567
+        },
+        {
+          "instance": "pallets__jinja-1155",
+          "baseline_evals": 3.0,
+          "candidate_evals": 2.5,
+          "baseline_v": 99.88,
+          "candidate_v": 99.9,
+          "delta_v": 0.02
+        }
+      ]
+    },
+    {
+      "fold_index": 2,
+      "train_instances": [
+        "marshmallow-code__marshmallow-1343",
+        "pallets__click-1608",
+        "pallets__flask-4992",
+        "pallets__jinja-1155",
+        "pytest-dev__pytest-5227",
+        "sphinx-doc__sphinx-8721",
+        "sympy__sympy-13480",
+        "urllib3__urllib3-2168"
+      ],
+      "test_instances": [
+        "psf__black-2964",
+        "psf__requests-3367"
+      ],
+      "mined_seeds_count": 4,
+      "selected_seeds": [
+        "seed_comp_pallets__flask-4992_0",
+        "seed_comp_pallets__jinja-1155_1",
+        "seed_comp_pytest-dev__pytest-5227_2",
+        "seed_comp_sympy__sympy-13480_3"
+      ],
+      "optimal_fold_config": {
+        "affinity_threshold": 0.35,
+        "dead_gate_filtering": true,
+        "composition_depth": 1,
+        "warm_start_bonus_ratio": 0.3,
+        "max_active_seeds": 4
+      },
+      "fold_test_evaluations": [
+        {
+          "instance": "psf__black-2964",
+          "baseline_evals": 2.0,
+          "candidate_evals": 1.0,
+          "baseline_v": 19.94,
+          "candidate_v": 19.97,
+          "delta_v": 0.03
+        },
+        {
+          "instance": "psf__requests-3367",
+          "baseline_evals": 4.0,
+          "candidate_evals": 3.0,
+          "baseline_v": 99.84,
+          "candidate_v": 99.88,
+          "delta_v": 0.04
+        }
+      ]
+    },
+    {
+      "fold_index": 3,
+      "train_instances": [
+        "marshmallow-code__marshmallow-1343",
+        "pallets__click-1608",
+        "pallets__flask-4992",
+        "pallets__jinja-1155",
+        "psf__black-2964",
+        "psf__requests-3367",
+        "sympy__sympy-13480",
+        "urllib3__urllib3-2168"
+      ],
+      "test_instances": [
+        "pytest-dev__pytest-5227",
+        "sphinx-doc__sphinx-8721"
+      ],
+      "mined_seeds_count": 4,
+      "selected_seeds": [
+        "seed_comp_psf__requests-3367_2",
+        "seed_comp_sympy__sympy-13480_3",
+        "seed_comp_pallets__jinja-1155_1",
+        "seed_comp_pallets__flask-4992_0"
+      ],
+      "optimal_fold_config": {
+        "affinity_threshold": 0.35,
+        "dead_gate_filtering": true,
+        "composition_depth": 1,
+        "warm_start_bonus_ratio": 0.3,
+        "max_active_seeds": 4
+      },
+      "fold_test_evaluations": [
+        {
+          "instance": "pytest-dev__pytest-5227",
+          "baseline_evals": 4.0,
+          "candidate_evals": 3.5,
+          "baseline_v": 99.84,
+          "candidate_v": 99.86,
+          "delta_v": 0.02
+        },
+        {
+          "instance": "sphinx-doc__sphinx-8721",
+          "baseline_evals": 2.0,
+          "candidate_evals": 1.5,
+          "baseline_v": 19.94,
+          "candidate_v": 19.955,
+          "delta_v": 0.015
+        }
+      ]
+    },
+    {
+      "fold_index": 4,
+      "train_instances": [
+        "marshmallow-code__marshmallow-1343",
+        "pallets__click-1608",
+        "pallets__flask-4992",
+        "pallets__jinja-1155",
+        "psf__black-2964",
+        "psf__requests-3367",
+        "pytest-dev__pytest-5227",
+        "sphinx-doc__sphinx-8721"
+      ],
+      "test_instances": [
+        "sympy__sympy-13480",
+        "urllib3__urllib3-2168"
+      ],
+      "mined_seeds_count": 4,
+      "selected_seeds": [
+        "seed_comp_pytest-dev__pytest-5227_3",
+        "seed_comp_pallets__flask-4992_0",
+        "seed_comp_pallets__jinja-1155_1",
+        "seed_comp_psf__requests-3367_2"
+      ],
+      "optimal_fold_config": {
+        "affinity_threshold": 0.4,
+        "dead_gate_filtering": true,
+        "composition_depth": 3,
+        "warm_start_bonus_ratio": 0.3,
+        "max_active_seeds": 4
+      },
+      "fold_test_evaluations": [
+        {
+          "instance": "sympy__sympy-13480",
+          "baseline_evals": 3.0,
+          "candidate_evals": 2.5,
+          "baseline_v": 99.88,
+          "candidate_v": 99.9,
+          "delta_v": 0.02
+        },
+        {
+          "instance": "urllib3__urllib3-2168",
+          "baseline_evals": 7.0,
+          "candidate_evals": 6.0,
+          "baseline_v": 49.685,
+          "candidate_v": 49.74,
+          "delta_v": 0.055
+        }
+      ]
+    }
   ],
   "optimal_config": {
-    "affinity_threshold": 0.45,
+    "affinity_threshold": 0.4,
     "dead_gate_filtering": true,
-    "composition_depth": 2,
-    "warm_start_bonus_ratio": 0.25,
-    "max_active_seeds": 3
+    "composition_depth": 3,
+    "warm_start_bonus_ratio": 0.3,
+    "max_active_seeds": 4
   },
   "governor_verdict": {
     "decision": "ACCEPT",
@@ -45,21 +263,21 @@
       "all_gates_passed"
     ],
     "mean_b": 64.7846,
-    "mean_c": 64.8285,
+    "mean_c": 64.8302,
     "median_b": 74.7342,
-    "median_c": 74.7736,
+    "median_c": 74.79,
     "worst_b": 9.97,
     "worst_c": 9.97,
     "regressions": 0,
-    "delta_mean": 0.0439,
-    "delta_median": 0.0394
+    "delta_mean": 0.0456,
+    "delta_median": 0.0558
   },
-  "p_value": 0.03406,
-  "cohen_d": 0.6389,
+  "p_value": 0.014695,
+  "cohen_d": 0.8027,
   "mean_baseline_test_value": 64.7846,
-  "mean_candidate_test_value": 64.8285,
-  "delta_mean_test_value": 0.0439,
-  "mean_test_evaluations_saved_percent": 19.6,
+  "mean_candidate_test_value": 64.8302,
+  "delta_mean_test_value": 0.0456,
+  "mean_test_evaluations_saved_percent": 19.98,
   "test_regressions": 0,
   "per_instance_test_records": [
     {
@@ -75,22 +293,22 @@
     {
       "instance_name": "pallets__click-1608",
       "baseline_evals": 19.0,
-      "candidate_evals": 14.25,
-      "evals_saved": 4.75,
-      "evals_saved_percent": 25.0,
+      "candidate_evals": 15.01,
+      "evals_saved": 3.99,
+      "evals_saved_percent": 21.0,
       "baseline_v": 49.088,
-      "candidate_v": 49.3231,
-      "delta_v": 0.2351
+      "candidate_v": 49.287,
+      "delta_v": 0.199
     },
     {
       "instance_name": "pallets__flask-4992",
       "baseline_evals": 5.0,
-      "candidate_evals": 4.5,
-      "evals_saved": 0.5,
-      "evals_saved_percent": 10.0,
+      "candidate_evals": 4.0,
+      "evals_saved": 1.0,
+      "evals_saved_percent": 20.0,
       "baseline_v": 99.7833,
-      "candidate_v": 99.805,
-      "delta_v": 0.0217
+      "candidate_v": 99.84,
+      "delta_v": 0.0567
     },
     {
       "instance_name": "pallets__jinja-1155",
@@ -115,12 +333,12 @@
     {
       "instance_name": "psf__requests-3367",
       "baseline_evals": 4.0,
-      "candidate_evals": 3.5,
-      "evals_saved": 0.5,
-      "evals_saved_percent": 12.5,
+      "candidate_evals": 3.0,
+      "evals_saved": 1.0,
+      "evals_saved_percent": 25.0,
       "baseline_v": 99.84,
-      "candidate_v": 99.86,
-      "delta_v": 0.02
+      "candidate_v": 99.88,
+      "delta_v": 0.04
     },
     {
       "instance_name": "pytest-dev__pytest-5227",
@@ -155,12 +373,12 @@
     {
       "instance_name": "urllib3__urllib3-2168",
       "baseline_evals": 7.0,
-      "candidate_evals": 5.95,
-      "evals_saved": 1.05,
-      "evals_saved_percent": 15.0,
+      "candidate_evals": 6.0,
+      "evals_saved": 1.0,
+      "evals_saved_percent": 14.29,
       "baseline_v": 49.685,
-      "candidate_v": 49.7422,
-      "delta_v": 0.0572
+      "candidate_v": 49.74,
+      "delta_v": 0.055
     }
   ],
   "historical_comparison": {
@@ -170,9 +388,15 @@
     "historical_p_value": 0.2967,
     "historical_governor_verdict": "REJECT (classified as 'warm_start_or_noise')",
     "dream_rsi_phase": "Phase 5 Idea 3 Holdout-Separated Cross-Validated Seeding",
-    "dream_rsi_test_holdout_verdict": "ACCEPT",
-    "dream_rsi_test_p_value": 0.03406,
-    "dream_rsi_test_cohen_d": 0.6389,
-    "reasons": "Holdout partition D_train \u2229 D_test = \u2205 and adaptive affinity gating eliminate deceptive local optima."
+    "dream_rsi_test_holdout_verdict": "ACCEPT (Replay Cost-Model Prototype)",
+    "dream_rsi_test_p_value": 0.014695,
+    "dream_rsi_test_cohen_d": 0.8027,
+    "reasons": "Holdout partition D_train \u2229 D_test = \u2205 and root-level adaptive affinity gating eliminate deceptive local optima."
+  },
+  "scientific_disclosures": {
+    "methodological_classification": "Holdout Generalization Scaffold & Replay Cost-Model Prototype",
+    "future_information_leakage": "Remediated. compute_seed_affinity strictly inspects root T^0 metadata (repo, target_file, problem_statement). Child nodes and unrevealed operators are strictly inaccessible.",
+    "oracle_score_assumption": "Evaluation models the cost reduction of warm start while holding solution quality constant (derived from historical discovery node). Dynamic search rollout without assumed solution preservation is pending full multi-branch discovery trees.",
+    "online_validation_roadmap": "A definitive empirical verdict on M8/M9 requires live multi-seed online execution on frozen unseen scenarios without retrospective replay assumptions."
   }
 }

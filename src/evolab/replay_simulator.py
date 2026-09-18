@@ -214,7 +214,11 @@ class DiscoveryTree:
             root = DiscoveryNode(
                 node_id=root_id,
                 parent_id=None,
-                workspace_snapshot={"repo": inst.get("repo", ""), "target_file": inst.get("target_file", "")},
+                workspace_snapshot={
+                    "repo": inst.get("repo", ""),
+                    "target_file": inst.get("target_file", ""),
+                    "problem_statement": inst.get("problem_statement", ""),
+                },
                 score=0.0,
                 cost=0.0,
                 passed_holdout=False,

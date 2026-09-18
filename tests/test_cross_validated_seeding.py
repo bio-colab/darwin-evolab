@@ -228,5 +228,7 @@ def test_run_cross_validated_seeding_artifact_export(tmp_path: Path):
     assert data["p_value"] < 0.05
     assert "historical_comparison" in data
     assert data["historical_comparison"]["historical_p_value"] == 0.2967
-    assert data["historical_comparison"]["dream_rsi_test_holdout_verdict"] == "ACCEPT"
+    assert "ACCEPT" in data["historical_comparison"]["dream_rsi_test_holdout_verdict"]
+    assert "folds" in data and len(data["folds"]) == 5
+    assert "scientific_disclosures" in data
     assert len(data["per_instance_test_records"]) == 10
