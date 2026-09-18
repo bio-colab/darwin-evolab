@@ -12,6 +12,17 @@ from .budget_elasticity import (
     ElasticityConfig,
     run_budget_elasticity_dreaming,
 )
+from .cross_validated_seeding import (
+    CrossValidatedSeedingOptimizer,
+    CrossValidatedSeedingResult,
+    SeedCandidate,
+    SeedingConfig,
+    SeedingPolicy,
+    compute_seed_affinity,
+    mine_seeds_from_trees,
+    run_cross_validated_seeding,
+    train_test_split_trees,
+)
 from .self_model_dream import (
     DreamReweightingResult,
     OperatorDistribution,
@@ -31,5 +42,14 @@ __all__ = [
     "DreamElasticityResult",
     "BudgetElasticityOptimizer",
     "run_budget_elasticity_dreaming",
+    "SeedCandidate",
+    "SeedingConfig",
+    "SeedingPolicy",
+    "CrossValidatedSeedingResult",
+    "CrossValidatedSeedingOptimizer",
+    "compute_seed_affinity",
+    "mine_seeds_from_trees",
+    "train_test_split_trees",
+    "run_cross_validated_seeding",
 ]
 

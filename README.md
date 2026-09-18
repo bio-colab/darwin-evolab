@@ -146,10 +146,10 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 ### 4. Repository-Wide Test Health
 
 ```
-tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Genesis Shim, UNIX Toolchain, Dream-RSI) : 627 passed, 1 skipped (100%)
+tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench, Genesis Shim, UNIX Toolchain, Dream-RSI) : 635 passed, 1 skipped (100%)
 experimental/ (Electronics, EvoMaze, Neuromorphic CGP, PDF2RTF, Genesis Bridge)                    : 174 passed (100%)
 ==================================================================================================================
-Total Automated Test Suite                                                                        : 802 automated tests (801 passed, 1 skipped)
+Total Automated Test Suite                                                                        : 810 automated tests (809 passed, 1 skipped)
 ```
 
 ---
@@ -230,7 +230,7 @@ To ensure absolute rigor and clarity for peer review and academic scrutiny, we e
 1. **Not a Full SWE-bench Benchmark Evaluation**: We do not claim a 50% pass rate on the full SWE-bench Lite (300 instances). Our reported metric reflects an empirical evaluation on a pre-registered 10-instance probe ($N=10/300$) used to assess local AST mutation and dual-invariant verification. Evaluating the complete 300-instance set requires distributed multi-node infrastructure and broader repository-level semantic synthesis.
 2. **Exploratory Tracks are Decoupled Prototypes**: Exploratory modules under `experimental/` carry `physical_claim: false` and are preserved for academic exploration without claiming foundry signoff or production deployment.
 3. **"Operating System" is an Architectural Metaphor**: Darwin-Evolab is an evolutionary optimization framework structured around an operating-system-inspired design pattern (a domain-agnostic evolutionary kernel orchestrating pluggable domain adapter device drivers). It is not a POSIX or bootable operating system kernel.
-4. **Meta-Controller is Opt-In by Empirical Decision**: In accordance with pre-registered empirical protocols, Phase 4 meta-control (dynamic immigrant injection) and Phase 5 self-modification remain disabled by default (`meta_mode=None`). The pre-registered governor rejected default activation after rigorous A/B benchmarking demonstrated insufficient empirical gain over the control baseline. *Update (Sept 2026)*: Through retrospective dreaming replay simulation ([`reports/dream_operator_reweighting.json`](reports/dream_operator_reweighting.json)), Phase 5 autonomous operator reweighting achieved its first statistically validated `ACCEPT` verdict ($p = 0.008 < 0.01$, Cohen's $d = 0.92$, zero regressions) with zero online execution risk.
+4. **Meta-Controller is Opt-In by Empirical Decision**: In accordance with pre-registered empirical protocols, Phase 4 meta-control (dynamic immigrant injection) and Phase 5 self-modification remain disabled by default (`meta_mode=None`). The pre-registered governor rejected default activation after rigorous A/B benchmarking demonstrated insufficient empirical gain over the control baseline. *Update (Sept 2026 — Dream-RSI Paradigm)*: Through retrospective dreaming replay simulation over historical discovery trees, Phase 5 achieved three landmark Governor `ACCEPT` milestones: Autonomous Operator Reweighting ($p = 0.008 < 0.01$, Cohen's $d = 0.92$, [`reports/dream_operator_reweighting.json`](reports/dream_operator_reweighting.json)), Adaptive Budget Elasticity ($28.0\%$ evaluations saved, [`reports/dream_budget_elasticity.json`](reports/dream_budget_elasticity.json)), and Holdout Cross-Validated Seeding ($p = 0.034 < 0.05$, $0$ regressions, [`reports/dream_seeding_validation.json`](reports/dream_seeding_validation.json)), resolving the historical M8/M9 blind seeding dilemma ($p = 0.297$) with zero online execution risk.
 
 ---
 

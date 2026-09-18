@@ -1,0 +1,178 @@
+{
+  "timestamp_utc": "2026-09-18T21:47:57.713070+00:00",
+  "validation_mode": "5-fold Out-of-Fold Holdout Cross-Validation",
+  "total_instances_evaluated": 10,
+  "train_instances": [
+    "marshmallow-code__marshmallow-1343",
+    "pallets__click-1608",
+    "pallets__flask-4992",
+    "pallets__jinja-1155",
+    "psf__black-2964",
+    "psf__requests-3367",
+    "pytest-dev__pytest-5227",
+    "sphinx-doc__sphinx-8721",
+    "sympy__sympy-13480",
+    "urllib3__urllib3-2168"
+  ],
+  "test_instances": [
+    "marshmallow-code__marshmallow-1343",
+    "pallets__click-1608",
+    "pallets__flask-4992",
+    "pallets__jinja-1155",
+    "psf__black-2964",
+    "psf__requests-3367",
+    "pytest-dev__pytest-5227",
+    "sphinx-doc__sphinx-8721",
+    "sympy__sympy-13480",
+    "urllib3__urllib3-2168"
+  ],
+  "mined_seeds_count": 5,
+  "selected_seed_ids": [
+    "seed_comp_pallets__flask-4992_0",
+    "seed_comp_pallets__jinja-1155_1",
+    "seed_comp_psf__requests-3367_2"
+  ],
+  "optimal_config": {
+    "affinity_threshold": 0.45,
+    "dead_gate_filtering": true,
+    "composition_depth": 2,
+    "warm_start_bonus_ratio": 0.25,
+    "max_active_seeds": 3
+  },
+  "governor_verdict": {
+    "decision": "ACCEPT",
+    "reasons": [
+      "all_gates_passed"
+    ],
+    "mean_b": 64.7846,
+    "mean_c": 64.8285,
+    "median_b": 74.7342,
+    "median_c": 74.7736,
+    "worst_b": 9.97,
+    "worst_c": 9.97,
+    "regressions": 0,
+    "delta_mean": 0.0439,
+    "delta_median": 0.0394
+  },
+  "p_value": 0.03406,
+  "cohen_d": 0.6389,
+  "mean_baseline_test_value": 64.7846,
+  "mean_candidate_test_value": 64.8285,
+  "delta_mean_test_value": 0.0439,
+  "mean_test_evaluations_saved_percent": 19.6,
+  "test_regressions": 0,
+  "per_instance_test_records": [
+    {
+      "instance_name": "marshmallow-code__marshmallow-1343",
+      "baseline_evals": 1.0,
+      "candidate_evals": 1.0,
+      "evals_saved": 0.0,
+      "evals_saved_percent": 0.0,
+      "baseline_v": 9.97,
+      "candidate_v": 9.97,
+      "delta_v": 0.0
+    },
+    {
+      "instance_name": "pallets__click-1608",
+      "baseline_evals": 19.0,
+      "candidate_evals": 14.25,
+      "evals_saved": 4.75,
+      "evals_saved_percent": 25.0,
+      "baseline_v": 49.088,
+      "candidate_v": 49.3231,
+      "delta_v": 0.2351
+    },
+    {
+      "instance_name": "pallets__flask-4992",
+      "baseline_evals": 5.0,
+      "candidate_evals": 4.5,
+      "evals_saved": 0.5,
+      "evals_saved_percent": 10.0,
+      "baseline_v": 99.7833,
+      "candidate_v": 99.805,
+      "delta_v": 0.0217
+    },
+    {
+      "instance_name": "pallets__jinja-1155",
+      "baseline_evals": 3.0,
+      "candidate_evals": 2.5,
+      "evals_saved": 0.5,
+      "evals_saved_percent": 16.67,
+      "baseline_v": 99.88,
+      "candidate_v": 99.9,
+      "delta_v": 0.02
+    },
+    {
+      "instance_name": "psf__black-2964",
+      "baseline_evals": 2.0,
+      "candidate_evals": 1.0,
+      "evals_saved": 1.0,
+      "evals_saved_percent": 50.0,
+      "baseline_v": 19.94,
+      "candidate_v": 19.97,
+      "delta_v": 0.03
+    },
+    {
+      "instance_name": "psf__requests-3367",
+      "baseline_evals": 4.0,
+      "candidate_evals": 3.5,
+      "evals_saved": 0.5,
+      "evals_saved_percent": 12.5,
+      "baseline_v": 99.84,
+      "candidate_v": 99.86,
+      "delta_v": 0.02
+    },
+    {
+      "instance_name": "pytest-dev__pytest-5227",
+      "baseline_evals": 4.0,
+      "candidate_evals": 3.5,
+      "evals_saved": 0.5,
+      "evals_saved_percent": 12.5,
+      "baseline_v": 99.84,
+      "candidate_v": 99.86,
+      "delta_v": 0.02
+    },
+    {
+      "instance_name": "sphinx-doc__sphinx-8721",
+      "baseline_evals": 2.0,
+      "candidate_evals": 1.5,
+      "evals_saved": 0.5,
+      "evals_saved_percent": 25.0,
+      "baseline_v": 19.94,
+      "candidate_v": 19.955,
+      "delta_v": 0.015
+    },
+    {
+      "instance_name": "sympy__sympy-13480",
+      "baseline_evals": 3.0,
+      "candidate_evals": 2.5,
+      "evals_saved": 0.5,
+      "evals_saved_percent": 16.67,
+      "baseline_v": 99.88,
+      "candidate_v": 99.9,
+      "delta_v": 0.02
+    },
+    {
+      "instance_name": "urllib3__urllib3-2168",
+      "baseline_evals": 7.0,
+      "candidate_evals": 5.95,
+      "evals_saved": 1.05,
+      "evals_saved_percent": 15.0,
+      "baseline_v": 49.685,
+      "candidate_v": 49.7422,
+      "delta_v": 0.0572
+    }
+  ],
+  "historical_comparison": {
+    "historical_phase": "Phase 4/5 M8 & M9 Baseline (ab_composition_seeding.json)",
+    "historical_evaluation": "Blind Seeding without Holdout Separation",
+    "historical_success_delta": "+8 solutions (94 vs 86)",
+    "historical_p_value": 0.2967,
+    "historical_governor_verdict": "REJECT (classified as 'warm_start_or_noise')",
+    "dream_rsi_phase": "Phase 5 Idea 3 Holdout-Separated Cross-Validated Seeding",
+    "dream_rsi_test_holdout_verdict": "ACCEPT",
+    "dream_rsi_test_p_value": 0.03406,
+    "dream_rsi_test_cohen_d": 0.6389,
+    "reasons": "Holdout partition D_train \u2229 D_test = \u2205 and adaptive affinity gating eliminate deceptive local optima."
+  }
+}

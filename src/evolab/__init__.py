@@ -331,6 +331,16 @@ _LAZY: dict[str, tuple[str, str]] = {
     "BudgetElasticityOptimizer": (".dream", "BudgetElasticityOptimizer"),
     "DreamElasticityResult": (".dream", "DreamElasticityResult"),
     "run_budget_elasticity_dreaming": (".dream", "run_budget_elasticity_dreaming"),
+    # Dream Subsystem: M8 & M9 Cross-Validated Seeding (Idea 3)
+    "SeedCandidate": (".dream", "SeedCandidate"),
+    "SeedingConfig": (".dream", "SeedingConfig"),
+    "SeedingPolicy": (".dream", "SeedingPolicy"),
+    "CrossValidatedSeedingResult": (".dream", "CrossValidatedSeedingResult"),
+    "CrossValidatedSeedingOptimizer": (".dream", "CrossValidatedSeedingOptimizer"),
+    "compute_seed_affinity": (".dream", "compute_seed_affinity"),
+    "mine_seeds_from_trees": (".dream", "mine_seeds_from_trees"),
+    "train_test_split_trees": (".dream", "train_test_split_trees"),
+    "run_cross_validated_seeding": (".dream", "run_cross_validated_seeding"),
 }
 
 
