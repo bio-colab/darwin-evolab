@@ -164,7 +164,7 @@ For each candidate distribution $W$, the counterfactual search effort $N_i(W)$ r
 
 $$V_i(W) = \max_{v \in T_i} s_v - \beta_1 N_i(W) + \beta_2 \frac{N_i(W)}{k_i^*(W)}$$
 
-The optimal candidate achieved the project's **first official Phase 5 Governor `ACCEPT` verdict** (`reports/dream_operator_reweighting.json`), with statistically significant efficiency gains ($p = 0.008057 < 0.01$, Cohen's $d = 0.9239$) and strictly zero regressions:
+The optimal candidate achieved the project's **first official Phase 5 Governor `ACCEPT` verdict** (`reports/dream_operator_reweighting.json`), with statistically significant efficiency gains (3.71% mean evaluations saved, $p = 0.008057 < 0.01$, Cohen's $d = 0.9239$) and strictly zero regressions:
 
 ```json
 {
@@ -327,6 +327,43 @@ The optimal candidate achieved the project's **first official Phase 5 Governor `
 
 ---
 
+### 5.2 Phase 5 Adaptive Budget Elasticity & Stagnation Breaking (Dream-RSI Idea 2)
+
+Extending Dream-RSI to search budget allocation, Darwin-Evolab implemented **Adaptive Budget Elasticity** (`BudgetElasticityPolicy`) governed by the Phase 5 Governor. In long-running evolutionary search runs, stubborn stagnation plateaus waste substantial computational budget without finding solutions. Rather than applying uniform budgets across instances, the elasticity policy dynamically allocates exploration bursts when progress is detected and terminates unpromising branches early.
+
+**Empirical Protocol**:
+- 10,000 candidate elasticity parameter sets were counterfactually simulated across historical discovery trees.
+- Evaluated parameters: `patience`, `min_delta`, `burst_multiplier`, `breakthrough_threshold`, `max_stagnant_depth`.
+- Governor Verdict: **`ACCEPT`** (`reports/dream_budget_elasticity.json`).
+- Overall compute savings: **28.0%** mean evaluations saved across benchmark instances, with **68.42%** evaluation savings on the most difficult stagnation instance (`pallets__click-1608`), achieving zero regressions.
+
+```json
+{
+  "timestamp_utc": "2026-09-18T21:23:24.392397+00:00",
+  "total_candidates_sampled": 10000,
+  "optimal_config": {
+    "patience": 1,
+    "min_delta": 0.1,
+    "burst_multiplier": 3,
+    "breakthrough_threshold": 70.0,
+    "max_stagnant_depth": 8
+  },
+  "governor_verdict": {
+    "decision": "ACCEPT",
+    "reasons": [
+      "all_gates_passed"
+    ],
+    "mean_b": 64.77,
+    "mean_c": 64.84,
+    "regressions": 0
+  },
+  "mean_evaluations_saved_percent": 28.0,
+  "click_1608_saved_percent": 68.42
+}
+```
+
+---
+
 ### 6. Phase 5 Holdout Generalization Scaffold (M8/M9 Cross-Validated Seeding via Dream-RSI Idea 3)
 
 Historical Phase 4 and Phase 5 evaluations of Genetic Initialization Memory (M8: dead door avoidance) and Composition Seeding (M9: multi-edit winner seeding) in [`reports/ab_composition_seeding.json`](../reports/ab_composition_seeding.json) produced $+8$ additional solutions ($94$ vs $86$), but failed to achieve statistical significance ($p = 0.2967 > 0.05$) and were rejected by the Phase 5 Governor as `warm_start_or_noise`.
@@ -338,7 +375,7 @@ Historical Phase 4 and Phase 5 evaluations of Genetic Initialization Memory (M8:
 2. **Offline Seed Mining**: High-utility composition motifs (M9) and dead gate filters (M8) are mined exclusively from $\mathcal{D}_{\text{train}}$.
 3. **Adaptive Affinity Gating (Root Metadata $T^0$ Only)**: Seeding is activated only when instance-seed affinity $\alpha(S, T) \ge \tau$. If $\alpha < \tau$, the policy safely falls back to standard baseline exploration, eliminating deceptive traps ($0$ regressions). Crucially, $\alpha$ is computed exclusively from root-level problem specification metadata (repository, target file, problem statement text), with zero lookahead into future or unrevealed search steps.
 4. **Out-of-Fold Holdout Cross-Validation**: Across a 5-fold cross-validation scheme, 100% of benchmark instances are evaluated strictly as out-of-fold held-out test data, with each fold executing multi-sample parameter exploration on $\mathcal{D}_{\text{train}}$ before testing $\mathcal{D}_{\text{test}}$.
-5. **Phase 5 Governor Decision**: Evaluated under the retrospective replay cost model, the Governor issues an **`ACCEPT (Replay Cost-Model Prototype)`** verdict ($p = 0.0147 < 0.05$, Cohen's $d = 0.8027$, $19.3\%$ evaluations saved, $0$ regressions).
+5. **Phase 5 Governor Decision**: Evaluated under the retrospective replay cost model, the Governor issues an **`ACCEPT (Replay Cost-Model Prototype)`** verdict ($p = 0.0147 < 0.05$, Cohen's $d = 0.8027$, 19.98% evaluations saved, $0$ regressions).
 
 > ⚠️ **Scientific Integrity & Peer Review Disclosures**:
 > - **Methodological Status**: Classified as **Architectural Success + Holdout Generalization Scaffold (Replay Cost-Model Prototype)**.
@@ -375,7 +412,7 @@ Full artifact is persisted at [`reports/dream_seeding_validation.json`](../repor
   "mean_baseline_test_value": 64.7846,
   "mean_candidate_test_value": 64.832,
   "delta_mean_test_value": 0.0474,
-  "mean_test_evaluations_saved_percent": 19.3,
+  "mean_test_evaluations_saved_percent": 19.98,
   "test_regressions": 0,
   "historical_comparison": {
     "historical_phase": "Phase 4/5 M8 & M9 Baseline (ab_composition_seeding.json)",
@@ -457,9 +494,8 @@ python -c "from evolab.dream import run_budget_elasticity_dreaming; run_budget_e
 # 6. Run Dream-RSI Holdout Cross-Validated Seeding (M8/M9 Generalization ACCEPT Milestone)
 python -c "from evolab.dream import run_cross_validated_seeding; run_cross_validated_seeding()"
 
-# 7. Verify Complete Automated Test Suite (809 tests: 808 passed, 1 skipped)
-pytest tests/ -q           # 635 passed, 1 skipped
-pytest experimental/ -q    # 174 passed
+# 7. Verify Complete Automated Test Suite (624 tests: 623 passed, 1 skipped)
+pytest tests/ -q
 
 # 8. Verify Truth in Documentation
 python scripts/verify_docs.py

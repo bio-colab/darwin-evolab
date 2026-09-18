@@ -52,6 +52,7 @@ from .spec_conditioned_prior import (
     SpecConditionedPrior,
     SpecTolerance,
     TargetCircuitSpec,
+    synthesize_spec_conditioned_opamp,
 )
 from .bandit_latent_optimizer import (
     BanditArm,
@@ -148,4 +149,5 @@ __all__ = [
     "OutputStageType",
     "BiasBlock",
     "BiasType",
+    "synthesize_spec_conditioned_opamp",
 ]

@@ -243,84 +243,13 @@ def cmd_evolve(args) -> int:
         }, indent=2) + "\n", encoding="utf-8")
         return 0 if resolution.resolved else 1
     if is_electronics:
-        root = Path(__file__).resolve().parents[2]
-        if str(root) not in sys.path:
-            sys.path.insert(0, str(root))
-        try:
-            from experimental.electronics.bridge import (
-                list_electronics_scenarios,
-                prepare_electronics_run,
-                prepare_custom_electronics_run,
-            )
-        except ImportError as exc:
-            print(f"error: electronics track not available ({exc})", file=sys.stderr)
-            return 2
-
-        has_custom_input = any((
-            getattr(args, "spec", None),
-            getattr(args, "netlist", None),
-            getattr(args, "expr", None),
-            getattr(args, "verilog_in", None),
-            getattr(args, "waveform", None),
-        ))
-        effective_seed = 42 if args.seed is None else args.seed
-        args.seed = effective_seed
-
-        if has_custom_input:
-            evaluator, pop, name = prepare_custom_electronics_run(
-                spec_path=getattr(args, "spec", None),
-                netlist_path=getattr(args, "netlist", None),
-                expr=getattr(args, "expr", None),
-                verilog_in=getattr(args, "verilog_in", None),
-                waveform_path=getattr(args, "waveform", None),
-                objective=getattr(args, "objective", None),
-                population_size=args.population,
-                seed=effective_seed,
-            )
-        else:
-            name = args.scenario if args.scenario in list_electronics_scenarios() else "half_adder"
-            if args.scenario not in list_electronics_scenarios() and args.scenario != "click_cli_parser":
-                print(f"error: unknown electronics scenario {args.scenario!r}", file=sys.stderr)
-                print("hint: " + ", ".join(list_electronics_scenarios()), file=sys.stderr)
-                return 2
-            evaluator, pop, name = prepare_electronics_run(name, args.population, effective_seed)
-
-        tool_name = "cgp_digital"
-        if hasattr(evaluator, "oracle"):
-            tool_name = getattr(evaluator.oracle, "tool_name", "ngspice")
-        elif hasattr(evaluator, "simulator"):
-            tool_name = getattr(getattr(evaluator, "simulator", None), "name", "ngspice")
-        elif "analog" in name.lower() or "waveform" in name.lower() or "filter" in name.lower():
-            try:
-                from experimental.electronics.models.ngspice_bridge import has_ngspice
-                tool_name = "ngspice" if has_ngspice() else "analytical_proxy"
-            except Exception:
-                tool_name = "analytical_proxy"
-        elif "boolean" in name.lower() or "verilog" in name.lower() or "adder" in name.lower():
-            tool_name = "cgp_logic"
-
-        print(
-            f"Engine: GA | genome=electronics | scenario={name} | tool={tool_name} "
-            f"| pop={args.population} gens={args.generations} seed={effective_seed}",
-            file=sys.stderr,
-        )
-        # Thread the scenario's true genome size into the engine so the
-        # printed config is truthful instead of the numeric default (16):
-        # FloatGenome scenarios report their gene count, structured netlist
-        # genomes report their own len() (= connection count). The engine's
-        # length guard only applies to FloatGenome, and netlist GA operators
-        # are topology-aware, so for netlists this is descriptive
-        # bookkeeping — never a numeric constraint.
-        genome_size = len(pop[0].genome)
-        if engine_kind == "nsga2":
+        if getattr(args, "expr", None):
             from .pareto import NSGA2Engine, build_silicon_multiobjective_evaluator
             from .genome import Individual
+            from .cgp_logic import create_random_cgp_genome, parse_boolean_spec
             import random
 
-            expr_target = getattr(args, "expr", None) or "Sum = A ^ B; Cout = A & B"
-            from experimental.electronics.inputs.boolean_expr import parse_boolean_spec
-            from .cgp_logic import create_random_cgp_genome
-
+            expr_target = args.expr
             b_spec = parse_boolean_spec(expr_target)
             objs, eval_vec = build_silicon_multiobjective_evaluator(b_spec.truth_table)
             rng = random.Random(args.seed or 42)
@@ -339,7 +268,7 @@ def cmd_evolve(args) -> int:
                 seed=args.seed,
             )
             nsga_res = engine.run(initial_population=pop, generations=args.generations)
-            print(f"Engine: NSGA-II | Multi-Objective Pareto Frontier Discovered", file=sys.stderr)
+            print("Engine: NSGA-II | Multi-Objective Pareto Frontier Discovered", file=sys.stderr)
             print(f"Pareto Front Size: {len(nsga_res['front_0'])} non-dominated solutions", file=sys.stderr)
             for i, sol in enumerate(nsga_res['front_0'][:5]):
                 print(f"  Pareto #{i+1}: {sol['scores']}", file=sys.stderr)
@@ -347,6 +276,15 @@ def cmd_evolve(args) -> int:
                 engine.export_pareto_front(args.pareto_export)
                 print(f"Pareto Front saved: {args.pareto_export}", file=sys.stderr)
             return 0
+        else:
+            print(
+                "error: The legacy experimental electronics track has concluded its proof-of-concept "
+                "lifecycle and was gracefully retired in v0.6.0. Please use the core digital CGP logic "
+                "driver ('--domain discrete_logic') or the production SkyWater 130nm silicon driver "
+                "('--domain sky130_opamp'). Historical PoC code is preserved at tag 'v0.6.0-pocs-graduation'.",
+                file=sys.stderr,
+            )
+            return 2
 
         from .signals import SignalController
         engine = _build_engine(args, fitness_fn=evaluator, genome_size=genome_size)
@@ -543,60 +481,7 @@ def cmd_evolve(args) -> int:
             cfg = LLMConfig(provider=args.llm, model_name=llm_model)
             mutator = LLMSemanticMutator(config=cfg)
 
-            if is_electronics and "evaluator" in locals() and "engine" in locals() and engine is not None:
-                best_g = getattr(engine, "best_ever", None)
-                if best_g and hasattr(best_g.genome, "connections"):
-                    from experimental.electronics.models.circuit_netlist import CircuitNetlistGenome, Connection, PinRef
-                    conns_str = "\n".join(
-                        f"  wire {c.source.ic_index}:{c.source.pin} -> {c.destination.ic_index}:{c.destination.pin}"
-                        for c in best_g.genome.connections
-                    )
-                    truth_str = getattr(evaluator, "truth_table", "Target logic")
-                    c_data, resp = mutator.mutate_circuit_netlist(
-                        current_topology=conns_str,
-                        truth_table_specs=str(truth_str),
-                        current_fitness=current_fit,
-                        available_parts=list(getattr(best_g.genome, "ic_packages", [])),
-                    )
-                    if resp.success and c_data:
-                        new_conns = [
-                            Connection(
-                                PinRef(c["src_ic"], c["src_pin"]),
-                                PinRef(c["dst_ic"], c["dst_pin"]),
-                            )
-                            for c in c_data.get("connections", [])
-                        ]
-                        cand_circuit = CircuitNetlistGenome(
-                            ic_packages=c_data.get("ic_packages", best_g.genome.ic_packages),
-                            connections=new_conns,
-                            num_inputs=best_g.genome.num_inputs,
-                            num_outputs=best_g.genome.num_outputs,
-                            functions_needed=best_g.genome.functions_needed,
-                        )
-                        fit_res = evaluator.evaluate(cand_circuit)
-                        if fit_res.score > current_fit:
-                            print(
-                                f"[Hybrid LLM] Circuit stagnation broken! Fitness improved from {current_fit:.2f}% to {fit_res.score:.2f}%.",
-                                file=sys.stderr,
-                            )
-                            bi["fitness"] = fit_res.score
-                            bi["passed_holdout"] = fit_res.passed_holdout
-                            result["best_individual"] = bi
-                            result["total_candidates_evaluated"] = result.get("total_candidates_evaluated", 0) + 1
-                            result.setdefault("history", []).append({
-                                "generation": len(result.get("history", [])) + 1,
-                                "best_fitness": fit_res.score,
-                                "mean_fitness": fit_res.score,
-                                "added": f"llm_circuit_{args.llm}",
-                            })
-                            engine.best_ever = Individual(genome=cand_circuit, fitness=fit_res.score, species="spec_electronics")
-                        else:
-                            print(
-                                f"[Hybrid LLM] Circuit candidate rejected: score={fit_res.score:.2f}%. Safety preserved.",
-                                file=sys.stderr,
-                            )
-
-            elif scenario is not None:
+            if scenario is not None:
                 src = bi.get("code") or scenario.sources.get(scenario.target_file, "")
                 mutated_code, resp = mutator.mutate_code(src, current_fitness=current_fit)
                 if resp.success and mutated_code:
@@ -722,52 +607,13 @@ def cmd_evolve(args) -> int:
         if not quiet:
             print(f"Markdown Summary: {args.summary_file}", file=sys.stderr)
 
-    if getattr(args, "schematic_file", None) and is_electronics and "engine" in locals() and engine is not None:
-        best_g = getattr(engine, "best_ever", None)
-        if best_g and (hasattr(best_g.genome, "circuit") or hasattr(best_g.genome, "connections") or hasattr(best_g.genome, "get_active_nodes")):
-            from experimental.electronics.instruments.schematic import save_circuit_svg
-            save_circuit_svg(best_g.genome, args.schematic_file)
-            if not quiet:
-                print(f"Schematic saved : {args.schematic_file}", file=sys.stderr)
-
-    if getattr(args, "verilog_file", None) and is_electronics and "engine" in locals() and engine is not None:
+    if getattr(args, "verilog_file", None) and "engine" in locals() and engine is not None:
         best_g = getattr(engine, "best_ever", None)
         if best_g and hasattr(best_g.genome, "to_verilog"):
             v_code = best_g.genome.to_verilog(module_name="synthesized_circuit")
             Path(args.verilog_file).write_text(v_code, encoding="utf-8")
             if not quiet:
                 print(f"Verilog saved   : {args.verilog_file}", file=sys.stderr)
-
-    if getattr(args, "ui_file", None) and is_electronics and "engine" in locals() and engine is not None:
-        best_g = getattr(engine, "best_ever", None)
-        if best_g:
-            from experimental.electronics.ui.workbench_generator import save_workbench_html
-            fpga_target = getattr(args, "fpga_target", "ice40_hx1k")
-            meta = {
-                "scenario": result.get("config", {}).get("scenario", "synthesized_logic"),
-                "fitness": (result.get("best_individual") or {}).get("fitness", 100.0),
-                "generations": result.get("total_generations", args.generations),
-                "candidates": result.get("total_candidates_evaluated", 0),
-                "fpga_target": fpga_target,
-            }
-            save_workbench_html(best_g.genome, args.ui_file, metadata=meta)
-            if not quiet:
-                print(f"Workbench UI saved: {args.ui_file}", file=sys.stderr)
-
-            if hasattr(best_g.genome, "get_active_nodes"):
-                from evolab.cgp_logic import estimate_fpga_resources
-                fpga_rep = estimate_fpga_resources(best_g.genome, fpga_target)
-                result["fpga_resources"] = {
-                    "target": fpga_rep.target_preset,
-                    "board": fpga_rep.board_name,
-                    "vendor": fpga_rep.vendor,
-                    "estimated_luts": fpga_rep.estimated_luts,
-                    "total_luts": fpga_rep.total_luts,
-                    "lut_utilization_pct": fpga_rep.lut_utilization_pct,
-                    "pins_used": fpga_rep.total_pins_used,
-                    "fmax_mhz": fpga_rep.estimated_fmax_mhz,
-                    "fits": fpga_rep.fits_on_target,
-                }
 
     if getattr(args, "apply", False) and scenario is not None and _hit(result, args.target):
         file_mapping = {Path(raw).name: Path(raw) for raw in (args.source or [])}
@@ -1054,16 +900,6 @@ def build_parser() -> argparse.ArgumentParser:
     p_init.add_argument("--force", action="store_true", help="overwrite existing configuration file")
     p_init.set_defaults(func=cmd_init)
 
-    # Subcommand: pdf2rtf (forward to experimental.pdf2rtf.cli)
-    p_p2r = sub.add_parser("pdf2rtf", help="self-calibrating PDF-to-RTF converter subsystem")
-    p_p2r.add_argument("pdf2rtf_args", nargs=argparse.REMAINDER, help="arguments forwarded to pdf2rtf CLI")
-
-    def _cmd_pdf2rtf(args: argparse.Namespace) -> int:
-        from experimental.pdf2rtf.cli import main as pdf2rtf_main
-        return pdf2rtf_main(getattr(args, "pdf2rtf_args", []))
-
-    p_p2r.set_defaults(func=_cmd_pdf2rtf)
-
     # Subcommand: audit
     p_audit = sub.add_parser("audit", help="run autonomous self-audit and governance verification")
     p_audit.add_argument("--full", action="store_true", help="run full 30-seed benchmark suite")
@@ -1253,9 +1089,6 @@ def _run_cli(argv: list[str] | None = None) -> int:
         return cmd_wizard(args)
     if cmd == "init":
         return cmd_init(args)
-    if cmd == "pdf2rtf":
-        from experimental.pdf2rtf.cli import main as pdf2rtf_main
-        return pdf2rtf_main(getattr(args, "pdf2rtf_args", []))
     if hasattr(args, "func"):
         return args.func(args)
     return 2

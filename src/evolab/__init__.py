@@ -10,7 +10,6 @@ __version__ = "0.5.0"
 
 from .adapters import (
     DomainAdapter,
-    ElectronicsAdapter,
     DiscreteLogicAdapter,
     NumericalMathAdapter,
     SoftwareRepairAdapter,
@@ -288,13 +287,6 @@ _LAZY: dict[str, tuple[str, str]] = {
     "HollandTrialAllocator": (".holland", "HollandTrialAllocator"),
     "Schema": (".holland", "Schema"),
     "SchemaTracker": (".holland", "SchemaTracker"),
-    "GenesisBridge": (".genesis_bridge", "GenesisBridge"),
-    "GenesisRewardVector": (".genesis_bridge", "GenesisRewardVector"),
-    "GenesisEnvironment": (".genesis_bridge", "GenesisEnvironment"),
-    "MockGenesisSimulator": (".genesis_bridge", "MockGenesisSimulator"),
-    "serialize_for_foundation_model": (".genesis_bridge", "serialize_for_foundation_model"),
-    "deserialize_from_tensor": (".genesis_bridge", "deserialize_from_tensor"),
-    "FoundationModelPrior": (".genesis_bridge", "FoundationModelPrior"),
     "Sky130Corner": (".silicon", "Sky130Corner"),
     "SKY130_PARAMS": (".silicon", "SKY130_PARAMS"),
     "compute_transistor_operating_point": (".silicon", "compute_transistor_operating_point"),
@@ -425,7 +417,6 @@ __all__ = [
     "SoftwareRepairAdapter",
     "DiscreteLogicAdapter",
     "NumericalMathAdapter",
-    "ElectronicsAdapter",
     # 5. Reporting & Summary
     "RunReport",
     "Issue",

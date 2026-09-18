@@ -242,7 +242,7 @@ class DiscreteLogicAdapter(DomainAdapter):
         return "discrete_logic"
 
     def parse_spec(self, raw_input: Any) -> DiscreteLogicSpec:
-        from experimental.electronics.inputs.boolean_expr import parse_boolean_spec
+        from .cgp_logic import parse_boolean_spec
 
         if isinstance(raw_input, DiscreteLogicSpec):
             return raw_input
@@ -401,89 +401,6 @@ class NumericalMathAdapter(DomainAdapter):
 
 
 # =========================================================================== #
-# Canonical Domain Driver 4: Electronics & Silicon Adapter
-# =========================================================================== #
-
-@dataclass(frozen=True)
-class ElectronicsSpec:
-    scenario_or_input: str | dict[str, Any]
-    population_size: int = 16
-    seed: int | None = None
-
-
-class ElectronicsAdapter(DomainAdapter):
-    """Domain driver for physical and discrete electronics design (SPICE, Breadboards, CGP)."""
-
-    @property
-    def name(self) -> str:
-        return "electronics"
-
-    def parse_spec(self, raw_input: Any) -> ElectronicsSpec:
-        if isinstance(raw_input, ElectronicsSpec):
-            return raw_input
-        return ElectronicsSpec(scenario_or_input=raw_input)
-
-    def build_population(self, spec: ElectronicsSpec, size: int, rng: random.Random) -> list[Individual]:
-        from experimental.electronics.scenarios import prepare_electronics_run, prepare_custom_electronics_run, list_electronics_scenarios
-
-        target = spec.scenario_or_input
-        if isinstance(target, str) and target in list_electronics_scenarios():
-            _, pop, _ = prepare_electronics_run(target, size, spec.seed)
-            return pop
-        elif isinstance(target, str):
-            _, pop, _ = prepare_custom_electronics_run(expr=target, population_size=size, seed=spec.seed)
-            return pop
-        elif isinstance(target, dict):
-            _, pop, _ = prepare_custom_electronics_run(expr=target.get("expr"), population_size=size, seed=spec.seed)
-            return pop
-        # Fallback default
-        _, pop, _ = prepare_electronics_run("half_adder", size, spec.seed)
-        return pop
-
-    def build_evaluator(self, spec: ElectronicsSpec) -> Evaluator:
-        from experimental.electronics.scenarios import prepare_electronics_run, prepare_custom_electronics_run, list_electronics_scenarios
-
-        target = spec.scenario_or_input
-        ev: Any = None
-        if isinstance(target, str) and target in list_electronics_scenarios():
-            ev, _, _ = prepare_electronics_run(target, spec.population_size, spec.seed)
-        elif isinstance(target, str):
-            ev, _, _ = prepare_custom_electronics_run(expr=target, population_size=spec.population_size, seed=spec.seed)
-        elif isinstance(target, dict):
-            ev, _, _ = prepare_custom_electronics_run(expr=target.get("expr"), population_size=spec.population_size, seed=spec.seed)
-        else:
-            ev, _, _ = prepare_electronics_run("half_adder", spec.population_size, spec.seed)
-
-        if isinstance(ev, Evaluator):
-            return ev
-        return EvaluatorWrapper(ev, name="ElectronicsEvaluator")
-
-    def export_solution(
-        self,
-        individual: Individual,
-        spec: ElectronicsSpec,
-        output_path: str | Path | None = None,
-    ) -> dict[str, Any]:
-        from experimental.electronics.instruments.schematic import circuit_to_svg
-
-        genome = individual.genome
-        svg_str = ""
-        verilog_str = ""
-        if hasattr(genome, "to_verilog"):
-            verilog_str = genome.to_verilog()
-        try:
-            svg_str = circuit_to_svg(genome)
-        except Exception:
-            pass
-
-        return {
-            "verilog_code": verilog_str,
-            "has_schematic": bool(svg_str),
-            "genome_type": type(genome).__name__,
-        }
-
-
-# =========================================================================== #
 # Central Domain Adapter Registry
 # =========================================================================== #
 
@@ -494,7 +411,6 @@ def _init_registry() -> dict[str, DomainAdapter]:
         "software_repair": SoftwareRepairAdapter(),
         "discrete_logic": DiscreteLogicAdapter(),
         "numerical_math": NumericalMathAdapter(),
-        "electronics": ElectronicsAdapter(),
         "swe_bench": SWEBenchAdapter(),
     }
 
@@ -511,15 +427,9 @@ def register_domain_adapter(name: str, adapter: DomainAdapter) -> None:
 def get_domain_adapter(name: str) -> DomainAdapter:
     """Retrieves a registered domain adapter by name."""
     key = name.lower().strip()
-    if key in ("sky130_opamp", "sky130"):
+    if key in ("sky130_opamp", "sky130", "opamp"):
         from .silicon.opamp_benchmark import Sky130OpAmpAdapter
         return Sky130OpAmpAdapter()
-    if key in ("evomaze", "maze"):
-        from experimental.evomaze.adapter import EvoMazeAdapter
-        return EvoMazeAdapter()
-    if key in ("neuromorphic", "drosophila"):
-        from experimental.neuromorphic.adapter import NeuromorphicAdapter
-        return NeuromorphicAdapter()
     if key not in _ADAPTER_REGISTRY:
         raise KeyError(f"Unknown domain adapter {name!r}. Available: {list_domain_adapters()}")
     return _ADAPTER_REGISTRY[key]
@@ -527,5 +437,6 @@ def get_domain_adapter(name: str) -> DomainAdapter:
 
 def list_domain_adapters() -> list[str]:
     """Returns the list of all registered domain adapter names."""
-    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp", "evomaze", "neuromorphic"})
+    return sorted(set(_ADAPTER_REGISTRY.keys()) | {"sky130_opamp"})
+
 

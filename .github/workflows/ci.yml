@@ -31,7 +31,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y -q ngspice yosys || true
+          sudo apt-get install -y -q yosys || true
 
       - name: Install package and test dependencies
         run: |
@@ -42,6 +42,3 @@ jobs:
         run: |
           pytest tests/ --tb=short -q
 
-      - name: Run Electronics Track Test Suite
-        run: |
-          pytest experimental/electronics/tests/ --tb=short -q

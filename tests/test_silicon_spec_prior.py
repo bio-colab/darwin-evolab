@@ -29,8 +29,8 @@ from evolab.silicon import (
     SpecTolerance,
     TargetCircuitSpec,
     evaluate_opamp_analytical,
+    synthesize_spec_conditioned_opamp,
 )
-from experimental.electronics.spec2ckt import synthesize_spec_conditioned_opamp
 
 
 def test_production_grammar_guard_aspect_ratios_and_repairs():

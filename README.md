@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-809%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-623%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 
 > **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, and physical bounds are explicitly disclosed. We invite peer audit and critique.
 
@@ -56,8 +56,13 @@ To eliminate ambiguity between hardened production-ready pipelines and research 
 3. **Standard Digital Benchmarks**: 1-bit and multi-bit full adders, carry-lookahead logic, even/odd parity generators, and ALU slices.
 4. **FPGA Toolchain Export**: Direct export of synthesizable Verilog-2001 RTL and pinout constraint files (`.pcf` iCE40, `.lpf` ECP5, `.xdc` Xilinx).
 
-### 🧪 Frozen Exploratory Research Tracks (`experimental/`)
-Beyond the two core production pillars, Darwin-Evolab houses exploratory research tracks preserved in a frozen state under [`experimental/`](experimental/) (`physical_claim: false`) for theoretical investigation and academic reproducibility: [`experimental/evomaze/`](experimental/evomaze/) (MST-based procedural maze generation), [`experimental/neuromorphic/`](experimental/neuromorphic/) (Drosophila connectome temporal CGP with synthesizable Verilog export), [`experimental/genesis_bridge/`](experimental/genesis_bridge/) (physics simulation and foundation model tensor bridge), and [`experimental/electronics/`](experimental/electronics/) (SkyWater 130nm analog transistor sizing and WebUSB hardware workbench). These exploratory prototypes remain decoupled from core production development.
+### 🎓 Proof-of-Concept Lifecycle & Graceful Retirement Notice
+To prove that the Darwin-Evolab evolutionary kernel is genuinely domain-agnostic and universal, exploratory proofs-of-concept were previously developed across extreme domains (procedural maze generation, Drosophila neuromorphic CGP connectome, Genesis tensor bridge, and a self-calibrating PDF-to-RTF converter). Having decisively proven the kernel's universality and generated full empirical verification reports in [`reports/`](reports/), these exploratory PoCs successfully concluded their lifecycle. 
+
+In version 0.6.0, to eliminate cognitive noise, eliminate external runtime/EDA/RPC dependencies (such as Word COM automation and ngspice), and sharpen the repository's identity 100% around its two primary production pillars (**Software APR with Dream-RSI** and **Digital CGP Silicon Synthesis**), the `experimental/` subsystem has been gracefully retired from the `main` branch. 
+
+> 🏛️ **Open Science & Permanent Provenance**:  
+> In adherence to strict open science principles, every single line of historical experimental code, benchmark fixture, and test suite is permanently preserved and publicly accessible at immutable Git tag [`v0.6.0-pocs-graduation`](https://github.com/bio-colab/darwin-evolab/releases/tag/v0.6.0-pocs-graduation) and branch [`archive/experimental-pocs`](https://github.com/bio-colab/darwin-evolab/tree/archive/experimental-pocs).
 
 ---
 

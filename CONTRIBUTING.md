@@ -56,14 +56,11 @@ pip install -e ".[full]"
 Our repository strictly enforces a **100% test pass rate with zero regressions**:
 
 ```bash
-# Run core test suite
-pytest tests
+# Run the complete test suite (623 core tests)
+pytest tests/
 
-# Run hardware & electronics test suite
-pytest experimental/electronics/tests
-
-# Run repository-wide test suite
-pytest tests experimental/electronics/tests
+# Run with verbose output and coverage
+pytest tests/ -v --cov=evolab
 ```
 
 ### Contribution Invariants:

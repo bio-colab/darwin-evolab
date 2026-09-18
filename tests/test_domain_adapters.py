@@ -12,11 +12,11 @@ from evolab.adapters import (
     SoftwareRepairAdapter,
     DiscreteLogicAdapter,
     NumericalMathAdapter,
-    ElectronicsAdapter,
     get_domain_adapter,
     list_domain_adapters,
     register_domain_adapter,
 )
+from evolab.silicon import Sky130OpAmpAdapter
 from evolab.genome import Individual, FloatGenome
 from evolab.evaluators import Evaluator, FitnessResult
 
@@ -26,7 +26,7 @@ def test_domain_adapter_registry():
     assert "software_repair" in adapters
     assert "discrete_logic" in adapters
     assert "numerical_math" in adapters
-    assert "electronics" in adapters
+    assert "sky130_opamp" in adapters
 
     drv = get_domain_adapter("software_repair")
     assert isinstance(drv, SoftwareRepairAdapter)
@@ -109,13 +109,12 @@ def test_numerical_math_adapter_lifecycle(tmp_path):
     assert res_json.is_file()
 
 
-def test_electronics_adapter_lifecycle():
-    adapter = get_domain_adapter("electronics")
-    spec = adapter.parse_spec("half_adder")
-    assert spec.scenario_or_input == "half_adder"
+def test_sky130_opamp_adapter_lifecycle():
+    adapter = get_domain_adapter("sky130_opamp")
+    spec = adapter.parse_spec({"target_gain_db": 60.0})
+    assert spec["target_gain_db"] == 60.0
 
-    rng = random.Random(42)
-    pop = adapter.build_population(spec, size=2, rng=rng)
+    pop = adapter.build_population(spec, size=2)
     assert len(pop) == 2
 
     evaluator = adapter.build_evaluator(spec)
@@ -123,9 +122,10 @@ def test_electronics_adapter_lifecycle():
 
     res = evaluator.evaluate(pop[0])
     assert isinstance(res, FitnessResult)
+    assert res.score >= 0.0
 
     exported = adapter.export_solution(pop[0], spec)
-    assert "genome_type" in exported
+    assert "gain_db" in exported
 
 
 def test_custom_domain_adapter_registration():
