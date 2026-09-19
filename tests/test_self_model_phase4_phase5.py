@@ -83,3 +83,40 @@ def test_p5_governor_table():
     assert "PROPOSAL #7" in txt and "Decision: ACCEPT" in txt
     txt2 = render_self_modification_proposal(8, "x", base, base)
     assert "Decision: REJECT" in txt2
+
+
+def test_p5_governor_statistical_vaccination():
+    """Verify calibrated hypothesis testing, p-value gating, and noise rejection in govern_modification."""
+    from evolab.self_model import govern_modification
+
+    # 1. Significant positive shift (N >= 5, p < 0.05)
+    b_sig = [80.0, 81.0, 79.5, 80.5, 81.2, 80.8, 79.9]
+    c_sig = [84.0, 85.0, 83.5, 84.5, 85.2, 84.8, 83.9]
+    v_sig = govern_modification(b_sig, c_sig, regressions=0, alpha=0.05)
+    assert v_sig["decision"] == "ACCEPT"
+    assert v_sig["p_value"] < 0.05
+    assert v_sig["cohen_d"] > 0.8
+
+    # 2. Marginal noise rejection when p >= alpha
+    b_noise = [80.0, 81.0, 80.0, 79.0, 81.0]
+    c_noise = [80.1, 81.1, 80.0, 79.0, 81.0]
+    v_noise = govern_modification(b_noise, c_noise, regressions=0, alpha=0.05)
+    assert v_noise["decision"] == "REJECT"
+    assert "not_statistically_significant" in v_noise["reasons"]
+    assert v_noise["p_value"] >= 0.05
+
+    # 3. Alpha=None disables hypothesis test constraint
+    v_no_alpha = govern_modification(b_noise, c_noise, regressions=0, alpha=None)
+    assert v_no_alpha["decision"] == "ACCEPT"
+    assert "not_statistically_significant" not in v_no_alpha["reasons"]
+
+    # 4. Effect size constraint (Cohen's d)
+    v_eff = govern_modification(b_sig, c_sig, regressions=0, alpha=0.05, min_effect_size=3.0)
+    assert v_eff["decision"] == "REJECT"
+    assert "effect_size_insufficient" in v_eff["reasons"]
+
+    # 5. Regression gate overrides statistical significance
+    v_reg = govern_modification(b_sig, c_sig, regressions=1, alpha=0.05)
+    assert v_reg["decision"] == "REJECT"
+    assert "regressions_present" in v_reg["reasons"]
+

@@ -325,16 +325,82 @@ def meta_control_step(
         return 0
 
 
+def _compute_governor_statistics(b: list[float], c: list[float]) -> tuple[float, float]:
+    """Computes one-tailed hypothesis test p-value and Cohen's d for candidate vs baseline."""
+    import math
+    import statistics as _st
+
+    if len(b) == len(c) and len(b) > 1:
+        diffs = [ci - bi for bi, ci in zip(b, c)]
+        mean_diff = _st.mean(diffs)
+        try:
+            std_diff = _st.stdev(diffs)
+        except Exception:
+            std_diff = 0.0
+
+        if std_diff <= 1e-9:
+            # Deterministic/uniform change across all paired seeds
+            p_val = 0.0 if mean_diff > 0 else (1.0 if mean_diff < 0 else 0.5)
+            cohen_d = 1.0 if mean_diff > 0 else (-1.0 if mean_diff < 0 else 0.0)
+            return p_val, cohen_d
+
+        n = len(diffs)
+        se = std_diff / math.sqrt(n)
+        t_stat = mean_diff / se
+        cohen_d = round(mean_diff / std_diff, 4)
+
+        try:
+            import scipy.stats as _stats
+            p_val = float(_stats.t.sf(t_stat, df=n - 1))
+        except Exception:
+            # Standard normal survival approximation fallback
+            p_val = 0.5 * math.erfc(t_stat / math.sqrt(2.0))
+        return round(max(0.0, min(1.0, p_val)), 6), cohen_d
+    elif len(b) > 1 and len(c) > 1:
+        # Unpaired two-sample Welch t-test
+        mean_b, mean_c = _st.mean(b), _st.mean(c)
+        var_b = _st.variance(b) if len(b) > 1 else 0.0
+        var_c = _st.variance(c) if len(c) > 1 else 0.0
+        pooled_s = math.sqrt((var_b + var_c) / 2.0) if (var_b + var_c) > 0 else 1e-6
+        cohen_d = round((mean_c - mean_b) / pooled_s, 4)
+        se = math.sqrt(var_b / len(b) + var_c / len(c))
+        if se <= 1e-9:
+            p_val = 0.0 if mean_c > mean_b else 1.0
+            return p_val, cohen_d
+        t_stat = (mean_c - mean_b) / se
+        try:
+            import scipy.stats as _stats
+            df_denom = (var_b / len(b)) ** 2 / (len(b) - 1) + (var_c / len(c)) ** 2 / (len(c) - 1)
+            df = ((var_b / len(b) + var_c / len(c)) ** 2) / max(1e-9, df_denom)
+            p_val = float(_stats.t.sf(t_stat, df=df))
+        except Exception:
+            p_val = 0.5 * math.erfc(t_stat / math.sqrt(2.0))
+        return round(max(0.0, min(1.0, p_val)), 6), cohen_d
+    else:
+        mean_b = b[0] if b else 0.0
+        mean_c = c[0] if c else 0.0
+        p_val = 0.0 if mean_c > mean_b else 1.0
+        cohen_d = 1.0 if mean_c > mean_b else 0.0
+        return p_val, cohen_d
+
+
 def govern_modification(
     baseline: list[float] | None,
     candidate: list[float] | None,
     regressions: int = 0,
+    alpha: float | None = None,
+    min_effect_size: float | None = None,
 ) -> dict[str, Any]:
-    """Phase 5: evolutionary self-governance decision (pure function).
+    """Phase 5: mathematically calibrated evolutionary self-governance decision.
 
-    ACCEPT iff ALL hold: mean_c > mean_b AND median_c > median_b AND
-    min_c >= min_b AND regressions == 0. Anything else → REJECT with
-    reasons. Empty inputs → REJECT (no evidence). Never raises.
+    ACCEPT iff ALL hold:
+      1. mean_c > mean_b (positive central tendency shift)
+      2. median_c > median_b (median non-dominated)
+      3. worst_c >= worst_b (worst-case performance bounded)
+      4. regressions == 0 (zero holdout / test regressions)
+      5. p_value < alpha (statistically significant against null hypothesis, N >= 5)
+      6. cohen_d >= min_effect_size (if requested)
+    Anything else → REJECT with explicit failure reasons. Never raises.
     """
     import statistics as _st
     try:
@@ -344,7 +410,8 @@ def govern_modification(
             return {"decision": "REJECT", "reasons": ["insufficient_evidence"],
                     "mean_b": None, "mean_c": None, "median_b": None,
                     "median_c": None, "worst_b": None, "worst_c": None,
-                    "regressions": int(regressions or 0)}
+                    "regressions": int(regressions or 0),
+                    "p_value": None, "cohen_d": None}
         mean_b, mean_c = round(_st.mean(b), 4), round(_st.mean(c), 4)
         median_b, median_c = round(_st.median(b), 4), round(_st.median(c), 4)
         worst_b, worst_c = round(min(b), 4), round(min(c), 4)
@@ -357,18 +424,29 @@ def govern_modification(
             reasons.append("worst_regressed")
         if int(regressions or 0) != 0:
             reasons.append("regressions_present")
+
+        p_val, cohen_d = _compute_governor_statistics(b, c)
+        if alpha is not None and len(b) >= 5 and p_val >= alpha:
+            reasons.append("not_statistically_significant")
+        if min_effect_size is not None and cohen_d < min_effect_size:
+            reasons.append("effect_size_insufficient")
+
         decision = "ACCEPT" if not reasons else "REJECT"
         return {"decision": decision, "reasons": reasons or ["all_gates_passed"],
                 "mean_b": mean_b, "mean_c": mean_c, "median_b": median_b,
                 "median_c": median_c, "worst_b": worst_b, "worst_c": worst_c,
                 "regressions": int(regressions or 0),
                 "delta_mean": round(mean_c - mean_b, 4),
-                "delta_median": round(median_c - median_b, 4)}
+                "delta_median": round(median_c - median_b, 4),
+                "p_value": p_val,
+                "cohen_d": cohen_d}
     except Exception:
         return {"decision": "REJECT", "reasons": ["governor_error"],
                 "mean_b": None, "mean_c": None, "median_b": None,
                 "median_c": None, "worst_b": None, "worst_c": None,
-                "regressions": int(regressions or 0)}
+                "regressions": int(regressions or 0),
+                "p_value": None, "cohen_d": None}
+
 
 
 def render_self_modification_proposal(

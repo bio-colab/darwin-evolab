@@ -756,6 +756,8 @@ def greedy_repair(
     prioritize_by_suspicion: bool = True,
     parsimony_shrink: bool = True,
     on_step: Any = None,
+    candidate_ranker: Any = None,
+    first_ascent: bool = False,
 ) -> tuple[RepairGenome, list[dict[str, Any]], int]:
     """Forward greedy: add a gene only if it raises score and does not fail holdout."""
     catalog = catalog_sources(sources)
@@ -777,6 +779,22 @@ def greedy_repair(
                 score = suspicion_map.line_scores.get(e.lineno, 0.0)
                 return (-score, e.file, e.lineno, e.col_offset, e.kind)
             catalog = sorted(catalog, key=_sbfl_key)
+
+    if candidate_ranker is not None:
+        try:
+            import inspect
+            sig = inspect.signature(candidate_ranker)
+            p_count = len(sig.parameters)
+            if p_count == 1:
+                ranked = candidate_ranker(catalog)
+            elif p_count == 2:
+                ranked = candidate_ranker(catalog, current)
+            else:
+                ranked = candidate_ranker(catalog, current, evaluator)
+            if isinstance(ranked, list) and ranked:
+                catalog = ranked
+        except Exception:
+            pass
 
     if hasattr(evaluator, "trace_suspicion"):
         try:
@@ -837,6 +855,8 @@ def greedy_repair(
                 best_trial_score = score
                 best_trial_hold = hold
                 best_edit = edit
+                if first_ascent:
+                    break
         if best_trial is None or best_edit is None:
             break
         current = best_trial
@@ -884,6 +904,8 @@ def greedy_run_report(
     prioritize_by_suspicion: bool = True,
     parsimony_shrink: bool = True,
     on_step: Any = None,
+    candidate_ranker: Any = None,
+    first_ascent: bool = False,
 ) -> dict[str, Any]:
     from datetime import datetime, timezone
 
@@ -895,6 +917,8 @@ def greedy_run_report(
         prioritize_by_suspicion=prioritize_by_suspicion,
         parsimony_shrink=parsimony_shrink,
         on_step=on_step,
+        candidate_ranker=candidate_ranker,
+        first_ascent=first_ascent,
     )
     score, hold = _score(evaluator, genome)
     evaluations += 1

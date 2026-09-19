@@ -266,7 +266,7 @@ class BudgetElasticityOptimizer:
 
         # Compute final statistics
         p_val, cohen_d = self._compute_paired_stats(values_b, best_values)
-        verdict = govern_modification(values_b, best_values, regressions=0)
+        verdict = govern_modification(values_b, best_values, regressions=0, alpha=None)
 
         # Evaluations saved percent
         total_evals_b = sum(evals_b)

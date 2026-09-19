@@ -186,6 +186,8 @@ class SWEBenchAdapter(DomainAdapter):
         self,
         spec: SWEBenchInstance,
         max_evals: int = 32,
+        candidate_ranker: Any = None,
+        first_ascent: bool = False,
     ) -> SWEBenchResolution:
         """Executes targeted AST + Ochiai SBFL guided repair on the SWE-bench instance."""
         t0 = time.perf_counter()
@@ -197,6 +199,8 @@ class SWEBenchAdapter(DomainAdapter):
             evaluator=evaluator,
             max_evals=max_evals,
             prioritize_by_suspicion=True,
+            candidate_ranker=candidate_ranker,
+            first_ascent=first_ascent,
         )
 
         res = evaluator.evaluate(winning_genome)
