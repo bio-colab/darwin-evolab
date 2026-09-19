@@ -555,3 +555,138 @@ class CrossFileMutator:
             return MultiFileASTGenome.from_sources(mut_sources)
         except Exception:
             return genome.clone()
+
+
+@dataclass(frozen=True)
+class CompoundRepairEdit:
+    """An atomic composite edit grouping multiple synchronized edits across files."""
+
+    kind: str
+    file: str
+    lineno: int
+    col_offset: int
+    sub_edits: tuple[Any, ...] = ()
+    payload: tuple[tuple[str, Any], ...] = ()
+    description: str = ""
+    transform_fn: Any = field(default=None, repr=False, compare=False)
+
+    def locus(self) -> tuple[str, int, int]:
+        return (self.file, self.lineno, self.col_offset)
+
+    def key(self) -> tuple[Any, ...]:
+        sub_keys = tuple(e.key() for e in self.sub_edits) if self.sub_edits else ()
+        return ("compound", self.kind, self.file, self.lineno, self.col_offset, sub_keys)
+
+    def payload_dict(self) -> dict[str, Any]:
+        return dict(self.payload)
+
+    def apply_to_sources(self, sources: dict[str, str]) -> dict[str, str]:
+        if self.transform_fn is not None:
+            return self.transform_fn(sources)
+        return sources
+
+    def serialize(self) -> dict[str, Any]:
+        return {
+            "kind": self.kind,
+            "file": self.file,
+            "lineno": self.lineno,
+            "col_offset": self.col_offset,
+            "description": self.description,
+            "payload": self.payload_dict(),
+            "sub_edits": [e.serialize() if hasattr(e, "serialize") else e for e in self.sub_edits],
+        }
+
+    def to_dict(self) -> dict[str, Any]:
+        return self.serialize()
+
+
+class ContractPreservationValidator:
+    """Fast pre-evaluation screening for multi-file contracts to prevent sandbox waste."""
+
+    def __init__(self, sources: dict[str, str]):
+        self.sources = dict(sources)
+        self.graph = CrossFileDependencyGraph.build(sources)
+
+    def validate_candidate(self, mutated_sources: dict[str, str]) -> tuple[bool, list[str]]:
+        """Pre-screens candidate code across all modified modules in microseconds."""
+        all_violations: list[str] = []
+        for file_path, code in mutated_sources.items():
+            if code != self.sources.get(file_path):
+                ok, violations = self.graph.validate_contract_preservation(file_path, code)
+                if not ok:
+                    all_violations.extend(violations)
+        return len(all_violations) == 0, all_violations
+
+
+class MultiFileCompoundMutator:
+    """Synthesizes coordinated, atomic multi-file repairs addressing cross-module defects."""
+
+    @classmethod
+    def generate_compound_candidates(
+        cls,
+        sources: dict[str, str],
+        target_file: str,
+        base_catalog: list[Any] | None = None,
+    ) -> list[CompoundRepairEdit]:
+        """Analyzes inter-module call graphs and generates synchronized multi-file candidate edits."""
+        candidates: list[CompoundRepairEdit] = []
+        graph = CrossFileDependencyGraph.build(sources)
+
+        if target_file not in graph.symbols:
+            return candidates
+
+        target_syms = graph.symbols[target_file]
+
+        # 1. Synchronized Parameter & Call-Site Alignment
+        for fn_name, fn_def in target_syms.functions.items():
+            callers = graph.find_callers_of(target_file, fn_name)
+            external_callers = [(path, cs) for path, cs in callers if path != target_file]
+
+            if not external_callers:
+                continue
+
+            existing_params = [a.arg for a in fn_def.args.args]
+
+            # If external callers supply keyword arguments not in definition, generate synchronized add-parameter
+            for caller_file, cs in external_callers:
+                for kw in cs.keywords:
+                    if kw not in existing_params:
+                        def _make_param_transform(tf=target_file, fn=fn_name, p=kw):
+                            return lambda s: CrossFileMutator.add_parameter_synchronized(
+                                s, target_file=tf, func_name=fn, param_name=p, default_val=None
+                            )
+
+                        candidates.append(
+                            CompoundRepairEdit(
+                                kind="sync_add_parameter",
+                                file=target_file,
+                                lineno=getattr(fn_def, "lineno", 1),
+                                col_offset=getattr(fn_def, "col_offset", 0),
+                                description=f"Synchronized addition of parameter '{kw}' in {target_file}.{fn_name} for caller {caller_file}",
+                                transform_fn=_make_param_transform(),
+                            )
+                        )
+
+        # 2. Cross-Module Import Injection
+        for file_path in sources:
+            if file_path == target_file:
+                continue
+            for fn_name in target_syms.functions:
+                def _make_import_transform(cf=file_path, tf=target_file, sym=fn_name):
+                    return lambda s: CrossFileMutator.inject_import(
+                        s, consumer_file=cf, provider_file=tf, symbol_name=sym
+                    )
+
+                candidates.append(
+                    CompoundRepairEdit(
+                        kind="sync_inject_import",
+                        file=file_path,
+                        lineno=1,
+                        col_offset=0,
+                        description=f"Inject import '{fn_name}' from {target_file} into {file_path}",
+                        transform_fn=_make_import_transform(),
+                    )
+                )
+
+        return candidates
+

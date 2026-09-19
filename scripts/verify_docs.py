@@ -213,11 +213,11 @@ def verify_documentation() -> bool:
     # -------------------------------------------------------------------------
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
-        if "tests-646%20passed" in readme_text or "tests-646 passed" in readme_text:
+        if "tests-661%20passed" in readme_text or "tests-661 passed" in readme_text:
             checks_passed += 1
-            print(f"[OK] Production Test Suite Badge (646 passed) verified in README.md.")
+            print(f"[OK] Production Test Suite Badge (661 passed) verified in README.md.")
         else:
-            errors.append("README.md: Test badge does not match 646 passed")
+            errors.append("README.md: Test badge does not match 661 passed")
 
     # -------------------------------------------------------------------------
     # Final Verdict

@@ -523,15 +523,33 @@ class RepairGenome(EvolabGenome):
         self._applied_cache = None
 
     def edit_keys(self) -> set[tuple]:
-        return {e.key() for e in self.edits}
+        keys = set()
+        for e in self.edits:
+            if hasattr(e, "sub_edits") and e.sub_edits:
+                for sub in e.sub_edits:
+                    keys.add(sub.key())
+            else:
+                keys.add(e.key())
+        return keys
 
     def apply_to(self, base_sources: dict[str, str] | None = None) -> dict[str, str]:
         if self._applied_cache is not None and base_sources is None:
             return dict(self._applied_cache)
         base = dict(base_sources or self.sources)
+        # 1. Apply any custom full-source transformations (e.g. from CompoundRepairEdit)
+        for edit in self.edits:
+            if hasattr(edit, "apply_to_sources"):
+                base = edit.apply_to_sources(base)
+        # 2. Group and apply AST locus edits
         grouped: dict[str, list[RepairEdit]] = {}
         for edit in self.edits:
-            grouped.setdefault(edit.file or self.target_file, []).append(edit)
+            sub_list = getattr(edit, "sub_edits", None)
+            if sub_list:
+                for sub in sub_list:
+                    if not hasattr(sub, "apply_to_sources"):
+                        grouped.setdefault(sub.file or self.target_file, []).append(sub)
+            elif not hasattr(edit, "apply_to_sources"):
+                grouped.setdefault(edit.file or self.target_file, []).append(edit)
         for path, group in grouped.items():
             if path in base:
                 base[path] = apply_edits(base[path], group)
@@ -552,8 +570,15 @@ class RepairGenome(EvolabGenome):
         )
 
     def fingerprint(self) -> str:
+        flattened: list[Any] = []
+        for e in self.edits:
+            if hasattr(e, "sub_edits") and e.sub_edits:
+                flattened.extend(e.sub_edits)
+            else:
+                flattened.append(e)
         raw = "|".join(
-            f"{e.file}:{e.lineno}:{e.col_offset}:{e.kind}" for e in sorted(self.edits, key=lambda x: x.key())
+            f"{getattr(e, 'file', '')}:{getattr(e, 'lineno', 0)}:{getattr(e, 'col_offset', 0)}:{getattr(e, 'kind', '')}"
+            for e in sorted(flattened, key=lambda x: str(getattr(x, "key", lambda: "")()))
         )
         return hashlib.sha256((self.source + "#" + raw).encode()).hexdigest()[:16]
 
@@ -761,9 +786,18 @@ def greedy_repair(
     on_step: Any = None,
     candidate_ranker: Any = None,
     first_ascent: bool = False,
+    enable_multi_file_synthesis: bool = True,
 ) -> tuple[RepairGenome, list[dict[str, Any]], int]:
     """Forward greedy: add a gene only if it raises score and does not fail holdout."""
     catalog = catalog_sources(sources)
+    if enable_multi_file_synthesis and len(sources) > 1:
+        try:
+            from .cross_file import MultiFileCompoundMutator
+            compound_edits = MultiFileCompoundMutator.generate_compound_candidates(sources, target_file, catalog)
+            if compound_edits:
+                catalog = catalog + compound_edits
+        except Exception:
+            pass
     current = RepairGenome(sources=dict(sources), target_file=target_file, edits=[])
     best_score, best_hold = _score(evaluator, current)
     history = [{

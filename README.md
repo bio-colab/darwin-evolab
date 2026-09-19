@@ -5,7 +5,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-646%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-661%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![SWE-bench Lite](https://img.shields.io/badge/SWE--bench%20Lite-N=300%20(33.7%25)-blue.svg)](docs/BENCHMARKS_300.md)
 [![Search Space Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
@@ -145,16 +145,19 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 | **2-Bit Ripple Adder** | Exhaustive Truth Table ($2^5=32$) | **100% Formal Correctness** | 10 Active Gates (Synthesizable Verilog-2001) |
 | **4-Bit ALU Slice** | Exhaustive Truth Table ($2^8=256$) | **100% Formal Correctness** | Multi-op arithmetic-logic slice |
 | **Even Parity Generator** | Exhaustive Truth Table ($2^4=16$) | **100% Formal Correctness** | 3 XOR Gates (Cascaded Tree) |
+| **8-Bit Synchronous Counter** | Cycle-Accurate Waveform ($T=32$) | **100% Waveform Accuracy** | Clocked DFFs, Up/Down Count, Parallel Load & Overflow |
+| **8-Bit Shift Register (PISO/SIPO)**| Cycle-Accurate Waveform ($T=32$) | **100% Waveform Accuracy** | Serial in/out, Parallel load, Synchronous shift |
+| **UART Serial Transmitter FSM** | Cycle-Accurate Waveform ($T=32$) | **100% Protocol Compliance** | 8-N-1 Serial Framing (Start, 8 Data, Stop, Busy flag) |
 | **Yosys RTL Synthesis** | Yosys ABC Optimization Pass | **Optimal Gate / Cell Ratio ($\le 1.1\times$)** | Verilog netlist verified with FPGA synthesis pass |
 | **Multi-FPGA Constraint Export** | Static Physical Mapper | **iCE40 (.pcf), ECP5 (.lpf), Xilinx (.xdc)** | Automatic pinout allocation for physical boards |
 
 ### 6. Repository-Wide Test Health
 
 ```
-tests/ (Core, Koza Parsimony, Miller CGP, Holland Schema, SWE-bench 300, JEV, Reproducibility, Dream-RSI) : 646 passed, 1 skipped (100%)
+tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI) : 661 passed, 1 skipped (100%)
 Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 24/24 checks passed (100%)
 ==================================================================================================================
-Total Production Test Suite                                                                        : 646 automated tests (100% passing)
+Total Production Test Suite                                                                        : 661 automated tests (100% passing)
 ```
 
 ---

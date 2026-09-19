@@ -213,3 +213,148 @@ class SelfEvolutionEngine:
             }
 
         return outcome
+
+
+class AutonomousEvolutionManager:
+    """Default-active autonomous self-evolution manager.
+
+    Conducts passive telemetry monitoring, autonomous bottleneck detection,
+    background Dreaming replay optimization over discovery trees, and
+    statistically vaccinated Governor auto-promotion with hot-swapping.
+    """
+
+    def __init__(
+        self,
+        policy_path: str | Path = ".evolab/autonomous_policy.json",
+        alpha: float = 0.05,
+        min_effect_size: float = 0.50,
+        stagnation_threshold: int = 3,
+    ) -> None:
+        self.policy_path = Path(policy_path)
+        self.alpha = alpha
+        self.min_effect_size = min_effect_size
+        self.stagnation_threshold = stagnation_threshold
+        self.stagnation_events_count = 0
+        self.total_sessions_recorded = 0
+        self.promotion_history: list[dict[str, Any]] = []
+
+        # Default baseline policy
+        self.active_policy: dict[str, Any] = {
+            "operator_weights": {
+                "InsertGuard": 0.142857,
+                "BoundaryFlip": 0.142857,
+                "SwapCondition": 0.142857,
+                "DeleteStatement": 0.142857,
+                "OffByOne": 0.142857,
+                "BinOpFlip": 0.142857,
+                "ConstantMutate": 0.142857,
+            },
+            "immigrant_fraction": 0.0,
+            "budget_elasticity": False,
+            "compositional_depth": 1,
+            "version": "baseline",
+            "last_updated_epoch": time.time(),
+        }
+
+        self._load_persisted_policy()
+
+    def _load_persisted_policy(self) -> None:
+        if self.policy_path.is_file():
+            try:
+                data = json.loads(self.policy_path.read_text(encoding="utf-8"))
+                if isinstance(data, dict):
+                    self.active_policy.update(data)
+            except Exception:
+                pass
+
+    def save_persisted_policy(self) -> None:
+        try:
+            self.policy_path.parent.mkdir(parents=True, exist_ok=True)
+            self.policy_path.write_text(json.dumps(self.active_policy, indent=2), encoding="utf-8")
+        except Exception:
+            pass
+
+    def record_run_telemetry(self, telemetry: dict[str, Any]) -> None:
+        """Passively records search telemetry and checks for stagnation bottlenecks."""
+        self.total_sessions_recorded += 1
+        is_stagnant = telemetry.get("stagnation", False) or telemetry.get("plateau_detected", False)
+        if is_stagnant:
+            self.stagnation_events_count += 1
+
+    def should_trigger_optimization(self) -> bool:
+        """Determines if evolutionary stagnation warrants an autonomous Dreaming cycle."""
+        return self.stagnation_events_count >= self.stagnation_threshold
+
+    def run_autonomous_optimization(
+        self,
+        discovery_trees: Sequence[Any] | None = None,
+        report_path: str | Path | None = None,
+        n_samples: int = 2000,
+        seed: int = 42,
+    ) -> dict[str, Any]:
+        """Runs background counterfactual Dreaming optimization and submits to the Governor."""
+        from evolab.dream.self_model_dream import OperatorReweighter
+        from evolab.replay_simulator import DiscoveryTree
+
+        trees = list(discovery_trees) if discovery_trees else []
+        if not trees and report_path:
+            path = Path(report_path)
+            if path.is_file():
+                trees = DiscoveryTree.from_swe_bench_report(path)
+
+        if not trees:
+            return {
+                "decision": "SKIPPED",
+                "reason": "no_discovery_trees_available",
+                "promoted": False,
+            }
+
+        reweighter = OperatorReweighter(trees=trees)
+        result = reweighter.optimize(n_samples=n_samples, seed=seed)
+
+        verdict = result.governor_verdict
+        is_accepted = (
+            verdict.get("decision") == "ACCEPT"
+            and result.p_value < self.alpha
+            and result.cohen_d >= self.min_effect_size
+        )
+
+        record = {
+            "timestamp_epoch": time.time(),
+            "p_value": result.p_value,
+            "cohen_d": result.cohen_d,
+            "evals_saved_percent": result.mean_evaluations_saved_percent,
+            "verdict": verdict,
+            "promoted": is_accepted,
+        }
+        self.promotion_history.append(record)
+
+        if is_accepted:
+            # Hot-swap runtime active policy!
+            self.active_policy["operator_weights"] = result.optimal_weights
+            self.active_policy["version"] = f"dream_promoted_{len(self.promotion_history)}"
+            self.active_policy["last_updated_epoch"] = time.time()
+            self.save_persisted_policy()
+            # Reset stagnation counter
+            self.stagnation_events_count = 0
+            return {
+                "decision": "ACCEPT",
+                "promoted": True,
+                "optimal_weights": result.optimal_weights,
+                "p_value": result.p_value,
+                "cohen_d": result.cohen_d,
+                "evals_saved_percent": result.mean_evaluations_saved_percent,
+            }
+        else:
+            return {
+                "decision": "REJECT",
+                "promoted": False,
+                "reasons": verdict.get("reasons", ["criteria_not_met"]),
+                "p_value": result.p_value,
+                "cohen_d": result.cohen_d,
+            }
+
+    def get_active_policy(self) -> dict[str, Any]:
+        """Returns the currently active, promoted evolutionary parameters."""
+        return dict(self.active_policy)
+

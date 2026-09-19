@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-646%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-661%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![SWE-bench Lite](https://img.shields.io/badge/SWE--bench%20Lite-N=300%20(33.7%25)-blue.svg)](docs/BENCHMARKS_300.md)
 [![Search Space Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
@@ -17,7 +17,7 @@
 
 **evolab** ليس مجرد أداة لإصلاح كود بايثون، بل هو **نظام تشغيل حوسبي تطوري عام ومستقل عن النطاق (Evolutionary Operating System)**. صُمم المشروع ليكون أرضية خوارزمية مفتوحة تفصل فصلاً صارماً بين نواة البحث التطوري المشتركة (`EvolutionEngine`) وبين محولات المجالات التطبيقية (`DomainAdapter`) التي تعمل كبرامج تشغيل (Device Drivers) عبر شجرة بايثون AST، وبوابات السيليكون المنطقية CGP، ومسارات التطور الذاتي المستقل.
 
-الإصدار 0.6.0 — Python 3.10+.
+الإصدار 0.6.1 — Python 3.10+.
 
 ```bash
 # تثبيت النواة البرمجية
@@ -29,7 +29,7 @@ pip install -e ".[full]"
 # تشغيل سريع للإصلاح الآلي
 python run.py evolve --scenario click_cli_parser --diff
 
-# تشغيل فحص الاختبارات الشاملة (646 اختباراً ناجحاً بنسبة 100%)
+# تشغيل فحص الاختبارات الشاملة (661 اختباراً ناجحاً بنسبة 100%)
 pytest tests/ -q
 ```
 
@@ -444,16 +444,19 @@ pytest --evolab --evolab-func parse_cli --evolab-source app.py
 | **جامع متسلسل 2-بت (Ripple Adder)** | جدول الحقيقة الشامل ($2^5=32$) | **مطابقة منطقية 100%** | 10 بوابات نشطة (كود Verilog-2001 قابل للتصنيع) |
 | **شريحة ALU 4-بت** | جدول الحقيقة الشامل ($2^8=256$) | **مطابقة منطقية 100%** | وحدة حساب ومنطق متعددة العمليات |
 | **فاحص التكافؤ (Parity Generator)** | جدول الحقيقة الشامل ($2^4=16$) | **مطابقة منطقية 100%** | 3 بوابات XOR متتالية |
+| **عداد تزامني 8-بت (Synchronous Counter)** | محاكاة أشكال الموجات ($T=32$) | **دقة موجية 100%** | مسجلات DFF متزامنة، عد تصاعدي/تنازلي، تحميل متوازي وفائض |
+| **مسجل إزاحة 8-بت (Shift Register)** | محاكاة أشكال الموجات ($T=32$) | **دقة موجية 100%** | أنماط تسلسلية/متوازية (PISO/SIPO)، إزاحة تزامنية على حافة الساعة |
+| **وحدة إرسال UART التسلسلية (FSM)** | محاكاة أشكال الموجات ($T=32$) | **مطابقة كاملة لبروتوكول UART** | إطارات 8-N-1 (بت بداية، 8 بت بيانات، بت توقف، وإشارة انشغال) |
 | **توليف Yosys RTL** | فحص إحصاء خلايا Yosys/ABC | **نسبة بوابات مثالية ($\le 1.1\times$)** | تحقق كامل لتوليف كود Verilog على FPGA |
 | **تصدير قيود الأرجل المتعددة** | مقدر الموارد الساكن | **iCE40 (.pcf), ECP5 (.lpf), Xilinx (.xdc)** | تعيين آلي للأرجل المادية للألواح |
 
 ### 6. سلامة حزمة الاختبارات الشاملة للمستودع
 
 ```
-tests/ (النواة، إيجاز كوزا، ميلر CGP، هولاند، معيار SWE-bench 300، JEV، إعادة الإنتاج، ومحاكي Dream-RSI): 646 ناجح، 1 متخطى (100%)
+tests/ (النواة، التركيب متعدد الملفات، التطور الذاتي المستقل، دوائر CGP SoC المتزامنة، معيار SWE-bench 300، JEV، إعادة الإنتاج، ومحاكي Dream-RSI): 661 ناجح، 1 متخطى (100%)
 محرك التحقق المؤتمت من صدقية التوثيق (scripts/verify_docs.py)                                       : 24/24 فحصاً ناجحاً بنسبة 100%
 ==================================================================================================================
-الإجمالي الكلي للاختبارات المؤتمتة الصالحة للإنتاج                                                  : 646 اختباراً مؤتمتاً بنسبة نجاح 100%
+الإجمالي الكلي للاختبارات المؤتمتة الصالحة للإنتاج                                                  : 661 اختباراً مؤتمتاً بنسبة نجاح 100%
 ```
 
 > 📄 **بيانات جبهة باريتو ومصدر النمذجة الكامل**: انظر الملف الموثق [`reports/sky130_opamp_pareto.json`](reports/sky130_opamp_pareto.json) والتقرير الأكاديمي الشامل [`docs/RESULTS.md`](docs/RESULTS.md).
