@@ -17,7 +17,7 @@ from .speciation import SPECIES_POOL, DYNAMIC_SPECIES_CFG, genomic_distance, spe
 from .fitness import default_fitness, ragged_fitness
 from .memory import ChangeDetector, ChangeType, MemoryInjector, TemporalMemoryIndex
 
-ENGINE_VERSION = "evolab-engine/0.5.0"
+ENGINE_VERSION = "evolab-engine/0.6.0"
 SCHEMA_VERSION = "report-schema/1"
 
 DISTANCE_PRESETS = ("composite", "euclidean", "maxdelta")

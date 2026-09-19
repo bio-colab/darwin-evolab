@@ -27,7 +27,7 @@ def test_cli_version_flag():
         cwd=str(ROOT),
     )
     assert proc.returncode == 0
-    assert "evolab 0.5.0" in proc.stdout
+    assert "evolab 0.6.0" in proc.stdout
 
 
 def test_cli_eval_from_argument():

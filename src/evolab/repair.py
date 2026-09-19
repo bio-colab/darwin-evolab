@@ -955,6 +955,6 @@ def greedy_run_report(
             "evaluator": type(evaluator).__name__,
         },
         "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "engine_version": "evolab-engine/0.5.0",
+        "engine_version": "evolab-engine/0.6.0",
         "schema_version": "report-schema/1",
     }

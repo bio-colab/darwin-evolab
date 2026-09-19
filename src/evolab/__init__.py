@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 
 from .adapters import (
     DomainAdapter,
@@ -339,7 +339,12 @@ _LAZY: dict[str, tuple[str, str]] = {
     "mine_seeds_from_trees": (".dream", "mine_seeds_from_trees"),
     "train_test_split_trees": (".dream", "train_test_split_trees"),
     "run_cross_validated_seeding": (".dream", "run_cross_validated_seeding"),
+    # TypeSafe AI JEV System-One Integration
+    "JevClient": (".jev", "JevClient"),
+    "create_jev_ranker": (".jev", "create_jev_ranker"),
+    "run_jev_greedy_repair": (".jev", "run_jev_greedy_repair"),
 }
+
 
 
 def __getattr__(name: str) -> Any:
@@ -432,4 +437,8 @@ __all__ = [
     "summarize",
     "EventBus",
     "EvolutionEvent",
+    # 6. TypeSafe AI JEV System-One Integration
+    "JevClient",
+    "create_jev_ranker",
+    "run_jev_greedy_repair",
 ]

@@ -236,7 +236,7 @@ def test_hybrid_mutation_accounting():
     assert hm["light"] + hm["semantic"] == hm["total_mutations"] > 0
     assert abs(hm["light"] / hm["total_mutations"] - 0.7) < 0.05
     assert hm["est_llm_calls_saved_pct"] > 60.0
-    assert r["engine_version"].endswith("5.0")
+    assert r["engine_version"].endswith("6.0")
 
 
 def test_dynamic_sharing_schedule_fields():
@@ -1523,8 +1523,8 @@ def test_strategic_selector_biases_toward_better_type():
 def test_package_version_consistency():
     import evolab
     from evolab.engine import ENGINE_VERSION
-    assert evolab.__version__ == "0.5.0"
-    assert ENGINE_VERSION == "evolab-engine/0.5.0"
+    assert evolab.__version__ == "0.6.0"
+    assert ENGINE_VERSION == "evolab-engine/0.6.0"
 
 
 def test_memory_enabled_fires_with_float_genome():
