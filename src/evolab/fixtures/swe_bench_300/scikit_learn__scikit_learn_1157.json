@@ -1,0 +1,49 @@
+{
+  "instance_id": "scikit-learn-_scikit_learn_1157",
+  "repo": "scikit-learn/scikit-learn",
+  "base_commit": "commit_000485",
+  "problem_statement": "In scikit-learn.auth, permission_gate uses disjunction instead of conjunction.",
+  "target_file": "src/scikit-learn/auth.py",
+  "sources": {
+    "src/scikit-learn/auth.py": "def permission_gate(is_admin: bool, is_active: bool) -> bool:\n    if is_admin or is_active:  # Bug: should be 'and' for restricted actions\n        return True\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        true,
+        false
+      ],
+      false
+    ],
+    [
+      [
+        false,
+        true
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        true,
+        true
+      ],
+      true
+    ],
+    [
+      [
+        false,
+        false
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_scikit-learn.py::test_mixed_permissions_denied"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_scikit-learn.py::test_full_grant",
+    "tests/test_scikit-learn.py::test_full_deny"
+  ]
+}

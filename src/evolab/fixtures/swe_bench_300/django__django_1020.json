@@ -1,0 +1,49 @@
+{
+  "instance_id": "django--django_1020",
+  "repo": "django/django",
+  "base_commit": "commit_0003fc",
+  "problem_statement": "In django.utils, compute_offset calculates incorrect slice bounds with off-by-one arithmetic.",
+  "target_file": "src/django/utils.py",
+  "sources": {
+    "src/django/utils.py": "def compute_offset(size: int, step: int) -> int:\n    if step <= 0:\n        return 0\n    return (size // step) + 1  # Bug: off-by-one addition\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        10,
+        2
+      ],
+      5
+    ],
+    [
+      [
+        20,
+        4
+      ],
+      5
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        0,
+        2
+      ],
+      0
+    ],
+    [
+      [
+        7,
+        2
+      ],
+      4
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_django.py::test_offset_alignment"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_django.py::test_offset_zero",
+    "tests/test_django.py::test_offset_odd"
+  ]
+}

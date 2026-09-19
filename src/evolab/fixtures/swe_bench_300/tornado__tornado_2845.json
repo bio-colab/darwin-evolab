@@ -1,0 +1,37 @@
+{
+  "instance_id": "tornado__tornado-2845",
+  "repo": "tornadoweb/tornado",
+  "base_commit": "c9d0e1f2",
+  "problem_statement": "parse_qs splits query parameters on semicolon instead of ampersand.",
+  "target_file": "tornado/httputil.py",
+  "sources": {
+    "tornado/httputil.py": "def parse_query_keys(qs: str) -> list:\n    parts = qs.split(';')  # Bug: should split on '&'\n    return [p.split('=')[0] for p in parts if p]\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "a=1&b=2"
+      ],
+      [
+        "a",
+        "b"
+      ]
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "a=1"
+      ],
+      [
+        "a"
+      ]
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_httputil.py::test_ampersand_separation"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_httputil.py::test_single_key"
+  ]
+}

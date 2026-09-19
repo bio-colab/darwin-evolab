@@ -1,0 +1,40 @@
+{
+  "instance_id": "sphinx-doc__sphinx-8721",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "e5f6a7b8c9d0",
+  "problem_statement": "make_viewcode_anchor generates invalid XHTML anchor names when tags contain hierarchical colon syntax, requiring string normalization pass.",
+  "target_file": "sphinx/ext/viewcode.py",
+  "sources": {
+    "sphinx/ext/viewcode.py": "def make_viewcode_anchor(entry_id: str, tags: list[str]) -> str:\n    # Hard benchmark: requires multi-line token sanitization\n    return entry_id + '-' + '.'.join(tags)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "pkg.mod",
+        [
+          "class:Foo",
+          "method:bar"
+        ]
+      ],
+      "pkg.mod_c_Foo_m_bar"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "simple",
+        [
+          "a",
+          "b"
+        ]
+      ],
+      "simple-a.b"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_viewcode.py::test_hierarchical_tags_sanitized"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_viewcode.py::test_simple_tags"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "instance_id": "psf__black-2964",
+  "repo": "psf/black",
+  "base_commit": "3e4f5a6b7c8d",
+  "problem_statement": "format_bracket_line mishandles trailing comma placement across split parenthesis hierarchies.",
+  "target_file": "src/black/linegen.py",
+  "sources": {
+    "src/black/linegen.py": "def format_bracket_line(tokens: list[str], max_len: int) -> str:\n    # Hard benchmark: requires multi-stage AST formatting passes\n    return ' '.join(tokens)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        [
+          "func(",
+          "arg1,",
+          "arg2",
+          ")"
+        ],
+        10
+      ],
+      "func(\n    arg1,\n    arg2,\n)"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        [
+          "a",
+          "+",
+          "b"
+        ],
+        10
+      ],
+      "a + b"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_linegen.py::test_split_bracket_hierarchy"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_linegen.py::test_simple_line_fit"
+  ]
+}

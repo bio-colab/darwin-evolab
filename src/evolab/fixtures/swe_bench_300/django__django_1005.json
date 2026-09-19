@@ -1,0 +1,42 @@
+{
+  "instance_id": "django--django_1005",
+  "repo": "django/django",
+  "base_commit": "commit_0003ed",
+  "problem_statement": "In django.filters, check_threshold rejects boundary values due to strict inequality.",
+  "target_file": "src/django/filters.py",
+  "sources": {
+    "src/django/filters.py": "def check_threshold(val: int, limit: int) -> bool:\n    if val < limit:  # Bug: should be <= to allow exact limit\n        return True\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        10,
+        10
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        5,
+        10
+      ],
+      true
+    ],
+    [
+      [
+        15,
+        10
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_django.py::test_exact_threshold"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_django.py::test_strict_under",
+    "tests/test_django.py::test_strict_over"
+  ]
+}

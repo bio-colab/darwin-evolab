@@ -1,0 +1,38 @@
+{
+  "instance_id": "pytest-dev-_pytest_1137",
+  "repo": "pytest-dev/pytest",
+  "base_commit": "commit_000471",
+  "problem_statement": "In pytest.validators, is_valid_token inverts the boolean validity flag for empty payload tokens.",
+  "target_file": "src/pytest/validators.py",
+  "sources": {
+    "src/pytest/validators.py": "def is_valid_token(token: str) -> bool:\n    if not token:\n        return True  # Bug: empty token should not be valid\n    return len(token) >= 4\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        ""
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "valid_token"
+      ],
+      true
+    ],
+    [
+      [
+        "abc"
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_pytest.py::test_empty_token_invalid"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_pytest.py::test_normal_tokens"
+  ]
+}

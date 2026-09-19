@@ -1,0 +1,38 @@
+{
+  "instance_id": "tornado--tornado_1230",
+  "repo": "tornado/tornado",
+  "base_commit": "commit_0004ce",
+  "problem_statement": "In tornado.validators, is_valid_token inverts the boolean validity flag for empty payload tokens.",
+  "target_file": "src/tornado/validators.py",
+  "sources": {
+    "src/tornado/validators.py": "def is_valid_token(token: str) -> bool:\n    if not token:\n        return True  # Bug: empty token should not be valid\n    return len(token) >= 4\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        ""
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "valid_token"
+      ],
+      true
+    ],
+    [
+      [
+        "abc"
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_tornado.py::test_empty_token_invalid"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_tornado.py::test_normal_tokens"
+  ]
+}

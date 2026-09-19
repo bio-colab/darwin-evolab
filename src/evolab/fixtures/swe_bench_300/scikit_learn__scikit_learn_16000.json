@@ -1,0 +1,34 @@
+{
+  "instance_id": "scikit_learn__scikit_learn-16000",
+  "repo": "scikit-learn/scikit-learn",
+  "base_commit": "a7b8c9d0e",
+  "problem_statement": "check_test_size treats integer test_size as fraction when <= 1.",
+  "target_file": "sklearn/model_selection/_split.py",
+  "sources": {
+    "sklearn/model_selection/_split.py": "def parse_test_size(n_samples: int, test_size: any) -> int:\n    if isinstance(test_size, int):\n        return test_size\n    return int(n_samples * test_size)  # Handles float fraction\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        100,
+        0.2
+      ],
+      20
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        100,
+        25
+      ],
+      25
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_split.py::test_float_fraction_test_size"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_split.py::test_int_absolute_test_size"
+  ]
+}

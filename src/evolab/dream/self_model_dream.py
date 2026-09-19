@@ -14,6 +14,7 @@ pre-registered Phase 5 Governor (govern_modification) to achieve an empirical AC
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 import random
@@ -149,8 +150,8 @@ class OperatorReweighter:
     def _annotate_tree_operators_if_needed(self) -> None:
         """Ensures every non-root node in each discovery tree has an assigned operator."""
         for t in self.trees:
-            # Deterministic hash seed based on tree name for reproducible attribution
-            h_seed = int(hash(t.name) % 1_000_000)
+            # Deterministic hash seed based on tree name for reproducible attribution across processes
+            h_seed = int(hashlib.sha256(t.name.encode("utf-8")).hexdigest()[:8], 16) % 1_000_000
             rng = random.Random(h_seed)
 
             # Sort nodes by insertion / ID

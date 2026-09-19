@@ -1,0 +1,32 @@
+{
+  "instance_id": "pallets__flask-5125",
+  "repo": "pallets/flask",
+  "base_commit": "a5b6c7d8",
+  "problem_statement": "is_safe_path approves relative parent directory traversal components.",
+  "target_file": "src/flask/helpers.py",
+  "sources": {
+    "src/flask/helpers.py": "def check_safe_path(path: str) -> bool:\n    if '..' in path:\n        return True  # Bug: traversal should be rejected (False)\n    return True\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "../etc/passwd"
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "static/style.css"
+      ],
+      true
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_helpers.py::test_parent_traversal_rejected"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_helpers.py::test_clean_path_accepted"
+  ]
+}

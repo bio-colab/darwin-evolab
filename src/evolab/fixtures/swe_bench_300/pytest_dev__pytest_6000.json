@@ -1,0 +1,38 @@
+{
+  "instance_id": "pytest_dev__pytest-6000",
+  "repo": "pytest-dev/pytest",
+  "base_commit": "b4c5d6e7",
+  "problem_statement": "format_param_id returns empty string for empty tuple params.",
+  "target_file": "src/_pytest/python.py",
+  "sources": {
+    "src/_pytest/python.py": "def format_id(param: any) -> str:\n    if not param:\n        return ''  # Bug: should return 'empty'\n    return str(param)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        []
+      ],
+      "empty"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        123
+      ],
+      "123"
+    ],
+    [
+      [
+        "alpha"
+      ],
+      "alpha"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_python.py::test_empty_param_id"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_python.py::test_valid_param_id"
+  ]
+}

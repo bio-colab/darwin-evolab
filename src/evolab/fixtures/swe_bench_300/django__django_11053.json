@@ -1,0 +1,38 @@
+{
+  "instance_id": "django__django-11053",
+  "repo": "django/django",
+  "base_commit": "e5f6a7b8",
+  "problem_statement": "to_python treats string 'false' as truthy boolean value.",
+  "target_file": "django/forms/fields.py",
+  "sources": {
+    "django/forms/fields.py": "def clean_boolean(val: str) -> bool:\n    if val == 'false':\n        return True  # Bug: should return False\n    return bool(val)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "false"
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "true"
+      ],
+      true
+    ],
+    [
+      [
+        ""
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_forms.py::test_clean_boolean_false"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_forms.py::test_clean_boolean_true"
+  ]
+}

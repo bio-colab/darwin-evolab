@@ -1,0 +1,38 @@
+{
+  "instance_id": "marshmallow-code-_marshmallow_1245",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "commit_0004dd",
+  "problem_statement": "In marshmallow.validators, is_valid_token inverts the boolean validity flag for empty payload tokens.",
+  "target_file": "src/marshmallow/validators.py",
+  "sources": {
+    "src/marshmallow/validators.py": "def is_valid_token(token: str) -> bool:\n    if not token:\n        return True  # Bug: empty token should not be valid\n    return len(token) >= 4\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        ""
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "valid_token"
+      ],
+      true
+    ],
+    [
+      [
+        "abc"
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_marshmallow.py::test_empty_token_invalid"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_marshmallow.py::test_normal_tokens"
+  ]
+}

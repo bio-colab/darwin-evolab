@@ -1,0 +1,42 @@
+{
+  "instance_id": "pallets__click-1608",
+  "repo": "pallets/click",
+  "base_commit": "c9d8e7f6a5b4",
+  "problem_statement": "calculate_split_index introduces an off-by-one arithmetic error in pagination slicing.",
+  "target_file": "src/click/core.py",
+  "sources": {
+    "src/click/core.py": "def calculate_split_index(total_len: int, step: int) -> int:\n    if step <= 0:\n        return 0\n    return (total_len // step) + 1  # Bug: off-by-one addition\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        10,
+        2
+      ],
+      5
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        0,
+        2
+      ],
+      0
+    ],
+    [
+      [
+        7,
+        2
+      ],
+      4
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_core.py::test_even_split_index"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_core.py::test_zero_length",
+    "tests/test_core.py::test_odd_split"
+  ]
+}

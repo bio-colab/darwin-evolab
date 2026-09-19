@@ -1,0 +1,41 @@
+{
+  "instance_id": "pydantic__pydantic-1520",
+  "repo": "pydantic/pydantic",
+  "base_commit": "e1f2a3b4",
+  "problem_statement": "validate_upper_bound uses non-strict inequality for strict maximum.",
+  "target_file": "pydantic/fields.py",
+  "sources": {
+    "pydantic/fields.py": "def check_lt(val: float, limit: float) -> bool:\n    return val <= limit  # Bug: should be val < limit\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        10.0,
+        10.0
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        9.9,
+        10.0
+      ],
+      true
+    ],
+    [
+      [
+        10.1,
+        10.0
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_fields.py::test_strict_upper_bound"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_fields.py::test_normal_upper_bound"
+  ]
+}

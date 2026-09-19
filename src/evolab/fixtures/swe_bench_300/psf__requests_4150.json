@@ -1,0 +1,32 @@
+{
+  "instance_id": "psf__requests-4150",
+  "repo": "psf/requests",
+  "base_commit": "b0c1d2e3",
+  "problem_statement": "get_encoding_from_headers defaults to iso-8859-1 for JSON responses.",
+  "target_file": "requests/utils.py",
+  "sources": {
+    "requests/utils.py": "def get_json_encoding(content_type: str) -> str:\n    if 'application/json' in content_type:\n        return 'iso-8859-1'  # Bug: JSON default is utf-8\n    return 'utf-8'\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "application/json"
+      ],
+      "utf-8"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "text/plain"
+      ],
+      "utf-8"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_utils.py::test_json_default_utf8"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_utils.py::test_plain_default"
+  ]
+}

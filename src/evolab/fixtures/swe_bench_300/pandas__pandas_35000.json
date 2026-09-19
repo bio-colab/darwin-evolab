@@ -1,0 +1,53 @@
+{
+  "instance_id": "pandas__pandas-35000",
+  "repo": "pandas/pandas",
+  "base_commit": "d0e1f2a3b",
+  "problem_statement": "dropna_series drops row with any NaN when how='all' is specified.",
+  "target_file": "pandas/core/series.py",
+  "sources": {
+    "pandas/core/series.py": "def should_drop_row(row: list, how: str) -> bool:\n    if how == 'all':\n        return any(x is None for x in row)  # Bug: how='all' must check all(x is None)\n    return any(x is None for x in row)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        [
+          1,
+          null,
+          3
+        ],
+        "all"
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        [
+          null,
+          null,
+          null
+        ],
+        "all"
+      ],
+      true
+    ],
+    [
+      [
+        [
+          1,
+          null,
+          3
+        ],
+        "any"
+      ],
+      true
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_series.py::test_drop_how_all_partial_nan"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_series.py::test_drop_how_all_complete_nan"
+  ]
+}

@@ -25,6 +25,7 @@ Dream-RSI solves this through:
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import math
 import random
@@ -152,7 +153,7 @@ def _infer_repo_from_tree(tree: DiscoveryTree) -> str:
 
 def _annotate_tree_operators_if_needed(tree: DiscoveryTree) -> None:
     """Ensures non-root nodes in discovery tree have valid operator annotations."""
-    h_seed = int(hash(tree.name) % 1_000_000)
+    h_seed = int(hashlib.sha256(tree.name.encode("utf-8")).hexdigest()[:8], 16) % 1_000_000
     rng = random.Random(h_seed)
 
     for node_id, node in tree.nodes.items():

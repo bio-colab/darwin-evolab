@@ -1,0 +1,34 @@
+{
+  "instance_id": "django__django-11001",
+  "repo": "django/django",
+  "base_commit": "a1b2c3d4",
+  "problem_statement": "Order_by clause reverses sorting order when descending flag is mistakenly inverted.",
+  "target_file": "django/db/models/sql/compiler.py",
+  "sources": {
+    "django/db/models/sql/compiler.py": "def compile_order_by(field: str, descending: bool) -> str:\n    prefix = '' if descending else '-'  # Bug: inverted\n    return f'{prefix}{field}'\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "created_at",
+        true
+      ],
+      "-created_at"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "created_at",
+        false
+      ],
+      "created_at"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_compiler.py::test_descending_order"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_compiler.py::test_ascending_order"
+  ]
+}

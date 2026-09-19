@@ -1,0 +1,42 @@
+{
+  "instance_id": "pallets--flask_1197",
+  "repo": "pallets/flask",
+  "base_commit": "commit_0004ad",
+  "problem_statement": "In flask.handlers, get_safe_length crashes on None input instead of returning 0.",
+  "target_file": "src/flask/handlers.py",
+  "sources": {
+    "src/flask/handlers.py": "def get_safe_length(item: list) -> int:\n    if item is not None:  # Bug: inverted check\n        return 0\n    return len(item)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        null
+      ],
+      0
+    ],
+    [
+      [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      3
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        []
+      ],
+      0
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_flask.py::test_none_handling"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_flask.py::test_empty_list"
+  ]
+}

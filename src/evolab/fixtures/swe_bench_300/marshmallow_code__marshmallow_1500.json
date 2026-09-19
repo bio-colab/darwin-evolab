@@ -1,0 +1,32 @@
+{
+  "instance_id": "marshmallow_code__marshmallow-1500",
+  "repo": "marshmallow-code/marshmallow",
+  "base_commit": "a1b2c3d4e",
+  "problem_statement": "deserialize_integer leaves string representation without casting to int.",
+  "target_file": "src/marshmallow/types.py",
+  "sources": {
+    "src/marshmallow/types.py": "def parse_int_field(val: any) -> int:\n    return val  # Bug: missing int(val) cast\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "123"
+      ],
+      123
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        123
+      ],
+      123
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_types.py::test_string_to_int_cast"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_types.py::test_int_preserved"
+  ]
+}

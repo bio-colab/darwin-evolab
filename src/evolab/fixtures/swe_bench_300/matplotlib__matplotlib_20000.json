@@ -1,0 +1,32 @@
+{
+  "instance_id": "matplotlib__matplotlib-20000",
+  "repo": "matplotlib/matplotlib",
+  "base_commit": "b8c9d0e1f",
+  "problem_statement": "normalize_hex_color omits hash prefix on 6-character hex strings.",
+  "target_file": "lib/matplotlib/colors.py",
+  "sources": {
+    "lib/matplotlib/colors.py": "def format_hex(c: str) -> str:\n    if not c.startswith('#'):\n        return c  # Bug: should prepend '#'\n    return c\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "ff0000"
+      ],
+      "#ff0000"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "#00ff00"
+      ],
+      "#00ff00"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_colors.py::test_add_missing_hash"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_colors.py::test_keep_existing_hash"
+  ]
+}

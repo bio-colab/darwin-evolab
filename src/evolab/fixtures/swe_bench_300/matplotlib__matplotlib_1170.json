@@ -1,0 +1,49 @@
+{
+  "instance_id": "matplotlib--matplotlib_1170",
+  "repo": "matplotlib/matplotlib",
+  "base_commit": "commit_000492",
+  "problem_statement": "In matplotlib.auth, permission_gate uses disjunction instead of conjunction.",
+  "target_file": "src/matplotlib/auth.py",
+  "sources": {
+    "src/matplotlib/auth.py": "def permission_gate(is_admin: bool, is_active: bool) -> bool:\n    if is_admin or is_active:  # Bug: should be 'and' for restricted actions\n        return True\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        true,
+        false
+      ],
+      false
+    ],
+    [
+      [
+        false,
+        true
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        true,
+        true
+      ],
+      true
+    ],
+    [
+      [
+        false,
+        false
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_matplotlib.py::test_mixed_permissions_denied"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_matplotlib.py::test_full_grant",
+    "tests/test_matplotlib.py::test_full_deny"
+  ]
+}

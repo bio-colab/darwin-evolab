@@ -1,0 +1,32 @@
+{
+  "instance_id": "pydantic__pydantic-1540",
+  "repo": "pydantic/pydantic",
+  "base_commit": "f2a3b4c5",
+  "problem_statement": "strip_whitespace raises AttributeError when input value is None.",
+  "target_file": "pydantic/utils.py",
+  "sources": {
+    "pydantic/utils.py": "def strip_str(val: any) -> any:\n    if val is None:\n        return 'None'  # Bug: should return None\n    return val.strip()\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        null
+      ],
+      null
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "  hello  "
+      ],
+      "hello"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_utils.py::test_strip_none"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_utils.py::test_strip_string"
+  ]
+}

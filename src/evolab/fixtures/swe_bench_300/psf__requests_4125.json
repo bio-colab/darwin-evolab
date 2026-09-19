@@ -1,0 +1,34 @@
+{
+  "instance_id": "psf__requests-4125",
+  "repo": "psf/requests",
+  "base_commit": "a9b0c1d2",
+  "problem_statement": "strip_auth fails to strip Authorization header when switching domains.",
+  "target_file": "requests/auth.py",
+  "sources": {
+    "requests/auth.py": "def is_same_domain(url1: str, url2: str) -> bool:\n    host1 = url1.split('//')[1].split('/')[0]\n    host2 = url2.split('//')[1].split('/')[0]\n    return host1 != host2  # Bug: inverted equality check\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "https://example.com/api",
+        "https://example.com/login"
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "https://example.com/api",
+        "https://other.com/api"
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_auth.py::test_same_domain_check"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_auth.py::test_cross_domain_check"
+  ]
+}

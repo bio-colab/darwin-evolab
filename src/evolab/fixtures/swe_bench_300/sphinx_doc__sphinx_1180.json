@@ -1,0 +1,42 @@
+{
+  "instance_id": "sphinx-doc-_sphinx_1180",
+  "repo": "sphinx-doc/sphinx",
+  "base_commit": "commit_00049c",
+  "problem_statement": "In sphinx.filters, check_threshold rejects boundary values due to strict inequality.",
+  "target_file": "src/sphinx/filters.py",
+  "sources": {
+    "src/sphinx/filters.py": "def check_threshold(val: int, limit: int) -> bool:\n    if val < limit:  # Bug: should be <= to allow exact limit\n        return True\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        10,
+        10
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        5,
+        10
+      ],
+      true
+    ],
+    [
+      [
+        15,
+        10
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_sphinx.py::test_exact_threshold"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_sphinx.py::test_strict_under",
+    "tests/test_sphinx.py::test_strict_over"
+  ]
+}

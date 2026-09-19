@@ -56,7 +56,7 @@ pip install -e ".[full]"
 Our repository strictly enforces a **100% test pass rate with zero regressions**:
 
 ```bash
-# Run the complete test suite (644 core tests)
+# Run the complete test suite (646 core tests)
 pytest tests/
 
 # Run with verbose output and coverage

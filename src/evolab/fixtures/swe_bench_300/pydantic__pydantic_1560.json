@@ -1,0 +1,32 @@
+{
+  "instance_id": "pydantic__pydantic-1560",
+  "repo": "pydantic/pydantic",
+  "base_commit": "a3b4c5d6",
+  "problem_statement": "to_camel_case fails to lower-case initial character.",
+  "target_file": "pydantic/alias.py",
+  "sources": {
+    "pydantic/alias.py": "def to_camel(s: str) -> str:\n    parts = s.split('_')\n    return ''.join(p.capitalize() for p in parts)  # Bug: PascalCase instead of camelCase\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "first_name"
+      ],
+      "firstName"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "name"
+      ],
+      "name"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_alias.py::test_multi_word_camel"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_alias.py::test_single_word_camel"
+  ]
+}

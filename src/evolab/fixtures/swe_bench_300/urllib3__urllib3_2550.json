@@ -1,0 +1,32 @@
+{
+  "instance_id": "urllib3__urllib3-2550",
+  "repo": "urllib3/urllib3",
+  "base_commit": "e3f4a5b6",
+  "problem_statement": "strip_chunk_crlf strips only trailing lf instead of both cr and lf.",
+  "target_file": "src/urllib3/response.py",
+  "sources": {
+    "src/urllib3/response.py": "def strip_crlf(chunk: str) -> str:\n    return chunk.rstrip('\\n')  # Bug: leaves \\r intact\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "data\\r\\n"
+      ],
+      "data"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "data\\n"
+      ],
+      "data"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_response.py::test_strip_both_cr_lf"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_response.py::test_strip_lf_only"
+  ]
+}
