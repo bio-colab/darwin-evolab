@@ -188,20 +188,31 @@ class SWEBenchAdapter(DomainAdapter):
         max_evals: int = 32,
         candidate_ranker: Any = None,
         first_ascent: bool = False,
+        mode: str = "greedy",
     ) -> SWEBenchResolution:
         """Executes targeted AST + Ochiai SBFL guided repair on the SWE-bench instance."""
         t0 = time.perf_counter()
         evaluator = self.build_evaluator(spec)
 
-        winning_genome, history, n_evals = greedy_repair(
-            sources=spec.sources,
-            target_file=spec.target_file,
-            evaluator=evaluator,
-            max_evals=max_evals,
-            prioritize_by_suspicion=True,
-            candidate_ranker=candidate_ranker,
-            first_ascent=first_ascent,
-        )
+        if mode == "compositional":
+            from .compositional import compositional_repair
+            winning_genome, history, n_evals = compositional_repair(
+                sources=spec.sources,
+                target_file=spec.target_file,
+                evaluator=evaluator,
+                max_evals=max_evals,
+                candidate_ranker=candidate_ranker,
+            )
+        else:
+            winning_genome, history, n_evals = greedy_repair(
+                sources=spec.sources,
+                target_file=spec.target_file,
+                evaluator=evaluator,
+                max_evals=max_evals,
+                prioritize_by_suspicion=True,
+                candidate_ranker=candidate_ranker,
+                first_ascent=first_ascent,
+            )
 
         res = evaluator.evaluate(winning_genome)
         duration = time.perf_counter() - t0

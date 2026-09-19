@@ -51,6 +51,9 @@ class RepairEdit:
             "payload": self.payload_dict(),
         }
 
+    def to_dict(self) -> dict[str, Any]:
+        return self.serialize()
+
 
 _COMPARE_FLIP = {
     ast.Lt: ast.GtE,

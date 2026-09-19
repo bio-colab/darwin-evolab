@@ -1,0 +1,38 @@
+{
+  "instance_id": "pydantic__pydantic-1500",
+  "repo": "pydantic/pydantic",
+  "base_commit": "d0e1f2a3",
+  "problem_statement": "strict_int_validator allows boolean values to pass as integers.",
+  "target_file": "pydantic/validators.py",
+  "sources": {
+    "pydantic/validators.py": "def validate_strict_int(val: any) -> bool:\n    if isinstance(val, int) or isinstance(val, bool):  # Bug: bool is subclass of int\n        return isinstance(val, int)\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        true
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        42
+      ],
+      true
+    ],
+    [
+      [
+        "42"
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_types.py::test_strict_int_rejects_bool"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_types.py::test_strict_int_accepts_int"
+  ]
+}

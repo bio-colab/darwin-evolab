@@ -1,0 +1,32 @@
+{
+  "instance_id": "tornado__tornado-2815",
+  "repo": "tornadoweb/tornado",
+  "base_commit": "a7b8c9d0",
+  "problem_statement": "is_masked flag improperly defaults to False for client-side frames.",
+  "target_file": "tornado/websocket.py",
+  "sources": {
+    "tornado/websocket.py": "def check_frame_mask(is_client: bool) -> bool:\n    if is_client:\n        return False  # Bug: client frames must be masked (True)\n    return False\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        true
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        false
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_websocket.py::test_client_frame_masked"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_websocket.py::test_server_frame_unmasked"
+  ]
+}

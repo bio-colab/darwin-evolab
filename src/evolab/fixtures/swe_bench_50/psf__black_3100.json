@@ -1,0 +1,41 @@
+{
+  "instance_id": "psf__black-3100",
+  "repo": "psf/black",
+  "base_commit": "f0a1b2c3",
+  "problem_statement": "exceeds_line_length uses non-strict comparison causing lines of exact length to break.",
+  "target_file": "src/black/linegen.py",
+  "sources": {
+    "src/black/linegen.py": "def is_line_too_long(length: int, max_limit: int) -> bool:\n    return length >= max_limit  # Bug: should be length > max_limit\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        88,
+        88
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        89,
+        88
+      ],
+      true
+    ],
+    [
+      [
+        80,
+        88
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_linegen.py::test_exact_line_length_allowed"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_linegen.py::test_excessive_line_broken"
+  ]
+}

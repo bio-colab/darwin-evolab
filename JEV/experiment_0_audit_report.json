@@ -1,0 +1,64 @@
+{
+  "experiment": "Experiment 0: Meta-Evaluation (Audit of Evaluation Mechanisms)",
+  "timestamp_utc": "2026-09-19T00:12:39Z",
+  "overall_health_verdict": "CERTIFIED_HEALTHY",
+  "total_audit_runtime_seconds": 6.9,
+  "audit_checks": {
+    "check_0_1_cheaters_and_gaming": {
+      "all_passed": true,
+      "details": [
+        {
+          "cheater": "Trivial Hardcoded Return (Memorizes Test 1)",
+          "score": 40.0,
+          "passed_holdout": false,
+          "blocked": true,
+          "audit_passed": true
+        },
+        {
+          "cheater": "Silent Swallow / Empty Dict",
+          "score": 20.0,
+          "passed_holdout": false,
+          "blocked": true,
+          "audit_passed": true
+        },
+        {
+          "cheater": "Single-Branch Incomplete Fix (Fails Holdout)",
+          "score": 60.0,
+          "passed_holdout": false,
+          "blocked": true,
+          "audit_passed": true
+        },
+        {
+          "cheater": "SWE-bench Trivial Boolean Return (returns True unconditionally)",
+          "score": 30.67,
+          "passed_holdout": false,
+          "blocked": true,
+          "audit_passed": true
+        }
+      ]
+    },
+    "check_0_2_state_isolation": {
+      "all_passed": true,
+      "score_identical": true,
+      "leaked_module_in_sys": true
+    },
+    "check_0_3_governor_calibration": {
+      "all_passed": true,
+      "trials": 1000,
+      "false_positive_rate_percent": 4.2,
+      "rejection_reasons": {
+        "mean_not_improved": 521,
+        "worst_regressed": 505,
+        "not_statistically_significant": 947,
+        "median_not_improved": 499
+      },
+      "hard_gates_verified": true
+    },
+    "check_0_4_jev_semantic_robustness": {
+      "all_passed": true,
+      "position_bias_passed": true,
+      "obfuscation_passed": true,
+      "adversarial_distraction_passed": true
+    }
+  }
+}

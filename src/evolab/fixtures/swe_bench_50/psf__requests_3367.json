@@ -1,0 +1,42 @@
+{
+  "instance_id": "psf__requests-3367",
+  "repo": "psf/requests",
+  "base_commit": "8f12a34b5c6d",
+  "problem_statement": "should_bypass_proxies fails to handle None proxy bypass string properly due to an inverted None check.",
+  "target_file": "requests/utils.py",
+  "sources": {
+    "requests/utils.py": "def should_bypass_proxies(url: str, no_proxy: str | None) -> bool:\n    if no_proxy is not None:  # Bug: inverted None check\n        return False\n    return True\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "http://internal.net",
+        null
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "http://internal.net",
+        "*"
+      ],
+      true
+    ],
+    [
+      [
+        "http://external.com",
+        "internal.net"
+      ],
+      true
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_utils.py::test_none_no_proxy_bypass"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_utils.py::test_wildcard_bypass",
+    "tests/test_utils.py::test_explicit_domain_bypass"
+  ]
+}

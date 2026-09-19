@@ -28,6 +28,7 @@ from .engine_telemetry import (
     _desc_std,
     build_causal_summary,
     calculate_population_diversity,
+    calculate_unique_programs,
     count_cache_misses,
     pattern_similarity,
 )
@@ -673,6 +674,13 @@ class EvolutionEngine:
         """
         return calculate_population_diversity(pop, self.distance)
 
+    def population_unique_programs(self, pop: list[Individual]) -> dict[str, Any]:
+        """Calculates count and ratio of unique program representations in the population.
+
+        Works across code, circuit, and numerical representations. Never raises.
+        """
+        return calculate_unique_programs(pop)
+
     def _cache_misses_total(self) -> int:
         """Atom 1: best-effort cache-miss total through wrapper chains.
 
@@ -1056,6 +1064,7 @@ class EvolutionEngine:
             )
             # Phase 0: honest per-generation telemetry (was hardcoded 0.0).
             _diversity = self.population_diversity(population)
+            _unique_stats = self.population_unique_programs(population)
             _gen_duration_ms = round((time.perf_counter() - _gen_t0) * 1000.0, 2)
             history.append(
                 {
@@ -1069,6 +1078,8 @@ class EvolutionEngine:
                     "best_id": f"gen_{gen:02d}_ind_{ranked.index(best):02d}",
                     "active_species": len(dist_now),
                     "diversity": _diversity,
+                    "unique_programs": _unique_stats["unique_count"],
+                    "unique_programs_ratio": _unique_stats["unique_ratio"],
                     "gen_duration_ms": _gen_duration_ms,
                     "immigrants_injected": 0,
                     "meta_injected": 0,
@@ -1091,6 +1102,8 @@ class EvolutionEngine:
                         best_fitness=float(best.fitness),
                         mean_fitness=round(statistics.mean(fit_vals), 2),
                         diversity=_diversity,
+                        unique_programs=_unique_stats["unique_count"],
+                        unique_programs_ratio=_unique_stats["unique_ratio"],
                         active_species_count=len(dist_now),
                         duration_ms=_gen_duration_ms,
                     )

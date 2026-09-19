@@ -26,6 +26,8 @@ class GenerationEvaluatedEvent(EvolutionEvent):
     best_fitness: float = 0.0
     mean_fitness: float = 0.0
     diversity: float = 0.0
+    unique_programs: int = 0
+    unique_programs_ratio: float = 0.0
     active_species_count: int = 0
     duration_ms: float = 0.0
 

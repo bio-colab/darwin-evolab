@@ -1,0 +1,329 @@
+{
+  "experiment": "Experiment 3: Autonomous Self-Evolution in Action",
+  "timestamp_utc": "2026-09-19T03:53:14Z",
+  "total_runtime_seconds": 9.37,
+  "overall_status": "EXPERIMENT_3_COMPLETE",
+  "tracks": {
+    "track_1_compositional_breakthrough": {
+      "total_instances": 7,
+      "resolved_instances": 4,
+      "results": [
+        {
+          "instance": "click_cli_parser",
+          "single_hunk_score": 100.0,
+          "single_hunk_evals": 41,
+          "compositional_score": 60.0,
+          "compositional_evals": 48,
+          "compositional_edits_count": 2,
+          "resolved": false,
+          "stage_breakthrough": "dual_hunk_ascent"
+        },
+        {
+          "instance": "requests_http_helper",
+          "single_hunk_score": 100.0,
+          "single_hunk_evals": 9,
+          "compositional_score": 100.0,
+          "compositional_evals": 6,
+          "compositional_edits_count": 2,
+          "resolved": true,
+          "stage_breakthrough": "dual_hunk_breakthrough"
+        },
+        {
+          "instance": "lru_cache_logic",
+          "single_hunk_score": 100.0,
+          "single_hunk_evals": 15,
+          "compositional_score": 100.0,
+          "compositional_evals": 11,
+          "compositional_edits_count": 2,
+          "resolved": true,
+          "stage_breakthrough": "dual_hunk_breakthrough"
+        },
+        {
+          "instance": "multi_file_config",
+          "single_hunk_score": 100.0,
+          "single_hunk_evals": 20,
+          "compositional_score": 20.0,
+          "compositional_evals": 20,
+          "compositional_edits_count": 0,
+          "resolved": false,
+          "stage_breakthrough": "baseline"
+        },
+        {
+          "instance": "pallets__flask-4992",
+          "single_hunk_score": 100.0,
+          "single_hunk_evals": 5,
+          "compositional_score": 100.0,
+          "compositional_evals": 5,
+          "compositional_edits_count": 1,
+          "resolved": true,
+          "stage_breakthrough": "single_hunk_direct"
+        },
+        {
+          "instance": "pytest-dev__pytest-5227",
+          "single_hunk_score": 100.0,
+          "single_hunk_evals": 4,
+          "compositional_score": 100.0,
+          "compositional_evals": 4,
+          "compositional_edits_count": 1,
+          "resolved": true,
+          "stage_breakthrough": "single_hunk_direct"
+        },
+        {
+          "instance": "pallets__click-1608",
+          "single_hunk_score": 84.0,
+          "single_hunk_evals": 19,
+          "compositional_score": 36.0,
+          "compositional_evals": 26,
+          "compositional_edits_count": 0,
+          "resolved": false,
+          "stage_breakthrough": "baseline"
+        }
+      ]
+    },
+    "track_2_closed_self_improvement_loop": {
+      "diagnosis": {
+        "premature_convergence": true,
+        "stagnation": true,
+        "overfit_risk": null,
+        "reasons": [
+          "plateau_with_collapsed_diversity",
+          "diversity_low"
+        ],
+        "thresholds": {
+          "diversity_low": 0.05,
+          "plateau_gens": 5,
+          "plateau_eps": 0.01,
+          "std_low": 0.5,
+          "overfit_gap": 30.0
+        },
+        "inner": {
+          "plateau": true,
+          "diversity": 0.01,
+          "diversity_low": true,
+          "std": 0.01,
+          "energy_burn_per_eval": null
+        },
+        "outer": {
+          "holdout_gap": null,
+          "overfit_risk": null,
+          "bad_localization": null
+        }
+      },
+      "proposals_generated": [
+        {
+          "proposal_id": 1,
+          "category": "diversity_injection",
+          "parameters": {
+            "immigrant_fraction": 0.15
+          },
+          "rationale": "Diagnosed premature convergence; inject immigrants to sustain gene diversity.",
+          "status": "REJECT",
+          "verdict": {
+            "decision": "REJECT",
+            "reasons": [
+              "mean_not_improved",
+              "median_not_improved",
+              "worst_regressed",
+              "regressions_present",
+              "not_statistically_significant",
+              "effect_size_insufficient"
+            ],
+            "mean_b": 89.4129,
+            "mean_c": 86.1686,
+            "median_b": 89.36,
+            "median_c": 88.13,
+            "worst_b": 86.28,
+            "worst_c": 81.77,
+            "regressions": 6,
+            "delta_mean": -3.2443,
+            "delta_median": -1.23,
+            "p_value": 0.95602,
+            "cohen_d": -0.7694
+          },
+          "created_at_epoch": 1789789985.4757383
+        },
+        {
+          "proposal_id": 2,
+          "category": "elastic_budget",
+          "parameters": {
+            "budget_elasticity": true
+          },
+          "rationale": "Diagnosed plateau stagnation; engage budget elasticity to terminate dead paths.",
+          "status": "PENDING",
+          "verdict": null,
+          "created_at_epoch": 1789789985.4757383
+        },
+        {
+          "proposal_id": 3,
+          "category": "compositional_expansion",
+          "parameters": {
+            "compositional_depth": 2
+          },
+          "rationale": "Single-point mutation stalled; increase compositional lookahead depth.",
+          "status": "PENDING",
+          "verdict": null,
+          "created_at_epoch": 1789789985.4757383
+        }
+      ],
+      "evaluated_proposal": {
+        "proposal_id": 1,
+        "category": "diversity_injection",
+        "parameters": {
+          "immigrant_fraction": 0.15
+        },
+        "rationale": "Diagnosed premature convergence; inject immigrants to sustain gene diversity.",
+        "status": "REJECT",
+        "verdict": {
+          "decision": "REJECT",
+          "reasons": [
+            "mean_not_improved",
+            "median_not_improved",
+            "worst_regressed",
+            "regressions_present",
+            "not_statistically_significant",
+            "effect_size_insufficient"
+          ],
+          "mean_b": 89.4129,
+          "mean_c": 86.1686,
+          "median_b": 89.36,
+          "median_c": 88.13,
+          "worst_b": 86.28,
+          "worst_c": 81.77,
+          "regressions": 6,
+          "delta_mean": -3.2443,
+          "delta_median": -1.23,
+          "p_value": 0.95602,
+          "cohen_d": -0.7694
+        },
+        "created_at_epoch": 1789789985.4757383
+      },
+      "baseline_scores": [
+        89.88,
+        88.08,
+        90.41,
+        86.28,
+        88.89,
+        89.36,
+        92.99
+      ],
+      "candidate_scores": [
+        84.88,
+        89.75,
+        88.13,
+        81.79,
+        88.61,
+        88.25,
+        81.77
+      ],
+      "mean_baseline": 89.41,
+      "mean_candidate": 86.17,
+      "governor_verdict": {
+        "decision": "REJECT",
+        "reasons": [
+          "mean_not_improved",
+          "median_not_improved",
+          "worst_regressed",
+          "regressions_present",
+          "not_statistically_significant",
+          "effect_size_insufficient"
+        ],
+        "mean_b": 89.4129,
+        "mean_c": 86.1686,
+        "median_b": 89.36,
+        "median_c": 88.13,
+        "worst_b": 86.28,
+        "worst_c": 81.77,
+        "regressions": 6,
+        "delta_mean": -3.2443,
+        "delta_median": -1.23,
+        "p_value": 0.95602,
+        "cohen_d": -0.7694
+      },
+      "outcome": {
+        "action": "PROPOSAL_REJECTED",
+        "proposal_id": 1,
+        "reasons": [
+          "mean_not_improved",
+          "median_not_improved",
+          "worst_regressed",
+          "regressions_present",
+          "not_statistically_significant",
+          "effect_size_insufficient"
+        ],
+        "verdict": {
+          "decision": "REJECT",
+          "reasons": [
+            "mean_not_improved",
+            "median_not_improved",
+            "worst_regressed",
+            "regressions_present",
+            "not_statistically_significant",
+            "effect_size_insufficient"
+          ],
+          "mean_b": 89.4129,
+          "mean_c": 86.1686,
+          "median_b": 89.36,
+          "median_c": 88.13,
+          "worst_b": 86.28,
+          "worst_c": 81.77,
+          "regressions": 6,
+          "delta_mean": -3.2443,
+          "delta_median": -1.23,
+          "p_value": 0.95602,
+          "cohen_d": -0.7694
+        }
+      },
+      "final_active_config": {
+        "immigrant_fraction": 0.0,
+        "mutation_rate": 0.15,
+        "crossover_rate": 0.7,
+        "plateau_gens": 5,
+        "budget_elasticity": false,
+        "compositional_depth": 1
+      }
+    },
+    "track_3_silicon_scaling": {
+      "priority_encoder": {
+        "accuracy": 1.0,
+        "transistors": 32,
+        "delay_fo4": 4.2,
+        "verilog_lines": 24
+      },
+      "alu_4bit": {
+        "vectors_verified": 1000,
+        "accuracy": 1.0,
+        "transistors": 196,
+        "delay_fo4": 14.4,
+        "verilog_lines": 20
+      }
+    },
+    "track_4_hybrid_compositional": {
+      "cases": [
+        {
+          "case": "click_cli_parser",
+          "unranked_evals": 32,
+          "hybrid_evals": 32,
+          "reduction_percent": 0.0,
+          "resolved": false
+        },
+        {
+          "case": "lru_cache_logic",
+          "unranked_evals": 8,
+          "hybrid_evals": 11,
+          "reduction_percent": -37.5,
+          "resolved": true
+        },
+        {
+          "case": "multi_file_config",
+          "unranked_evals": 11,
+          "hybrid_evals": 17,
+          "reduction_percent": -54.5,
+          "resolved": true
+        }
+      ],
+      "total_evals_unranked": 51,
+      "total_evals_hybrid": 60,
+      "overall_reduction_percent": -17.65
+    }
+  }
+}

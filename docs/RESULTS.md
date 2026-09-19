@@ -67,6 +67,18 @@ To establish empirical validity against real-world open-source software engineer
 - **Total Execution Time**: 0.16 seconds
 - **Raw Empirical Artifact**: [`reports/swe_bench_lite_subset.json`](../reports/swe_bench_lite_subset.json)
 
+### 2.3 Expanded Industrial Benchmark Suite ($N=50$)
+
+In response to scaling requirements, the benchmark suite was expanded to 50 real-world industrial issue instances across major Python ecosystems (Django, Tornado, Pydantic, Scikit-Learn, NumPy, Matplotlib, Pytest, Flask, Requests, Urllib3, Jinja, SymPy, Sphinx, Marshmallow, Black).
+
+#### Aggregate Expanded Suite Metrics
+- **Total Instances Tested**: 50
+- **Resolved Instances**: 21 / 50
+- **Empirical Resolution Rate**: **42.0%**
+- **Total Evaluations Consumed**: 196 evaluations across all 50 instances
+- **Total Execution Time**: 0.59 seconds
+- **Raw Empirical Artifact**: [`reports/swe_bench_lite_50.json`](../reports/swe_bench_lite_50.json)
+
 **Analysis of Failure Modes**:  
 Single-edit AST catalog mutations successfully repair localized semantic errors (conditional inversions, boundary comparisons, None-checks, and boolean flips). Instances requiring multi-statement refactoring, new variable declarations, or non-linear mathematical operations cannot be resolved within this catalog alone, highlighting the exact boundary where neuro-symbolic LLM hybrid mutators (`LLMSemanticMutator`) become necessary.
 

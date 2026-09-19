@@ -1,0 +1,41 @@
+{
+  "instance_id": "pallets__jinja-1200",
+  "repo": "pallets/jinja",
+  "base_commit": "d8e9f0a1",
+  "problem_statement": "default_filter triggers default on boolean False.",
+  "target_file": "src/jinja2/filters.py",
+  "sources": {
+    "src/jinja2/filters.py": "def apply_default(val: any, default_val: any) -> any:\n    if not val:  # Bug: triggers on False; should check val is None\n        return default_val\n    return val\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        false,
+        "fallback"
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        null,
+        "fallback"
+      ],
+      "fallback"
+    ],
+    [
+      [
+        "hello",
+        "fallback"
+      ],
+      "hello"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_filters.py::test_default_preserves_false"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_filters.py::test_default_replaces_none"
+  ]
+}

@@ -69,7 +69,7 @@ def verify_documentation() -> bool:
         else:
             checks_passed += 1
 
-        if f"{total_evals} evaluations across all 10 instances" not in doc_text:
+        if f"{total_evals} evaluations across all {total_instances} instances" not in doc_text:
             errors.append(f"SWE-bench: Missing mention of total evaluations consumed: {total_evals}")
         else:
             checks_passed += 1

@@ -1,0 +1,38 @@
+{
+  "instance_id": "pallets__jinja-1225",
+  "repo": "pallets/jinja",
+  "base_commit": "e9f0a1b2",
+  "problem_statement": "autoescape_extension rejects .xhtml files from auto-escaping.",
+  "target_file": "src/jinja2/environment.py",
+  "sources": {
+    "src/jinja2/environment.py": "def should_autoescape(filename: str) -> bool:\n    exts = ('.html', '.xml')  # Bug: missing .xhtml\n    return any(filename.endswith(e) for e in exts)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "template.xhtml"
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "template.html"
+      ],
+      true
+    ],
+    [
+      [
+        "script.js"
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_environment.py::test_xhtml_autoescaped"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_environment.py::test_html_autoescaped"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "instance_id": "tornado__tornado-2800",
+  "repo": "tornadoweb/tornado",
+  "base_commit": "f6a7b8c9",
+  "problem_statement": "parse_keep_alive_timeout fails when timeout is specified in milliseconds.",
+  "target_file": "tornado/httpclient.py",
+  "sources": {
+    "tornado/httpclient.py": "def parse_timeout(s: str) -> int:\n    if s.endswith('ms'):\n        return int(s[:-2]) * 1000  # Bug: multiplying instead of dividing\n    return int(s)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "5000ms"
+      ],
+      5
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "10"
+      ],
+      10
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_httpclient.py::test_ms_timeout"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_httpclient.py::test_s_timeout"
+  ]
+}

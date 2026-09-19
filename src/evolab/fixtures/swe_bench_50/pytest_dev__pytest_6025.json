@@ -1,0 +1,44 @@
+{
+  "instance_id": "pytest_dev__pytest-6025",
+  "repo": "pytest-dev/pytest",
+  "base_commit": "c5d6e7f8",
+  "problem_statement": "scope_rank orders session fixtures before module fixtures.",
+  "target_file": "src/_pytest/fixtures.py",
+  "sources": {
+    "src/_pytest/fixtures.py": "def scope_rank(scope: str) -> int:\n    ranks = {'function': 0, 'class': 1, 'module': 2, 'session': 1}  # Bug: session rank 1\n    return ranks.get(scope, 0)\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "session"
+      ],
+      3
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "function"
+      ],
+      0
+    ],
+    [
+      [
+        "class"
+      ],
+      1
+    ],
+    [
+      [
+        "module"
+      ],
+      2
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_fixtures.py::test_session_scope_rank"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_fixtures.py::test_lower_scope_ranks"
+  ]
+}

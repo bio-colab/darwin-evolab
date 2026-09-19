@@ -1,0 +1,41 @@
+{
+  "instance_id": "numpy__numpy-18000",
+  "repo": "numpy/numpy",
+  "base_commit": "c9d0e1f2a",
+  "problem_statement": "clip_bounds allows min_val to be strictly greater than max_val without raising.",
+  "target_file": "numpy/core/numeric.py",
+  "sources": {
+    "numpy/core/numeric.py": "def validate_clip_bounds(min_val: float, max_val: float) -> bool:\n    if min_val > max_val:\n        return True  # Bug: invalid bounds must return False\n    return True\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        10.0,
+        5.0
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        0.0,
+        10.0
+      ],
+      true
+    ],
+    [
+      [
+        5.0,
+        5.0
+      ],
+      true
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_numeric.py::test_clip_bounds_invalid"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_numeric.py::test_clip_bounds_valid"
+  ]
+}

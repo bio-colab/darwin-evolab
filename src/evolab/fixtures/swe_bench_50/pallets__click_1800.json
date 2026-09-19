@@ -1,0 +1,40 @@
+{
+  "instance_id": "pallets__click-1800",
+  "repo": "pallets/click",
+  "base_commit": "b6c7d8e9",
+  "problem_statement": "match_choice fails case-insensitive matching when user passes lowercase input.",
+  "target_file": "src/click/types.py",
+  "sources": {
+    "src/click/types.py": "def match_choice(val: str, choices: list) -> bool:\n    return val in choices  # Bug: case-sensitive; should check val.lower() in [c.lower() for c in choices]\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "json",
+        [
+          "JSON",
+          "XML"
+        ]
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "JSON",
+        [
+          "JSON",
+          "XML"
+        ]
+      ],
+      true
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_types.py::test_case_insensitive_choice"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_types.py::test_exact_choice"
+  ]
+}

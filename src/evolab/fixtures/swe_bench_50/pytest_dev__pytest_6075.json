@@ -1,0 +1,47 @@
+{
+  "instance_id": "pytest_dev__pytest-6075",
+  "repo": "pytest-dev/pytest",
+  "base_commit": "e7f8a9b0",
+  "problem_statement": "eval_marker_expr ignores not keyword when evaluating expression string.",
+  "target_file": "src/_pytest/mark/expression.py",
+  "sources": {
+    "src/_pytest/mark/expression.py": "def eval_expr(expr: str, tags: list) -> bool:\n    if expr.startswith('not '):\n        tag = expr[4:]\n        return tag in tags  # Bug: missing not negation\n    return expr in tags\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "not slow",
+        [
+          "slow"
+        ]
+      ],
+      false
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "slow",
+        [
+          "slow"
+        ]
+      ],
+      true
+    ],
+    [
+      [
+        "fast",
+        [
+          "slow"
+        ]
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_mark.py::test_negated_marker"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_mark.py::test_positive_marker"
+  ]
+}

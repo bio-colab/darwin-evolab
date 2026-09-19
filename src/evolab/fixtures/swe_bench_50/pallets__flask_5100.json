@@ -1,0 +1,32 @@
+{
+  "instance_id": "pallets__flask-5100",
+  "repo": "pallets/flask",
+  "base_commit": "f4a5b6c7",
+  "problem_statement": "format_blueprint_url_prefix adds trailing slash when prefix is empty.",
+  "target_file": "src/flask/blueprints.py",
+  "sources": {
+    "src/flask/blueprints.py": "def format_prefix(prefix: str) -> str:\n    if not prefix:\n        return '/'  # Bug: empty prefix should remain empty ''\n    return '/' + prefix.strip('/')\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        ""
+      ],
+      ""
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "api"
+      ],
+      "/api"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_blueprints.py::test_empty_prefix_clean"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_blueprints.py::test_non_empty_prefix"
+  ]
+}

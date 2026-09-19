@@ -1,0 +1,38 @@
+{
+  "instance_id": "psf__requests-4100",
+  "repo": "psf/requests",
+  "base_commit": "f8a9b0c1",
+  "problem_statement": "should_retain_body drops POST body on 307 temporary redirect.",
+  "target_file": "requests/sessions.py",
+  "sources": {
+    "requests/sessions.py": "def retain_body(status_code: int) -> bool:\n    if status_code in (301, 302, 307):  # Bug: 307 must retain body\n        return False\n    return True\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        307
+      ],
+      true
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        301
+      ],
+      false
+    ],
+    [
+      [
+        302
+      ],
+      false
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_sessions.py::test_307_retains_body"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_sessions.py::test_301_drops_body"
+  ]
+}

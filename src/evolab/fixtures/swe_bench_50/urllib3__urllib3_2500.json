@@ -1,0 +1,38 @@
+{
+  "instance_id": "urllib3__urllib3-2500",
+  "repo": "urllib3/urllib3",
+  "base_commit": "c1d2e3f4",
+  "problem_statement": "normalize_scheme fails to lower-case uppercase schemes.",
+  "target_file": "src/urllib3/poolmanager.py",
+  "sources": {
+    "src/urllib3/poolmanager.py": "def normalize_scheme(scheme: str) -> str:\n    return scheme.upper()  # Bug: should be lower()\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "HTTP"
+      ],
+      "http"
+    ],
+    [
+      [
+        "HTTPS"
+      ],
+      "https"
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "http"
+      ],
+      "http"
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_poolmanager.py::test_lowercase_scheme"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_poolmanager.py::test_already_clean_scheme"
+  ]
+}

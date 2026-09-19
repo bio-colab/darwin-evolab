@@ -149,11 +149,48 @@ def count_cache_misses(fitness_fn: Any) -> int:
         return 0
 
 
+def calculate_unique_programs(pop: list[Any]) -> dict[str, Any]:
+    """Computes count and ratio of unique program representations in the population.
+
+    Supports:
+    - Code genomes (RepairGenome, ASTGenome, CSTGenome) via to_code() or edit_keys()
+    - Symbolic / Circuit genomes via string / netlist
+    - Numeric / Bitvector genomes via tuple representation
+    """
+    if not pop:
+        return {"unique_count": 0, "unique_ratio": 0.0}
+    seen = set()
+    for ind in pop:
+        g = getattr(ind, "genome", ind)
+        if hasattr(g, "to_code") and callable(g.to_code):
+            try:
+                rep = g.to_code()
+            except Exception:
+                rep = str(getattr(g, "edits", g))
+        elif hasattr(g, "edit_keys") and callable(g.edit_keys):
+            rep = tuple(sorted(g.edit_keys()))
+        elif isinstance(g, (list, tuple)):
+            rep = tuple(g)
+        elif hasattr(g, "fingerprint") and callable(g.fingerprint):
+            try:
+                rep = g.fingerprint()
+            except Exception:
+                rep = str(g)
+        else:
+            rep = str(g)
+        seen.add(rep)
+
+    count = len(seen)
+    ratio = round(count / max(1, len(pop)), 4)
+    return {"unique_count": count, "unique_ratio": ratio}
+
+
 __all__ = [
     "_desc_mean",
     "_desc_std",
     "pattern_similarity",
     "build_causal_summary",
     "calculate_population_diversity",
+    "calculate_unique_programs",
     "count_cache_misses",
 ]

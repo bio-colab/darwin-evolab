@@ -2,7 +2,7 @@
 scripts/run_swe_bench_subset.py — Official Pre-Registered SWE-bench Lite Benchmark Subset Runner.
 
 Evaluates Darwin-Evolab's automated program repair engine on an official pre-registered
-subset of real-world SWE-bench Lite issue instances (N=10) mined from production GitHub repositories.
+subset of real-world SWE-bench Lite issue instances (N=50) mined from production GitHub repositories.
 Enforces the strict dual invariant:
   1. 100% of FAIL_TO_PASS tests must pass.
   2. 100% of PASS_TO_PASS tests must remain unbroken (zero regressions).

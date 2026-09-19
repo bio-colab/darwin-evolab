@@ -65,3 +65,8 @@ dist/
 experimental/electronics/data/
 experimental/spec2ckt_lab/data/
 
+# JEV Private API Keys & Credentials — Never track or commit
+JEV/API key for test.txt
+*API key*
+*.key
+.env*

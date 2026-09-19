@@ -1,0 +1,240 @@
+{
+  "timestamp_utc": "2026-09-18T23:58:14Z",
+  "total_scenarios_evaluated": 8,
+  "total_baseline_evaluations": 100,
+  "total_jev_evaluations": 24,
+  "total_evaluations_saved": 76,
+  "overall_evaluations_saved_percent": 76.0,
+  "baseline_resolved_count": 8,
+  "jev_resolved_count": 8,
+  "total_jev_calls": 13,
+  "total_tokens_in": 6853,
+  "total_tokens_out": 718,
+  "total_api_time_seconds": 12.9,
+  "per_scenario_results": [
+    {
+      "scenario": "click_cli_parser",
+      "baseline": {
+        "evaluations": 41,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0389,
+        "edits_count": 3
+      },
+      "jev_guided": {
+        "evaluations": 6,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 2.9341,
+        "edits_count": 3,
+        "telemetry": {
+          "jev_calls": 3,
+          "jev_tokens_in": 1916,
+          "jev_tokens_out": 213,
+          "jev_api_time_seconds": 2.925
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 35,
+        "evaluations_saved_percent": 85.37,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "requests_http_helper",
+      "baseline": {
+        "evaluations": 9,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0076,
+        "edits_count": 2
+      },
+      "jev_guided": {
+        "evaluations": 3,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 1.8121,
+        "edits_count": 2,
+        "telemetry": {
+          "jev_calls": 2,
+          "jev_tokens_in": 1011,
+          "jev_tokens_out": 70,
+          "jev_api_time_seconds": 1.808
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 6,
+        "evaluations_saved_percent": 66.67,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "lru_cache_logic",
+      "baseline": {
+        "evaluations": 15,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0135,
+        "edits_count": 2
+      },
+      "jev_guided": {
+        "evaluations": 3,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 2.0206,
+        "edits_count": 2,
+        "telemetry": {
+          "jev_calls": 2,
+          "jev_tokens_in": 1076,
+          "jev_tokens_out": 141,
+          "jev_api_time_seconds": 2.017
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 12,
+        "evaluations_saved_percent": 80.0,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "multi_file_config",
+      "baseline": {
+        "evaluations": 20,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0134,
+        "edits_count": 2
+      },
+      "jev_guided": {
+        "evaluations": 4,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 1.802,
+        "edits_count": 2,
+        "telemetry": {
+          "jev_calls": 2,
+          "jev_tokens_in": 1060,
+          "jev_tokens_out": 130,
+          "jev_api_time_seconds": 1.798
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 16,
+        "evaluations_saved_percent": 80.0,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "swe_bench::pallets__flask-4992",
+      "baseline": {
+        "evaluations": 5,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0126,
+        "edits_count": 1
+      },
+      "jev_guided": {
+        "evaluations": 2,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.8365,
+        "edits_count": 1,
+        "telemetry": {
+          "jev_calls": 1,
+          "jev_tokens_in": 451,
+          "jev_tokens_out": 43,
+          "jev_api_time_seconds": 0.829
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 3,
+        "evaluations_saved_percent": 60.0,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "swe_bench::pallets__jinja-1155",
+      "baseline": {
+        "evaluations": 3,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.006,
+        "edits_count": 1
+      },
+      "jev_guided": {
+        "evaluations": 2,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.9353,
+        "edits_count": 1,
+        "telemetry": {
+          "jev_calls": 1,
+          "jev_tokens_in": 417,
+          "jev_tokens_out": 35,
+          "jev_api_time_seconds": 0.931
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 1,
+        "evaluations_saved_percent": 33.33,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "swe_bench::pytest-dev__pytest-5227",
+      "baseline": {
+        "evaluations": 4,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0047,
+        "edits_count": 1
+      },
+      "jev_guided": {
+        "evaluations": 2,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 1.0624,
+        "edits_count": 1,
+        "telemetry": {
+          "jev_calls": 1,
+          "jev_tokens_in": 451,
+          "jev_tokens_out": 51,
+          "jev_api_time_seconds": 1.058
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 2,
+        "evaluations_saved_percent": 50.0,
+        "resolved_preserved": true
+      }
+    },
+    {
+      "scenario": "swe_bench::sympy__sympy-13480",
+      "baseline": {
+        "evaluations": 3,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 0.0089,
+        "edits_count": 1
+      },
+      "jev_guided": {
+        "evaluations": 2,
+        "resolved": true,
+        "score": 100.0,
+        "time_seconds": 1.5354,
+        "edits_count": 1,
+        "telemetry": {
+          "jev_calls": 1,
+          "jev_tokens_in": 471,
+          "jev_tokens_out": 35,
+          "jev_api_time_seconds": 1.531
+        }
+      },
+      "comparison": {
+        "evaluations_saved": 1,
+        "evaluations_saved_percent": 33.33,
+        "resolved_preserved": true
+      }
+    }
+  ]
+}

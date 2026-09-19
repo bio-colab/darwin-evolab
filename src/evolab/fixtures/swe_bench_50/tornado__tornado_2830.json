@@ -1,0 +1,45 @@
+{
+  "instance_id": "tornado__tornado-2830",
+  "repo": "tornadoweb/tornado",
+  "base_commit": "b8c9d0e1",
+  "problem_statement": "chunk_buffer fails to handle negative chunk sizes defensively.",
+  "target_file": "tornado/iostream.py",
+  "sources": {
+    "tornado/iostream.py": "def chunk_buffer(data: str, size: int) -> list:\n    if size < 0:  # Bug: strict < allows size=0\n        return []\n    return [data[i:i+size] for i in range(0, len(data), size)]\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        "abcdef",
+        0
+      ],
+      []
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        "abcdef",
+        2
+      ],
+      [
+        "ab",
+        "cd",
+        "ef"
+      ]
+    ],
+    [
+      [
+        "abcdef",
+        -1
+      ],
+      []
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_iostream.py::test_zero_chunk_size"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_iostream.py::test_valid_chunk_size"
+  ]
+}

@@ -52,8 +52,10 @@ def test_p4_directed_selective_and_deterministic():
     ev = sc.create_evaluator()
     e = EvolutionEngine(fitness_fn=ev, population_size=6, seed=3, meta_mode="directed")
     pop = make_code_population(sc, 6, random.Random(3))
-    e.run(2, initial_population=pop)
-    assert all(h.get("meta_injected", 0) == 0 for h in e._operator_history * 0) or True
+    r = e.run(2, initial_population=pop)
+    assert all(h.get("meta_injected", 0) == 0 for h in r["history"])
+    assert not any(d.get("event") == "meta_controller_injection" for d in e._decision_log)
+    assert e._code_mode is True
 
 
 def test_p4_reshuffle_schedule_arm():

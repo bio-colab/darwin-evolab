@@ -1,0 +1,32 @@
+{
+  "instance_id": "pallets__click-1825",
+  "repo": "pallets/click",
+  "base_commit": "c7d8e9f0",
+  "problem_statement": "nargs_empty_default returns None instead of empty list when nargs=-1.",
+  "target_file": "src/click/core.py",
+  "sources": {
+    "src/click/core.py": "def get_nargs_default(nargs: int) -> any:\n    if nargs == -1:\n        return None  # Bug: should return []\n    return None\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        -1
+      ],
+      []
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        1
+      ],
+      null
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_core.py::test_nargs_var_empty_list"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_core.py::test_nargs_single_none"
+  ]
+}

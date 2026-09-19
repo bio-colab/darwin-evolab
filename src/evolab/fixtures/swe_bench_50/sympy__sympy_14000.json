@@ -1,0 +1,40 @@
+{
+  "instance_id": "sympy__sympy-14000",
+  "repo": "sympy/sympy",
+  "base_commit": "b2c3d4e5f",
+  "problem_statement": "poly_degree returns 0 for zero polynomial instead of -1 or negative infinity.",
+  "target_file": "sympy/polys/polytools.py",
+  "sources": {
+    "sympy/polys/polytools.py": "def get_degree(coeffs: list) -> int:\n    if not coeffs or all(c == 0 for c in coeffs):\n        return 0  # Bug: zero poly degree must be -1\n    return len(coeffs) - 1\n"
+  },
+  "fail_to_pass_tests": [
+    [
+      [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      -1
+    ]
+  ],
+  "pass_to_pass_tests": [
+    [
+      [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      2
+    ]
+  ],
+  "FAIL_TO_PASS": [
+    "tests/test_polytools.py::test_zero_poly_degree"
+  ],
+  "PASS_TO_PASS": [
+    "tests/test_polytools.py::test_nonzero_poly_degree"
+  ]
+}

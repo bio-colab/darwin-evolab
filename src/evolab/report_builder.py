@@ -118,6 +118,8 @@ def build_run_report(
         # Phase 0: honest evaluation count (raw engine evals, not nominal).
         "total_candidates_evaluated": int(getattr(engine, "_total_evals", final_gen * engine.population_size)),
         "best_individual": _best_payload(engine, best_ever, final_gen),
+        "unique_programs_final": history[-1].get("unique_programs") if history else None,
+        "unique_programs_ratio_final": history[-1].get("unique_programs_ratio") if history else None,
         "species_distribution": {
             k: v for k, v in sorted(species_distribution.items())
         },

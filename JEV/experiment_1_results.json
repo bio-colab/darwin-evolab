@@ -1,0 +1,437 @@
+{
+  "experiment": "Experiment 1: Comprehensive Self-Evaluation of Darwin-Evolab",
+  "timestamp_utc": "2026-09-19T00:23:44Z",
+  "total_runtime_seconds": 28.71,
+  "overall_status": "BENCHMARK_COMPLETE",
+  "tracks": {
+    "track_1_software_apr": {
+      "core_scenarios": [
+        {
+          "scenario": "click_cli_parser",
+          "passed": true,
+          "fitness": 100.0,
+          "holdout_clean": true,
+          "evaluations": 4,
+          "runtime_seconds": 0.0406
+        },
+        {
+          "scenario": "requests_http_helper",
+          "passed": true,
+          "fitness": 100.0,
+          "holdout_clean": true,
+          "evaluations": 3,
+          "runtime_seconds": 0.0097
+        },
+        {
+          "scenario": "lru_cache_logic",
+          "passed": true,
+          "fitness": 100.0,
+          "holdout_clean": true,
+          "evaluations": 3,
+          "runtime_seconds": 0.0118
+        },
+        {
+          "scenario": "multi_file_config",
+          "passed": true,
+          "fitness": 100.0,
+          "holdout_clean": true,
+          "evaluations": 3,
+          "runtime_seconds": 0.013
+        }
+      ],
+      "swe_bench_lite": {
+        "total_instances": 10,
+        "resolved_count": 5,
+        "pass_rate_percent": 50.0,
+        "total_evaluations": 50,
+        "runtime_seconds": 0.085,
+        "instances": [
+          {
+            "instance_id": "marshmallow-code__marshmallow-1343",
+            "repo": "marshmallow-code/marshmallow",
+            "resolved": false,
+            "fail_to_pass": false,
+            "pass_to_pass_clean": false,
+            "evaluations": 1,
+            "time_seconds": 0.002
+          },
+          {
+            "instance_id": "pallets__click-1608",
+            "repo": "pallets/click",
+            "resolved": false,
+            "fail_to_pass": true,
+            "pass_to_pass_clean": false,
+            "evaluations": 19,
+            "time_seconds": 0.028
+          },
+          {
+            "instance_id": "pallets__flask-4992",
+            "repo": "pallets/flask",
+            "resolved": true,
+            "fail_to_pass": true,
+            "pass_to_pass_clean": true,
+            "evaluations": 5,
+            "time_seconds": 0.009
+          },
+          {
+            "instance_id": "pallets__jinja-1155",
+            "repo": "pallets/jinja",
+            "resolved": true,
+            "fail_to_pass": true,
+            "pass_to_pass_clean": true,
+            "evaluations": 3,
+            "time_seconds": 0.005
+          },
+          {
+            "instance_id": "psf__black-2964",
+            "repo": "psf/black",
+            "resolved": false,
+            "fail_to_pass": false,
+            "pass_to_pass_clean": true,
+            "evaluations": 2,
+            "time_seconds": 0.003
+          },
+          {
+            "instance_id": "psf__requests-3367",
+            "repo": "psf/requests",
+            "resolved": true,
+            "fail_to_pass": true,
+            "pass_to_pass_clean": true,
+            "evaluations": 4,
+            "time_seconds": 0.007
+          },
+          {
+            "instance_id": "pytest-dev__pytest-5227",
+            "repo": "pytest-dev/pytest",
+            "resolved": true,
+            "fail_to_pass": true,
+            "pass_to_pass_clean": true,
+            "evaluations": 4,
+            "time_seconds": 0.005
+          },
+          {
+            "instance_id": "sphinx-doc__sphinx-8721",
+            "repo": "sphinx-doc/sphinx",
+            "resolved": false,
+            "fail_to_pass": false,
+            "pass_to_pass_clean": true,
+            "evaluations": 2,
+            "time_seconds": 0.003
+          },
+          {
+            "instance_id": "sympy__sympy-13480",
+            "repo": "sympy/sympy",
+            "resolved": true,
+            "fail_to_pass": true,
+            "pass_to_pass_clean": true,
+            "evaluations": 3,
+            "time_seconds": 0.006
+          },
+          {
+            "instance_id": "urllib3__urllib3-2168",
+            "repo": "urllib3/urllib3",
+            "resolved": false,
+            "fail_to_pass": false,
+            "pass_to_pass_clean": true,
+            "evaluations": 7,
+            "time_seconds": 0.01
+          }
+        ]
+      }
+    },
+    "track_2_digital_logic_cgp": {
+      "half_adder": {
+        "correct": true,
+        "accuracy": 1.0,
+        "evaluations": 157,
+        "active_gates": 4,
+        "transistors": 28,
+        "critical_delay_fo4": 5.2,
+        "runtime_seconds": 0.0054
+      },
+      "full_adder": {
+        "correct": true,
+        "accuracy": 1.0,
+        "active_gates": 5,
+        "transistors": 34,
+        "critical_delay_fo4": 5.2
+      },
+      "comparator_2bit": {
+        "accuracy": 0.8333333333333334,
+        "evaluations": 300,
+        "transistors": 32,
+        "critical_delay_fo4": 7.6,
+        "runtime_seconds": 0.0316
+      },
+      "hierarchical_8bit_adder": {
+        "exhaustive_passed": true,
+        "test_vectors_evaluated": 1000,
+        "total_transistors": 272,
+        "critical_delay_fo4": 41.6,
+        "verilog_lines": 85,
+        "runtime_seconds": 0.0168
+      }
+    },
+    "track_3_dream_rsi_ablation": {
+      "baseline_evaluations": 60,
+      "idea_1_operator_reweighting": {
+        "percent_saved": 16.38,
+        "p_value": 0.000593,
+        "cohen_d": 1.5897,
+        "governor_decision": "ACCEPT"
+      },
+      "idea_2_budget_elasticity": {
+        "percent_saved": 28.0,
+        "p_value": 0.14701,
+        "cohen_d": 0.3425,
+        "governor_decision": "ACCEPT"
+      },
+      "idea_3_cross_validated_seeding": {
+        "percent_saved": 19.12,
+        "num_folds": 5,
+        "p_value": 0.029526,
+        "cohen_d": 0.6666,
+        "governor_decision": "ACCEPT"
+      }
+    },
+    "track_4_jev_guidance_ab": {
+      "total_baseline_evaluations": 100,
+      "total_jev_evaluations": 24,
+      "overall_search_reduction_percent": 76.0,
+      "total_api_calls": 13,
+      "total_input_tokens": 6681,
+      "total_output_tokens": 718,
+      "total_api_time_seconds": 15.144,
+      "instances": [
+        {
+          "benchmark": "click_cli_parser",
+          "type": "core",
+          "baseline_evals": 41,
+          "jev_evals": 6,
+          "evals_reduction_percent": 85.4,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.037,
+          "jev_time_seconds": 4.6676,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "requests_http_helper",
+          "type": "core",
+          "baseline_evals": 9,
+          "jev_evals": 3,
+          "evals_reduction_percent": 66.7,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0065,
+          "jev_time_seconds": 2.5955,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "lru_cache_logic",
+          "type": "core",
+          "baseline_evals": 15,
+          "jev_evals": 3,
+          "evals_reduction_percent": 80.0,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0093,
+          "jev_time_seconds": 1.7954,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "multi_file_config",
+          "type": "core",
+          "baseline_evals": 20,
+          "jev_evals": 4,
+          "evals_reduction_percent": 80.0,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0112,
+          "jev_time_seconds": 2.4991,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "pallets__flask-4992",
+          "type": "swe",
+          "baseline_evals": 5,
+          "jev_evals": 2,
+          "evals_reduction_percent": 60.0,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0062,
+          "jev_time_seconds": 0.9521,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "pallets__jinja-1155",
+          "type": "swe",
+          "baseline_evals": 3,
+          "jev_evals": 2,
+          "evals_reduction_percent": 33.3,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0044,
+          "jev_time_seconds": 0.9131,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "pytest-dev__pytest-5227",
+          "type": "swe",
+          "baseline_evals": 4,
+          "jev_evals": 2,
+          "evals_reduction_percent": 50.0,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0042,
+          "jev_time_seconds": 0.8915,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        },
+        {
+          "benchmark": "sympy__sympy-13480",
+          "type": "swe",
+          "baseline_evals": 3,
+          "jev_evals": 2,
+          "evals_reduction_percent": 33.3,
+          "baseline_resolved": true,
+          "jev_resolved": true,
+          "baseline_time_seconds": 0.0034,
+          "jev_time_seconds": 0.8636,
+          "jev_tokens_in": 0,
+          "jev_tokens_out": 0
+        }
+      ]
+    },
+    "track_5_statistical_governance": {
+      "all_gates_sound": true,
+      "scenarios": {
+        "true_improvement": {
+          "accepted": true,
+          "details": {
+            "decision": "ACCEPT",
+            "reasons": [
+              "all_gates_passed"
+            ],
+            "mean_b": 80.4143,
+            "mean_c": 84.4143,
+            "median_b": 80.5,
+            "median_c": 84.5,
+            "worst_b": 79.5,
+            "worst_c": 83.5,
+            "regressions": 0,
+            "delta_mean": 4.0,
+            "delta_median": 4.0,
+            "p_value": 0.0,
+            "cohen_d": 1.0
+          }
+        },
+        "marginal_noise_filtered": {
+          "rejected": true,
+          "details": {
+            "decision": "REJECT",
+            "reasons": [
+              "not_statistically_significant"
+            ],
+            "mean_b": 80.2,
+            "mean_c": 80.24,
+            "median_b": 80.0,
+            "median_c": 80.1,
+            "worst_b": 79.0,
+            "worst_c": 79.0,
+            "regressions": 0,
+            "delta_mean": 0.04,
+            "delta_median": 0.1,
+            "p_value": 0.088904,
+            "cohen_d": 0.7303
+          }
+        },
+        "median_outlier_vetoed": {
+          "rejected": true,
+          "details": {
+            "decision": "REJECT",
+            "reasons": [
+              "median_not_improved",
+              "worst_regressed"
+            ],
+            "mean_b": 80.0,
+            "mean_c": 81.4,
+            "median_b": 80.0,
+            "median_c": 78.0,
+            "worst_b": 80.0,
+            "worst_c": 78.0,
+            "regressions": 0,
+            "delta_mean": 1.4,
+            "delta_median": -2.0,
+            "p_value": 0.35081,
+            "cohen_d": 0.1841
+          }
+        },
+        "worst_regressed_vetoed": {
+          "rejected": true,
+          "details": {
+            "decision": "REJECT",
+            "reasons": [
+              "worst_regressed"
+            ],
+            "mean_b": 90.0,
+            "mean_c": 90.2,
+            "median_b": 90.0,
+            "median_c": 92.0,
+            "worst_b": 80.0,
+            "worst_c": 75.0,
+            "regressions": 0,
+            "delta_mean": 0.2,
+            "delta_median": 2.0,
+            "p_value": 0.446383,
+            "cohen_d": 0.0642
+          }
+        },
+        "regression_present_vetoed": {
+          "rejected": true,
+          "details": {
+            "decision": "REJECT",
+            "reasons": [
+              "regressions_present"
+            ],
+            "mean_b": 90.0,
+            "mean_c": 93.6,
+            "median_b": 90.0,
+            "median_c": 95.0,
+            "worst_b": 80.0,
+            "worst_c": 85.0,
+            "regressions": 1,
+            "delta_mean": 3.6,
+            "delta_median": 5.0,
+            "p_value": 0.010656,
+            "cohen_d": 1.6432
+          }
+        },
+        "insufficient_evidence_vetoed": {
+          "rejected": true,
+          "details": {
+            "decision": "REJECT",
+            "reasons": [
+              "insufficient_evidence"
+            ],
+            "mean_b": null,
+            "mean_c": null,
+            "median_b": null,
+            "median_c": null,
+            "worst_b": null,
+            "worst_c": null,
+            "regressions": 0,
+            "p_value": null,
+            "cohen_d": null
+          }
+        }
+      }
+    }
+  }
+}

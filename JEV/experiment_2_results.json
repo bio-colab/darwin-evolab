@@ -1,0 +1,233 @@
+{
+  "experiment": "Experiment 2: Deep Robustness, OOD Generalization & Hybrid Synergy",
+  "timestamp_utc": "2026-09-19T00:41:47Z",
+  "total_runtime_seconds": 20.0,
+  "overall_status": "EXPERIMENT_2_COMPLETE",
+  "tracks": {
+    "track_1_hybrid_synergy": {
+      "total_evals_a0_vanilla": 100,
+      "total_evals_a1_rsi": 62,
+      "total_evals_a2_jev": 65,
+      "total_evals_a3_hybrid": 65,
+      "reduction_a1_percent": 38.0,
+      "reduction_a2_percent": 35.0,
+      "reduction_a3_percent": 35.0,
+      "benchmarks": [
+        {
+          "benchmark": "click_cli_parser",
+          "a0_vanilla": 41,
+          "a1_rsi_only": 24,
+          "a2_jev_only": 27,
+          "a3_hybrid": 27,
+          "hybrid_reduction_percent": 34.1,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "requests_http_helper",
+          "a0_vanilla": 9,
+          "a1_rsi_only": 7,
+          "a2_jev_only": 7,
+          "a3_hybrid": 7,
+          "hybrid_reduction_percent": 22.2,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "lru_cache_logic",
+          "a0_vanilla": 15,
+          "a1_rsi_only": 8,
+          "a2_jev_only": 14,
+          "a3_hybrid": 14,
+          "hybrid_reduction_percent": 6.7,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "multi_file_config",
+          "a0_vanilla": 20,
+          "a1_rsi_only": 12,
+          "a2_jev_only": 8,
+          "a3_hybrid": 8,
+          "hybrid_reduction_percent": 60.0,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "pallets__flask-4992",
+          "a0_vanilla": 5,
+          "a1_rsi_only": 3,
+          "a2_jev_only": 2,
+          "a3_hybrid": 2,
+          "hybrid_reduction_percent": 60.0,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "pallets__jinja-1155",
+          "a0_vanilla": 3,
+          "a1_rsi_only": 3,
+          "a2_jev_only": 3,
+          "a3_hybrid": 3,
+          "hybrid_reduction_percent": 0.0,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "pytest-dev__pytest-5227",
+          "a0_vanilla": 4,
+          "a1_rsi_only": 2,
+          "a2_jev_only": 2,
+          "a3_hybrid": 2,
+          "hybrid_reduction_percent": 50.0,
+          "all_resolved": true
+        },
+        {
+          "benchmark": "sympy__sympy-13480",
+          "a0_vanilla": 3,
+          "a1_rsi_only": 3,
+          "a2_jev_only": 2,
+          "a3_hybrid": 2,
+          "hybrid_reduction_percent": 33.3,
+          "all_resolved": true
+        }
+      ]
+    },
+    "track_2_hard_bug_autopsy": {
+      "autopsy_count": 5,
+      "records": [
+        {
+          "instance_id": "pallets__click-1608",
+          "description": "Arithmetic off-by-one pagination ceiling",
+          "catalog_edits_available": 10,
+          "expanded_budget_evals": 19,
+          "expanded_budget_score": 84.0,
+          "jev_guided_score": 84.0,
+          "resolved_under_64": false,
+          "primary_bottleneck_category": "COMPOSITIONAL_DEPTH_2",
+          "diagnostic_finding": "Requires conditional ceiling division or dual-hunk composition"
+        },
+        {
+          "instance_id": "marshmallow-code__marshmallow-1343",
+          "description": "Polymorphic nested dictionary schema resolution",
+          "catalog_edits_available": 0,
+          "expanded_budget_evals": 1,
+          "expanded_budget_score": 20.0,
+          "jev_guided_score": 20.0,
+          "resolved_under_64": false,
+          "primary_bottleneck_category": "VOCABULARY_DEFICIT",
+          "diagnostic_finding": "Requires multi-node dict inspection AST not in point mutation catalog"
+        },
+        {
+          "instance_id": "psf__black-2964",
+          "description": "Split parenthesis trailing comma formatting",
+          "catalog_edits_available": 1,
+          "expanded_budget_evals": 2,
+          "expanded_budget_score": 52.0,
+          "jev_guided_score": 52.0,
+          "resolved_under_64": false,
+          "primary_bottleneck_category": "GRAMMAR_SYNTHESIS",
+          "diagnostic_finding": "Complex AST formatting requires multi-line token reconstruction"
+        },
+        {
+          "instance_id": "sphinx-doc__sphinx-8721",
+          "description": "Hierarchical colon XHTML anchor generation",
+          "catalog_edits_available": 1,
+          "expanded_budget_evals": 2,
+          "expanded_budget_score": 52.0,
+          "jev_guided_score": 52.0,
+          "resolved_under_64": false,
+          "primary_bottleneck_category": "VOCABULARY_DEFICIT",
+          "diagnostic_finding": "String replacement transformation requires custom regex/normalization node"
+        },
+        {
+          "instance_id": "urllib3__urllib3-2168",
+          "description": "Exponential retry delay upper bound ceiling",
+          "catalog_edits_available": 6,
+          "expanded_budget_evals": 7,
+          "expanded_budget_score": 52.0,
+          "jev_guided_score": 52.0,
+          "resolved_under_64": false,
+          "primary_bottleneck_category": "FUNCTION_WRAPPER_PRIMITIVE",
+          "diagnostic_finding": "Requires min(max_delay, expr) numeric ceiling wrapper"
+        }
+      ]
+    },
+    "track_3_long_horizon_stability": {
+      "horizon_generations": 250,
+      "runs": [
+        {
+          "seed": 42,
+          "runtime_seconds": 3.042,
+          "initial_best": 65.58,
+          "final_best": 99.58,
+          "monotonic_improvement": true,
+          "final_diversity": 0.0726,
+          "min_diversity": 0.0064,
+          "final_genome_size": 0
+        },
+        {
+          "seed": 101,
+          "runtime_seconds": 2.185,
+          "initial_best": 71.53,
+          "final_best": 99.6,
+          "monotonic_improvement": true,
+          "final_diversity": 0.0355,
+          "min_diversity": 0.0262,
+          "final_genome_size": 0
+        },
+        {
+          "seed": 777,
+          "runtime_seconds": 2.604,
+          "initial_best": 74.23,
+          "final_best": 99.71,
+          "monotonic_improvement": true,
+          "final_diversity": 0.0292,
+          "min_diversity": 0.0174,
+          "final_genome_size": 0
+        }
+      ],
+      "mean_final_fitness": 99.63,
+      "mean_final_diversity": 0.0458,
+      "monotonic_verified": true
+    },
+    "track_4_noisy_oracles": {
+      "ochiai_stability": [
+        {
+          "noise_rate": 0.0,
+          "mean_ochiai": 1.0,
+          "std_ochiai": 0.0,
+          "relative_retention": 1.0
+        },
+        {
+          "noise_rate": 0.05,
+          "mean_ochiai": 0.9673,
+          "std_ochiai": 0.0443,
+          "relative_retention": 0.9673
+        },
+        {
+          "noise_rate": 0.1,
+          "mean_ochiai": 0.9419,
+          "std_ochiai": 0.0627,
+          "relative_retention": 0.9419
+        },
+        {
+          "noise_rate": 0.15,
+          "mean_ochiai": 0.9038,
+          "std_ochiai": 0.0788,
+          "relative_retention": 0.9038
+        }
+      ],
+      "governor_flaky_trials": 500,
+      "flaky_false_pass_rate_percent": 3.0
+    },
+    "track_5_silicon_scaling": {
+      "parity_4bit": {
+        "accuracy": 1.0,
+        "transistors": 24,
+        "delay_fo4": 4.0,
+        "verilog_lines": 16
+      },
+      "multiplier_2x2": {
+        "accuracy": 1.0,
+        "transistors": 52,
+        "delay_fo4": 5.2,
+        "verilog_lines": 29
+      }
+    }
+  }
+}
