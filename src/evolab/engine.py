@@ -378,13 +378,6 @@ class EvolutionEngine:
 
     def _genome_identity_key(self, ind: Individual) -> Any:
         """Resolve a deterministic hash or key representing the genome identity."""
-        if hasattr(self.fitness_fn, "program_identity"):
-            try:
-                k = self.fitness_fn.program_identity(ind.genome)
-                if k is not None:
-                    return k
-            except Exception:
-                pass
         if hasattr(ind.genome, "fingerprint") and callable(ind.genome.fingerprint):
             try:
                 return ind.genome.fingerprint()
@@ -1396,13 +1389,17 @@ class EvolutionEngine:
                 _imm_n = 0
             _imm_injected = 0
             if _imm_n > 0 and not bool(getattr(self, "_code_mode", False)):
-                from .genome import random_individual as _random_individual
-
                 _pool = list(SPECIES_POOL) if isinstance(SPECIES_POOL, dict) else list(SPECIES_POOL)
+                _sample = children[0].genome if children else None
+                _is_float = _sample is None or isinstance(_sample, FloatGenome)
                 for _k in range(min(_imm_n, max(len(children) - self.elite_count, 0))):
                     try:
-                        _sp = self.rng.choice(_pool) if _pool else "spec_0"
-                        _imm = _random_individual(_sp, size=self.genome_size, rng=self.rng)
+                        if _is_float:
+                            _sp = self.rng.choice(_pool) if _pool else "spec_0"
+                            _imm = random_individual(_sp, size=self.genome_size, rng=self.rng)
+                        else:
+                            _donor = self.rng.choice(children)
+                            _imm = Individual(genome=_donor.genome.clone().mutate(self.rng), species=_donor.species)
                         children[-(1 + _k)] = _imm
                         _imm_injected += 1
                     except Exception:

@@ -185,6 +185,73 @@ def calculate_unique_programs(pop: list[Any]) -> dict[str, Any]:
     return {"unique_count": count, "unique_ratio": ratio}
 
 
+def calculate_clonal_drift_metrics(
+    pop: list[Any],
+    best_fitness_history: list[float] | None = None,
+    stagnation_window: int = 5,
+    min_clonal_ratio: float = 0.5,
+) -> dict[str, Any]:
+    """Detects when an apparent rise in population mean fitness is merely clonal drift
+    (blind replication of a single genotype) rather than true evolutionary exploration.
+
+    Returns:
+    - unique_expressions: count of distinct representations
+    - max_clone_count: number of copies of the most frequent genotype
+    - clonal_ratio: proportion of population belonging to duplicated clones
+    - is_clonal_drift_stagnation: True if best fitness has stagnated while clones dominate
+    """
+    if not pop:
+        return {
+            "unique_expressions": 0,
+            "max_clone_count": 0,
+            "clonal_ratio": 0.0,
+            "is_clonal_drift_stagnation": False,
+            "dominant_genotype": None,
+        }
+
+    from collections import Counter
+    counts: Counter = Counter()
+
+    for ind in pop:
+        g = getattr(ind, "genome", ind)
+        if hasattr(g, "root") and hasattr(g.root, "to_pretty_str"):
+            rep = g.root.to_pretty_str()
+        elif hasattr(g, "to_code") and callable(g.to_code):
+            try:
+                rep = g.to_code()
+            except Exception:
+                rep = str(g)
+        elif hasattr(g, "fingerprint") and callable(g.fingerprint):
+            try:
+                rep = g.fingerprint()
+            except Exception:
+                rep = str(g)
+        else:
+            rep = str(g)
+        counts[rep] += 1
+
+    total = len(pop)
+    unique_count = len(counts)
+    most_common_rep, max_clones = counts.most_common(1)[0]
+    clonal_ratio = round((total - unique_count) / max(1, total), 4)
+
+    stagnated = False
+    if best_fitness_history and len(best_fitness_history) >= stagnation_window:
+        recent = best_fitness_history[-stagnation_window:]
+        if max(recent) - min(recent) < 1e-5:
+            stagnated = True
+
+    is_stagnation = bool(stagnated and (max_clones / total >= min_clonal_ratio or clonal_ratio >= min_clonal_ratio))
+
+    return {
+        "unique_expressions": unique_count,
+        "max_clone_count": max_clones,
+        "dominant_genotype": most_common_rep,
+        "clonal_ratio": clonal_ratio,
+        "is_clonal_drift_stagnation": is_stagnation,
+    }
+
+
 __all__ = [
     "_desc_mean",
     "_desc_std",
@@ -192,5 +259,6 @@ __all__ = [
     "build_causal_summary",
     "calculate_population_diversity",
     "calculate_unique_programs",
+    "calculate_clonal_drift_metrics",
     "count_cache_misses",
 ]

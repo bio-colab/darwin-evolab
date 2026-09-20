@@ -31,6 +31,11 @@ from .taxonomy import (
     FaultCategory,
     classify_fault,
 )
+from .symbolic_guard import (
+    NumericalPreFilter,
+    StructuralProofGuard,
+    SymbolicGuard,
+)
 from .transfer import (
     BehavioralSecurityDescriptor,
     CrossTargetTransferMemory,
@@ -60,11 +65,14 @@ __all__ = [
     "NoPrivilegeBoundaryViolationInvariant",
     "NoResourceExhaustionInvariant",
     "NoStateCorruptionInvariant",
+    "NumericalPreFilter",
     "Observation",
     "OracleVerdict",
     "PermutationSymmetricInputSummary",
     "SecurityEvaluator",
     "SecurityOracle",
+    "StructuralProofGuard",
+    "SymbolicGuard",
     "Target",
     "TransferableBehavioralMotif",
     "TransferablePrimitive",

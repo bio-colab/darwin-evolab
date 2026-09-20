@@ -1,0 +1,211 @@
+{
+  "formula_name": "Finsler_Hadwiger_Rational_SOS",
+  "expression_string": "((2.0 * ((((x)^2 * ((y - z))^2) + ((y)^2 * ((z - x))^2)) + ((z)^2 * ((x - y))^2))) / (((x * y) + ((y * z) + (z * x))) + (sqrt3 * Delta)))",
+  "constructive_proof_type": "Rational Sum-of-Squares (Rational SOS)",
+  "equality_condition": "a == b == c (Equilateral Triangle)",
+  "gate4_automated_proof_certified": true,
+  "gate4_proof_rationale": "Automated SymPy Theorem Proof: Numerator reduces to 2*(x^2*(y-z)^2 + y^2*(z-x)^2 + z^2*(x-y)^2) under Ravi substitution x=s-a>0, y=s-b>0, z=s-c>0. Denominator (xy+yz+zx+sqrt(3)*Delta) > 0. Every multiplier x^2, y^2, z^2 is strictly positive under triangle inequalities, and every difference is squared, establishing non-negativity D_FH >= 0. The sum of squares vanishes if and only if y=z and z=x and x=y, proving equality holds iff a=b=c.",
+  "fitness_score": 88.4286,
+  "metrics": {
+    "formal_correctness": 100.0,
+    "equality_condition_verified": 100.0,
+    "gate4_automated_proof_certified": 100.0,
+    "stability_cases_passed": 9.0,
+    "stability_pass_rate_pct": 100.0,
+    "max_rel_err": 3.5498735960327436e-16,
+    "raw_parsimonious_score": 309.5,
+    "node_count": 41.0,
+    "depth": 8.0
+  },
+  "comparative_benchmark": [
+    {
+      "triangle": [
+        1.0000001,
+        1.0,
+        1.0
+      ],
+      "mpmath_ref": 6.66666756334049e-15,
+      "evolved_sos_val": 6.6666675633404926e-15,
+      "evolved_rel_err": 3.5498735960327436e-16,
+      "naive_val": 7.549516567451064e-15,
+      "naive_rel_err": 0.1324273328049677,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        1.00000001,
+        1.0,
+        1.0
+      ],
+      "mpmath_ref": 6.666666674522609e-17,
+      "evolved_sos_val": 6.666666674522607e-17,
+      "evolved_rel_err": 1.8488927444330272e-16,
+      "naive_val": 4.440892098500626e-16,
+      "naive_rel_err": 5.661338139901276,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        1000000.00001,
+        1000000.0,
+        1000000.0
+      ],
+      "mpmath_ref": 6.666612973012833e-11,
+      "evolved_sos_val": 6.666612973012833e-11,
+      "evolved_rel_err": 0.0,
+      "naive_val": 0.00048828125,
+      "naive_rel_err": 7324276.740085033,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        100.0,
+        100.00001,
+        100.000005
+      ],
+      "mpmath_ref": 5.000000003174174e-11,
+      "evolved_sos_val": 5.000000003174175e-11,
+      "evolved_rel_err": 2.584939412587202e-16,
+      "naive_val": 5.093170329928398e-11,
+      "naive_rel_err": 0.018634065339015283,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "mpmath_ref": 0.0,
+      "evolved_sos_val": 0.0,
+      "evolved_rel_err": 0.0,
+      "naive_val": 1.7763568394002505e-15,
+      "naive_rel_err": 1.7763568394002505e-15,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        3.0,
+        4.0,
+        5.0
+      ],
+      "mpmath_ref": 2.430780618346945,
+      "evolved_sos_val": 2.430780618346945,
+      "evolved_rel_err": 0.0,
+      "naive_val": 2.430780618346944,
+      "naive_rel_err": 5.480822166733408e-16,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        13.0,
+        14.0,
+        15.0
+      ],
+      "mpmath_ref": 2.0309286568572293,
+      "evolved_sos_val": 2.0309286568572293,
+      "evolved_rel_err": 0.0,
+      "naive_val": 2.0309286568572134,
+      "naive_rel_err": 7.871872554766027e-15,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        100.0,
+        100.0,
+        1.0
+      ],
+      "mpmath_ref": 52.594168640307096,
+      "evolved_sos_val": 52.594168640307096,
+      "evolved_rel_err": 0.0,
+      "naive_val": 52.594168640307146,
+      "naive_rel_err": 9.456940339406531e-16,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        5.0,
+        5.0,
+        9.999999999
+      ],
+      "mpmath_ref": 99.99755051015619,
+      "evolved_sos_val": 99.99755051015619,
+      "evolved_rel_err": 0.0,
+      "naive_val": 99.99755051015619,
+      "naive_rel_err": 0.0,
+      "sos_stable": true,
+      "naive_failed": false
+    }
+  ],
+  "map_elites_diverse_archive": [
+    {
+      "grid_cell": [
+        7,
+        0
+      ],
+      "fitness": 88.4286,
+      "expression": "((2.0 * ((((x)^2 * ((y - z))^2) + ((y)^2 * ((z - x))^2)) + ((z)^2 * ((x - y))^2))) / (((x * y) + ((y * z) + (z * x))) + (sqrt3 * Delta)))",
+      "formula_name": "Finsler_Hadwiger_Rational_SOS",
+      "node_count": 41
+    },
+    {
+      "grid_cell": [
+        7,
+        5
+      ],
+      "fitness": 88.4286,
+      "expression": "((2.0 * ((((x)^2 * ((y - z))^2) + ((y)^2 * ((z - x))^2)) + ((z)^2 * ((x - y))^2))) / (((x * y) + ((z * x) + (y * z))) + (sqrt3 * Delta)))",
+      "formula_name": "Finsler_Hadwiger_Rational_SOS",
+      "node_count": 41
+    },
+    {
+      "grid_cell": [
+        7,
+        4
+      ],
+      "fitness": 88.4286,
+      "expression": "((2.0 * ((((x)^2 * ((y - z))^2) + ((y)^2 * ((z - x))^2)) + ((z)^2 * ((x - y))^2))) / (((x * y) + ((y * z) + (x * z))) + (sqrt3 * Delta)))",
+      "formula_name": "Finsler_Hadwiger_Rational_SOS",
+      "node_count": 41
+    },
+    {
+      "grid_cell": [
+        7,
+        2
+      ],
+      "fitness": 88.4286,
+      "expression": "((2.0 * ((((x)^2 * ((y - z))^2) + ((y)^2 * ((z - x))^2)) + ((z)^2 * ((x - y))^2))) / ((sqrt3 * Delta) + ((x * y) + ((y * z) + (z * x)))))",
+      "formula_name": "Finsler_Hadwiger_Rational_SOS",
+      "node_count": 41
+    },
+    {
+      "grid_cell": [
+        7,
+        3
+      ],
+      "fitness": 88.4286,
+      "expression": "((2.0 * ((((y)^2 * ((z - x))^2) + ((x)^2 * ((y - z))^2)) + ((z)^2 * ((x - y))^2))) / (((x * y) + ((y * z) + (z * x))) + (sqrt3 * Delta)))",
+      "formula_name": "Finsler_Hadwiger_Rational_SOS",
+      "node_count": 41
+    },
+    {
+      "grid_cell": [
+        7,
+        1
+      ],
+      "fitness": 88.4286,
+      "expression": "((((((x)^2 * ((y - z))^2) + ((y)^2 * ((z - x))^2)) + ((z)^2 * ((x - y))^2)) * 2.0) / (((x * y) + ((y * z) + (x * z))) + (sqrt3 * Delta)))",
+      "formula_name": "Finsler_Hadwiger_Rational_SOS",
+      "node_count": 41
+    }
+  ],
+  "map_elites_unique_formulas_count": 6
+}

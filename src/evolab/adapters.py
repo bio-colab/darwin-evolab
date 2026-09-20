@@ -424,12 +424,43 @@ def register_domain_adapter(name: str, adapter: DomainAdapter) -> None:
     _ADAPTER_REGISTRY[name.lower().strip()] = adapter
 
 
+def register_adapter(name: str):
+    """Decorator or factory to register a domain adapter driver into Darwin-Evolab."""
+    def decorator(cls_or_inst):
+        inst = cls_or_inst() if isinstance(cls_or_inst, type) else cls_or_inst
+        register_domain_adapter(name, inst)
+        return cls_or_inst
+    return decorator
+
+
+# Auto-bind submodule for compatibility
+try:
+    import sys
+    from . import triangle_stable as _ts
+    sys.modules["evolab.adapters.triangle_stable"] = _ts
+    from . import euler_inequality as _ei
+    sys.modules["evolab.adapters.euler_inequality"] = _ei
+    from . import finsler_hadwiger as _fh
+    sys.modules["evolab.adapters.finsler_hadwiger"] = _fh
+except Exception:
+    pass
+
+
 def get_domain_adapter(name: str) -> DomainAdapter:
     """Retrieves a registered domain adapter by name."""
     key = name.lower().strip()
     if key in ("sky130_opamp", "sky130", "opamp"):
         from .silicon.opamp_benchmark import Sky130OpAmpAdapter
         return Sky130OpAmpAdapter()
+    if key in ("trianglestablearea", "triangle_stable", "trianglestable"):
+        from .triangle_stable import TriangleStableAreaAdapter
+        return TriangleStableAreaAdapter()
+    if key in ("eulerinequality", "euler_inequality", "euler"):
+        from .euler_inequality import EulerInequalityAdapter
+        return EulerInequalityAdapter()
+    if key in ("finslerhadwiger", "finsler_hadwiger", "finsler"):
+        from .finsler_hadwiger import FinslerHadwigerAdapter
+        return FinslerHadwigerAdapter()
     if key not in _ADAPTER_REGISTRY:
         raise KeyError(f"Unknown domain adapter {name!r}. Available: {list_domain_adapters()}")
     return _ADAPTER_REGISTRY[key]

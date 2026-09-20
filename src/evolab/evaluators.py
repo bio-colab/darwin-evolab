@@ -187,7 +187,7 @@ class FunctionTestEvaluator(Evaluator):
             return tuple(case[0]), dict(case[1]), case[2]
         if len(case) == 2:
             raw_args, expected = case
-            if isinstance(raw_args, (tuple, list)) and len(raw_args) == 2 and isinstance(raw_args[1], dict):
+            if isinstance(raw_args, (tuple, list)) and len(raw_args) == 2 and isinstance(raw_args[0], (tuple, list)) and isinstance(raw_args[1], dict):
                 return tuple(raw_args[0]), dict(raw_args[1]), expected
             return tuple(raw_args), {}, expected
         raise ValueError(f"Invalid test case structure: {case}")

@@ -1,6 +1,6 @@
 {
-  "timestamp_utc": "2026-09-18T06:59:09.623705+00:00",
-  "total_candidates_sampled": 10000,
+  "timestamp_utc": "2026-09-20T22:23:41.689230+00:00",
+  "total_candidates_sampled": 100,
   "operators": [
     "InsertGuard",
     "BoundaryFlip",
@@ -20,13 +20,13 @@
     "ConstantMutate": 0.142857
   },
   "optimal_weights": {
-    "InsertGuard": 0.150228,
-    "BoundaryFlip": 0.152956,
-    "SwapCondition": 0.113554,
-    "DeleteStatement": 0.162571,
-    "OffByOne": 0.16694,
-    "BinOpFlip": 0.183441,
-    "ConstantMutate": 0.070309
+    "InsertGuard": 0.191889,
+    "BoundaryFlip": 0.043475,
+    "SwapCondition": 0.234349,
+    "DeleteStatement": 0.14613,
+    "OffByOne": 0.200339,
+    "BinOpFlip": 0.182576,
+    "ConstantMutate": 0.001242
   },
   "governor_verdict": {
     "decision": "ACCEPT",
@@ -34,21 +34,23 @@
       "all_gates_passed"
     ],
     "mean_b": 64.7846,
-    "mean_c": 64.7918,
+    "mean_c": 64.8313,
     "median_b": 74.7342,
-    "median_c": 74.7519,
+    "median_c": 74.8156,
     "worst_b": 9.97,
     "worst_c": 9.97,
     "regressions": 0,
-    "delta_mean": 0.0072,
-    "delta_median": 0.0177
+    "delta_mean": 0.0467,
+    "delta_median": 0.0814,
+    "p_value": 0.001595,
+    "cohen_d": 1.2596
   },
-  "p_value": 0.008057,
-  "cohen_d": 0.9239,
+  "p_value": 0.001843,
+  "cohen_d": 1.2596,
   "mean_baseline_value": 64.7846,
-  "mean_optimal_value": 64.7918,
-  "delta_mean_value": 0.0072,
-  "mean_evaluations_saved_percent": 3.71,
+  "mean_optimal_value": 64.8313,
+  "delta_mean_value": 0.0467,
+  "mean_evaluations_saved_percent": 21.12,
   "instances_evaluated": 10,
   "instances_retained_percent": 100.0,
   "per_instance_records": [
@@ -66,91 +68,91 @@
       "instance_name": "pallets__click-1608",
       "best_score": 50.0,
       "baseline_evals": 19.0,
-      "optimal_evals": 19.12,
-      "evals_saved_percent": 0.0,
+      "optimal_evals": 16.57,
+      "evals_saved_percent": 12.77,
       "baseline_v": 49.088,
-      "optimal_v": 49.0824,
-      "delta_v": -0.0056
+      "optimal_v": 49.2082,
+      "delta_v": 0.1202
     },
     {
       "instance_name": "pallets__flask-4992",
       "best_score": 100.0,
       "baseline_evals": 5.0,
-      "optimal_evals": 4.75,
-      "evals_saved_percent": 4.91,
+      "optimal_evals": 3.72,
+      "evals_saved_percent": 25.55,
       "baseline_v": 99.7833,
-      "optimal_v": 99.794,
-      "delta_v": 0.0106
+      "optimal_v": 99.8511,
+      "delta_v": 0.0678
     },
     {
       "instance_name": "pallets__jinja-1155",
       "best_score": 100.0,
       "baseline_evals": 3.0,
-      "optimal_evals": 2.85,
-      "evals_saved_percent": 4.91,
+      "optimal_evals": 2.23,
+      "evals_saved_percent": 25.55,
       "baseline_v": 99.88,
-      "optimal_v": 99.8859,
-      "delta_v": 0.0059
+      "optimal_v": 99.9107,
+      "delta_v": 0.0307
     },
     {
       "instance_name": "psf__black-2964",
       "best_score": 20.0,
       "baseline_evals": 2.0,
-      "optimal_evals": 1.76,
-      "evals_saved_percent": 12.13,
+      "optimal_evals": 1.22,
+      "evals_saved_percent": 39.04,
       "baseline_v": 19.94,
-      "optimal_v": 19.9473,
-      "delta_v": 0.0073
+      "optimal_v": 19.9634,
+      "delta_v": 0.0234
     },
     {
       "instance_name": "psf__requests-3367",
       "best_score": 100.0,
       "baseline_evals": 4.0,
-      "optimal_evals": 3.8,
-      "evals_saved_percent": 4.91,
+      "optimal_evals": 2.98,
+      "evals_saved_percent": 25.55,
       "baseline_v": 99.84,
-      "optimal_v": 99.8479,
-      "delta_v": 0.0079
+      "optimal_v": 99.8809,
+      "delta_v": 0.0409
     },
     {
       "instance_name": "pytest-dev__pytest-5227",
       "best_score": 100.0,
       "baseline_evals": 4.0,
-      "optimal_evals": 3.8,
-      "evals_saved_percent": 4.91,
+      "optimal_evals": 2.98,
+      "evals_saved_percent": 25.55,
       "baseline_v": 99.84,
-      "optimal_v": 99.8479,
-      "delta_v": 0.0079
+      "optimal_v": 99.8809,
+      "delta_v": 0.0409
     },
     {
       "instance_name": "sphinx-doc__sphinx-8721",
       "best_score": 20.0,
       "baseline_evals": 2.0,
-      "optimal_evals": 1.76,
-      "evals_saved_percent": 12.13,
+      "optimal_evals": 1.43,
+      "evals_saved_percent": 28.69,
       "baseline_v": 19.94,
-      "optimal_v": 19.9473,
-      "delta_v": 0.0073
+      "optimal_v": 19.9572,
+      "delta_v": 0.0172
     },
     {
       "instance_name": "sympy__sympy-13480",
       "best_score": 100.0,
       "baseline_evals": 3.0,
-      "optimal_evals": 2.85,
-      "evals_saved_percent": 4.91,
+      "optimal_evals": 2.23,
+      "evals_saved_percent": 25.55,
       "baseline_v": 99.88,
-      "optimal_v": 99.8859,
-      "delta_v": 0.0059
+      "optimal_v": 99.9107,
+      "delta_v": 0.0307
     },
     {
       "instance_name": "urllib3__urllib3-2168",
       "best_score": 50.0,
       "baseline_evals": 7.0,
-      "optimal_evals": 6.45,
-      "evals_saved_percent": 7.91,
+      "optimal_evals": 5.07,
+      "evals_saved_percent": 27.51,
       "baseline_v": 49.685,
-      "optimal_v": 49.7099,
-      "delta_v": 0.0249
+      "optimal_v": 49.7801,
+      "delta_v": 0.0951
     }
   ]
 }

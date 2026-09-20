@@ -1,0 +1,195 @@
+{
+  "formula_name": "Euler_SOS_Equality_Proof",
+  "expression_string": "((((((b + c) - a) * ((b - c))^2) + (((a + c) - b) * ((c - a))^2)) + (((a + b) - c) * ((a - b))^2)) / (8.0 * Delta))",
+  "constructive_proof_type": "Sum-of-Squares (SOS)",
+  "equality_condition": "a == b == c (Equilateral Triangle)",
+  "gate4_automated_proof_certified": true,
+  "gate4_proof_rationale": "Automated SymPy Theorem Proof: Numerator reduces to 2*(x*(y-z)^2 + y*(z-x)^2 + z*(x-y)^2) under Ravi substitution x=s-a>0, y=s-b>0, z=s-c>0. Every multiplier x, y, z is strictly positive under triangle inequalities, and every difference is squared, establishing non-negativity R >= 2r. The sum of squares vanishes if and only if y=z and z=x and x=y, proving equality holds iff a=b=c.",
+  "fitness_score": 93.8286,
+  "metrics": {
+    "formal_correctness": 100.0,
+    "equality_condition_verified": 100.0,
+    "gate4_automated_proof_certified": 100.0,
+    "stability_cases_passed": 10.0,
+    "stability_pass_rate_pct": 100.0,
+    "max_rel_err": 4.09904136242139e-16,
+    "raw_parsimonious_score": 328.4,
+    "node_count": 36.0,
+    "depth": 7.0
+  },
+  "comparative_benchmark": [
+    {
+      "triangle": [
+        1.0000001,
+        1.0,
+        1.0
+      ],
+      "mpmath_ref": 5.773502891088284e-15,
+      "evolved_sos_val": 5.773502891088286e-15,
+      "evolved_rel_err": 4.09904136242139e-16,
+      "naive_val": 5.773159728050814e-15,
+      "naive_rel_err": 5.9437579567111744e-05,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        1.00000001,
+        1.0,
+        1.0
+      ],
+      "mpmath_ref": 5.773502640964677e-17,
+      "evolved_sos_val": 5.773502640964677e-17,
+      "evolved_rel_err": 0.0,
+      "naive_val": 0.0,
+      "naive_rel_err": 1.0,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        1000000.00001,
+        1000000.0,
+        1000000.0
+      ],
+      "mpmath_ref": 5.773456191770281e-17,
+      "evolved_sos_val": 5.773456191770282e-17,
+      "evolved_rel_err": 2.1349346448056922e-16,
+      "naive_val": 1.1641532182693481e-10,
+      "naive_rel_err": 2016387.7619495222,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        100.0,
+        100.00001,
+        100.000005
+      ],
+      "mpmath_ref": 4.3301268051647575e-13,
+      "evolved_sos_val": 4.330126805164757e-13,
+      "evolved_rel_err": 1.1659496408725557e-16,
+      "naive_val": 4.334310688136611e-13,
+      "naive_rel_err": 0.0009662264317209536,
+      "sos_stable": true,
+      "naive_failed": true
+    },
+    {
+      "triangle": [
+        2.0,
+        2.0,
+        2.0
+      ],
+      "mpmath_ref": 0.0,
+      "evolved_sos_val": 0.0,
+      "evolved_rel_err": 0.0,
+      "naive_val": 2.220446049250313e-16,
+      "naive_rel_err": 2.220446049250313e-16,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        3.0,
+        4.0,
+        5.0
+      ],
+      "mpmath_ref": 0.5,
+      "evolved_sos_val": 0.5,
+      "evolved_rel_err": 0.0,
+      "naive_val": 0.5,
+      "naive_rel_err": 0.0,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        13.0,
+        14.0,
+        15.0
+      ],
+      "mpmath_ref": 0.125,
+      "evolved_sos_val": 0.125,
+      "evolved_rel_err": 0.0,
+      "naive_val": 0.125,
+      "naive_rel_err": 0.0,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        100.0,
+        100.0,
+        1.0
+      ],
+      "mpmath_ref": 49.005612573985786,
+      "evolved_sos_val": 49.005612573985786,
+      "evolved_rel_err": 0.0,
+      "naive_val": 49.005612573985786,
+      "naive_rel_err": 0.0,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        5.0,
+        5.0,
+        9.999999999
+      ],
+      "mpmath_ref": 176776.68791706138,
+      "evolved_sos_val": 176776.6879170614,
+      "evolved_rel_err": 1.6463613386844535e-16,
+      "naive_val": 176776.68791706138,
+      "naive_rel_err": 0.0,
+      "sos_stable": true,
+      "naive_failed": false
+    },
+    {
+      "triangle": [
+        1000000.0,
+        1000000.0,
+        1999999.9999
+      ],
+      "mpmath_ref": 49999984251.280914,
+      "evolved_sos_val": 49999984251.28093,
+      "evolved_rel_err": 3.051758773725833e-16,
+      "naive_val": 49999984251.28093,
+      "naive_rel_err": 3.051758773725833e-16,
+      "sos_stable": true,
+      "naive_failed": false
+    }
+  ],
+  "map_elites_diverse_archive": [
+    {
+      "grid_cell": [
+        4,
+        1
+      ],
+      "fitness": 76.2857,
+      "expression": "(R - (2.0 * r))",
+      "formula_name": "Euler_Naive_Subtraction",
+      "node_count": 5
+    },
+    {
+      "grid_cell": [
+        4,
+        5
+      ],
+      "fitness": 76.2857,
+      "expression": "(R - (r * 2.0))",
+      "formula_name": "Euler_Naive_Subtraction",
+      "node_count": 5
+    },
+    {
+      "grid_cell": [
+        5,
+        5
+      ],
+      "fitness": 75.9429,
+      "expression": "(R - ((2.0 * r) * 1.0))",
+      "formula_name": "Euler_Naive_Subtraction",
+      "node_count": 7
+    }
+  ],
+  "map_elites_unique_formulas_count": 3
+}

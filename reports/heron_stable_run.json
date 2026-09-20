@@ -1,0 +1,141 @@
+{
+  "formula_name": "Kahan_Stable_Optimal",
+  "expression_string": "(0.25 * sqrt(((sa + (sb + sc)) * ((sc - (sa - sb)) * ((sc + (sa - sb)) * (sa + (sb - sc)))))))",
+  "requires_sorting": true,
+  "fitness_score": 94.0571,
+  "metrics": {
+    "formal_correctness": 100.0,
+    "stability_cases_passed": 5.0,
+    "stability_pass_rate_pct": 100.0,
+    "max_rel_err": 1.1641532317794682e-16,
+    "raw_parsimonious_score": 329.2,
+    "node_count": 26.0,
+    "depth": 8.0
+  },
+  "comparative_benchmark": [
+    {
+      "triangle": [
+        100000000.0,
+        100000000.0,
+        1.000001
+      ],
+      "mpmath_ref": 50000049.99999999,
+      "evolved_formula_val": 50000049.99999999,
+      "evolved_rel_err": 0.0,
+      "heron_val": 50000050.66394806,
+      "heron_rel_err": 1.3278948051704187e-08,
+      "evolved_stable": true,
+      "heron_failed": false
+    },
+    {
+      "triangle": [
+        100000000.0,
+        50000000.0,
+        50000000.0001
+      ],
+      "mpmath_ref": 3535563830.069428,
+      "evolved_formula_val": 3535563830.069428,
+      "evolved_rel_err": 0.0,
+      "heron_val": 3535827235.8310213,
+      "heron_rel_err": 7.450176952063947e-05,
+      "evolved_stable": true,
+      "heron_failed": false
+    },
+    {
+      "triangle": [
+        100000.0,
+        100000.0,
+        199999.999
+      ],
+      "mpmath_ref": 999999.9883948953,
+      "evolved_formula_val": 999999.9883948952,
+      "evolved_rel_err": 1.1641532317794682e-16,
+      "heron_val": 999999.9883948952,
+      "heron_rel_err": 1.1641532317794682e-16,
+      "evolved_stable": true,
+      "heron_failed": false
+    },
+    {
+      "triangle": [
+        100000000.0,
+        100000000.0,
+        1e-07
+      ],
+      "mpmath_ref": 5.0,
+      "evolved_formula_val": 5.0,
+      "evolved_rel_err": 0.0,
+      "heron_val": 5.960464477539063,
+      "heron_rel_err": 0.19209289550777425,
+      "evolved_stable": true,
+      "heron_failed": true
+    },
+    {
+      "triangle": [
+        1000000000.0,
+        1000000000.0,
+        1e-05
+      ],
+      "mpmath_ref": 5000.0,
+      "evolved_formula_val": 5000.0,
+      "evolved_rel_err": 0.0,
+      "heron_val": 5006.7901611328125,
+      "heron_rel_err": 0.0013580322265624998,
+      "evolved_stable": true,
+      "heron_failed": true
+    }
+  ],
+  "kahan_rediscovery": "Confirmed Kahan/Factored Parenthesization",
+  "map_elites_diverse_archive": [
+    {
+      "grid_cell": [
+        7,
+        5
+      ],
+      "fitness": 94.0571,
+      "expression": "(0.25 * sqrt(((sa + (sb + sc)) * ((sc - (sa - sb)) * ((sc + (sa - sb)) * (sa + (sb - sc)))))))",
+      "formula_name": "Kahan_Stable_Optimal",
+      "node_count": 26
+    },
+    {
+      "grid_cell": [
+        7,
+        2
+      ],
+      "fitness": 94.0571,
+      "expression": "(0.25 * sqrt((((sa + sb) + sc) * (((sa + sb) - sc) * ((sc - (sa - sb)) * (sc + (sa - sb)))))))",
+      "formula_name": "Factored_Difference_Stable",
+      "node_count": 26
+    },
+    {
+      "grid_cell": [
+        7,
+        0
+      ],
+      "fitness": 94.0571,
+      "expression": "(0.25 * sqrt(((sa + (sb + sc)) * (((sc + (sa - sb)) * (sa + (sb - sc))) * (sc - (sa - sb))))))",
+      "formula_name": "Kahan_Stable_Optimal",
+      "node_count": 26
+    },
+    {
+      "grid_cell": [
+        7,
+        1
+      ],
+      "fitness": 94.0571,
+      "expression": "(0.25 * sqrt((((sa + sb) + sc) * (((sb + sa) - sc) * ((sc - (sa - sb)) * (sc + (sa - sb)))))))",
+      "formula_name": "Factored_Difference_Stable",
+      "node_count": 26
+    },
+    {
+      "grid_cell": [
+        7,
+        3
+      ],
+      "fitness": 94.0571,
+      "expression": "(0.25 * sqrt((((sa + sb) + sc) * (((sc - (sa - sb)) * (sc + (sa - sb))) * ((sa + sb) - sc)))))",
+      "formula_name": "Factored_Difference_Stable",
+      "node_count": 26
+    }
+  ],
+  "map_elites_unique_formulas_count": 5
+}

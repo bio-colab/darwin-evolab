@@ -452,17 +452,18 @@ def make_code_population(
 
     seed_slots: list = []
     if seed_keys and seed_count > 0:
-        catalog = {e.locus(): e for e in catalog_sources(scenario.sources)}
+        catalog = {
+            (e.file, e.lineno, e.col_offset, e.kind): e
+            for e in catalog_sources(scenario.sources)
+        }
         for i in range(seed_count):
             key = seed_keys[i % len(seed_keys)]
             if len(key) != 4:
                 raise ValueError(
                     f"seed_keys[{i}] must be (file, lineno, col_offset, kind)"
                 )
-            edit = catalog.get((key[0], key[1], key[2]))
-            seed_slots.append(
-                edit if (edit is not None and edit.kind == key[3]) else None
-            )
+            edit = catalog.get((key[0], key[1], key[2], key[3]))
+            seed_slots.append(edit)
 
     seed = RepairGenome(
         sources=dict(scenario.sources),

@@ -242,6 +242,79 @@ def cmd_evolve(args) -> int:
             "patch": resolution.generated_patch,
         }, indent=2) + "\n", encoding="utf-8")
         return 0 if resolution.resolved else 1
+
+    if getattr(args, "adapter", None):
+        from .adapters import get_domain_adapter
+        from .engine import EvolutionEngine, EngineConfig
+        import random
+
+        adapter_name = args.adapter
+        driver = get_domain_adapter(adapter_name)
+        spec = driver.parse_spec(args.scenario if args.scenario != "click_cli_parser" else {})
+        pop_size = getattr(args, "population", 120) or 120
+        generations = getattr(args, "generations", 60) or 60
+        rng = random.Random(args.seed or 42)
+
+        print(f"Domain Adapter     : {driver.name}", file=sys.stderr)
+        print(f"Population Size    : {pop_size} | Generations: {generations}", file=sys.stderr)
+
+        evaluator = driver.build_evaluator(spec)
+        pop = driver.build_population(spec, size=pop_size, rng=rng)
+
+        strategy = getattr(args, "strategy", None) or "qd_map_elites"
+        use_qd = strategy in ("qd_map_elites", "map_elites")
+
+        engine = EvolutionEngine(
+            fitness_fn=evaluator,
+            population_size=pop_size,
+            num_generations=generations,
+            seed=args.seed or 42,
+            early_stop_fitness=args.target,
+            qd_selection=use_qd,
+            meta_mode=getattr(args, "meta_mode", None),
+        )
+
+        from .ui.terminal import TerminalProgressObserver
+        observer = TerminalProgressObserver(total_generations=generations, quiet=quiet)
+        observer.attach_to_engine(engine)
+
+        res = engine.run(generations, initial_population=pop)
+
+        best_ind = getattr(engine, "best_individual", None) or res.get("best_individual")
+        archive = getattr(engine, "_archive", {})
+        try:
+            export_data = driver.export_solution(best_ind, spec, output_path=args.output, archive=archive)
+        except TypeError:
+            export_data = driver.export_solution(best_ind, spec, output_path=args.output)
+
+        diag_arg = getattr(args, "diagnose", None)
+        if diag_arg:
+            from .self_model import diagnose_run
+            diag = diagnose_run(res.get("history", []))
+            print("\n[Self-Model Diagnostics]", file=sys.stderr)
+            if "inner" in str(diag_arg) or diag_arg == "all":
+                print(f"Inner Interoception:\n{json.dumps(diag.get('inner', {}), indent=2)}", file=sys.stderr)
+            if "outer" in str(diag_arg) or diag_arg == "all":
+                print(f"Outer Validation:\n{json.dumps(diag.get('outer', {}), indent=2)}", file=sys.stderr)
+
+        best_fit = export_data.get("fitness_score", getattr(best_ind, "fitness", "N/A"))
+        print(f"\n[Domain Optimization Complete]", file=sys.stderr)
+        print(f"Best Fitness       : {best_fit}", file=sys.stderr)
+        print(f"Formula Discovered : {export_data.get('formula_name', 'N/A')}", file=sys.stderr)
+        print(f"Expression         : {export_data.get('expression_string', 'N/A')}", file=sys.stderr)
+        if export_data.get("constructive_proof_type"):
+            print(f"Proof Type         : {export_data.get('constructive_proof_type')}", file=sys.stderr)
+            print(f"Equality Condition : {export_data.get('equality_condition')}", file=sys.stderr)
+            if "gate4_automated_proof_certified" in export_data:
+                g4 = "MACHINE-CERTIFIED (Positivity + Equality iff Equilateral)" if export_data.get("gate4_automated_proof_certified") else "Uncertified"
+                print(f"Gate 4 Theorem Ver : {g4}", file=sys.stderr)
+        elif export_data.get("kahan_rediscovery"):
+            print(f"Kahan Status       : {export_data.get('kahan_rediscovery')}", file=sys.stderr)
+        if export_data.get("map_elites_unique_formulas_count"):
+            print(f"Diverse Formulas   : {export_data.get('map_elites_unique_formulas_count')} archived in MAP-Elites", file=sys.stderr)
+
+        return 0
+
     if is_electronics:
         if getattr(args, "expr", None):
             from .pareto import NSGA2Engine, build_silicon_multiobjective_evaluator
@@ -709,6 +782,9 @@ def _ensure_evolve_defaults(args) -> None:
     defaults = {
         "engine": "auto",
         "genome": "code",
+        "adapter": None,
+        "strategy": None,
+        "energy_track": False,
         "scenario": "click_cli_parser",
         "scenario_file": None,
         "source": [],
@@ -966,6 +1042,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_evo = sub.add_parser("evolve", help="run a full evolution experiment with complete parameter control")
 
     g_input = p_evo.add_argument_group("Target Specification & Scenario Inputs")
+    g_input.add_argument("--adapter", default=None, help="domain adapter driver (e.g. TriangleStableArea, software_repair, etc.)")
     g_input.add_argument("--scenario", default="click_cli_parser", help="built-in benchmark scenario")
     g_input.add_argument("--scenario-file", default=None, help="JSON CodeScenario")
     g_input.add_argument("--source", action="append", default=[], help="source file (repeatable)")
@@ -978,9 +1055,11 @@ def build_parser() -> argparse.ArgumentParser:
     g_budget = p_evo.add_argument_group("Evolution Budget & Hyperparameters")
     g_budget.add_argument("--engine", choices=["auto", "greedy", "ga", "nsga2"], default="auto",
                           help="search engine: auto, greedy (code), ga, nsga2 (Pareto)")
+    g_budget.add_argument("--strategy", default=None, help="evolution strategy (e.g. qd_map_elites, ga, nsga2)")
+    g_budget.add_argument("--energy-track", action="store_true", default=False, help="track cumulative and per-generation energy")
     g_budget.add_argument("--genome", choices=["code", "numeric", "electronics"], default="code")
     g_budget.add_argument("-g", "--generations", type=int, default=30)
-    g_budget.add_argument("-p", "--population", type=int, default=16)
+    g_budget.add_argument("-p", "--population", "--pop-size", type=int, default=16, dest="population")
     g_budget.add_argument("-t", "--target", type=float, default=99.7,
                           help="early-stop / success fitness target")
     g_budget.add_argument("-s", "--seed", type=int, default=42, help="random seed (default: 42)")
@@ -1000,7 +1079,7 @@ def build_parser() -> argparse.ArgumentParser:
     g_diag = p_evo.add_argument_group("Diagnostics, Output & Reporting")
     g_diag.add_argument("--diff", action="store_true", help="print unified diff")
     g_diag.add_argument("--diff-file", default=None, help="write unified diff")
-    g_diag.add_argument("--diagnose", action="store_true", help="display detailed failure diagnostics & report summary")
+    g_diag.add_argument("--diagnose", nargs="?", const="all", default=None, help="display failure diagnostics & report summary (e.g. inner,outer)")
     g_diag.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
     g_diag.add_argument("--quiet", action="store_true", help="suppress live terminal progress")
     g_diag.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console",

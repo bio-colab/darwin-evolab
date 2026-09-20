@@ -1,0 +1,348 @@
+{
+  "benchmark": "Evolutionary Relaxation & Structural SOS Audit",
+  "gate4_forensic_verification": {
+    "naive_definition_R_minus_2r": {
+      "expression": "(R - (2.0 * r))",
+      "overall_fitness": 62.0,
+      "formal_correctness": 100.0,
+      "gate4_automated_proof_certified": 0.0,
+      "is_syntactic_sos": 0.0,
+      "syntactic_check_reason": "AST contains NO explicit square ('SQ') operations. Bare subtractions do not constitute an SOS proof.",
+      "verdict": "REJECTED_AS_PROOF"
+    },
+    "constructive_sos_proof": {
+      "expression": "((((((b + c) - a) * ((b - c))^2) + (((a + c) - b) * ((c - a))^2)) + (((a + b) - c) * ((a - b))^2)) / (8.0 * Delta))",
+      "overall_fitness": 93.8286,
+      "formal_correctness": 100.0,
+      "gate4_automated_proof_certified": 100.0,
+      "is_syntactic_sos": 1.0,
+      "syntactic_check_reason": "AST possesses explicit Sum-of-Squares structure with squared terms and positive denominator.",
+      "verdict": "CERTIFIED_CONSTRUCTIVE_PROOF"
+    },
+    "ravi_substitution_sos_proof": {
+      "expression": "((((x * ((y - z))^2) + (y * ((z - x))^2)) + (z * ((x - y))^2)) / (4.0 * Delta))",
+      "overall_fitness": 95.8857,
+      "gate4_automated_proof_certified": 100.0,
+      "is_syntactic_sos": 1.0,
+      "verdict": "CERTIFIED_CONSTRUCTIVE_PROOF"
+    }
+  },
+  "experiment_strict_binary_cliff": {
+    "condition": "Condition A: Strict Binary Cliff (Lethal Gate 1)",
+    "continuous_behavioral": false,
+    "best_fitness": 62.0,
+    "best_expression": "(R - (2.0 * r))",
+    "final_metrics": {
+      "formal_correctness": 100.0,
+      "equality_condition_verified": 100.0,
+      "gate4_automated_proof_certified": 0.0,
+      "is_syntactic_sos": 0.0,
+      "stability_cases_passed": 6.0,
+      "stability_pass_rate_pct": 60.0,
+      "max_rel_err": 2016387.7619495222,
+      "raw_parsimonious_score": 217.0,
+      "node_count": 5.0,
+      "depth": 3.0
+    },
+    "history_sample": [
+      {
+        "gen": 1,
+        "best_fitness": 62.0,
+        "mean_fitness": 0.775,
+        "naive_clones": 1,
+        "unique_expressions": 80,
+        "syntactic_sos_individuals": 0,
+        "high_nonnegative_individuals": 0,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "is_syntactic_sos": 0.0,
+          "stability_cases_passed": 6.0,
+          "stability_pass_rate_pct": 60.0,
+          "max_rel_err": 2016387.7619495222,
+          "raw_parsimonious_score": 217.0,
+          "node_count": 5.0,
+          "depth": 3.0
+        }
+      },
+      {
+        "gen": 5,
+        "best_fitness": 62.0,
+        "mean_fitness": 3.1,
+        "naive_clones": 4,
+        "unique_expressions": 75,
+        "syntactic_sos_individuals": 0,
+        "high_nonnegative_individuals": 0,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "is_syntactic_sos": 0.0,
+          "stability_cases_passed": 6.0,
+          "stability_pass_rate_pct": 60.0,
+          "max_rel_err": 2016387.7619495222,
+          "raw_parsimonious_score": 217.0,
+          "node_count": 5.0,
+          "depth": 3.0
+        }
+      },
+      {
+        "gen": 10,
+        "best_fitness": 62.0,
+        "mean_fitness": 5.425,
+        "naive_clones": 7,
+        "unique_expressions": 74,
+        "syntactic_sos_individuals": 0,
+        "high_nonnegative_individuals": 0,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "is_syntactic_sos": 0.0,
+          "stability_cases_passed": 6.0,
+          "stability_pass_rate_pct": 60.0,
+          "max_rel_err": 2016387.7619495222,
+          "raw_parsimonious_score": 217.0,
+          "node_count": 5.0,
+          "depth": 3.0
+        }
+      },
+      {
+        "gen": 20,
+        "best_fitness": 62.0,
+        "mean_fitness": 6.2,
+        "naive_clones": 8,
+        "unique_expressions": 72,
+        "syntactic_sos_individuals": 0,
+        "high_nonnegative_individuals": 0,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "is_syntactic_sos": 0.0,
+          "stability_cases_passed": 6.0,
+          "stability_pass_rate_pct": 60.0,
+          "max_rel_err": 2016387.7619495222,
+          "raw_parsimonious_score": 217.0,
+          "node_count": 5.0,
+          "depth": 3.0
+        }
+      },
+      {
+        "gen": 30,
+        "best_fitness": 62.0,
+        "mean_fitness": 7.75,
+        "naive_clones": 10,
+        "unique_expressions": 67,
+        "syntactic_sos_individuals": 0,
+        "high_nonnegative_individuals": 0,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "is_syntactic_sos": 0.0,
+          "stability_cases_passed": 6.0,
+          "stability_pass_rate_pct": 60.0,
+          "max_rel_err": 2016387.7619495222,
+          "raw_parsimonious_score": 217.0,
+          "node_count": 5.0,
+          "depth": 3.0
+        }
+      },
+      {
+        "gen": 40,
+        "best_fitness": 62.0,
+        "mean_fitness": 5.425,
+        "naive_clones": 7,
+        "unique_expressions": 72,
+        "syntactic_sos_individuals": 0,
+        "high_nonnegative_individuals": 0,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "is_syntactic_sos": 0.0,
+          "stability_cases_passed": 6.0,
+          "stability_pass_rate_pct": 60.0,
+          "max_rel_err": 2016387.7619495222,
+          "raw_parsimonious_score": 217.0,
+          "node_count": 5.0,
+          "depth": 3.0
+        }
+      }
+    ]
+  },
+  "experiment_continuous_behavioral_relaxation": {
+    "condition": "Condition B: Continuous Behavioral Fitness Relaxation (Reviewer's Proposal)",
+    "continuous_behavioral": true,
+    "best_fitness": 70.0,
+    "best_expression": "(R - (2.0 * r))",
+    "final_metrics": {
+      "formal_correctness": 100.0,
+      "equality_condition_verified": 100.0,
+      "gate4_automated_proof_certified": 0.0,
+      "behavioral_closeness": 100.0,
+      "nonnegativity_score": 100.0,
+      "stepping_stone_score": 2.0,
+      "stability_cases_passed": 10.0,
+      "stability_pass_rate_pct": 100.0,
+      "max_rel_err": 2.3283052818474552e-09,
+      "node_count": 5.0,
+      "depth": 3.0,
+      "is_syntactic_sos": 0.0
+    },
+    "history_sample": [
+      {
+        "gen": 1,
+        "best_fitness": 70.0,
+        "mean_fitness": 14.0626,
+        "naive_clones": 1,
+        "unique_expressions": 80,
+        "syntactic_sos_individuals": 53,
+        "high_nonnegative_individuals": 56,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "behavioral_closeness": 100.0,
+          "nonnegativity_score": 100.0,
+          "stepping_stone_score": 2.0,
+          "stability_cases_passed": 10.0,
+          "stability_pass_rate_pct": 100.0,
+          "max_rel_err": 2.3283052818474552e-09,
+          "node_count": 5.0,
+          "depth": 3.0,
+          "is_syntactic_sos": 0.0
+        }
+      },
+      {
+        "gen": 5,
+        "best_fitness": 70.0,
+        "mean_fitness": 27.0643,
+        "naive_clones": 4,
+        "unique_expressions": 74,
+        "syntactic_sos_individuals": 72,
+        "high_nonnegative_individuals": 78,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "behavioral_closeness": 100.0,
+          "nonnegativity_score": 100.0,
+          "stepping_stone_score": 2.0,
+          "stability_cases_passed": 10.0,
+          "stability_pass_rate_pct": 100.0,
+          "max_rel_err": 2.3283052818474552e-09,
+          "node_count": 5.0,
+          "depth": 3.0,
+          "is_syntactic_sos": 0.0
+        }
+      },
+      {
+        "gen": 10,
+        "best_fitness": 70.0,
+        "mean_fitness": 28.7172,
+        "naive_clones": 4,
+        "unique_expressions": 75,
+        "syntactic_sos_individuals": 67,
+        "high_nonnegative_individuals": 77,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "behavioral_closeness": 100.0,
+          "nonnegativity_score": 100.0,
+          "stepping_stone_score": 2.0,
+          "stability_cases_passed": 10.0,
+          "stability_pass_rate_pct": 100.0,
+          "max_rel_err": 2.3283052818474552e-09,
+          "node_count": 5.0,
+          "depth": 3.0,
+          "is_syntactic_sos": 0.0
+        }
+      },
+      {
+        "gen": 20,
+        "best_fitness": 70.0,
+        "mean_fitness": 27.2991,
+        "naive_clones": 5,
+        "unique_expressions": 64,
+        "syntactic_sos_individuals": 70,
+        "high_nonnegative_individuals": 69,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "behavioral_closeness": 100.0,
+          "nonnegativity_score": 100.0,
+          "stepping_stone_score": 2.0,
+          "stability_cases_passed": 10.0,
+          "stability_pass_rate_pct": 100.0,
+          "max_rel_err": 2.3283052818474552e-09,
+          "node_count": 5.0,
+          "depth": 3.0,
+          "is_syntactic_sos": 0.0
+        }
+      },
+      {
+        "gen": 30,
+        "best_fitness": 70.0,
+        "mean_fitness": 26.099,
+        "naive_clones": 4,
+        "unique_expressions": 60,
+        "syntactic_sos_individuals": 63,
+        "high_nonnegative_individuals": 75,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "behavioral_closeness": 100.0,
+          "nonnegativity_score": 100.0,
+          "stepping_stone_score": 2.0,
+          "stability_cases_passed": 10.0,
+          "stability_pass_rate_pct": 100.0,
+          "max_rel_err": 2.3283052818474552e-09,
+          "node_count": 5.0,
+          "depth": 3.0,
+          "is_syntactic_sos": 0.0
+        }
+      },
+      {
+        "gen": 40,
+        "best_fitness": 70.0,
+        "mean_fitness": 26.3831,
+        "naive_clones": 7,
+        "unique_expressions": 58,
+        "syntactic_sos_individuals": 62,
+        "high_nonnegative_individuals": 66,
+        "best_expr": "(R - (2.0 * r))",
+        "best_metadata": {
+          "formal_correctness": 100.0,
+          "equality_condition_verified": 100.0,
+          "gate4_automated_proof_certified": 0.0,
+          "behavioral_closeness": 100.0,
+          "nonnegativity_score": 100.0,
+          "stepping_stone_score": 2.0,
+          "stability_cases_passed": 10.0,
+          "stability_pass_rate_pct": 100.0,
+          "max_rel_err": 2.3283052818474552e-09,
+          "node_count": 5.0,
+          "depth": 3.0,
+          "is_syntactic_sos": 0.0
+        }
+      }
+    ]
+  }
+}

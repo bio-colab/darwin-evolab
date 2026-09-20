@@ -31,6 +31,9 @@ from .self_model_dream import (
     sample_dirichlet_weights,
 )
 
+# Friendly alias
+run_dream_budget_elasticity = run_budget_elasticity_dreaming
+
 __all__ = [
     "OperatorDistribution",
     "OperatorReweighter",

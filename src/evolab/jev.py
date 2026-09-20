@@ -48,6 +48,13 @@ class JevClient:
         self.total_calls = 0
         self.total_api_time_seconds = 0.0
 
+        # Check for locally trained Open-JEV neural model
+        repo_root = Path(__file__).resolve().parent.parent.parent
+        local_model_p = repo_root / "open_jev_model"
+        self.local_model_dir = local_model_p if local_model_p.is_dir() else None
+        self._local_model = None
+        self._local_tokenizer = None
+
     def evaluate(
         self,
         state: Any,
@@ -57,6 +64,45 @@ class JevClient:
     ) -> dict[str, Any]:
         """Evaluates state against typed questions and returns structured answers."""
         if self.offline_mode:
+            # Attempt local neural inference via Open-JEV if weights exist and torch is installed
+            if self.local_model_dir:
+                try:
+                    if self._local_model is None:
+                        import torch
+                        from transformers import AutoTokenizer, AutoModelForSequenceClassification
+                        self._local_tokenizer = AutoTokenizer.from_pretrained(str(self.local_model_dir))
+                        self._local_model = AutoModelForSequenceClassification.from_pretrained(str(self.local_model_dir))
+                        self._local_model.eval()
+
+                    import torch
+                    failing_info = str(state.get("failing_test", "")) if isinstance(state, dict) else str(state)
+                    inputs = self._local_tokenizer(failing_info, return_tensors="pt", truncation=True, max_length=128)
+                    with torch.no_grad():
+                        logits = self._local_model(**inputs).logits
+                        probs = torch.softmax(logits, dim=-1).squeeze(0).tolist()
+                    id2label = self._local_model.config.id2label
+                    pred_dist = {id2label[i]: round(probs[i], 4) for i in range(len(probs))}
+                    best_k = max(pred_dist, key=pred_dist.get)
+
+                    answers = {}
+                    for q_name in questions:
+                        answers[q_name] = {
+                            "value": best_k,
+                            "probabilities": pred_dist,
+                        }
+
+                    self.total_calls += 1
+                    self.total_input_tokens += len(inputs["input_ids"][0])
+                    self.total_output_tokens += 1
+                    return {
+                        "model": "open-jev-local-distilbert",
+                        "answers": answers,
+                        "usage": {"input_tokens": len(inputs["input_ids"][0]), "output_tokens": 1},
+                        "open_jev_neural": True,
+                    }
+                except Exception:
+                    pass  # Seamless fallback to heuristic if torch/transformers are absent
+
             self.total_calls += 1
             self.total_input_tokens += 120
             self.total_output_tokens += 40

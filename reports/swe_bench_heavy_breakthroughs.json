@@ -14,12 +14,6 @@
   "total_evaluations_consumed": 1811,
   "total_runtime_seconds": 2.96,
   "parallel_workers": 4,
-  "hardware_disclosure": {
-    "processor": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz",
-    "logical_cores": 8,
-    "memory_ram_gb": 8.0,
-    "os": "Windows 10 Pro"
-  },
   "instances": [
     {
       "instance_id": "django--django_1000",

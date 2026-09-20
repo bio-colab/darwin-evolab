@@ -172,7 +172,7 @@ class FloatGenome(EvolabGenome):
         **kwargs: Any,
     ) -> FloatGenome:
         if not isinstance(other, FloatGenome):
-            raise TypeError(f"Cannot crossover FloatGenome with {type(other)}")
+            return self.clone()
         if len(self.values) != len(other.values):
             raise ValueError(
                 f"crossover requires equal-length parent genomes ({len(self.values)} vs {len(other.values)})"

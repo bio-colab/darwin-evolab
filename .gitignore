@@ -70,3 +70,9 @@ JEV/API key for test.txt
 *API key*
 *.key
 .env*
+
+# Large binary archives, local models, and runtime databases
+*.zip
+open_jev_model/
+self_runs.sqlite
+dream_operator_reweighting_kaggle.json

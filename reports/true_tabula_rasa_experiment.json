@@ -1,0 +1,72 @@
+{
+  "experiment_A_true_tabula_rasa": {
+    "experiment": "True Tabula Rasa (Pure Primitive GP, Zero Schemata)",
+    "best_fitness": 76.2857,
+    "best_expression": "(R - (2.0 * r))",
+    "metrics": {
+      "formal_correctness": 100.0,
+      "equality_condition_verified": 100.0,
+      "gate4_automated_proof_certified": 100.0,
+      "stability_cases_passed": 6.0,
+      "stability_pass_rate_pct": 60.0,
+      "max_rel_err": 2016387.7619495222,
+      "raw_parsimonious_score": 267.0,
+      "node_count": 5.0,
+      "depth": 3.0
+    },
+    "history_sample": [
+      {
+        "gen": 1,
+        "best_fitness": 76.2857,
+        "mean_fitness": 0.6357,
+        "best_expr": "(R - (2.0 * r))"
+      },
+      {
+        "gen": 5,
+        "best_fitness": 76.2857,
+        "mean_fitness": 0.6357,
+        "best_expr": "(R - (2.0 * r))"
+      },
+      {
+        "gen": 10,
+        "best_fitness": 76.2857,
+        "mean_fitness": 3.1786,
+        "best_expr": "(R - (2.0 * r))"
+      },
+      {
+        "gen": 20,
+        "best_fitness": 76.2857,
+        "mean_fitness": 3.8143,
+        "best_expr": "(R - (2.0 * r))"
+      },
+      {
+        "gen": 40,
+        "best_fitness": 76.2857,
+        "mean_fitness": 5.7214,
+        "best_expr": "(R - (2.0 * r))"
+      },
+      {
+        "gen": 60,
+        "best_fitness": 76.2857,
+        "mean_fitness": 9.5157,
+        "best_expr": "(R - (2.0 * r))"
+      }
+    ]
+  },
+  "experiment_B_ablated_denominator": {
+    "experiment": "Experiment B (Ablated Denominator: 8*Delta NOT in blocks)",
+    "best_fitness": 76.2857,
+    "best_expression": "(R - (2.0 * r))",
+    "metrics": {
+      "formal_correctness": 100.0,
+      "equality_condition_verified": 100.0,
+      "gate4_automated_proof_certified": 100.0,
+      "stability_cases_passed": 6.0,
+      "stability_pass_rate_pct": 60.0,
+      "max_rel_err": 2016387.7619495222,
+      "raw_parsimonious_score": 267.0,
+      "node_count": 5.0,
+      "depth": 3.0
+    }
+  }
+}

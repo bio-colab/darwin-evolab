@@ -303,15 +303,23 @@ def meta_control_step(
         k = max(0, min(k, room))
         if k <= 0:
             return 0
-        from .genome import random_individual as _random_individual
+        from .genome import FloatGenome, Individual, random_individual as _random_individual
         from .speciation import SPECIES_POOL as _POOL
         pool = list(_POOL) if isinstance(_POOL, dict) else list(_POOL)
         injected = 0
+        sample_genome = children[0].genome if children else None
+        is_float_genome = sample_genome is None or isinstance(sample_genome, FloatGenome)
+
         for i in range(k):
             try:
-                sp = engine.rng.choice(pool) if pool else "spec_0"
-                children[-(1 + i)] = _random_individual(
-                    sp, size=int(getattr(engine, "genome_size", 16)), rng=engine.rng)
+                if is_float_genome:
+                    sp = engine.rng.choice(pool) if pool else "spec_0"
+                    children[-(1 + i)] = _random_individual(
+                        sp, size=int(getattr(engine, "genome_size", 16)), rng=engine.rng)
+                else:
+                    donor = engine.rng.choice(children)
+                    new_genome = donor.genome.clone().mutate(engine.rng)
+                    children[-(1 + i)] = Individual(genome=new_genome, species=donor.species)
                 injected += 1
             except Exception:
                 break

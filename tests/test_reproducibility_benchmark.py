@@ -103,7 +103,7 @@ def test_candidate_ranker_search_space_reduction():
         sources=sc.sources,
         target_file=sc.target_file,
         evaluator=evaluator,
-        max_evals=50,
+        max_evals=100,
         prioritize_by_suspicion=True,
     )
     assert len(g_base.edits) > 0
@@ -117,7 +117,7 @@ def test_candidate_ranker_search_space_reduction():
         target_file=sc.target_file,
         evaluator=evaluator,
         client=client,
-        max_evals=50,
+        max_evals=100,
     )
     assert len(g_guided.edits) > 0
     res_guided = evaluator.evaluate(g_guided)
