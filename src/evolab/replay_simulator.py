@@ -205,7 +205,7 @@ class DiscoveryTree:
         data = json.loads(path.read_text(encoding="utf-8"))
 
         trees: list[DiscoveryTree] = []
-        instances = data.get("instances", [])
+        instances = data.get("instances", []) or data.get("results", []) or data.get("benchmarks", [])
         for inst in instances:
             iid = inst.get("instance_id", "unknown_instance")
             root_id = f"root_{iid}"

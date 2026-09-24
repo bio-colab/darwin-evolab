@@ -40,6 +40,7 @@ Issues = "https://github.com/bio-colab/darwin-evolab/issues"
 [project.optional-dependencies]
 test = [
     "pytest>=7.0",
+    "sympy>=1.12",
 ]
 cst = [
     "libcst>=1.0",
@@ -51,6 +52,7 @@ quantum = [
 full = [
     "numpy>=1.22",
     "scipy>=1.9",
+    "sympy>=1.12",
     "pyyaml>=5.4",
     "libcst>=1.0",
     "z3-solver>=4.8",

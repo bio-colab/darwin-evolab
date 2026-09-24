@@ -271,6 +271,7 @@ def run_phase_1_software(
         "total_runtime_seconds": round(total_time, 2),
         "parallel_workers": cpu_cores,
         "results": results,
+        "instances": results,
     }
     (p1_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(f"\n[PHASE 1 COMPLETE] Processed {len(results)} instances in {total_time:.2f}s | Pass Rate: {pass_rate}% | Introns Pruned: {total_introns_pruned}")
@@ -583,13 +584,14 @@ def run_phase_4_meta(
     solved_swe = p1_summary.get("resolved_count", 0)
     ci_low, ci_high = wilson_interval(solved_swe, max(1, total_swe))
 
-    # Dream-RSI Dirichlet Replay Optimization
+    # Dream-RSI Dirichlet Replay Optimization (Decoupled from 10-instance subset)
     print(f"\n[INFO] Sampling {dirichlet_samples:,} Dirichlet simplex vectors over mutation operators...")
     report_source = None
+    p1_dir_summary = output_dir / "phase1_software" / "summary.json"
     for cand_report in [
-        repo_root / "reports" / "swe_bench_lite_subset.json",
+        p1_dir_summary,
         repo_root / "reports" / "swe_bench_lite_300.json",
-        p1_dir_summary := output_dir / "phase1_software" / "summary.json",
+        repo_root / "reports" / "swe_bench_lite_subset.json",
     ]:
         if cand_report.exists():
             report_source = cand_report
@@ -598,6 +600,7 @@ def run_phase_4_meta(
     dream_metrics = {}
     if report_source:
         try:
+            print(f"  [DREAM-RSI] Ingesting discovery trees from: {report_source.name}")
             dream_res = run_dream_reweighting(
                 report_path=report_source,
                 output_report_path=p4_dir / "dream_operator_reweighting.json",
@@ -646,7 +649,7 @@ def run_phase_4_meta(
 ---
 
 ## 1. Executive Summary & Capabilities (Wilson 95% CI)
-- **Software APR Benchmark Suite**: {p1_summary.get('resolved_count', 0)} / {p1_summary.get('total_instances', 0)} resolved ({p1_summary.get('pass_rate_percent', 0)}%)
+- **Software APR Benchmark Suite (Distilled Proxy)**: {p1_summary.get('resolved_count', 0)} / {p1_summary.get('total_instances', 0)} resolved ({p1_summary.get('pass_rate_percent', 0)}%)
 - **System Confidence (Wilson 95% CI)**: `[{ci_low:.4f}, {ci_high:.4f}]`
 - **Total Hitchhiking AST Introns Pruned**: {p1_summary.get('total_introns_pruned', 0)} non-functional mutations removed
 - **Silicon Circuits Synthesized**: {p2_summary.get('total_circuits', 0)} CMOS Netlists (including 3-bit Multiplier & Parity)
@@ -656,7 +659,7 @@ def run_phase_4_meta(
 
 ---
 
-## 2. Phase 1: Software Repair Track (SWE-Bench Suite Telemetry)
+## 2. Phase 1: Software Repair Track (Distilled AST Suite - SWE-bench Distribution Proxy)
 | Metric | Value |
 | :--- | :--- |
 | Total Instances Evaluated | {p1_summary.get('total_instances', 0)} |

@@ -8,7 +8,7 @@
 ---
 
 ## 1. Executive Summary & Capabilities (Wilson 95% CI)
-- **Software APR Benchmark Suite**: 298 / 300 resolved (99.33%)
+- **Software APR Benchmark Suite (Distilled AST Proxy)**: 298 / 300 resolved (99.33%)
 - **System Confidence (Wilson 95% CI)**: `[0.9760, 0.9982]`
 - **Total Hitchhiking AST Introns Pruned**: 592 non-functional mutations removed
 - **Silicon Circuits Synthesized**: 6 CMOS Netlists (including 3-bit Multiplier & Parity)
@@ -18,7 +18,7 @@
 
 ---
 
-## 2. Phase 1: Software Repair Track (SWE-Bench Suite Telemetry)
+## 2. Phase 1: Software Repair Track (Distilled AST Suite - SWE-bench Distribution Proxy)
 | Metric | Value |
 | :--- | :--- |
 | Total Instances Evaluated | 300 |

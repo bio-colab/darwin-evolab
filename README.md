@@ -8,7 +8,7 @@
 [![Tests Passing](https://img.shields.io/badge/tests-691%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
-[![SWE-bench Lite](https://img.shields.io/badge/SWE--bench%20Lite-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
+[![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
 [![AST Introns Pruned](https://img.shields.io/badge/AST%20Introns%20Pruned-592%20mutations-blueviolet.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Governor Calibrated](https://img.shields.io/badge/Governor%20Status-DREAM__RSI__READY%20(16.45%25)-success.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Search Space Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
@@ -100,27 +100,28 @@ Executed on Kaggle (Tesla T4 GPU & 4 vCPUs) in **7.39 minutes (443.4 seconds)** 
 
 | Phase / Track | Target Benchmark Suite | Key Empirical Result | Compute / Evals Consumed | Verification Status |
 | :--- | :--- | :--- | :---: | :---: |
-| **Phase 1: Software Repair** | 300 SWE-bench Lite Instances | **298 / 300 resolved (99.33%)**<br/>Wilson 95% CI: `[0.9760, 0.9982]` | 1,811 AST evaluations (1.49s) | **592 AST Introns Pruned** (zero code bloat) |
+| **Phase 1: Software Repair** | 300 Distilled AST Instances (SWE-bench Distribution Proxy) | **298 / 300 resolved (99.33%)**<br/>Wilson 95% CI: `[0.9760, 0.9982]` | 1,811 AST evaluations (1.49s) | **592 AST Introns Pruned** (zero code bloat) |
 | **Phase 2: Silicon CMOS Synthesis** | 6 Netlists (Full Adder, Multiplier, Parity, etc.) | **100% Formal Truth-Table Correctness**<br/>Pareto Frontier (Area vs Latency) | 108,720 CGP evaluations (270.4s) | Synthesizable Verilog-2001 export verified |
 | **Phase 3: High-Dimensional Continuous** | 4 Spaces up to 500D (Rastrigin, Ackley, etc.) | **Converged within Tolerance**<br/>Bloat Monitor: Healthy Parsimony | 501,000 evaluations (174.3s) | High-D Vectorized Search verified |
 | **Phase 4: Autonomous Governor** | Dream-RSI Retrospective Replay | **`DREAM_RSI_READY`** (Acceptance Rate: 16.45%)<br/>34.14% evaluations saved ($p=0.000509$) | 25,000 Dirichlet replay samples | Cohen's $d = 1.64$, Zero Regressions |
 
 > 📄 **Complete Executive Report**: See [`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md) and [`kaggle_bundle/darwin_evolab_grand_run.ipynb`](kaggle_bundle/darwin_evolab_grand_run.ipynb).
 
-### 2. External Benchmark: SWE-bench Lite ($N=300$ Full Distilled Suite & Subsets)
+### 2. Distilled Procedural AST Benchmark Suite ($N=300$ SWE-bench Distribution Proxy)
 
-To test generalizability on real-world defects without synthetic tuning, Darwin-Evolab evaluated the **complete 300-instance SWE-bench Lite benchmark** via its Distilled AST Representation:
+To evaluate symbolic genetic search over real-world defect topologies at scale without requiring multi-gigabyte container clusters, Darwin-Evolab evaluates a **300-instance Distilled AST Benchmark Suite** modeling the defect distributions, AST mutation operators, and regression invariants of SWE-bench Lite across 14 Python ecosystems:
 
 | Benchmark Suite | Sample Size ($N$) | Resolved (Pass Rate) | Dual Invariant Adherence | Measured Runtime & Hardware Context |
 | :--- | :---: | :---: | :---: | :--- |
-| **Full SWE-bench Lite Heavy Evolutionary** | **$N = 300$** | **99.33%** (298/300 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | **2.96s total** across 4 CPU workers (Zero-LLM Native Search) |
-| **Full SWE-bench Lite Smoke Baseline** | **$N = 300$** | **33.7%** (101/300 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | **3.80s total** on Intel i5-8350U, 8 GB RAM (No Docker) |
-| **SWE-bench Lite Industrial** | **$N = 50$** | **96.0%** (48/50 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | 0.48s total on local AST harness |
-| **SWE-bench Lite Probe** | **$N = 10 / 300$** | **100.0%** (10/10 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | 10/10 resolved with zero regressions |
+| **Distilled AST Suite (Heavy Evolutionary)** | **$N = 300$** | **99.33%** (298/300 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | **2.96s total** across 4 CPU workers (Zero-LLM Native Search) |
+| **Distilled AST Suite (Smoke Baseline)** | **$N = 300$** | **33.7%** (101/300 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | **3.80s total** on Intel i5-8350U, 8 GB RAM (No Docker) |
+| **Distilled AST Industrial Subset** | **$N = 50$** | **96.0%** (48/50 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | 0.48s total on local AST harness |
+| **Distilled AST Probe Subset** | **$N = 10 / 300$** | **100.0%** (10/10 resolved) | **100%** `FAIL_TO_PASS`<br/>**0%** `PASS_TO_PASS` regression | 10/10 resolved with zero regressions |
 
-> [!IMPORTANT]
-> **Distilled AST Harness & Transparent Hardware Disclosure**:  
-> - **The Hardware Feat**: Traditional SWE-bench evaluations require **150 GB of Docker images, 32+ GB RAM, and 50–75 hours of cluster CPU time**. In this work, Darwin-Evolab evaluates and resolves **298 out of 300 instances in 2.96 seconds** without requiring any external LLMs, Docker containers, or cloud GPUs.  
+> [!NOTE]
+> **Transparent Demarcation: Distilled AST Proxy vs. Official Docker SWE-bench**:  
+> - **Nature of the Benchmark**: These 300 instances are in-memory, procedurally distilled AST micro-benchmarks generated from real Python defect archetypes across 14 repositories (`django`, `sympy`, `flask`, `requests`, `scikit-learn`, etc.). They isolate the core AST mutation, control-flow modification, and test assertion logic from the repository runtime.
+> - **Distinction from Official SWE-bench**: Official SWE-bench Lite runs full multi-gigabyte Docker environments with full pytest harnesses (requiring 150+ GB disk and hours of cluster execution). Darwin-Evolab's distilled suite evaluates the exact same symbolic defect topologies in sub-second in-memory AST execution without Docker. It should be cited as a **SWE-bench Distribution Proxy**, not raw containerized SWE-bench execution.
 > - **Dual Invariant Requirement**: A patch is classified as resolved *only* if it passes all target failing tests (`FAIL_TO_PASS`) while introducing zero regressions across existing test suites (`PASS_TO_PASS`).  
 > - **Wilson Score 95% Confidence Interval**: With 298 successes across 300 trials, the verified Wilson 95% CI is **`[0.9760, 0.9982]`**. Full traces in [`reports/swe_bench_heavy_breakthroughs.json`](reports/swe_bench_heavy_breakthroughs.json) and [`reports/swe_bench_lite_300.json`](reports/swe_bench_lite_300.json).
 
@@ -257,10 +258,10 @@ print(f"Patch diff:\n{genome.to_diff()}")
 | Document | Focus | Description |
 | :--- | :---: | :--- |
 | **[`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md)** | ⚡ **Grand Kaggle Run** | Executive report for 636k evals multi-stage benchmark, 592 pruned introns, 6 CMOS netlists, and Dream-RSI. |
-| **[`docs/BENCHMARKS_300.md`](docs/BENCHMARKS_300.md)** | 📊 **SWE-bench N=300** | Full 300-instance distillation benchmark, scorecard, and local hardware disclosure. |
+| **[`docs/BENCHMARKS_300.md`](docs/BENCHMARKS_300.md)** | 📊 **Distilled AST N=300** | Full 300-instance distillation benchmark, scorecard, and local hardware disclosure. |
 | **[`docs/AUTONOMOUS_SELF_EVOLUTION.md`](docs/AUTONOMOUS_SELF_EVOLUTION.md)** | 🧠 **Self-Evolution** | The 3 Pillars of Self-Evolution, Interoceptive Self-Model, and Vaccinated Governor. |
 | **[`docs/JEV_SYSTEM_ONE.md`](docs/JEV_SYSTEM_ONE.md)** | ⚡ **Dual System** | TypeSafe AI JEV System-One integration, API contract, and 76.0% search space reduction. |
-| **[`docs/BENCHMARKS_50.md`](docs/BENCHMARKS_50.md)** | 📊 **SWE-bench N=50** | Industrial catalog and empirical scorecard across 14 Python ecosystems. |
+| **[`docs/BENCHMARKS_50.md`](docs/BENCHMARKS_50.md)** | 📊 **Distilled AST N=50** | Industrial catalog and empirical scorecard across 14 Python ecosystems. |
 | **[`docs/RESULTS.md`](docs/RESULTS.md)** | 🔬 **Empirical Telemetry** | Full unadorned scientific reports, ablation studies, and pre-registered negative results. |
 | **[`docs/THEORETICAL_FOUNDATIONS.md`](docs/THEORETICAL_FOUNDATIONS.md)** | 📚 **Theory & Math** | Mathematical formalisms: Miller CGP, Koza GP, Holland Schema Theory, and BibTeX. |
 | **[`JEV/README.md`](JEV/README.md)** | 🔒 **JEV Testbed** | JEV client setup, security zero-leakage protocol, and reproduction scripts. |
@@ -279,7 +280,7 @@ We welcome contributions from researchers and developers worldwide! Please see:
 
 To ensure absolute rigor and clarity for peer review and academic scrutiny, we explicitly enumerate what `darwin-evolab` does **NOT** claim:
 
-1. **Distilled AST Harness vs. Full Multi-Node Container Evaluation**: Our full 300-instance evaluation is conducted via the **Distilled AST Representation** (achieving 33.7% resolution in 3.80 seconds on an 8 GB laptop). We do **NOT** claim that this was executed using the heavy 150 GB Princeton Docker harness, which requires multi-node cloud clusters. The distilled harness provides a democratized, reproducible local approximation.
+1. **Distilled AST Proxy vs. Full Multi-Node Container Evaluation**: Our 300-instance evaluation is conducted via the **Distilled Procedural AST Representation** (achieving 33.7% in smoke baseline and 99.33% with multi-core evolutionary search). We do **NOT** claim that this was executed using the heavy 150 GB Princeton Docker harness, which requires multi-node cloud clusters. The distilled harness provides a democratized, reproducible local approximation (SWE-bench Distribution Proxy).
 2. **"Operating System" is an Architectural Metaphor**: Darwin-Evolab is an evolutionary optimization framework structured around an operating-system-inspired design pattern (a domain-agnostic kernel orchestrating pluggable domain adapter drivers). It is not a POSIX or bootable operating system.
 3. **Exploratory Proofs-of-Concept are Retired & Archived**: Exploratory prototypes previously developed across extreme domains (procedural maze generation, neuromorphic CGP, Genesis physics bridge) successfully concluded their lifecycle and are permanently preserved at Git tag [`v0.6.0-pocs-graduation`](https://github.com/bio-colab/darwin-evolab/releases/tag/v0.6.0-pocs-graduation) and branch [`archive/experimental-pocs`](https://github.com/bio-colab/darwin-evolab/tree/archive/experimental-pocs).
 4. **Meta-Controller is Opt-In by Empirical Decision**: Phase 4 and Phase 5 self-modification remain disabled by default (`meta_mode=None`) until activated with an empirical Governor gate. Retrospective dreaming (Dream-RSI) provides safe, offline counterfactual simulation.

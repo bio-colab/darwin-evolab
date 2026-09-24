@@ -1,12 +1,15 @@
-# SWE-bench Lite $N=50$ Industrial Evaluation Benchmark
+# Distilled AST $N=50$ Industrial Benchmark (SWE-bench Distribution Proxy)
 
-> **Empirical Evaluation Scorecard**: Rigorous benchmark of Darwin-Evolab across 50 real-world issue instances from 14 major Python open-source ecosystems.
+> **Empirical Evaluation Scorecard**: Rigorous benchmark of Darwin-Evolab across 50 distilled issue instances modeling real-world defect classes from 14 major Python open-source ecosystems.
 
 ---
 
 ## 🧭 Executive Overview
 
-To thoroughly evaluate automated program repair generalizability on complex production software, Darwin-Evolab expanded its benchmark evaluation from an initial exploratory $N=10$ probe to an industrial suite of **50 real-world issue instances ($N=50$)** drawn from [SWE-bench Lite](https://www.swebench.com/).
+To thoroughly evaluate automated program repair generalizability on complex production software without multi-gigabyte container overhead, Darwin-Evolab expanded its benchmark evaluation from an initial exploratory probe to an industrial suite of **50 distilled AST issue instances ($N=50$)** modeling defect distributions from [SWE-bench Lite](https://www.swebench.com/).
+
+> [!NOTE]
+> **Demarcation**: This 50-instance suite isolates AST defect topologies and dual-invariant assertions into fast in-memory fixtures. It acts as an in-memory distribution proxy rather than executing raw repository Docker containers.
 
 ### Benchmark Scope & Invariants
 - **14 Major Python Ecosystems**: `django`, `flask`, `requests`, `pytest`, `pydantic`, `sympy`, `click`, `sphinx`, `scikit-learn`, `tornado`, `marshmallow`, `black`, `jinja2`, `urllib3`.
