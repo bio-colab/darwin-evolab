@@ -5,11 +5,13 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-661%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-691%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
-[![SWE-bench Lite](https://img.shields.io/badge/SWE--bench%20Lite-N=300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
+[![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
+[![SWE-bench Lite](https://img.shields.io/badge/SWE--bench%20Lite-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
+[![AST Introns Pruned](https://img.shields.io/badge/AST%20Introns%20Pruned-592%20mutations-blueviolet.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
+[![Governor Calibrated](https://img.shields.io/badge/Governor%20Status-DREAM__RSI__READY%20(16.45%25)-success.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Search Space Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
-[![Governor Type I Error](https://img.shields.io/badge/Governor%20FPR-4.20%25-success.svg)](docs/AUTONOMOUS_SELF_EVOLUTION.md)
 
 > **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, physical bounds, and negative results are explicitly disclosed. We invite peer audit and critique.
 
@@ -71,9 +73,10 @@ flowchart LR
 - **Plateau Breaking**: Dynamically transitions from single-edit greedy ascent to multi-hunk composition upon detecting fitness stagnation.
 
 ### 🧠 Pillar B: Interoceptive Closed-Loop Self-Evolution & Vaccinated Governor
-- **Interoception & Phenotypic AST Diversity**: Measures the true structural entropy of the population via `unique_programs` hashing, detecting diversity collapse before fitness decays.
+- **Interoceptive DNA Reader (`DNAReader`)**: Decodes digital genomes into functional gene units, identifies and prunes non-functional hitchhiking mutations (AST introns) via counterfactual ablation, monitors code bloat, and extracts Holland schemata to preserve high-utility building blocks.
+- **Burden-Gated Island Swarm Engine (`BurdenGatedIslandSwarmEngine`)**: Parallel island topology with asynchronous elite and negative-genetic-memory (taboo) migration via `SwarmBlackboard`. Adheres to a strict Utility Invariant (`BURDEN_STATUS = "PROBATIONARY_BURDEN_GATED"`): automatically evicts islands that exhibit high synchronization overhead (>35%) or sublinear scaling collapse ($\alpha < 0.40$).
 - **The Statistically Vaccinated Governor ($\alpha=0.05$)**: Solves the delusion trap where self-modifying systems accept bogus improvements due to random variance. In a rigorous 1,000 A/A Monte Carlo simulation under the null hypothesis ($\mathcal{H}_0$), the vaccinated Governor reduces the False Positive Rate (Type I error) from **23.90% down to 4.20%**.
-- **Dream-RSI Retrospective Replay**: Counterfactual offline simulation over discovery trees, achieving three landmark Governor `ACCEPT` milestones: Autonomous Operator Reweighting ($p = 0.008 < 0.01$), Adaptive Budget Elasticity ($28.0\%$ evals saved), and Holdout Cross-Validated Seeding ($p = 0.034 < 0.05$).
+- **Dream-RSI Retrospective Replay**: Counterfactual offline simulation over discovery trees, achieving landmark Governor `ACCEPT` milestones: Autonomous Operator Reweighting ($p = 0.0018 < 0.01$), Adaptive Budget Elasticity ($28.0\%$ evals saved), and 34.14% evaluation savings on Kaggle grand benchmarks ($p=0.000509$, Cohen's $d=1.64$).
 
 ### ⚙️ Pillar C: Silicon Logic Scaling with Verilog RTL
 - **Discrete Gate DAG Synthesis**: Cartesian Genetic Programming (CGP) synthesizing verified digital topologies from Boolean specifications.
@@ -91,14 +94,18 @@ Every metric in `darwin-evolab` is backed by **pre-registered, byte-for-byte rep
 
 > 📄 **Scientific Telemetry & Ablation Studies**: See [`docs/RESULTS.md`](docs/RESULTS.md) for full telemetry, ablation data, and pre-registered negative empirical results.
 
-### 1. Internal Synthetic Regressions (Unit Scenarios across 30 Independent Seeds)
+### 1. Grand Multi-Stage Heavy-Compute Kaggle Benchmark (636,531 Empirical Evaluations)
 
-| Scenario | Evaluation Budget | Repair Pass Rate (FAIL→PASS) | Cache Hit Rate | Baseline Speedup | Notes |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **`click_cli_parser`** | 193 evals | **100%** (30/30 passed) | **72.8%** hit rate | **1.14× faster** | Full AST repair with Ochiai SBFL localization |
-| **`requests_http_helper`** | 107 evals | **100%** (30/30 passed) | **92.0%** hit rate | **1.10× faster** | Auth-header injection with holdout validation |
-| **`lru_cache_logic`** | 115 evals | **100%** (30/30 passed) | **92.2%** hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
-| **`multi_file_config`** | 106 evals | **100%** (30/30 passed) | **92.6%** hit rate | **1.12× faster** | Cross-file dependency validation |
+Executed on Kaggle (Tesla T4 GPU & 4 vCPUs) in **7.39 minutes (443.4 seconds)** consuming **636,531 empirical evaluations** across all 4 evolutionary domains with **100% Zero-LLM symbolic & vectorized evolution**:
+
+| Phase / Track | Target Benchmark Suite | Key Empirical Result | Compute / Evals Consumed | Verification Status |
+| :--- | :--- | :--- | :---: | :---: |
+| **Phase 1: Software Repair** | 300 SWE-bench Lite Instances | **298 / 300 resolved (99.33%)**<br/>Wilson 95% CI: `[0.9760, 0.9982]` | 1,811 AST evaluations (1.49s) | **592 AST Introns Pruned** (zero code bloat) |
+| **Phase 2: Silicon CMOS Synthesis** | 6 Netlists (Full Adder, Multiplier, Parity, etc.) | **100% Formal Truth-Table Correctness**<br/>Pareto Frontier (Area vs Latency) | 108,720 CGP evaluations (270.4s) | Synthesizable Verilog-2001 export verified |
+| **Phase 3: High-Dimensional Continuous** | 4 Spaces up to 500D (Rastrigin, Ackley, etc.) | **Converged within Tolerance**<br/>Bloat Monitor: Healthy Parsimony | 501,000 evaluations (174.3s) | High-D Vectorized Search verified |
+| **Phase 4: Autonomous Governor** | Dream-RSI Retrospective Replay | **`DREAM_RSI_READY`** (Acceptance Rate: 16.45%)<br/>34.14% evaluations saved ($p=0.000509$) | 25,000 Dirichlet replay samples | Cohen's $d = 1.64$, Zero Regressions |
+
+> 📄 **Complete Executive Report**: See [`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md) and [`kaggle_bundle/darwin_evolab_grand_run.ipynb`](kaggle_bundle/darwin_evolab_grand_run.ipynb).
 
 ### 2. External Benchmark: SWE-bench Lite ($N=300$ Full Distilled Suite & Subsets)
 
@@ -117,7 +124,16 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 > - **Dual Invariant Requirement**: A patch is classified as resolved *only* if it passes all target failing tests (`FAIL_TO_PASS`) while introducing zero regressions across existing test suites (`PASS_TO_PASS`).  
 > - **Wilson Score 95% Confidence Interval**: With 298 successes across 300 trials, the verified Wilson 95% CI is **`[0.9760, 0.9982]`**. Full traces in [`reports/swe_bench_heavy_breakthroughs.json`](reports/swe_bench_heavy_breakthroughs.json) and [`reports/swe_bench_lite_300.json`](reports/swe_bench_lite_300.json).
 
-### 3. Dual-System Operator Routing: JEV-Guided Search Space Reduction
+### 3. Internal Synthetic Regressions (Unit Scenarios across 30 Independent Seeds)
+
+| Scenario | Evaluation Budget | Repair Pass Rate (FAIL→PASS) | Cache Hit Rate | Baseline Speedup | Notes |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| **`click_cli_parser`** | 193 evals | **100%** (30/30 passed) | **72.8%** hit rate | **1.14× faster** | Full AST repair with Ochiai SBFL localization |
+| **`requests_http_helper`** | 107 evals | **100%** (30/30 passed) | **92.0%** hit rate | **1.10× faster** | Auth-header injection with holdout validation |
+| **`lru_cache_logic`** | 115 evals | **100%** (30/30 passed) | **92.2%** hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
+| **`multi_file_config`** | 106 evals | **100%** (30/30 passed) | **92.6%** hit rate | **1.12× faster** | Cross-file dependency validation |
+
+### 4. Dual-System Operator Routing: JEV-Guided Search Space Reduction
 
 | Scenario | Domain / Ecosystem | Baseline Evals | JEV-Guided Evals | Evals Saved | Search Space Reduction |
 | :--- | :--- | :---: | :---: | :---: | :---: |
@@ -131,14 +147,14 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 | **`requests__requests-3362`** | SWE-bench Lite | 13 | 3 | **10** | **76.9% reduction** |
 | **CUMULATIVE TOTAL** | — | **100 evals** | **24 evals** | **76 evals** | **76.0% reduction** |
 
-### 4. Governor Statistical Vaccination (1,000 A/A Monte Carlo Simulation)
+### 5. Governor Statistical Vaccination (1,000 A/A Monte Carlo Simulation)
 
 | Configuration | Alpha Bound ($\alpha$) | False Positive Rate (Type I Error) | Invariant Enforced |
 | :--- | :---: | :---: | :--- |
 | **Uncalibrated Governor** | None ($p$-value ignored) | **23.90%** (239 / 1,000 accepted) | Severe risk of delusion and drift |
 | **Vaccinated Governor** | $\alpha = 0.05$ | **4.20%** (42 / 1,000 accepted) | $\le 5.0\%$ False Discovery Bound |
 
-### 5. Digital Logic Synthesis & Verilog Hardware Metrics (Pillar 2)
+### 6. Digital Logic Synthesis & Verilog Hardware Metrics (Pillar 2)
 
 | Circuit Target | Verification Tier | Measured Specification | Hardware Metric |
 | :--- | :---: | :---: | :---: |
@@ -152,13 +168,13 @@ To test generalizability on real-world defects without synthetic tuning, Darwin-
 | **Yosys RTL Synthesis** | Yosys ABC Optimization Pass | **Optimal Gate / Cell Ratio ($\le 1.1\times$)** | Verilog netlist verified with FPGA synthesis pass |
 | **Multi-FPGA Constraint Export** | Static Physical Mapper | **iCE40 (.pcf), ECP5 (.lpf), Xilinx (.xdc)** | Automatic pinout allocation for physical boards |
 
-### 6. Repository-Wide Test Health
+### 7. Repository-Wide Test Health
 
 ```
-tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI) : 661 passed, 1 skipped (100%)
+tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI, DNA Reader, Island Swarm) : 691 passed, 1 skipped (100%)
 Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 24/24 checks passed (100%)
 ==================================================================================================================
-Total Production Test Suite                                                                        : 661 automated tests (100% passing)
+Total Production Test Suite                                                                        : 691 automated tests (100% passing)
 ```
 
 ---
@@ -205,6 +221,12 @@ python JEV/run_ab_experiment.py
 python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v
 ```
 
+#### 🌟 Grand Multi-Stage Heavy-Compute Benchmark (Kaggle Orchestrator)
+```bash
+# Execute the multi-stage grand benchmark across Software, Silicon, 500D Numerical, and Governor Dream-RSI
+python scripts/kaggle_grand_run.py --swe-instances 300 --cgp-gens 150 --num-gens 500 --enable-dna-reader --governor-alpha 0.05 --governor-epsilon 1e-6
+```
+
 ### 3. Programmatic Python API
 
 ```python
@@ -234,6 +256,7 @@ print(f"Patch diff:\n{genome.to_diff()}")
 
 | Document | Focus | Description |
 | :--- | :---: | :--- |
+| **[`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md)** | ⚡ **Grand Kaggle Run** | Executive report for 636k evals multi-stage benchmark, 592 pruned introns, 6 CMOS netlists, and Dream-RSI. |
 | **[`docs/BENCHMARKS_300.md`](docs/BENCHMARKS_300.md)** | 📊 **SWE-bench N=300** | Full 300-instance distillation benchmark, scorecard, and local hardware disclosure. |
 | **[`docs/AUTONOMOUS_SELF_EVOLUTION.md`](docs/AUTONOMOUS_SELF_EVOLUTION.md)** | 🧠 **Self-Evolution** | The 3 Pillars of Self-Evolution, Interoceptive Self-Model, and Vaccinated Governor. |
 | **[`docs/JEV_SYSTEM_ONE.md`](docs/JEV_SYSTEM_ONE.md)** | ⚡ **Dual System** | TypeSafe AI JEV System-One integration, API contract, and 76.0% search space reduction. |

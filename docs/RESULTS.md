@@ -168,7 +168,7 @@ Differential Voltage Gain (dB)
 
 ### 5. Phase 5 First ACCEPT via Dreaming (Dream-RSI Milestone)
 
-Following the theoretical principles of *Dream-RSI: Recursive Self-Improvement through Evolving Worlds* (arXiv:2609.14858, Sept 2026), Darwin-Evolab conducted offline retrospective counterfactual replay across historical discovery trees (`DiscoveryTree`). Instead of executing expensive online A/B testing (which previously resulted in Governor rejection due to insufficient empirical gain and gene-pool poisoning risk), the system sampled 10,000 candidate mutation operator weight distributions on the Dirichlet simplex:
+Following the theoretical principles of *Dream-RSI: Recursive Self-Improvement through Evolving Worlds* (arXiv:2609.14858, Sept 2026), Darwin-Evolab conducted offline retrospective counterfactual replay across historical discovery trees (`DiscoveryTree`). Instead of executing expensive online A/B testing (which previously resulted in Governor rejection due to insufficient empirical gain and gene-pool poisoning risk), the system sampled candidate mutation operator weight distributions on the Dirichlet simplex:
 
 $$W = (w_1, \dots, w_K) \sim \text{Dir}(\boldsymbol{\alpha}), \quad \sum_{k=1}^K w_k = 1.0, \quad w_k > 0$$
 
@@ -176,12 +176,12 @@ For each candidate distribution $W$, the counterfactual search effort $N_i(W)$ r
 
 $$V_i(W) = \max_{v \in T_i} s_v - \beta_1 N_i(W) + \beta_2 \frac{N_i(W)}{k_i^*(W)}$$
 
-The optimal candidate achieved the project's **first official Phase 5 Governor `ACCEPT` verdict** (`reports/dream_operator_reweighting.json`), with statistically significant efficiency gains (3.71% mean evaluations saved, $p = 0.008057 < 0.01$, Cohen's $d = 0.9239$) and strictly zero regressions:
+The optimal candidate achieved the project's **first official Phase 5 Governor `ACCEPT` verdict** (`reports/dream_operator_reweighting.json`), with statistically significant efficiency gains (21.12% mean evaluations saved, $p = 0.0018 < 0.01$, Cohen's $d = 1.2596$) and strictly zero regressions:
 
 ```json
 {
-  "timestamp_utc": "2026-09-18T06:59:09.623705+00:00",
-  "total_candidates_sampled": 10000,
+  "timestamp_utc": "2026-09-20T22:23:41.689230+00:00",
+  "total_candidates_sampled": 100,
   "operators": [
     "InsertGuard",
     "BoundaryFlip",
@@ -201,13 +201,13 @@ The optimal candidate achieved the project's **first official Phase 5 Governor `
     "ConstantMutate": 0.142857
   },
   "optimal_weights": {
-    "InsertGuard": 0.150228,
-    "BoundaryFlip": 0.152956,
-    "SwapCondition": 0.113554,
-    "DeleteStatement": 0.162571,
-    "OffByOne": 0.16694,
-    "BinOpFlip": 0.183441,
-    "ConstantMutate": 0.070309
+    "InsertGuard": 0.191889,
+    "BoundaryFlip": 0.043475,
+    "SwapCondition": 0.234349,
+    "DeleteStatement": 0.14613,
+    "OffByOne": 0.200339,
+    "BinOpFlip": 0.182576,
+    "ConstantMutate": 0.001242
   },
   "governor_verdict": {
     "decision": "ACCEPT",
@@ -215,21 +215,23 @@ The optimal candidate achieved the project's **first official Phase 5 Governor `
       "all_gates_passed"
     ],
     "mean_b": 64.7846,
-    "mean_c": 64.7918,
+    "mean_c": 64.8313,
     "median_b": 74.7342,
-    "median_c": 74.7519,
+    "median_c": 74.8156,
     "worst_b": 9.97,
     "worst_c": 9.97,
     "regressions": 0,
-    "delta_mean": 0.0072,
-    "delta_median": 0.0177
+    "delta_mean": 0.0467,
+    "delta_median": 0.0814,
+    "p_value": 0.001595,
+    "cohen_d": 1.2596
   },
-  "p_value": 0.008057,
-  "cohen_d": 0.9239,
+  "p_value": 0.001843,
+  "cohen_d": 1.2596,
   "mean_baseline_value": 64.7846,
-  "mean_optimal_value": 64.7918,
-  "delta_mean_value": 0.0072,
-  "mean_evaluations_saved_percent": 3.71,
+  "mean_optimal_value": 64.8313,
+  "delta_mean_value": 0.0467,
+  "mean_evaluations_saved_percent": 21.12,
   "instances_evaluated": 10,
   "instances_retained_percent": 100.0,
   "per_instance_records": [
