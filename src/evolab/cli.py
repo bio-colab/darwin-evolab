@@ -54,20 +54,25 @@ def cmd_inspect(args) -> int:
     return 0 if hit else 1
 
 
-def _attach_telemetry_stream(engine: EvolutionEngine, path_str: str) -> Any:
+def _attach_telemetry_stream(engine: EvolutionEngine, path_str: str, is_fifo: bool = False) -> Any:
     import os
     import time
     p = Path(path_str)
-    if hasattr(os, "mkfifo") and not p.exists():
+    if is_fifo and hasattr(os, "mkfifo") and not p.exists():
         try:
             os.mkfifo(str(p))
         except OSError:
             pass
     try:
-        stream = open(p, "a", encoding="utf-8", buffering=1)
+        if hasattr(os, "O_NONBLOCK") and p.exists() and p.is_fifo():
+            fd = os.open(str(p), os.O_WRONLY | os.O_NONBLOCK)
+            stream = os.fdopen(fd, "w", encoding="utf-8", buffering=1)
+        else:
+            stream = open(p, "a", encoding="utf-8", buffering=1)
     except Exception as exc:
         print(f"warning: could not open telemetry stream {path_str}: {exc}", file=sys.stderr)
         return None
+
 
     def on_gen(event: Any) -> None:
         try:
@@ -134,9 +139,11 @@ def _build_engine(args, fitness_fn=None, genome_size=None) -> EvolutionEngine:
     observer = TerminalProgressObserver(total_generations=gens, quiet=quiet)
     observer.attach_to_engine(engine)
 
-    telemetry_path = getattr(args, "telemetry_stream", None) or getattr(args, "telemetry_fifo", None)
+    telemetry_stream = getattr(args, "telemetry_stream", None)
+    telemetry_fifo = getattr(args, "telemetry_fifo", None)
+    telemetry_path = telemetry_stream or telemetry_fifo
     if telemetry_path:
-        _attach_telemetry_stream(engine, telemetry_path)
+        _attach_telemetry_stream(engine, telemetry_path, is_fifo=bool(telemetry_fifo))
 
     return engine
 
@@ -453,18 +460,24 @@ def cmd_evolve(args) -> int:
         from .ui.terminal import StepProgressObserver
         step_observer = StepProgressObserver(quiet=quiet)
 
-        telemetry_path = getattr(args, "telemetry_stream", None) or getattr(args, "telemetry_fifo", None)
+        telemetry_stream = getattr(args, "telemetry_stream", None)
+        telemetry_fifo = getattr(args, "telemetry_fifo", None)
+        telemetry_path = telemetry_stream or telemetry_fifo
         greedy_telemetry_file = None
         if telemetry_path:
             import os
             tp = Path(telemetry_path)
-            if hasattr(os, "mkfifo") and not tp.exists():
+            if telemetry_fifo and hasattr(os, "mkfifo") and not tp.exists():
                 try:
                     os.mkfifo(str(tp))
                 except OSError:
                     pass
             try:
-                greedy_telemetry_file = open(tp, "a", encoding="utf-8", buffering=1)
+                if hasattr(os, "O_NONBLOCK") and tp.exists() and tp.is_fifo():
+                    fd = os.open(str(tp), os.O_WRONLY | os.O_NONBLOCK)
+                    greedy_telemetry_file = os.fdopen(fd, "w", encoding="utf-8", buffering=1)
+                else:
+                    greedy_telemetry_file = open(tp, "a", encoding="utf-8", buffering=1)
             except Exception:
                 pass
 
