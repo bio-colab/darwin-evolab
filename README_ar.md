@@ -4,7 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-691%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-700%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
@@ -18,6 +18,7 @@
 🌐 **اللغة / Language:**
 - **[English Version / النسخة الإنجليزية المعتمدة](README.md)**
 - **[دليل الاستخدام العملي للمطورين / Hands-On User Guide](docs/USER_GUIDE.md)**
+- **[دليل تكامل بروتوكول سياق النماذج / MCP Integration Guide](docs/MCP_GUIDE.md)**
 
 ---
 
@@ -111,6 +112,7 @@ Test Cases  : 3 assertions
 | **تشغيل منصة العمل التفاعلية** | `evolab serve-workbench --port 8080` | تشغيل واجهة ويب تفاعلية لبرمجة شرائح FPGA مباشرة عبر WebUSB. |
 | **الاستمثال الرياضي المستمر** | `evolab optimize -g 50 -p 32 -s 42` | بحث تطوري مستمر عالي الأبعاد حتى 500 بعد مع كبح التضخم. |
 | **فحص وتحليل تقرير تشغيل** | `evolab inspect run_report.json` | التحقق من صحة التقرير، وتحليل التنوع الوراثي، ومسار اللياقة. |
+| **خادم وكلاء الذكاء الاصطناعي (MCP)** | `evolab mcp` (أو `evolab-mcp`) | خادم FastMCP لربط قدرات الترقيع والعتاد مع Claude Desktop وCursor. |
 
 > 📖 **المرجع الشامل للتعليمات**: راجع [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) للتفاصيل الكاملة وإعدادات المشاريع متعددة الملفات.
 

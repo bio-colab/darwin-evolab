@@ -213,11 +213,11 @@ def verify_documentation() -> bool:
     # -------------------------------------------------------------------------
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
-        if any(b in readme_text for b in ["tests-691%20passed", "tests-691 passed", "tests-661%20passed", "tests-661 passed"]):
+        if any(b in readme_text for b in ["tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed", "tests-661%20passed", "tests-661 passed"]):
             checks_passed += 1
             print(f"[OK] Production Test Suite Badge verified in README.md.")
         else:
-            errors.append("README.md: Test badge does not match verified test count (691 or 661 passed)")
+            errors.append("README.md: Test badge does not match verified test count (700, 691 or 661 passed)")
 
     # -------------------------------------------------------------------------
     # Final Verdict

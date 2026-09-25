@@ -7,15 +7,16 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bio-colab/darwin-evolab/blob/main/kaggle_bundle/darwin_evolab_grand_run.ipynb)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-691%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-700%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![JEV Search Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
 
-🌐 **Language / اللغة:**
+🌐 **Language & Guides:**
 - **[العربية / Arabic Documentation & Quickstart](README_ar.md)**
 - **[Hands-On User & Developer Guide](docs/USER_GUIDE.md)**
+- **[Model Context Protocol (MCP) Integration Guide](docs/MCP_GUIDE.md)**
 
 ---
 
@@ -109,6 +110,7 @@ Test Cases  : 3 assertions
 | **Launch Workbench** | `evolab serve-workbench --port 8080` | Interactive web dashboard with WebUSB hardware flashing. |
 | **Optimize Function** | `evolab optimize -g 50 -p 32 -s 42` | Vectorized continuous genetic optimization up to 500D. |
 | **Inspect Report** | `evolab inspect run_report.json` | Validates schema, analyzes diversity, and summarizes fitness history. |
+| **AI Agent MCP Server** | `evolab mcp` (or `evolab-mcp`) | FastMCP stdio server connecting Claude Desktop, Cursor, and Windsurf. |
 
 > 📖 **Full Command Reference**: See [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) for detailed flags, multi-file projects, and CI integration.
 

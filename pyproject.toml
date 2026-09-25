@@ -28,6 +28,7 @@ dependencies = []
 
 [project.scripts]
 evolab = "evolab.cli:main"
+evolab-mcp = "evolab.mcp.server:main"
 
 [project.entry-points.pytest11]
 evolab = "evolab.pytest_plugin"
@@ -49,6 +50,9 @@ quantum = [
     "numpy>=1.22",
     "scipy>=1.9",
 ]
+mcp = [
+    "mcp>=1.0.0",
+]
 full = [
     "numpy>=1.22",
     "scipy>=1.9",
@@ -56,6 +60,7 @@ full = [
     "pyyaml>=5.4",
     "libcst>=1.0",
     "z3-solver>=4.8",
+    "mcp>=1.0.0",
 ]
 llm = []
 

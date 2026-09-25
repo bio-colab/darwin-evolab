@@ -889,6 +889,18 @@ def cmd_init(args) -> int:
     return 0
 
 
+def cmd_mcp(args) -> int:
+    """Launch Model Context Protocol (MCP) server for AI coding agents."""
+    try:
+        from .mcp.server import main as mcp_main
+
+        mcp_main()
+        return 0
+    except ImportError as exc:
+        print("error: FastMCP not installed. Install with: pip install 'evolab[mcp]'", file=sys.stderr)
+        return 1
+
+
 def cmd_eval(args) -> int:
     """Standalone Fitness Oracle evaluating candidate representation from CLI argument or stdin."""
     import sys
@@ -990,6 +1002,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_init.add_argument("--format", choices=["toml", "json"], default="toml", help="configuration file format (default: toml)")
     p_init.add_argument("--force", action="store_true", help="overwrite existing configuration file")
     p_init.set_defaults(func=cmd_init)
+
+    # Subcommand: mcp
+    p_mcp = sub.add_parser("mcp", help="launch Model Context Protocol (MCP) stdio server for AI coding agents")
+    p_mcp.add_argument("--transport", choices=["stdio"], default="stdio", help="transport protocol (default: stdio)")
+    p_mcp.set_defaults(func=cmd_mcp)
 
     # Subcommand: audit
     p_audit = sub.add_parser("audit", help="run autonomous self-audit and governance verification")
@@ -1183,6 +1200,8 @@ def _run_cli(argv: list[str] | None = None) -> int:
         return cmd_wizard(args)
     if cmd == "init":
         return cmd_init(args)
+    if cmd == "mcp":
+        return cmd_mcp(args)
     if hasattr(args, "func"):
         return args.func(args)
     return 2
