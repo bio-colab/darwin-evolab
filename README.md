@@ -1,22 +1,116 @@
-# Darwin-Evolab: A Research Framework for Evolutionary Optimization across Software and Silicon
+# Darwin-Evolab: Evolutionary Optimization across Software and Silicon
 
-> **Universal Kernel + Pluggable Domain Adapters across Software (APR), Silicon (Digital CGP), and Autonomous Self-Evolution.**
+> **Fast, zero-LLM automated code repair and evolutionary digital circuit synthesis.**  
+> *A domain-agnostic evolutionary operating system orchestrating Python AST repairs, synthesizable Verilog RTL, and continuous high-dimensional optimization in milliseconds.*
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bio-colab/darwin-evolab/blob/main/kaggle_bundle/darwin_evolab_grand_run.ipynb)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests Passing](https://img.shields.io/badge/tests-691%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
-[![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
-[![AST Introns Pruned](https://img.shields.io/badge/AST%20Introns%20Pruned-592%20mutations-blueviolet.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
-[![Governor Calibrated](https://img.shields.io/badge/Governor%20Status-DREAM__RSI__READY%20(16.45%25)-success.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
-[![Search Space Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
-
-> **Transparency Notice**: `darwin-evolab` is an open research framework. All reported metrics are empirical, reproducible across pre-registered random seeds, and verified continuously via public CI. Analytical approximations, model limitations, physical bounds, and negative results are explicitly disclosed. We invite peer audit and critique.
+[![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
+[![JEV Search Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
 
 🌐 **Language / اللغة:**
-- **[العربية / Arabic Documentation & Historical Audit Notes](README_ar.md)**
+- **[العربية / Arabic Documentation & Quickstart](README_ar.md)**
+- **[Hands-On User & Developer Guide](docs/USER_GUIDE.md)**
+
+---
+
+## ⚡ 60-Second Quickstart
+
+### 1. Install & Verify
+
+```bash
+# Clone the repository
+git clone https://github.com/bio-colab/darwin-evolab.git
+cd darwin-evolab
+
+# Install core CLI & kernel (zero external dependencies)
+pip install -e .
+
+# Verify installation
+evolab --version
+# Output: evolab 0.6.0
+```
+
+### 2. Instant 1-Second Bug Repair
+
+Fix a multi-defect Python program right from your terminal:
+
+```bash
+evolab repair --scenario click_cli_parser
+```
+
+**Real Terminal Output (< 0.2 seconds):**
+```diff
+[evolab:apr] Search Finished: Best Score = 100.00 | Evaluations = 4 | Elapsed = 0.17s
+Generations run : 4
+Candidates      : 4
+Best            : gen_04_ind_00 (fitness=100.0, species=spec_code)
+--- a/cli_parser.py
++++ b/cli_parser.py
+@@ -2,9 +2,9 @@
+     config = {'port': 8000, 'debug': False, 'host': '127.0.0.1'}
+     for arg in args:
+         if arg == '--debug':
+-            config['debug'] = False
++            config['debug'] = True
+         elif arg.startswith('--port='):
+-            config['port'] = arg.split('=')[1]
++            config['port'] = int(arg.split('=')[1])
+         elif arg.startswith('--host='):
+-            config['host'] = arg.split('=')[0]
++            config['host'] = arg.split('=')[1]
+     return config
+```
+
+### 3. Pure Python Quickstart (Zero Dependencies)
+
+Run the included standalone code repair example:
+
+```bash
+python examples/01_quickstart_code_repair.py
+```
+Output:
+```text
+=== Darwin-Evolab: Python Automated Program Repair Quickstart ===
+Driver      : software_repair
+Target File : billing.py
+Test Cases  : 3 assertions
+
+[SUCCESS] Fixed in 0.006s | 5 evaluations consumed | Fitness: 100.0%
+--- Unified Diff ---
+--- a/billing.py
++++ b/billing.py
+@@ -1,2 +1,2 @@
+ def compute_total(price: int, tax: int) -> int:
+-    return price - tax  # Bug: subtraction instead of addition
++    return price + tax
+```
+
+> [!TIP]
+> **Interactive Onboarding Wizard**:  
+> Run `evolab wizard` in your terminal for an interactive, step-by-step tour through automated code repair, silicon synthesis, and high-dimensional optimization!
+
+---
+
+## 🛠️ CLI Practical Recipes
+
+| Task | Command | Description |
+| :--- | :--- | :--- |
+| **Repair via Pytest** | `evolab repair --source app.py --pytest test_app.py --diff` | Localizes faults with Ochiai SBFL, mutates AST, prints verified diff. |
+| **Apply Fix In-Place** | `evolab repair --source app.py --pytest test_app.py --apply` | Writes the patch directly to `app.py` with automatic `.bak` safety backup. |
+| **Export Git Patch** | `evolab repair --source app.py --pytest test_app.py --patch-file fix.patch` | Exports a standard unified diff patch compatible with `git apply`. |
+| **Synthesize Silicon** | `evolab evolve --expr "Out = A ^ B" --verilog-file xor.v` | Synthesizes gate topology, verifies truth table ($2^k$), exports Verilog RTL. |
+| **Target FPGA Pinout** | `evolab evolve --expr "Out = A & B" --fpga-target ice40_up5k` | Generates Verilog RTL and board-specific pinout constraints (`.pcf`). |
+| **Launch Workbench** | `evolab serve-workbench --port 8080` | Interactive web dashboard with WebUSB hardware flashing. |
+| **Optimize Function** | `evolab optimize -g 50 -p 32 -s 42` | Vectorized continuous genetic optimization up to 500D. |
+| **Inspect Report** | `evolab inspect run_report.json` | Validates schema, analyzes diversity, and summarizes fitness history. |
+
+> 📖 **Full Command Reference**: See [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) for detailed flags, multi-file projects, and CI integration.
 
 ---
 
@@ -41,9 +135,6 @@ graph TD
 
     Kernel -.-> DriverExt["📐 Extensible Domain Adapters<br/>• Continuous landscapes, quantum pulses, custom representations"]
 ```
-
-> **The Living Proof of Kernel Universality**:  
-> Darwin-Evolab demonstrates that the exact same domain-agnostic evolutionary engine that infers Python bug repairs also synthesizes verified digital arithmetic circuits from Boolean specifications and governs its own architectural modifications.
 
 ---
 
@@ -74,7 +165,7 @@ flowchart LR
 
 ### 🧠 Pillar B: Interoceptive Closed-Loop Self-Evolution & Vaccinated Governor
 - **Interoceptive DNA Reader (`DNAReader`)**: Decodes digital genomes into functional gene units, identifies and prunes non-functional hitchhiking mutations (AST introns) via counterfactual ablation, monitors code bloat, and extracts Holland schemata to preserve high-utility building blocks.
-- **Burden-Gated Island Swarm Engine (`BurdenGatedIslandSwarmEngine`)**: Parallel island topology with asynchronous elite and negative-genetic-memory (taboo) migration via `SwarmBlackboard`. Adheres to a strict Utility Invariant (`BURDEN_STATUS = "PROBATIONARY_BURDEN_GATED"`): automatically evicts islands that exhibit high synchronization overhead (>35%) or sublinear scaling collapse ($\alpha < 0.40$).
+- **Burden-Gated Island Swarm Engine (`BurdenGatedIslandSwarmEngine`)**: Parallel island topology with asynchronous elite and negative-genetic-memory (taboo) migration via `SwarmBlackboard`. Automatically evicts islands that exhibit high synchronization overhead (>35%) or sublinear scaling collapse ($\alpha < 0.40$).
 - **The Statistically Vaccinated Governor ($\alpha=0.05$)**: Solves the delusion trap where self-modifying systems accept bogus improvements due to random variance. In a rigorous 1,000 A/A Monte Carlo simulation under the null hypothesis ($\mathcal{H}_0$), the vaccinated Governor reduces the False Positive Rate (Type I error) from **23.90% down to 4.20%**.
 - **Dream-RSI Retrospective Replay**: Counterfactual offline simulation over discovery trees, achieving landmark Governor `ACCEPT` milestones: Autonomous Operator Reweighting ($p = 0.0018 < 0.01$), Adaptive Budget Elasticity ($28.0\%$ evals saved), and 34.14% evaluation savings on Kaggle grand benchmarks ($p=0.000509$, Cohen's $d=1.64$).
 
@@ -88,11 +179,9 @@ flowchart LR
 
 ---
 
-## 📊 Quantitative Benchmark Scorecards
+## 📊 Benchmark Scorecards & Empirical Results
 
 Every metric in `darwin-evolab` is backed by **pre-registered, byte-for-byte reproducible empirical benchmarks** across multiple random seeds and verified continuously via automated CI.
-
-> 📄 **Scientific Telemetry & Ablation Studies**: See [`docs/RESULTS.md`](docs/RESULTS.md) for full telemetry, ablation data, and pre-registered negative empirical results.
 
 ### 1. Grand Multi-Stage Heavy-Compute Kaggle Benchmark (636,531 Empirical Evaluations)
 
@@ -125,131 +214,16 @@ To evaluate symbolic genetic search over real-world defect topologies at scale w
 > - **Dual Invariant Requirement**: A patch is classified as resolved *only* if it passes all target failing tests (`FAIL_TO_PASS`) while introducing zero regressions across existing test suites (`PASS_TO_PASS`).  
 > - **Wilson Score 95% Confidence Interval**: With 298 successes across 300 trials, the verified Wilson 95% CI is **`[0.9760, 0.9982]`**. Full traces in [`reports/swe_bench_heavy_breakthroughs.json`](reports/swe_bench_heavy_breakthroughs.json) and [`reports/swe_bench_lite_300.json`](reports/swe_bench_lite_300.json).
 
-### 3. Internal Synthetic Regressions (Unit Scenarios across 30 Independent Seeds)
+### 3. Repository-Wide Test Health
 
-| Scenario | Evaluation Budget | Repair Pass Rate (FAIL→PASS) | Cache Hit Rate | Baseline Speedup | Notes |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **`click_cli_parser`** | 193 evals | **100%** (30/30 passed) | **72.8%** hit rate | **1.14× faster** | Full AST repair with Ochiai SBFL localization |
-| **`requests_http_helper`** | 107 evals | **100%** (30/30 passed) | **92.0%** hit rate | **1.10× faster** | Auth-header injection with holdout validation |
-| **`lru_cache_logic`** | 115 evals | **100%** (30/30 passed) | **92.2%** hit rate | **1.08× faster** | Multi-step pointer & eviction repair |
-| **`multi_file_config`** | 106 evals | **100%** (30/30 passed) | **92.6%** hit rate | **1.12× faster** | Cross-file dependency validation |
-
-### 4. Dual-System Operator Routing: JEV-Guided Search Space Reduction
-
-| Scenario | Domain / Ecosystem | Baseline Evals | JEV-Guided Evals | Evals Saved | Search Space Reduction |
-| :--- | :--- | :---: | :---: | :---: | :---: |
-| **`click_cli_parser`** | Python CLI / AST | 15 | 3 | **12** | **80.0% reduction** |
-| **`requests_auth_url`** | Network / Security | 11 | 2 | **9** | **81.8% reduction** |
-| **`lru_cache_logic`** | Algorithms / Cache | 13 | 4 | **9** | **69.2% reduction** |
-| **`multi_file_config`** | Modular Architecture | 11 | 3 | **8** | **72.7% reduction** |
-| **`sympy__sympy-13480`** | SWE-bench Lite | 12 | 3 | **9** | **75.0% reduction** |
-| **`click__click-1608`** | SWE-bench Lite | 13 | 3 | **10** | **76.9% reduction** |
-| **`flask__flask-2097`** | SWE-bench Lite | 12 | 3 | **9** | **75.0% reduction** |
-| **`requests__requests-3362`** | SWE-bench Lite | 13 | 3 | **10** | **76.9% reduction** |
-| **CUMULATIVE TOTAL** | — | **100 evals** | **24 evals** | **76 evals** | **76.0% reduction** |
-
-### 5. Governor Statistical Vaccination (1,000 A/A Monte Carlo Simulation)
-
-| Configuration | Alpha Bound ($\alpha$) | False Positive Rate (Type I Error) | Invariant Enforced |
-| :--- | :---: | :---: | :--- |
-| **Uncalibrated Governor** | None ($p$-value ignored) | **23.90%** (239 / 1,000 accepted) | Severe risk of delusion and drift |
-| **Vaccinated Governor** | $\alpha = 0.05$ | **4.20%** (42 / 1,000 accepted) | $\le 5.0\%$ False Discovery Bound |
-
-### 6. Digital Logic Synthesis & Verilog Hardware Metrics (Pillar 2)
-
-| Circuit Target | Verification Tier | Measured Specification | Hardware Metric |
-| :--- | :---: | :---: | :---: |
-| **1-Bit Full Adder** | Exhaustive Truth Table ($2^3=8$) | **100% Formal Correctness** | 5 Active Gates (Optimal DAG) |
-| **2-Bit Ripple Adder** | Exhaustive Truth Table ($2^5=32$) | **100% Formal Correctness** | 10 Active Gates (Synthesizable Verilog-2001) |
-| **4-Bit ALU Slice** | Exhaustive Truth Table ($2^8=256$) | **100% Formal Correctness** | Multi-op arithmetic-logic slice |
-| **Even Parity Generator** | Exhaustive Truth Table ($2^4=16$) | **100% Formal Correctness** | 3 XOR Gates (Cascaded Tree) |
-| **8-Bit Synchronous Counter** | Cycle-Accurate Waveform ($T=32$) | **100% Waveform Accuracy** | Clocked DFFs, Up/Down Count, Parallel Load & Overflow |
-| **8-Bit Shift Register (PISO/SIPO)**| Cycle-Accurate Waveform ($T=32$) | **100% Waveform Accuracy** | Serial in/out, Parallel load, Synchronous shift |
-| **UART Serial Transmitter FSM** | Cycle-Accurate Waveform ($T=32$) | **100% Protocol Compliance** | 8-N-1 Serial Framing (Start, 8 Data, Stop, Busy flag) |
-| **Yosys RTL Synthesis** | Yosys ABC Optimization Pass | **Optimal Gate / Cell Ratio ($\le 1.1\times$)** | Verilog netlist verified with FPGA synthesis pass |
-| **Multi-FPGA Constraint Export** | Static Physical Mapper | **iCE40 (.pcf), ECP5 (.lpf), Xilinx (.xdc)** | Automatic pinout allocation for physical boards |
-
-### 7. Repository-Wide Test Health
-
-```
+```text
 tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI, DNA Reader, Island Swarm) : 691 passed, 1 skipped (100%)
 Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 24/24 checks passed (100%)
 ==================================================================================================================
 Total Production Test Suite                                                                        : 691 automated tests (100% passing)
 ```
 
----
-
-## ⚡ 60-Second Quickstart
-
-### 1. Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/bio-colab/darwin-evolab.git
-cd darwin-evolab
-
-# Install core framework
-pip install -e .
-
-# Or install with full scientific dependencies
-pip install -e ".[full]"
-```
-
-### 2. Instant CLI Usage
-
-#### 🌟 Automated Program Repair (Pillar 1)
-```bash
-# Repair using built-in benchmark scenario and output a unified diff
-python run.py evolve --scenario click_cli_parser --diff
-
-# Repair arbitrary code files guided by pytest
-python run.py evolve --source app.py --pytest test_app.py --patch-file fix.patch
-
-# Ingest and solve real-world SWE-bench Lite issues with dual-invariant verification
-python run.py evolve --swe-bench src/evolab/fixtures/swe_bench/sympy__sympy_13480.json --patch-out fix.patch
-```
-
-#### 🌟 TypeSafe AI JEV System-One Guided Repair
-```bash
-# Run JEV-guided repair with sub-second neural routing (-76% search space)
-python JEV/run_ab_experiment.py
-```
-
-#### 🌟 Digital Logic Synthesis & Verilog Export (Pillar 2)
-```bash
-# Synthesize full adder logic, verify truth table, and export synthesizable Verilog + iCE40 pinout
-python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v
-```
-
-#### 🌟 Grand Multi-Stage Heavy-Compute Benchmark (Kaggle Orchestrator)
-```bash
-# Execute the multi-stage grand benchmark across Software, Silicon, 500D Numerical, and Governor Dream-RSI
-python scripts/kaggle_grand_run.py --swe-instances 300 --cgp-gens 150 --num-gens 500 --enable-dna-reader --governor-alpha 0.05 --governor-epsilon 1e-6
-```
-
-### 3. Programmatic Python API
-
-```python
-from evolab.code_fixtures import scenario_click_parser
-from evolab.jev import JevClient, run_jev_greedy_repair
-
-# Initialize client (uses JEV_API_KEY if present, else deterministic offline mock)
-client = JevClient()
-
-sc = scenario_click_parser()
-evaluator = sc.create_evaluator()
-
-genome, evals, duration, history, telemetry = run_jev_greedy_repair(
-    sources=sc.sources,
-    target_file=sc.target_file,
-    evaluator=evaluator,
-    client=client,
-)
-
-print(f"Repaired in {evals} evaluations! Telemetry: {telemetry}")
-print(f"Patch diff:\n{genome.to_diff()}")
-```
+> 🔬 **Full Scientific Telemetry & Ablation Studies**: See [`docs/RESULTS.md`](docs/RESULTS.md) for unadorned telemetry, ablation tables, and pre-registered negative results.
 
 ---
 
@@ -257,7 +231,8 @@ print(f"Patch diff:\n{genome.to_diff()}")
 
 | Document | Focus | Description |
 | :--- | :---: | :--- |
-| **[`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md)** | ⚡ **Grand Kaggle Run** | Executive report for 636k evals multi-stage benchmark, 592 pruned introns, 6 CMOS netlists, and Dream-RSI. |
+| **[`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)** | 🛠️ **User Guide** | Practical hands-on guide: code repair, pytest, Verilog synthesis, and configuration. |
+| **[`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md)** | ⚡ **Grand Kaggle Run** | Executive report for 636k evals multi-stage benchmark, 592 pruned introns, and Dream-RSI. |
 | **[`docs/BENCHMARKS_300.md`](docs/BENCHMARKS_300.md)** | 📊 **Distilled AST N=300** | Full 300-instance distillation benchmark, scorecard, and local hardware disclosure. |
 | **[`docs/AUTONOMOUS_SELF_EVOLUTION.md`](docs/AUTONOMOUS_SELF_EVOLUTION.md)** | 🧠 **Self-Evolution** | The 3 Pillars of Self-Evolution, Interoceptive Self-Model, and Vaccinated Governor. |
 | **[`docs/JEV_SYSTEM_ONE.md`](docs/JEV_SYSTEM_ONE.md)** | ⚡ **Dual System** | TypeSafe AI JEV System-One integration, API contract, and 76.0% search space reduction. |
@@ -265,14 +240,6 @@ print(f"Patch diff:\n{genome.to_diff()}")
 | **[`docs/RESULTS.md`](docs/RESULTS.md)** | 🔬 **Empirical Telemetry** | Full unadorned scientific reports, ablation studies, and pre-registered negative results. |
 | **[`docs/THEORETICAL_FOUNDATIONS.md`](docs/THEORETICAL_FOUNDATIONS.md)** | 📚 **Theory & Math** | Mathematical formalisms: Miller CGP, Koza GP, Holland Schema Theory, and BibTeX. |
 | **[`JEV/README.md`](JEV/README.md)** | 🔒 **JEV Testbed** | JEV client setup, security zero-leakage protocol, and reproduction scripts. |
-
----
-
-## 🤝 Community & Contributing
-
-We welcome contributions from researchers and developers worldwide! Please see:
-- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Architectural invariants, adding a `DomainAdapter`, and testing guidelines.
-- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**: Contributor Covenant Code of Conduct.
 
 ---
 
@@ -284,6 +251,14 @@ To ensure absolute rigor and clarity for peer review and academic scrutiny, we e
 2. **"Operating System" is an Architectural Metaphor**: Darwin-Evolab is an evolutionary optimization framework structured around an operating-system-inspired design pattern (a domain-agnostic kernel orchestrating pluggable domain adapter drivers). It is not a POSIX or bootable operating system.
 3. **Exploratory Proofs-of-Concept are Retired & Archived**: Exploratory prototypes previously developed across extreme domains (procedural maze generation, neuromorphic CGP, Genesis physics bridge) successfully concluded their lifecycle and are permanently preserved at Git tag [`v0.6.0-pocs-graduation`](https://github.com/bio-colab/darwin-evolab/releases/tag/v0.6.0-pocs-graduation) and branch [`archive/experimental-pocs`](https://github.com/bio-colab/darwin-evolab/tree/archive/experimental-pocs).
 4. **Meta-Controller is Opt-In by Empirical Decision**: Phase 4 and Phase 5 self-modification remain disabled by default (`meta_mode=None`) until activated with an empirical Governor gate. Retrospective dreaming (Dream-RSI) provides safe, offline counterfactual simulation.
+
+---
+
+## 🤝 Community & Contributing
+
+We welcome contributions from researchers and developers worldwide! Please see:
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Architectural invariants, adding a `DomainAdapter`, and testing guidelines.
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**: Contributor Covenant Code of Conduct.
 
 ---
 

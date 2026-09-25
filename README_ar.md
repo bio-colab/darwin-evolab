@@ -15,25 +15,104 @@
 > **إفصاح الشفافية والأمانة الأكاديمية (Transparency Notice)**:  
 > مشروع `darwin-evolab` هو إطار بحثي مفتوح المصدر بالكامل. جميع المقاييس والنتائج المعلنة تجريبية وقابلة لإعادة الإنتاج بايت-ببايت عبر بذور عشوائية مسجلة مسبقاً، وتخضع للتحقق المستمر والمؤتمت عبر CI العام. جميع التقريبات التحليلية وحدود النمذجة والقيود الفيزيائية مُفصح عنها صراحة، مع إعلان كافة النتائج السلبية دون أي تجميل. نرحب بالتدقيق الأكاديمي الصارم ونقد الأقران.
 
-🌐 **[English Version / النسخة الإنجليزية المعتمدة](README.md)**
+🌐 **اللغة / Language:**
+- **[English Version / النسخة الإنجليزية المعتمدة](README.md)**
+- **[دليل الاستخدام العملي للمطورين / Hands-On User Guide](docs/USER_GUIDE.md)**
 
-**evolab** ليس مجرد أداة لإصلاح كود بايثون، بل هو **نظام تشغيل حوسبي تطوري عام ومستقل عن النطاق (Evolutionary Operating System)**. صُمم المشروع ليكون أرضية خوارزمية مفتوحة تفصل فصلاً صارماً بين نواة البحث التطوري المشتركة (`EvolutionEngine`) وبين محولات المجالات التطبيقية (`DomainAdapter`) التي تعمل كبرامج تشغيل (Device Drivers) عبر شجرة بايثون AST، وبوابات السيليكون المنطقية CGP، ومسارات التطور الذاتي المستقل.
+---
 
-الإصدار 0.6.1 — Python 3.10+.
+## ⚡ دليل البدء السريع في 60 ثانية (60-Second Quickstart)
+
+### 1. التثبيت والتحقق الفوري
 
 ```bash
-# تثبيت النواة البرمجية
+# استنساخ المستودع
+git clone https://github.com/bio-colab/darwin-evolab.git
+cd darwin-evolab
+
+# تثبيت النواة البرمجية وأمر evolab (بدون أي تبعيات خارجية ثقيلة)
 pip install -e .
 
-# أو تثبيت الحزمة العلمية الشاملة
-pip install -e ".[full]"
-
-# تشغيل سريع للإصلاح الآلي
-python run.py evolve --scenario click_cli_parser --diff
-
-# تشغيل فحص الاختبارات الشاملة (691 اختباراً ناجحاً بنسبة 100%)
-pytest tests/ -q
+# التحقق من نجاح التثبيت
+evolab --version
+# الناتج: evolab 0.6.0
 ```
+
+### 2. إصلاح فوري لعلل برمجية في أقل من ثانية
+
+أصلح برنامج بايثون متعدد الأخطاء مباشرة من الطرفية:
+
+```bash
+evolab repair --scenario click_cli_parser
+```
+
+**المخرجات الفعلية من الطرفية (في 0.17 ثانية فقط):**
+```diff
+[evolab:apr] Search Finished: Best Score = 100.00 | Evaluations = 4 | Elapsed = 0.17s
+Generations run : 4
+Candidates      : 4
+Best            : gen_04_ind_00 (fitness=100.0, species=spec_code)
+--- a/cli_parser.py
++++ b/cli_parser.py
+@@ -2,9 +2,9 @@
+     config = {'port': 8000, 'debug': False, 'host': '127.0.0.1'}
+     for arg in args:
+         if arg == '--debug':
+-            config['debug'] = False
++            config['debug'] = True
+         elif arg.startswith('--port='):
+-            config['port'] = arg.split('=')[1]
++            config['port'] = int(arg.split('=')[1])
+         elif arg.startswith('--host='):
+-            config['host'] = arg.split('=')[0]
++            config['host'] = arg.split('=')[1]
+     return config
+```
+
+### 3. تجربة كود بايثون المستقل (بدون أي مكتبات خارجية)
+
+شغّل المثال البرمجي المباشر والمستقل تماماً:
+
+```bash
+python examples/01_quickstart_code_repair.py
+```
+الناتج:
+```text
+=== Darwin-Evolab: Python Automated Program Repair Quickstart ===
+Driver      : software_repair
+Target File : billing.py
+Test Cases  : 3 assertions
+
+[SUCCESS] Fixed in 0.006s | 5 evaluations consumed | Fitness: 100.0%
+--- Unified Diff ---
+--- a/billing.py
++++ b/billing.py
+@@ -1,2 +1,2 @@
+ def compute_total(price: int, tax: int) -> int:
+-    return price - tax  # Bug: subtraction instead of addition
++    return price + tax
+```
+
+> [!TIP]
+> **المعالج التفاعلي خطوة بخطوة (Onboarding Wizard)**:  
+> شغّل الأمر `evolab wizard` في الطرفية للحصول على جولة تفاعلية ممتعة لاكتشاف قدرات إصلاح الكود، وتوليف السيليكون، والاستمثال الرياضي!
+
+---
+
+## 🛠️ جدول أوامر الاستخدام المباشر (CLI Recipes)
+
+| المهمة المطلوبة | الأمر البرمجي | الوصف والنتيجة |
+| :--- | :--- | :--- |
+| **إصلاح الكود باختبارات pytest** | `evolab repair --source app.py --pytest test_app.py --diff` | تحديد موضع الخلل بـ Ochiai SBFL، وتوليد ترقيع AST، وطباعة الـ diff. |
+| **تطبيق الترقيع في الملف مباشرة** | `evolab repair --source app.py --pytest test_app.py --apply` | تطبيق الإصلاح مباشرة في الملف مع إنشاء نسخة احتياطية `.bak` تلقائياً. |
+| **توليد ملف Git Patch قياسي** | `evolab repair --source app.py --pytest test_app.py --patch-file fix.patch` | تصدير ملف ترقيع موحد متوافق مع `git apply` لسير عمل CI. |
+| **توليف دوائر السيليكون** | `evolab evolve --expr "Out = A ^ B" --verilog-file xor.v` | توليف شبكة البوابات، والتحقق الشامل $2^k$، وتصدير كود Verilog RTL. |
+| **توليد قيود أرجل FPGA** | `evolab evolve --expr "Out = A & B" --fpga-target ice40_up5k` | توليد كود Verilog وقيود الأرجل المادية لشريحة FPGA المحددة (`.pcf`). |
+| **تشغيل منصة العمل التفاعلية** | `evolab serve-workbench --port 8080` | تشغيل واجهة ويب تفاعلية لبرمجة شرائح FPGA مباشرة عبر WebUSB. |
+| **الاستمثال الرياضي المستمر** | `evolab optimize -g 50 -p 32 -s 42` | بحث تطوري مستمر عالي الأبعاد حتى 500 بعد مع كبح التضخم. |
+| **فحص وتحليل تقرير تشغيل** | `evolab inspect run_report.json` | التحقق من صحة التقرير، وتحليل التنوع الوراثي، ومسار اللياقة. |
+
+> 📖 **المرجع الشامل للتعليمات**: راجع [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) للتفاصيل الكاملة وإعدادات المشاريع متعددة الملفات.
 
 ---
 
@@ -133,44 +212,44 @@ flowchart LR
 
 ---
 
-## CLI
+## واجهة سطر الأوامر (evolab CLI)
 
 ```bash
-# مشهد جاهز (جشع افتراضياً)
-python run.py evolve --scenario click_cli_parser --diff -o report.json
+# إصلاح مشهد مدمج وعرض الـ diff الموحد
+evolab repair --scenario click_cli_parser --diff -o report.json
 
-# ملف مسألة خارجي
-python run.py evolve --scenario-file issue.json --diff --diff-file fix.patch
+# إصلاح ملف مسألة JSON خارجي
+evolab repair --scenario-file issue.json --diff --diff-file fix.patch
 
-# ملفات حرة (مع ملف اختبارات JSON)
-python run.py evolve --source app.py --tests tests.json --func parse_cli --sandbox
+# إصلاح ملف بايثون مع ملف اختبارات JSON وتفعيل العزل الآمن
+evolab repair --source app.py --tests tests.json --func parse_cli --sandbox
 
-# ملفات حرة باستخدام اختبارات pytest مباشرة (مع الاستكشاف التلقائي للدالة)
-python run.py evolve --source app.py --pytest test_app.py --diff
+# إصلاح ملفات حرة باستخدام اختبارات pytest مباشرة
+evolab repair --source app.py --pytest test_app.py --diff
 
 # توليد ملف Git Patch قياسي وحفظ تقرير Markdown لـ GitHub Actions
-python run.py evolve --source app.py --pytest test_app.py --patch-file fix.patch --summary-file summary.md
+evolab repair --source app.py --pytest test_app.py --patch-file fix.patch
 
-# تطبيق الترقيع مباشرة في الملف الأصلي (مع نسخة احتياطية .bak)
-python run.py evolve --source app.py --pytest test_app.py --apply
+# تطبيق الترقيع مباشرة في الملف الأصلي (مع إنشاء نسخة احتياطية .bak تلقائياً)
+evolab repair --source app.py --pytest test_app.py --apply
 
 # تفعيل كاسر الركود الهجين عبر نماذج اللغة عند تعثر الكتالوج النحوي
-python run.py evolve --source app.py --pytest test_app.py --llm groq
+evolab repair --source app.py --pytest test_app.py --llm groq
 
-# محرك جيني على متجهات
-python run.py evolve --engine ga --genome numeric -g 40 -p 16 -s 123 -t 99.7
+# استمثال جيني مستمر على متجهات رقمية
+evolab optimize -g 40 -p 16 -s 123 -t 99.7
 
-# المسار التجريبي للإلكترونيات وتوليد منصة العمل التفاعلية وقيود FPGA المادية
-python run.py evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v --ui-file workbench.html
+# توليف دوائر إلكترونية رقمية وتصدير كود Verilog-2001 وقيود FPGA المادية
+evolab evolve --expr "Sum = A ^ B ^ Cin; Cout = (A & B) | (Cin & (A ^ B))" --fpga-target ice40_up5k --verilog-file adder.v --ui-file workbench.html
 
-# تشغيل خادم محلي آمن (Secure Context) لبرمجة شرائح FPGA مباشرة عبر WebUSB
-python run.py serve-workbench workbench.html --port 8080
+# تشغيل خادم محلي آمن (Secure Context) لمنصة العمل وبرمجة FPGA عبر WebUSB
+evolab serve-workbench workbench.html --port 8080
 
 # تشغيل معيار كاغل الحوسبي الضخم متعدد المراحل (300 مسألة SWE، 6 دوائر CMOS، وفضاءات 500D)
 python scripts/kaggle_grand_run.py --swe-instances 300 --cgp-gens 150 --num-gens 500 --enable-dna-reader --governor-alpha 0.05 --governor-epsilon 1e-6
 
-# فحص تقرير التشغيل
-python run.py inspect report.json
+# فحص وتحليل تقرير تشغيل سابق
+evolab inspect report.json
 ```
 
 المشاهد المدمجة: `click_cli_parser`, `requests_http_helper`, `lru_cache_logic`, `multi_file_config`.

@@ -24,6 +24,8 @@ from evolab.repair import RepairEdit, RepairGenome, catalog_sources, _score
 ENDPOINT = "https://api.typesafe.ai/v1/systemone"
 MODEL_NAME = "jev-latest"
 
+_WARNED_JEV_KEY = False
+
 
 class JevClient:
     """Client for TypeSafe System One API with live endpoint and offline deterministic fallback."""
@@ -47,6 +49,21 @@ class JevClient:
         self.total_output_tokens = 0
         self.total_calls = 0
         self.total_api_time_seconds = 0.0
+
+        global _WARNED_JEV_KEY
+        if not _WARNED_JEV_KEY and not os.environ.get("EVOLAB_QUIET"):
+            import sys
+            msg = (
+                "[WARN] [evolab:jev] JEV_API_KEY not found in environment -- using local offline heuristic routing (System-2 fallback).\n"
+                "       For live cloud System-1 routing (76% search space reduction): export JEV_API_KEY=\"<your_key>\""
+                if self.offline_mode
+                else "[INFO] [evolab:jev] Connected to TypeSafe AI System-One live endpoint (model: jev-latest)."
+            )
+            try:
+                print(msg, file=sys.stderr)
+            except Exception:
+                pass
+            _WARNED_JEV_KEY = True
 
         # Check for locally trained Open-JEV neural model
         repo_root = Path(__file__).resolve().parent.parent.parent

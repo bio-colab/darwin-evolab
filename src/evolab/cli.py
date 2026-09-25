@@ -737,7 +737,22 @@ def cmd_evolve(args) -> int:
     report = parse_report(out_path)
     if not report.is_valid:
         return 2
-    return 0 if _hit(result, args.target) else 1
+
+    if not _hit(result, args.target):
+        if out_format not in ("json", "patch") and not (
+            getattr(args, "diagnose", False) or getattr(args, "verbose", False) or getattr(args, "quiet", False)
+        ):
+            print(
+                f"\n[FAIL] [evolab:repair] Target fitness ({args.target}%) not reached within evaluation budget "
+                f"(best achieved: {bi.get('fitness', 0.0):.1f}%).\n"
+                f"   Hints for resolution:\n"
+                f"      1. Increase search budget: add `--max-evals 64` or `--generations 50`\n"
+                f"      2. View detailed root-cause fault trace: re-run with `--diagnose` or `-v`\n"
+                f"      3. Check test isolation: ensure tests exercise the target function directly",
+                file=sys.stderr,
+            )
+        return 1
+    return 0
 
 
 def cmd_serve_workbench(args) -> int:

@@ -2,14 +2,15 @@
 Example 01: Quickstart Python Automated Program Repair (APR).
 
 Shows how Darwin-Evolab localizes and repairs bugs in Python source code
-using AST mutations and test-case guidance in under 2 seconds.
+using AST mutations and test-case guidance in under 0.2 seconds.
 """
+import time
 from evolab.adapters import get_domain_adapter
-from evolab.repair import greedy_repair
+from evolab.repair import greedy_repair, unified_source_diff
 
 
 def main():
-    print("=== Darwin-Evolab: Python Automated Program Repair ===")
+    print("=== Darwin-Evolab: Python Automated Program Repair Quickstart ===")
 
     # 1. Acquire the Software Repair driver
     driver = get_domain_adapter("software_repair")
@@ -34,23 +35,36 @@ def main():
 
     # 3. Build evaluator
     evaluator = driver.build_evaluator(spec)
-    print(f"Driver Name : {driver.name}")
+    print(f"Driver      : {driver.name}")
     print(f"Target File : {spec.target_file}")
     print(f"Test Cases  : {len(spec.tests)} assertions")
 
-    # 4. Run Greedy AST Repair
+    # 4. Run Greedy AST Repair with timing
+    t0 = time.perf_counter()
     winning_genome, history, n_evals = greedy_repair(
         sources=spec.sources,
         target_file=spec.target_file,
         evaluator=evaluator,
         max_evals=16,
     )
+    elapsed = time.perf_counter() - t0
+
+    import sys
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
 
     result = evaluator.evaluate(winning_genome)
-    print(f"\n[Repair Finished]")
-    print(f"Evaluations : {n_evals}")
-    print(f"Fitness     : {result.score:.1f}% (All tests passing!)")
-    print(f"Fixed Code  :\n{winning_genome.to_code()}")
+    repaired_sources = winning_genome.apply_to(spec.sources)
+    diff = unified_source_diff(spec.sources, repaired_sources)
+
+    print(f"\n[SUCCESS] Fixed in {elapsed:.3f}s | {n_evals} evaluations consumed | Fitness: {result.score:.1f}%")
+    print(f"--- Unified Diff ---")
+    print(diff)
+    print("--- Fixed Source Code ---")
+    print(winning_genome.to_code())
 
 
 if __name__ == "__main__":
