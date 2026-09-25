@@ -41,6 +41,7 @@ Issues = "https://github.com/bio-colab/darwin-evolab/issues"
 [project.optional-dependencies]
 test = [
     "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
     "sympy>=1.12",
 ]
 cst = [
@@ -61,6 +62,7 @@ full = [
     "libcst>=1.0",
     "z3-solver>=4.8",
     "mcp>=1.0.0,<2.0.0",
+    "pytest-asyncio>=0.21.0",
 ]
 llm = []
 
@@ -69,6 +71,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 120

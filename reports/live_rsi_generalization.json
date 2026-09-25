@@ -8,7 +8,20 @@
     "first_ascent": true,
     "governor_alpha": 0.05,
     "min_effect_size": 0.3,
-    "tolerance_regressions": 0
+    "tolerance_regressions": 0,
+    "multi_seeds": [
+      42,
+      123,
+      999
+    ],
+    "evaluate_multi_seed": true
+  },
+  "scientific_disclosures": {
+    "methodological_classification": "Live Empirical Meta-Policy Self-Improvement with Zero-Shot Holdout Transfer",
+    "benchmark_description": "Distilled AST Benchmark Fixtures derived from SWE-bench defect archetypes",
+    "baseline_policy": "Ochiai SBFL Fault-Localization Candidate Ordering",
+    "evolved_policy": "Meta-Learned Operator Prior + SBFL Tie-Breaking Ordering",
+    "evaluations_metric_disclosure": "Measures reduction in evolutionary search evaluations consumed to verified solution (FAIL_TO_PASS and PASS_TO_PASS clean), distinguished from wall-clock runtime."
   },
   "train_instances": [
     "django__django_1057",
@@ -88,6 +101,55 @@
     "cohen_d": 0.8075,
     "regressions_count": 0
   },
+  "multi_seed_aggregate": {
+    "seeds": [
+      42,
+      123,
+      999
+    ],
+    "total_trials": 75,
+    "per_seed_results": {
+      "42": {
+        "baseline_mean": 5.52,
+        "evolved_mean": 3.12,
+        "saved_percent": 43.48,
+        "p_value": 0.00047917873784166675,
+        "cohen_d": 0.8075,
+        "regressions": 0,
+        "solved_count": 25
+      },
+      "123": {
+        "baseline_mean": 7.52,
+        "evolved_mean": 4.84,
+        "saved_percent": 35.64,
+        "p_value": 1.3585665343663371e-05,
+        "cohen_d": 1.0887,
+        "regressions": 0,
+        "solved_count": 23
+      },
+      "999": {
+        "baseline_mean": 5.64,
+        "evolved_mean": 2.4,
+        "saved_percent": 57.45,
+        "p_value": 2.3770797420942758e-07,
+        "cohen_d": 1.4222,
+        "regressions": 0,
+        "solved_count": 24
+      }
+    },
+    "pooled_metrics": {
+      "total_baseline_evals": 467,
+      "total_evolved_evals": 259,
+      "baseline_mean_evals": 6.227,
+      "evolved_mean_evals": 3.453,
+      "mean_evaluations_saved_percent": 44.54,
+      "paired_t_statistic": 9.3227,
+      "p_value": 4.097776889882366e-14,
+      "cohen_d": 1.0765,
+      "total_regressions": 0,
+      "solve_rate_percent": 96.0
+    }
+  },
   "governor_verdict": {
     "decision": "ACCEPT",
     "reasons": [
@@ -110,84 +172,7 @@
       "instance_id": "pytest-dev-_pytest_1120",
       "baseline_solved": true,
       "baseline_evals": 2,
-      "baseline_time_s": 0.0042,
-      "evolved_solved": true,
-      "evolved_evals": 4,
-      "evolved_time_s": 0.0072,
-      "evals_delta": -2,
-      "regressed": false
-    },
-    {
-      "instance_id": "django--django_1079",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0123,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.006,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "matplotlib--matplotlib_1175",
-      "baseline_solved": true,
-      "baseline_evals": 2,
-      "baseline_time_s": 0.0042,
-      "evolved_solved": true,
-      "evolved_evals": 4,
-      "evolved_time_s": 0.0064,
-      "evals_delta": -2,
-      "regressed": false
-    },
-    {
-      "instance_id": "pydantic__pydantic-1540",
-      "baseline_solved": true,
-      "baseline_evals": 5,
-      "baseline_time_s": 0.0086,
-      "evolved_solved": true,
-      "evolved_evals": 5,
-      "evolved_time_s": 0.0065,
-      "evals_delta": 0,
-      "regressed": false
-    },
-    {
-      "instance_id": "pytest-dev__pytest-5227",
-      "baseline_solved": true,
-      "baseline_evals": 6,
-      "baseline_time_s": 0.0102,
-      "evolved_solved": true,
-      "evolved_evals": 6,
-      "evolved_time_s": 0.0095,
-      "evals_delta": 0,
-      "regressed": false
-    },
-    {
-      "instance_id": "django--django_1049",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0125,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.006,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "pytest-dev-_pytest_1129",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0144,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0042,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "pytest-dev-_pytest_1122",
-      "baseline_solved": true,
-      "baseline_evals": 2,
-      "baseline_time_s": 0.0032,
+      "baseline_time_s": 0.0045,
       "evolved_solved": true,
       "evolved_evals": 4,
       "evolved_time_s": 0.0066,
@@ -195,120 +180,10 @@
       "regressed": false
     },
     {
-      "instance_id": "pallets__jinja-1225",
-      "baseline_solved": true,
-      "baseline_evals": 4,
-      "baseline_time_s": 0.0093,
-      "evolved_solved": true,
-      "evolved_evals": 4,
-      "evolved_time_s": 0.0088,
-      "evals_delta": 0,
-      "regressed": false
-    },
-    {
-      "instance_id": "django--django_1022",
-      "baseline_solved": true,
-      "baseline_evals": 6,
-      "baseline_time_s": 0.0088,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0034,
-      "evals_delta": 4,
-      "regressed": false
-    },
-    {
-      "instance_id": "sphinx-doc-_sphinx_1194",
+      "instance_id": "django--django_1079",
       "baseline_solved": true,
       "baseline_evals": 7,
-      "baseline_time_s": 0.0135,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0052,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "sympy__sympy-13480",
-      "baseline_solved": true,
-      "baseline_evals": 5,
-      "baseline_time_s": 0.0085,
-      "evolved_solved": true,
-      "evolved_evals": 5,
-      "evolved_time_s": 0.0093,
-      "evals_delta": 0,
-      "regressed": false
-    },
-    {
-      "instance_id": "django--django_1063",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0121,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0058,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "pytest-dev-_pytest_1139",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0125,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0052,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "django--django_1040",
-      "baseline_solved": true,
-      "baseline_evals": 4,
-      "baseline_time_s": 0.0059,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0032,
-      "evals_delta": 2,
-      "regressed": false
-    },
-    {
-      "instance_id": "tornado--tornado_1230",
-      "baseline_solved": true,
-      "baseline_evals": 2,
-      "baseline_time_s": 0.0054,
-      "evolved_solved": true,
-      "evolved_evals": 4,
-      "evolved_time_s": 0.0058,
-      "evals_delta": -2,
-      "regressed": false
-    },
-    {
-      "instance_id": "psf--requests_1209",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.015,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0042,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "pytest-dev-_pytest_1131",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0133,
-      "evolved_solved": true,
-      "evolved_evals": 2,
-      "evolved_time_s": 0.0042,
-      "evals_delta": 5,
-      "regressed": false
-    },
-    {
-      "instance_id": "urllib3--urllib3_1239",
-      "baseline_solved": true,
-      "baseline_evals": 7,
-      "baseline_time_s": 0.0147,
+      "baseline_time_s": 0.0134,
       "evolved_solved": true,
       "evolved_evals": 2,
       "evolved_time_s": 0.0046,
@@ -316,13 +191,200 @@
       "regressed": false
     },
     {
+      "instance_id": "matplotlib--matplotlib_1175",
+      "baseline_solved": true,
+      "baseline_evals": 2,
+      "baseline_time_s": 0.0048,
+      "evolved_solved": true,
+      "evolved_evals": 4,
+      "evolved_time_s": 0.0066,
+      "evals_delta": -2,
+      "regressed": false
+    },
+    {
+      "instance_id": "pydantic__pydantic-1540",
+      "baseline_solved": true,
+      "baseline_evals": 5,
+      "baseline_time_s": 0.0078,
+      "evolved_solved": true,
+      "evolved_evals": 5,
+      "evolved_time_s": 0.007,
+      "evals_delta": 0,
+      "regressed": false
+    },
+    {
+      "instance_id": "pytest-dev__pytest-5227",
+      "baseline_solved": true,
+      "baseline_evals": 6,
+      "baseline_time_s": 0.0099,
+      "evolved_solved": true,
+      "evolved_evals": 6,
+      "evolved_time_s": 0.0086,
+      "evals_delta": 0,
+      "regressed": false
+    },
+    {
+      "instance_id": "django--django_1049",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0135,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0047,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "pytest-dev-_pytest_1129",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0147,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0043,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "pytest-dev-_pytest_1122",
+      "baseline_solved": true,
+      "baseline_evals": 2,
+      "baseline_time_s": 0.0038,
+      "evolved_solved": true,
+      "evolved_evals": 4,
+      "evolved_time_s": 0.0065,
+      "evals_delta": -2,
+      "regressed": false
+    },
+    {
+      "instance_id": "pallets__jinja-1225",
+      "baseline_solved": true,
+      "baseline_evals": 4,
+      "baseline_time_s": 0.009,
+      "evolved_solved": true,
+      "evolved_evals": 4,
+      "evolved_time_s": 0.0081,
+      "evals_delta": 0,
+      "regressed": false
+    },
+    {
+      "instance_id": "django--django_1022",
+      "baseline_solved": true,
+      "baseline_evals": 6,
+      "baseline_time_s": 0.0098,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0037,
+      "evals_delta": 4,
+      "regressed": false
+    },
+    {
+      "instance_id": "sphinx-doc-_sphinx_1194",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0134,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0048,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "sympy__sympy-13480",
+      "baseline_solved": true,
+      "baseline_evals": 5,
+      "baseline_time_s": 0.0094,
+      "evolved_solved": true,
+      "evolved_evals": 5,
+      "evolved_time_s": 0.0087,
+      "evals_delta": 0,
+      "regressed": false
+    },
+    {
+      "instance_id": "django--django_1063",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0129,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0046,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "pytest-dev-_pytest_1139",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0129,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0048,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "django--django_1040",
+      "baseline_solved": true,
+      "baseline_evals": 4,
+      "baseline_time_s": 0.0065,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0034,
+      "evals_delta": 2,
+      "regressed": false
+    },
+    {
+      "instance_id": "tornado--tornado_1230",
+      "baseline_solved": true,
+      "baseline_evals": 2,
+      "baseline_time_s": 0.0049,
+      "evolved_solved": true,
+      "evolved_evals": 4,
+      "evolved_time_s": 0.0064,
+      "evals_delta": -2,
+      "regressed": false
+    },
+    {
+      "instance_id": "psf--requests_1209",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0145,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0046,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "pytest-dev-_pytest_1131",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0179,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0065,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
+      "instance_id": "urllib3--urllib3_1239",
+      "baseline_solved": true,
+      "baseline_evals": 7,
+      "baseline_time_s": 0.0155,
+      "evolved_solved": true,
+      "evolved_evals": 2,
+      "evolved_time_s": 0.0043,
+      "evals_delta": 5,
+      "regressed": false
+    },
+    {
       "instance_id": "matplotlib--matplotlib_1163",
       "baseline_solved": true,
       "baseline_evals": 7,
-      "baseline_time_s": 0.0127,
+      "baseline_time_s": 0.0132,
       "evolved_solved": true,
       "evolved_evals": 2,
-      "evolved_time_s": 0.007,
+      "evolved_time_s": 0.0046,
       "evals_delta": 5,
       "regressed": false
     },
@@ -330,10 +392,10 @@
       "instance_id": "django--django_1035",
       "baseline_solved": true,
       "baseline_evals": 7,
-      "baseline_time_s": 0.0109,
+      "baseline_time_s": 0.0112,
       "evolved_solved": true,
       "evolved_evals": 7,
-      "evolved_time_s": 0.0132,
+      "evolved_time_s": 0.0104,
       "evals_delta": 0,
       "regressed": false
     },
@@ -341,10 +403,10 @@
       "instance_id": "django--django_1023",
       "baseline_solved": true,
       "baseline_evals": 7,
-      "baseline_time_s": 0.0156,
+      "baseline_time_s": 0.0129,
       "evolved_solved": true,
       "evolved_evals": 2,
-      "evolved_time_s": 0.005,
+      "evolved_time_s": 0.0046,
       "evals_delta": 5,
       "regressed": false
     },
@@ -352,10 +414,10 @@
       "instance_id": "numpy__numpy-18000",
       "baseline_solved": true,
       "baseline_evals": 3,
-      "baseline_time_s": 0.0069,
+      "baseline_time_s": 0.0056,
       "evolved_solved": true,
       "evolved_evals": 5,
-      "evolved_time_s": 0.0078,
+      "evolved_time_s": 0.0079,
       "evals_delta": -2,
       "regressed": false
     },
@@ -363,10 +425,10 @@
       "instance_id": "psf--requests_1207",
       "baseline_solved": true,
       "baseline_evals": 6,
-      "baseline_time_s": 0.0121,
+      "baseline_time_s": 0.0108,
       "evolved_solved": true,
       "evolved_evals": 2,
-      "evolved_time_s": 0.0036,
+      "evolved_time_s": 0.0042,
       "evals_delta": 4,
       "regressed": false
     },
@@ -374,10 +436,10 @@
       "instance_id": "django--django_1051",
       "baseline_solved": true,
       "baseline_evals": 7,
-      "baseline_time_s": 0.0146,
+      "baseline_time_s": 0.0127,
       "evolved_solved": true,
       "evolved_evals": 2,
-      "evolved_time_s": 0.0053,
+      "evolved_time_s": 0.0046,
       "evals_delta": 5,
       "regressed": false
     }

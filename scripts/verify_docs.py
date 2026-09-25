@@ -245,7 +245,26 @@ def verify_documentation() -> bool:
         else:
             checks_passed += 1
 
-        print(f"[OK] Dream-RSI Live Online Search Rollouts ({n_tr} train / {n_te} test, {saved_p:.2f}% saved, p={p_val:.6f}, d={cd:.4f}) verified.")
+        # Multi-Seed Verification
+        multi_agg = live_rep.get("multi_seed_aggregate")
+        if multi_agg:
+            tot_tr = multi_agg["total_trials"]
+            p_saved = multi_agg["pooled_metrics"]["mean_evaluations_saved_percent"]
+            p_cd = multi_agg["pooled_metrics"]["cohen_d"]
+            if f"{tot_tr}" not in doc_text:
+                errors.append(f"Live Rollout Multi-Seed: Missing total trials count ({tot_tr})")
+            else:
+                checks_passed += 1
+            if f"{p_saved:.2f}%" not in doc_text:
+                errors.append(f"Live Rollout Multi-Seed: Missing pooled savings ({p_saved:.2f}%)")
+            else:
+                checks_passed += 1
+            if f"{p_cd:.4f}" not in doc_text:
+                errors.append(f"Live Rollout Multi-Seed: Missing pooled Cohen's d ({p_cd:.4f})")
+            else:
+                checks_passed += 1
+
+        print(f"[OK] Dream-RSI Live Online Search Rollouts ({n_tr} train / {n_te} test, {saved_p:.2f}% saved, p={p_val:.6f}, d={cd:.4f}, multi-seed {p_saved:.2f}%) verified.")
     except Exception as exc:
         errors.append(f"Live Online Search Rollouts check failed: {exc}")
 

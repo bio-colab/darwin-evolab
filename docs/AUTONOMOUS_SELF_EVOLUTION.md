@@ -112,18 +112,26 @@ To move beyond static evolutionary operators toward closed-loop self-adaptation,
   - **Kaggle Grand Run Scale**: 34.14% evaluations saved on heavy industrial benchmarks ($p = 0.000509$, Cohen's $d = 1.64$).
 
 #### 4.2 Gold-Standard Proof: Head-to-Head Live Online Search Rollouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$)
+
 To address the decisive peer-review challenge—proving that evolved self-modification transfers zero-shot to fresh, unseen codebases without replay approximations or oracle assumptions:
-- **Strict Holdout Partition**: 50 real SWE-bench instances strictly partitioned into $D_{\text{train}} = 25$ and $D_{\text{test}} = 25$ ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$).
-- **Phase 1 (Dreaming / Offline Training)**: Learns operator yield distribution $\pi^*$ on $D_{\text{train}}$ from real successful AST mutations, then freezes $\pi^*$ completely.
-- **Phase 2 (Live Online Search Execution)**: Head-to-head live AST search rollouts on unseen $D_{\text{test}}$ comparing baseline unranked policy $\pi_0$ vs evolved policy $\pi^*$.
-  - Executes real AST parsing, live Python bytecode compilation, Ochiai SBFL suspiciousness ranking, and runs both `FAIL_TO_PASS` and `PASS_TO_PASS` test suites in isolated memory.
+- **Methodological Classification**: *Live Empirical Meta-Policy Self-Improvement with Zero-Shot Holdout Transfer* (pre-recursive single-stage transfer; demarcated from full multi-stage recursive loops $\pi_0 \to \pi_1 \to \pi_2$).
+- **Benchmark Suite**: Evaluated on unseen *distilled AST benchmark fixtures derived from SWE-bench defect archetypes* (strictly disjoint: $D_{\text{train}} \cap D_{\text{test}} = \emptyset$).
+- **Baseline Policy ($\pi_0$)**: Standard **Ochiai Spectrum-Based Fault Localization (SBFL) suspicion ordering**. (Not uniform random; tests whether learned operator priors can improve upon classical statistical fault localization).
+- **Evolved Meta-Policy ($\pi^*$)**: Prioritized first-ascent search ordered by meta-learned operator yields $\pi^*(e.\text{kind})$ with SBFL suspicion tie-breaking.
+- **Evaluated Metric**: Reduction in **evolutionary search evaluations consumed to verified solution** (100% `FAIL_TO_PASS` and `PASS_TO_PASS` clean), distinguished from wall-clock interpreter overhead.
 - **Empirical Measured Findings** (`reports/live_rsi_generalization.json`):
-  - **Solve Rate**: 100.0% preserved (25/25 on both baseline and evolved; 0 regressions).
-  - **Evaluations Consumed / Task**: Reduced from 5.52 down to **3.12** (**43.48% actual evaluations saved**).
-  - **Paired Student's $t$-test**: $t = 4.0376$, $p = 0.000479 \ll 0.05$ (statistically significant).
-  - **Effect Size**: Cohen's $d = 0.8075$ (large effect size $\ge 0.8$).
-  - **Test Regressions**: $N_{\text{regress}} = 0$ (zero regressions on holdout tasks).
-  - **Governor Verdict**: **`ACCEPT` (`all_gates_passed`)**.
+  - **Primary Single-Seed Verification (Seed 42, $N=25$)**:
+    - **Solve Rate**: 100.0% preserved (25/25 on both baseline and evolved; 0 regressions).
+    - **Evaluations Consumed / Task**: Reduced from 5.52 down to **3.12** (**43.48% search evaluations saved**).
+    - **Paired Student's $t$-test**: $t = 4.0376$, $p = 0.000479 \ll 0.05$ (statistically significant).
+    - **Effect Size**: Cohen's $d = 0.8075$ (large effect size $\ge 0.8$).
+    - **Test Regressions**: $N_{\text{regress}} = 0$ (zero regressions on holdout tasks).
+    - **Governor Verdict**: **`ACCEPT` (`all_gates_passed`)**.
+  - **Multi-Seed Robustness Verification (Seeds 42, 123, 999; $N=75$ trials)**:
+    - **Pooled Evaluations Consumed**: Reduced from 467 down to **259** (**44.54% pooled evaluations saved**).
+    - **Pooled Paired $t$-test**: $t = 9.3227, \quad p = 4.10 \times 10^{-14} \ll 10^{-6}$.
+    - **Pooled Effect Size**: Cohen's $d = 1.0765$ (very large effect size).
+    - **Total Regressions across 75 trials**: **0 regressions** ($N_{\text{regress}} = 0$).
 
 ---
 

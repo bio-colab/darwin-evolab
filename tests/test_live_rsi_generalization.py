@@ -127,3 +127,24 @@ def test_live_rsi_artifact_export_and_schema(tmp_path: Path):
     md = res.summary_markdown()
     assert "Live Online Search Rollout" in md
     assert "Governor Verdict" in md
+
+
+def test_live_rsi_multi_seed_aggregation():
+    """Verify multi-seed aggregation computes pooled metrics across independent random splits."""
+    cfg = LiveRSIConfig(
+        n_train=10,
+        n_test=10,
+        seed=42,
+        multi_seeds=[42, 123],
+        evaluate_multi_seed=True,
+    )
+    res = run_live_rsi_rollout(config=cfg, fixtures_dir=FIXTURES_DIR)
+    assert res.multi_seed_aggregate is not None
+    assert res.multi_seed_aggregate["total_trials"] == 20
+    pm = res.multi_seed_aggregate["pooled_metrics"]
+    assert pm["mean_evaluations_saved_percent"] > 0.0
+    assert pm["p_value"] < 0.05
+    assert pm["total_regressions"] == 0
+    assert "42" in res.multi_seed_aggregate["per_seed_results"]
+    assert "123" in res.multi_seed_aggregate["per_seed_results"]
+

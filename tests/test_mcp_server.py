@@ -6,6 +6,9 @@ from pathlib import Path
 
 import pytest
 
+pytest.importorskip("mcp", reason="mcp extra required for MCP tests")
+pytest.importorskip("pytest_asyncio", reason="pytest-asyncio required for async MCP tests")
+
 from evolab.mcp.server import create_mcp_server
 from evolab.mcp.tools import (
     tool_benchmark_scenario,

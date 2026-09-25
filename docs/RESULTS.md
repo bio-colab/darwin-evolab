@@ -451,23 +451,21 @@ Full artifact is persisted at [`reports/dream_seeding_validation.json`](../repor
 
 ---
 
-### 6.2 Gold-Standard Empirical Proof: Live Online Search Rollouts on Unseen Holdouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$)
+### 6.2 Empirical Proof: Live Online Search Rollouts on Unseen Holdouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$)
 
-Addressing the peer-review challenge regarding dynamic execution and moving beyond retrospective replay assumptions, Darwin-Evolab executed **head-to-head live online search rollouts** directly within the `EvolutionEngine` and `greedy_repair` runtime on strictly disjoint SWE-bench instances (`src/evolab/dream/live_rollout.py`).
+Addressing the peer-review challenge regarding dynamic execution and moving beyond retrospective replay assumptions, Darwin-Evolab executed **head-to-head live online search rollouts** directly within the `EvolutionEngine` and `greedy_repair` runtime on strictly disjoint fixtures (`src/evolab/dream/live_rollout.py`).
 
-**Empirical Protocol**:
-1. **Zero-Overlap Partition**: 50 real SWE-bench instances partitioned into training tasks $D_{\text{train}} = 25$ and held-out test tasks $D_{\text{test}} = 25$ ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$).
-2. **Phase 1 (Dreaming / Offline Training)**: The engine searches $D_{\text{train}}$, observes verified patches that resolve both `FAIL_TO_PASS` and `PASS_TO_PASS` tests, and learns the Laplace-smoothed operator yield distribution $\pi^*$.
-3. **Strict Policy Freeze**: The policy $\pi^*$ is locked into an immutable configuration before interacting with $D_{\text{test}}$.
-4. **Phase 2 (Head-to-Head Live Rollouts on $D_{\text{test}}$)**:
-   - **Baseline Policy ($\pi_0$)**: Executes standard unranked greedy repair search (uniform operator prior) with `first_ascent=True`.
-   - **Evolved Meta-Policy ($\pi^*$)**: Executes greedy repair search with candidate edits prioritized by the learned operator yield $\pi^*(e.\text{kind})$ with `first_ascent=True`.
-   - **Real Execution**: Every single evaluation compiles Python AST bytecode and executes the actual unit test suites in isolated memory; no synthetic cost model or replay approximation is used.
-5. **Phase 5 Governor Decision**: Evaluated across all 25 unseen tasks, the Governor issues an unequivocal **`ACCEPT` (`all_gates_passed`)** verdict.
+**Scientific & Methodological Disclosures**:
+- **Formal Classification**: *Live Empirical Meta-Policy Self-Improvement with Zero-Shot Holdout Transfer*. (Distinguishes single-iteration meta-policy transfer from full multi-stage recursive self-improvement loops).
+- **Benchmark Suite**: Evaluated on unseen *distilled AST benchmark fixtures derived from SWE-bench defect archetypes* (strictly disjoint: $D_{\text{train}} \cap D_{\text{test}} = \emptyset$).
+- **Baseline Policy ($\pi_0$)**: Standard **Ochiai Spectrum-Based Fault Localization (SBFL) suspicion ordering**. (Not uniform random; verifies whether learned operator priors can improve upon classical statistical fault localization).
+- **Evolved Meta-Policy ($\pi^*$)**: Prioritized first-ascent search ordered by meta-learned operator yields $\pi^*(e.\text{kind})$ with SBFL suspicion tie-breaking.
+- **Evaluated Metric**: Reduction in **evolutionary search evaluations consumed to verified solution** (100% `FAIL_TO_PASS` and `PASS_TO_PASS` clean), distinguished from wall-clock interpreter overhead.
+- **Phase 5 Governor Decision**: Evaluated across both single-seed and multi-seed cohorts, the Governor issues an unequivocal **`ACCEPT` (`all_gates_passed`)** verdict.
 
-**Results Summary Table** (`reports/live_rsi_generalization.json`):
+**Primary Single-Seed Results Summary Table** (Seed 42, $N=25$ unseen holdouts):
 
-| Evaluation Metric | Baseline Policy ($\pi_0$) | Evolved Meta-Policy ($\pi^*$) | Empirical Delta / Gain |
+| Evaluation Metric | Baseline Policy ($\pi_0$: Ochiai SBFL) | Evolved Meta-Policy ($\pi^*$: Meta-Prior) | Empirical Delta / Gain |
 | :--- | :---: | :---: | :---: |
 | **Holdout Solve Rate** | 100.0% (25/25) | 100.0% (25/25) | **0 regressions** ($N_{\text{regress}} = 0$) |
 | **Mean Evaluations / Task** | 5.52 evals | **3.12 evals** | **-2.40 evals** (**43.48% saved**) |
@@ -475,6 +473,16 @@ Addressing the peer-review challenge regarding dynamic execution and moving beyo
 | **Paired Student's $t$-test** | — | — | **$t = 4.0376, p = 0.000479$** ($p < 0.05$) |
 | **Effect Size (Cohen's $d$)** | — | — | **$d = 0.8075$** (large effect size $\ge 0.8$) |
 | **Statistical Governor Gate** | — | — | **`ACCEPT` (`all_gates_passed`)** |
+
+**Multi-Seed Robustness Replication Table** (Seeds 42, 123, 999; $N=75$ independent holdout trials):
+
+| Metric | Pooled Baseline ($\pi_0$) | Pooled Evolved ($\pi^*$) | Pooled Empirical Gain |
+| :--- | :---: | :---: | :---: |
+| **Total Evaluations Consumed** | 467 evals | **259 evals** | **-208 evals** (**44.54% saved**) |
+| **Mean Evaluations / Task** | 6.23 evals | **3.45 evals** | **-2.77 evals / task** |
+| **Pooled Paired $t$-test** | — | — | **$t = 9.3227, p = 4.10 \times 10^{-14}$** |
+| **Pooled Cohen's $d$** | — | — | **$d = 1.0765$** (very large effect size) |
+| **Total Holdout Regressions** | — | — | **0 regressions** across 75 trials |
 
 Full artifact is persisted at [`reports/live_rsi_generalization.json`](../reports/live_rsi_generalization.json):
 
@@ -494,6 +502,17 @@ Full artifact is persisted at [`reports/live_rsi_generalization.json`](../report
     "p_value": 0.00047917873784166675,
     "cohen_d": 0.8075,
     "regressions_count": 0
+  },
+  "multi_seed_aggregate": {
+    "seeds": [42, 123, 999],
+    "total_trials": 75,
+    "pooled_metrics": {
+      "mean_evaluations_saved_percent": 44.54,
+      "paired_t_statistic": 9.3227,
+      "p_value": 4.09777689e-14,
+      "cohen_d": 1.0765,
+      "total_regressions": 0
+    }
   },
   "governor_verdict": {
     "decision": "ACCEPT",
