@@ -30,6 +30,11 @@ from .live_rollout import (
     learn_operator_yields,
     run_live_rsi_rollout,
 )
+from .recursive_rsi import (
+    RecursiveRSIConfig,
+    RecursiveRSIResult,
+    run_recursive_rsi_pipeline,
+)
 from .self_model_dream import (
     DreamReweightingResult,
     OperatorDistribution,
@@ -66,5 +71,9 @@ __all__ = [
     "LiveRSIResult",
     "learn_operator_yields",
     "run_live_rsi_rollout",
+    "RecursiveRSIConfig",
+    "RecursiveRSIResult",
+    "run_recursive_rsi_pipeline",
 ]
+
 

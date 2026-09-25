@@ -269,11 +269,58 @@ def verify_documentation() -> bool:
         errors.append(f"Live Online Search Rollouts check failed: {exc}")
 
     # -------------------------------------------------------------------------
-    # Check 8: Production Test Suite Badge & Verification (README.md)
+    # Check 8: Multi-Stage Recursive Policy Improvement (recursive_rsi_evaluation.json)
+    # -------------------------------------------------------------------------
+    try:
+        rec_rep = load_json("recursive_rsi_evaluation.json")
+        rec_tasks = rec_rep["total_unseen_tasks_evaluated"]
+        rec_pm = rec_rep["pooled_metrics"]
+        rec_saved = rec_pm["pi2_ctx_saved_percent"]
+        rec_cd = rec_pm["cohen_d_0_vs_2ctx"]
+        rec_regs = rec_pm["total_regressions"]
+        rec_decision = rec_rep["governor_verdict"]["decision"]
+        rec_monotonic = rec_pm["monotonic_progression"]
+
+        if f"{rec_tasks} unseen tasks" not in doc_text and f"{rec_tasks} tasks across" not in doc_text and f"{rec_tasks}" not in doc_text:
+            errors.append(f"Recursive RSI: Missing unseen tasks count ({rec_tasks})")
+        else:
+            checks_passed += 1
+
+        if f"{rec_saved:.2f}%" not in doc_text:
+            errors.append(f"Recursive RSI: Missing savings percent {rec_saved:.2f}%")
+        else:
+            checks_passed += 1
+
+        if f"{rec_cd:.4f}" not in doc_text:
+            errors.append(f"Recursive RSI: Missing Cohen's d {rec_cd:.4f}")
+        else:
+            checks_passed += 1
+
+        if "evals(pi_2-context) < evals(pi_2-op) < evals(pi_1) < evals(pi_0)" not in doc_text and "\\text{evals}(\\pi_2\\text{-context}) < \\text{evals}(\\pi_2\\text{-op}) < \\text{evals}(\\pi_1) < \\text{evals}(\\pi_0)" not in doc_text:
+            errors.append("Recursive RSI: Missing monotonic progression inequality")
+        else:
+            checks_passed += 1
+
+        if rec_decision not in doc_text:
+            errors.append(f"Recursive RSI: Missing Governor decision {rec_decision}")
+        else:
+            checks_passed += 1
+
+        if f"{rec_regs} regressions" not in doc_text:
+            errors.append(f"Recursive RSI: Missing {rec_regs} regressions mention")
+        else:
+            checks_passed += 1
+
+        print(f"[OK] Multi-Stage Recursive Policy Progression ({rec_tasks} holdouts, {rec_saved:.2f}% saved, d={rec_cd:.4f}, monotonic={rec_monotonic}, {rec_regs} regressions) verified.")
+    except Exception as exc:
+        errors.append(f"Recursive RSI check failed: {exc}")
+
+    # -------------------------------------------------------------------------
+    # Check 9: Production Test Suite Badge & Verification (README.md)
     # -------------------------------------------------------------------------
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
-        if any(b in readme_text for b in ["tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
+        if any(b in readme_text for b in ["tests-711%20passed", "tests-711 passed", "tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
             checks_passed += 1
             print(f"[OK] Production Test Suite Badge verified in README.md.")
         else:

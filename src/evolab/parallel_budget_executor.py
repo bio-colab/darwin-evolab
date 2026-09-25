@@ -159,8 +159,9 @@ class ParallelBudgetExecutor:
         else:
             self.n_workers = configured_workers
 
-        self._task_queue: mp.Queue = mp.Queue()
-        self._result_queue: mp.Queue = mp.Queue()
+        self._ctx = mp.get_context("spawn")
+        self._task_queue = self._ctx.Queue()
+        self._result_queue = self._ctx.Queue()
 
         self._workers: Dict[int, dict] = {}
         self._next_worker_id = 0
@@ -186,9 +187,9 @@ class ParallelBudgetExecutor:
         with self._lock:
             wid = self._next_worker_id
             self._next_worker_id += 1
-            cancel_evt = mp.Event()
+            cancel_evt = self._ctx.Event()
 
-            proc = mp.Process(
+            proc = self._ctx.Process(
                 target=_worker_loop,
                 args=(wid, self.eval_fn, self._task_queue, self._result_queue, cancel_evt),
                 daemon=True,

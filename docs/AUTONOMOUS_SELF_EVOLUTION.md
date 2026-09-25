@@ -163,4 +163,6 @@ To prove that self-evolution is not an artifact of Python's dynamic runtime, Dar
 | **Kaggle Grand Industrial Run (Dream-RSI)** | Baseline exploration | Dirichlet replay policy | **34.14% evals saved** ($p = 0.000509$, $d=1.64$) |
 | **Budget Allocation (Dream-RSI)** | Fixed step budget | Adaptive elasticity | **28.00% evals saved** |
 | **Live Online Search Rollouts (Unseen Tasks)** | Baseline unranked search (5.52 evals) | Evolved meta-policy $\pi^*$ (3.12 evals) | **43.48% evals saved** ($p = 0.000479$, $d=0.81$, 0 regressions) |
+| **Multi-Stage Recursive Search ($\mathcal{D}_0 \to \pi_1 \to \mathcal{D}_1 \to \pi_2 \to \mathcal{D}_2$)** | Ochiai SBFL baseline $\pi_0$ (7.19 evals) | Recursive contextual policy $\pi_2\text{-ctx}$ (3.76 evals) | **47.68% evals saved** ($p = 1.04 \times 10^{-20}$, $d=1.50$, monotonic chain, 0 regressions) |
 | **Digital Logic Synthesis** | 1-bit full adder | **4-bit ALU slice** | Synthesizable Verilog-2001 export |
+
