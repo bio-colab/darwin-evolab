@@ -99,15 +99,31 @@ Ensures that any self-modification accepted into the production engine operates 
 | **`--governor-alpha`** | `0.05` | Statistical Significance Threshold | Bounds Type I error (false discovery) at $p < 0.05$ across paired runs. |
 | **`--enable-dna-reader`**| `True` | Interoceptive DNA & Intron Reader | Activates 3-layer genome reading, schema mining, and counterfactual AST intron pruning (592 introns pruned). |
 
-### 4. The Dream-RSI Paradigm: Offline Retrospective Replay
-To avoid the computational cost of running thousands of live benchmark evaluations during self-modification, Darwin-Evolab utilizes **Dream-RSI** (`src/evolab/dream.py` and `src/evolab/replay_simulator.py`):
-- Mines historical discovery trees from prior repair runs.
-- Simulates counterfactual search trajectories offline in memory ("dreaming").
-- Validated with landmark Governor `ACCEPT` milestones:
+### 4. The Dream-RSI Paradigm: Retrospective Replay & Live Search Rollouts
+To move beyond static evolutionary operators toward closed-loop self-adaptation, Darwin-Evolab implements **Dream-RSI** (`src/evolab/dream/`):
+
+#### 4.1 Retrospective Replay Simulation (Cost-Model Prototype)
+- Mines historical discovery trees from prior repair runs (`DiscoveryTree`).
+- Evaluates counterfactual search trajectories offline in memory without re-running expensive compiler toolchains.
+- Proves statistical significance across historical discovery branches:
   - **Autonomous Operator Reweighting**: $p = 0.0018 < 0.01$, Cohen's $d = 1.26$, saving 21.12% evaluations.
   - **Adaptive Budget Elasticity**: Dynamically breaking plateaus, saving 28.0% evaluations.
-  - **Holdout Cross-Validated Seeding**: $k$-fold cross-validation ($p = 0.0147 < 0.05$, Cohen's $d = 0.80$) resolving the historical blind seeding dilemma.
+  - **Holdout Cross-Validated Seeding**: $k$-fold cross-validation ($p = 0.0147 < 0.05$, Cohen's $d = 0.80$) resolving the historical blind seeding dilemma under root $T^0$ affinity gating.
   - **Kaggle Grand Run Scale**: 34.14% evaluations saved on heavy industrial benchmarks ($p = 0.000509$, Cohen's $d = 1.64$).
+
+#### 4.2 Gold-Standard Proof: Head-to-Head Live Online Search Rollouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$)
+To address the decisive peer-review challenge—proving that evolved self-modification transfers zero-shot to fresh, unseen codebases without replay approximations or oracle assumptions:
+- **Strict Holdout Partition**: 50 real SWE-bench instances strictly partitioned into $D_{\text{train}} = 25$ and $D_{\text{test}} = 25$ ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$).
+- **Phase 1 (Dreaming / Offline Training)**: Learns operator yield distribution $\pi^*$ on $D_{\text{train}}$ from real successful AST mutations, then freezes $\pi^*$ completely.
+- **Phase 2 (Live Online Search Execution)**: Head-to-head live AST search rollouts on unseen $D_{\text{test}}$ comparing baseline unranked policy $\pi_0$ vs evolved policy $\pi^*$.
+  - Executes real AST parsing, live Python bytecode compilation, Ochiai SBFL suspiciousness ranking, and runs both `FAIL_TO_PASS` and `PASS_TO_PASS` test suites in isolated memory.
+- **Empirical Measured Findings** (`reports/live_rsi_generalization.json`):
+  - **Solve Rate**: 100.0% preserved (25/25 on both baseline and evolved; 0 regressions).
+  - **Evaluations Consumed / Task**: Reduced from 5.52 down to **3.12** (**43.48% actual evaluations saved**).
+  - **Paired Student's $t$-test**: $t = 4.0376$, $p = 0.000479 \ll 0.05$ (statistically significant).
+  - **Effect Size**: Cohen's $d = 0.8075$ (large effect size $\ge 0.8$).
+  - **Test Regressions**: $N_{\text{regress}} = 0$ (zero regressions on holdout tasks).
+  - **Governor Verdict**: **`ACCEPT` (`all_gates_passed`)**.
 
 ---
 
@@ -135,7 +151,8 @@ To prove that self-evolution is not an artifact of Python's dynamic runtime, Dar
 | **Operator Search Space Reduction (JEV)** | 100 evals (full catalog) | **24 evals** (JEV-guided) | **76.0% search reduction** |
 | **Population Diversity Tracking** | Raw population count | **`unique_programs` AST entropy** | True phenotypic drift detection |
 | **AST Intron Pruning (DNA Reader)** | Unaudited code bloat | **592 hitchhikers pruned** | **Zero bloat parsimonious repair** |
-| **Operator Reweighting (Dream-RSI)** | Static uniform prior | Dirichlet adaptive posterior | **21.12% evals saved** ($p = 0.0018$) |
+| **Operator Reweighting (Dream-RSI Replay)** | Static uniform prior | Dirichlet adaptive posterior | **21.12% evals saved** ($p = 0.0018$) |
 | **Kaggle Grand Industrial Run (Dream-RSI)** | Baseline exploration | Dirichlet replay policy | **34.14% evals saved** ($p = 0.000509$, $d=1.64$) |
 | **Budget Allocation (Dream-RSI)** | Fixed step budget | Adaptive elasticity | **28.00% evals saved** |
+| **Live Online Search Rollouts (Unseen Tasks)** | Baseline unranked search (5.52 evals) | Evolved meta-policy $\pi^*$ (3.12 evals) | **43.48% evals saved** ($p = 0.000479$, $d=0.81$, 0 regressions) |
 | **Digital Logic Synthesis** | 1-bit full adder | **4-bit ALU slice** | Synthesizable Verilog-2001 export |

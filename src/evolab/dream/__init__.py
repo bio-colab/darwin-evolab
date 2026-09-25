@@ -23,6 +23,13 @@ from .cross_validated_seeding import (
     run_cross_validated_seeding,
     train_test_split_trees,
 )
+from .live_rollout import (
+    LiveInstanceRecord,
+    LiveRSIConfig,
+    LiveRSIResult,
+    learn_operator_yields,
+    run_live_rsi_rollout,
+)
 from .self_model_dream import (
     DreamReweightingResult,
     OperatorDistribution,
@@ -54,5 +61,10 @@ __all__ = [
     "mine_seeds_from_trees",
     "train_test_split_trees",
     "run_cross_validated_seeding",
+    "LiveInstanceRecord",
+    "LiveRSIConfig",
+    "LiveRSIResult",
+    "learn_operator_yields",
+    "run_live_rsi_rollout",
 ]
 

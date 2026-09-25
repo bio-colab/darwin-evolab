@@ -451,6 +451,61 @@ Full artifact is persisted at [`reports/dream_seeding_validation.json`](../repor
 
 ---
 
+### 6.2 Gold-Standard Empirical Proof: Live Online Search Rollouts on Unseen Holdouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$)
+
+Addressing the peer-review challenge regarding dynamic execution and moving beyond retrospective replay assumptions, Darwin-Evolab executed **head-to-head live online search rollouts** directly within the `EvolutionEngine` and `greedy_repair` runtime on strictly disjoint SWE-bench instances (`src/evolab/dream/live_rollout.py`).
+
+**Empirical Protocol**:
+1. **Zero-Overlap Partition**: 50 real SWE-bench instances partitioned into training tasks $D_{\text{train}} = 25$ and held-out test tasks $D_{\text{test}} = 25$ ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$).
+2. **Phase 1 (Dreaming / Offline Training)**: The engine searches $D_{\text{train}}$, observes verified patches that resolve both `FAIL_TO_PASS` and `PASS_TO_PASS` tests, and learns the Laplace-smoothed operator yield distribution $\pi^*$.
+3. **Strict Policy Freeze**: The policy $\pi^*$ is locked into an immutable configuration before interacting with $D_{\text{test}}$.
+4. **Phase 2 (Head-to-Head Live Rollouts on $D_{\text{test}}$)**:
+   - **Baseline Policy ($\pi_0$)**: Executes standard unranked greedy repair search (uniform operator prior) with `first_ascent=True`.
+   - **Evolved Meta-Policy ($\pi^*$)**: Executes greedy repair search with candidate edits prioritized by the learned operator yield $\pi^*(e.\text{kind})$ with `first_ascent=True`.
+   - **Real Execution**: Every single evaluation compiles Python AST bytecode and executes the actual unit test suites in isolated memory; no synthetic cost model or replay approximation is used.
+5. **Phase 5 Governor Decision**: Evaluated across all 25 unseen tasks, the Governor issues an unequivocal **`ACCEPT` (`all_gates_passed`)** verdict.
+
+**Results Summary Table** (`reports/live_rsi_generalization.json`):
+
+| Evaluation Metric | Baseline Policy ($\pi_0$) | Evolved Meta-Policy ($\pi^*$) | Empirical Delta / Gain |
+| :--- | :---: | :---: | :---: |
+| **Holdout Solve Rate** | 100.0% (25/25) | 100.0% (25/25) | **0 regressions** ($N_{\text{regress}} = 0$) |
+| **Mean Evaluations / Task** | 5.52 evals | **3.12 evals** | **-2.40 evals** (**43.48% saved**) |
+| **Total Evaluation Budget** | 138 evals | **78 evals** | **-60 evals consumed** |
+| **Paired Student's $t$-test** | — | — | **$t = 4.0376, p = 0.000479$** ($p < 0.05$) |
+| **Effect Size (Cohen's $d$)** | — | — | **$d = 0.8075$** (large effect size $\ge 0.8$) |
+| **Statistical Governor Gate** | — | — | **`ACCEPT` (`all_gates_passed`)** |
+
+Full artifact is persisted at [`reports/live_rsi_generalization.json`](../reports/live_rsi_generalization.json):
+
+```json
+{
+  "summary_metrics": {
+    "n_train": 25,
+    "n_test": 25,
+    "baseline_solve_rate_percent": 100.0,
+    "evolved_solve_rate_percent": 100.0,
+    "baseline_mean_evals": 5.52,
+    "evolved_mean_evals": 3.12,
+    "baseline_total_evals": 138,
+    "evolved_total_evals": 78,
+    "mean_evaluations_saved_percent": 43.48,
+    "paired_t_statistic": 4.0376,
+    "p_value": 0.00047917873784166675,
+    "cohen_d": 0.8075,
+    "regressions_count": 0
+  },
+  "governor_verdict": {
+    "decision": "ACCEPT",
+    "reasons": [
+      "all_gates_passed"
+    ]
+  }
+}
+```
+
+---
+
 ## 7. Index of Raw Empirical Artifacts
 
 All benchmark summaries in this document are backed by committed, byte-for-byte verifiable JSON report files:
@@ -470,6 +525,7 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 | [`reports/dream_operator_reweighting.json`](../reports/dream_operator_reweighting.json) | Dream-RSI Autonomous Operator Reweighting via Replay Simulation (`ACCEPT` verdict) | 10,000 Dirichlet candidates |
 | [`reports/dream_budget_elasticity.json`](../reports/dream_budget_elasticity.json) | Dream-RSI Adaptive Budget Elasticity and Stagnation Breaking (`ACCEPT` verdict, 28% savings) | 10,000 parameter candidates |
 | [`reports/dream_seeding_validation.json`](../reports/dream_seeding_validation.json) | Dream-RSI Holdout Cross-Validated Seeding & Dead Gate Avoidance (`ACCEPT` verdict, $p < 0.05$) | 5-fold out-of-fold CV |
+| [`reports/live_rsi_generalization.json`](../reports/live_rsi_generalization.json) | Dream-RSI Live Online Search Rollouts on Unseen Holdouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$, 43.48% saved, $p=0.000479$, 0 regressions) | 25 train / 25 test live rollouts |
 | [`reports/pdf2rtf_real_word_holdout_benchmark.json`](../reports/pdf2rtf_real_word_holdout_benchmark.json) | Real Microsoft Word Holdout Benchmark | $N=12$ documents |
 | [`reports/pdf2rtf_word_oracle_audit.json`](../reports/pdf2rtf_word_oracle_audit.json) | Word-in-the-Loop Oracle Live COM Audit | $N=12$ documents, 100% pass |
 | [`reports/pdf2rtf_corpus_54_benchmark.json`](../reports/pdf2rtf_corpus_54_benchmark.json) | Comprehensive Evolab-54 Multi-Disciplinary Corpus Benchmark | $N=54$ documents |
@@ -508,9 +564,13 @@ python -c "from evolab.dream import run_budget_elasticity_dreaming; run_budget_e
 # 6. Run Dream-RSI Holdout Cross-Validated Seeding (M8/M9 Generalization ACCEPT Milestone)
 python -c "from evolab.dream import run_cross_validated_seeding; run_cross_validated_seeding()"
 
-# 7. Verify Complete Automated Test Suite (624 tests: 623 passed, 1 skipped)
+# 7. Run Dream-RSI Live Online Search Rollout Verification (Gold-Standard Unseen Transfer)
+python scripts/verify_live_rsi.py --n-train 25 --n-test 25 --seed 42
+
+# 8. Verify Complete Automated Test Suite
 pytest tests/ -q
 
-# 8. Verify Truth in Documentation
+# 9. Verify Truth in Documentation
 python scripts/verify_docs.py
 ```
+

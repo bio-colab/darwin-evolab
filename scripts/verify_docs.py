@@ -209,15 +209,56 @@ def verify_documentation() -> bool:
         errors.append(f"Historical M8/M9 check failed: {exc}")
 
     # -------------------------------------------------------------------------
-    # Check 7: Production Test Suite Badge & Verification (README.md)
+    # Check 7: Dream-RSI Gold-Standard Live Online Search Rollouts
+    # -------------------------------------------------------------------------
+    try:
+        live_rep = load_json("live_rsi_generalization.json")
+        n_tr = live_rep["summary_metrics"]["n_train"]
+        n_te = live_rep["summary_metrics"]["n_test"]
+        saved_p = live_rep["summary_metrics"]["mean_evaluations_saved_percent"]
+        cd = live_rep["summary_metrics"]["cohen_d"]
+        p_val = live_rep["summary_metrics"]["p_value"]
+        regs = live_rep["summary_metrics"]["regressions_count"]
+
+        if f"{n_tr}" not in doc_text or f"{n_te}" not in doc_text:
+            errors.append(f"Live Rollout: Missing train/test count ({n_tr}/{n_te})")
+        else:
+            checks_passed += 1
+
+        if f"{saved_p:.2f}%" not in doc_text:
+            errors.append(f"Live Rollout: Missing savings percent {saved_p:.2f}%")
+        else:
+            checks_passed += 1
+
+        if f"{cd:.4f}" not in doc_text:
+            errors.append(f"Live Rollout: Missing Cohen's d {cd:.4f}")
+        else:
+            checks_passed += 1
+
+        if f"{p_val:.6f}" not in doc_text:
+            errors.append(f"Live Rollout: Missing p-value {p_val:.6f}")
+        else:
+            checks_passed += 1
+
+        if f"{regs} regressions" not in doc_text:
+            errors.append(f"Live Rollout: Missing mention of {regs} regressions")
+        else:
+            checks_passed += 1
+
+        print(f"[OK] Dream-RSI Live Online Search Rollouts ({n_tr} train / {n_te} test, {saved_p:.2f}% saved, p={p_val:.6f}, d={cd:.4f}) verified.")
+    except Exception as exc:
+        errors.append(f"Live Online Search Rollouts check failed: {exc}")
+
+    # -------------------------------------------------------------------------
+    # Check 8: Production Test Suite Badge & Verification (README.md)
     # -------------------------------------------------------------------------
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
-        if any(b in readme_text for b in ["tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed", "tests-661%20passed", "tests-661 passed"]):
+        if any(b in readme_text for b in ["tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
             checks_passed += 1
             print(f"[OK] Production Test Suite Badge verified in README.md.")
         else:
-            errors.append("README.md: Test badge does not match verified test count (700, 691 or 661 passed)")
+            errors.append("README.md: Test badge does not match verified test count")
 
     # -------------------------------------------------------------------------
     # Final Verdict
