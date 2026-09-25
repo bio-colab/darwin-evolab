@@ -25,10 +25,10 @@ def create_mcp_server():
     """Create and configure the FastMCP server instance."""
     try:
         from mcp.server.fastmcp import FastMCP
-    except ImportError as exc:
+    except (ImportError, ModuleNotFoundError) as exc:
         raise ImportError(
-            "The 'mcp' package is required to run the Darwin-Evolab MCP server. "
-            "Install it via: pip install 'evolab[mcp]' or pip install mcp"
+            "Darwin-Evolab MCP server requires 'mcp>=1.0.0,<2.0.0' (FastMCP v1 architecture). "
+            "Install it via: pip install 'evolab[mcp]' or pip install 'mcp>=1.0.0,<2.0.0'"
         ) from exc
 
     server = FastMCP(

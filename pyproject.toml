@@ -51,7 +51,7 @@ quantum = [
     "scipy>=1.9",
 ]
 mcp = [
-    "mcp>=1.0.0",
+    "mcp>=1.0.0,<2.0.0",
 ]
 full = [
     "numpy>=1.22",
@@ -60,7 +60,7 @@ full = [
     "pyyaml>=5.4",
     "libcst>=1.0",
     "z3-solver>=4.8",
-    "mcp>=1.0.0",
+    "mcp>=1.0.0,<2.0.0",
 ]
 llm = []
 

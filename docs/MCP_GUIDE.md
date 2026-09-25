@@ -10,6 +10,8 @@ Darwin-Evolab provides an official, zero-LLM **Model Context Protocol (MCP)** se
 Install Darwin-Evolab with MCP support:
 ```bash
 pip install "evolab[mcp]"
+# Or if installing manually:
+pip install "mcp>=1.0.0,<2.0.0"
 # Or if working from local source:
 pip install -e ".[mcp]"
 ```

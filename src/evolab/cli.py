@@ -12,6 +12,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from . import EvolutionEngine, parse_report, summarize
 from .code_fixtures import (
@@ -222,7 +223,7 @@ def cmd_evolve(args) -> int:
         print(f"PASS_TO_PASS Tests : {len(spec.pass_to_pass_tests)}", file=sys.stderr)
         
         resolution = adapter.solve_instance(spec, max_evals=args.max_evals or 32)
-        print(f"\n[SWE-bench Resolution Verdict]", file=sys.stderr)
+        print("\n[SWE-bench Resolution Verdict]", file=sys.stderr)
         print(f"Resolved           : {'YES (100% Green)' if resolution.resolved else 'NO'}", file=sys.stderr)
         print(f"FAIL_TO_PASS       : {'PASS' if resolution.fail_to_pass_passed else 'FAIL'}", file=sys.stderr)
         print(f"PASS_TO_PASS       : {'CLEAN (Zero Regressions)' if resolution.pass_to_pass_clean else 'BROKEN'}", file=sys.stderr)
@@ -245,7 +246,7 @@ def cmd_evolve(args) -> int:
 
     if getattr(args, "adapter", None):
         from .adapters import get_domain_adapter
-        from .engine import EvolutionEngine, EngineConfig
+        from .engine import EvolutionEngine
         import random
 
         adapter_name = args.adapter
@@ -298,7 +299,7 @@ def cmd_evolve(args) -> int:
                 print(f"Outer Validation:\n{json.dumps(diag.get('outer', {}), indent=2)}", file=sys.stderr)
 
         best_fit = export_data.get("fitness_score", getattr(best_ind, "fitness", "N/A"))
-        print(f"\n[Domain Optimization Complete]", file=sys.stderr)
+        print("\n[Domain Optimization Complete]", file=sys.stderr)
         print(f"Best Fitness       : {best_fit}", file=sys.stderr)
         print(f"Formula Discovered : {export_data.get('formula_name', 'N/A')}", file=sys.stderr)
         print(f"Expression         : {export_data.get('expression_string', 'N/A')}", file=sys.stderr)
@@ -358,34 +359,6 @@ def cmd_evolve(args) -> int:
                 file=sys.stderr,
             )
             return 2
-
-        from .signals import SignalController
-        engine = _build_engine(args, fitness_fn=evaluator, genome_size=genome_size)
-        with SignalController(register_os_signals=True) as sc:
-            result = engine.run(
-                args.generations,
-                initial_population=pop,
-                resume_from=getattr(args, "resume", None),
-                checkpoint_every=getattr(args, "checkpoint_every", None),
-                checkpoint_dir=getattr(args, "checkpoint_dir", None),
-                signal_controller=sc,
-                checkpoint_compress=getattr(args, "checkpoint_compress", False),
-            )
-        result.setdefault("config", {})
-        result["config"]["genome"] = "electronics"
-        result["config"]["scenario"] = name
-        result["config"]["search"] = "ga"
-        if hasattr(evaluator, "stats") and hasattr(evaluator, "scenario_key"):
-            try:
-                st = evaluator.stats()
-                print(
-                    f"Archive: scenario={st['scenario']} hits={st['hits']} misses={st['misses']} "
-                    f"| rows={st['total_evaluations']} distinct_genomes={st['distinct_genomes']} "
-                    f"| db={st['db']}",
-                    file=sys.stderr,
-                )
-            except Exception:
-                pass
     elif engine_kind == "ga" or args.genome == "numeric":
         from .signals import SignalController
         if args.genome != "numeric" and engine_kind == "ga":
@@ -461,7 +434,7 @@ def cmd_evolve(args) -> int:
             )
         else:
             evaluator = attach_eval_cache(scenario.create_evaluator())
-        from .repair import catalog_sources, greedy_run_report
+        from .repair import catalog_sources
         catalog_n = len(catalog_sources(scenario.sources))
         if not quiet:
             print(
@@ -896,8 +869,9 @@ def cmd_mcp(args) -> int:
 
         mcp_main()
         return 0
-    except ImportError as exc:
-        print("error: FastMCP not installed. Install with: pip install 'evolab[mcp]'", file=sys.stderr)
+    except (ImportError, ModuleNotFoundError) as exc:
+        print(f"error: FastMCP not installed or incompatible: {exc}", file=sys.stderr)
+        print("hint: install with: pip install 'evolab[mcp]' or pip install 'mcp>=1.0.0,<2.0.0'", file=sys.stderr)
         return 1
 
 
