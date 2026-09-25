@@ -14,10 +14,13 @@ from typing import Any
 from evolab.code_fixtures import SCENARIO_REGISTRY
 from evolab.mcp.tools import (
     tool_benchmark_scenario,
+    tool_execute_harness,
     tool_inspect_report,
     tool_optimize_continuous,
     tool_repair_code,
+    tool_replay_workflow,
     tool_synthesize_silicon,
+    tool_verify_additive_baseline,
 )
 
 
@@ -190,6 +193,77 @@ def create_mcp_server():
     def list_benchmarks() -> str:
         """Return available pre-calibrated benchmark repair scenarios."""
         return json.dumps(list(SCENARIO_REGISTRY.keys()), indent=2)
+
+    @server.tool(
+        name="execute_harness_loop",
+        description=(
+            "Execute a modern 2026 deterministic loop harness according to a declarative loop.json manifest. "
+            "Enforces Goal -> Loop -> Target with additive baseline verification and trajectory distillation."
+        ),
+    )
+    def execute_harness_loop(
+        manifest_path: str | None = None,
+        manifest_dict: dict[str, Any] | None = None,
+        save_distilled_workflow: bool = True,
+        workflow_output_path: str | None = None,
+    ) -> dict[str, Any]:
+        """Execute deterministic loop harness."""
+        return tool_execute_harness(
+            manifest_path=manifest_path,
+            manifest_dict=manifest_dict,
+            save_distilled_workflow=save_distilled_workflow,
+            workflow_output_path=workflow_output_path,
+        )
+
+    @server.tool(
+        name="verify_additive_baseline",
+        description=(
+            "Evaluate candidate code against an Additive Baseline Verification Gate: "
+            "ensures candidate introduces ZERO new type errors (E_cand \\ E_base = empty) "
+            "and ZERO regressions (PASS_TO_PASS preserved 100%)."
+        ),
+    )
+    def verify_additive_baseline(
+        candidate_code: str,
+        target_file: str,
+        baseline_code: str | None = None,
+        test_code: str | None = None,
+        scenario_name: str | None = None,
+        enforce_type_check: bool = True,
+        enforce_purity: bool = True,
+    ) -> dict[str, Any]:
+        """Verify candidate code with additive baseline scoping."""
+        return tool_verify_additive_baseline(
+            candidate_code=candidate_code,
+            target_file=target_file,
+            baseline_code=baseline_code,
+            test_code=test_code,
+            scenario_name=scenario_name,
+            enforce_type_check=enforce_type_check,
+            enforce_purity=enforce_purity,
+        )
+
+    @server.tool(
+        name="replay_workflow",
+        description=(
+            "Replay a distilled workflow.json recipe deterministically in O(1) time without genetic search overhead."
+        ),
+    )
+    def replay_workflow(
+        workflow_path: str | None = None,
+        workflow_dict: dict[str, Any] | None = None,
+        sources: dict[str, str] | None = None,
+        source_file: str | None = None,
+        apply_to_file: bool = False,
+    ) -> dict[str, Any]:
+        """Replay distilled workflow recipe."""
+        return tool_replay_workflow(
+            workflow_path=workflow_path,
+            workflow_dict=workflow_dict,
+            sources=sources,
+            source_file=source_file,
+            apply_to_file=apply_to_file,
+        )
 
     return server
 

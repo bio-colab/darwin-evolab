@@ -381,7 +381,26 @@ _LAZY: dict[str, tuple[str, str]] = {
     "JevClient": (".jev", "JevClient"),
     "create_jev_ranker": (".jev", "create_jev_ranker"),
     "run_jev_greedy_repair": (".jev", "run_jev_greedy_repair"),
+    # Modern 2026 Deterministic Loop & Harness System
+    "LoopManifest": (".harness", "LoopManifest"),
+    "GoalSpec": (".harness", "GoalSpec"),
+    "LoopBudget": (".harness", "LoopBudget"),
+    "LoopSpec": (".harness", "LoopSpec"),
+    "TargetSpec": (".harness", "TargetSpec"),
+    "GovernorSpec": (".harness", "GovernorSpec"),
+    "DeterministicHarness": (".harness", "DeterministicHarness"),
+    "HarnessExecutionReport": (".harness", "HarnessExecutionReport"),
+    "AdditiveBaselineGate": (".harness", "AdditiveBaselineGate"),
+    "AdditiveVerificationReport": (".harness", "AdditiveVerificationReport"),
+    "BaselineSnapshot": (".harness", "BaselineSnapshot"),
+    "distill_trajectory_to_workflow": (".harness", "distill_trajectory_to_workflow"),
+    "WorkflowManifest": (".harness", "WorkflowManifest"),
+    "WorkflowExecutor": (".harness", "WorkflowExecutor"),
+    "WorkflowAction": (".harness", "WorkflowAction"),
+    "LLMContextGovernor": (".harness", "LLMContextGovernor"),
+    "ContextBudget": (".harness", "ContextBudget"),
 }
+
 
 
 
@@ -503,4 +522,20 @@ __all__ = [
     "JevClient",
     "create_jev_ranker",
     "run_jev_greedy_repair",
+    # 7. Modern 2026 Deterministic Loop & Harness System
+    "LoopManifest",
+    "GoalSpec",
+    "LoopSpec",
+    "TargetSpec",
+    "DeterministicHarness",
+    "HarnessExecutionReport",
+    "AdditiveBaselineGate",
+    "AdditiveVerificationReport",
+    "BaselineSnapshot",
+    "distill_trajectory_to_workflow",
+    "WorkflowManifest",
+    "WorkflowExecutor",
+    "LLMContextGovernor",
+    "ContextBudget",
 ]
+

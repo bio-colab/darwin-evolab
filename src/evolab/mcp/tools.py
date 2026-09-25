@@ -390,3 +390,156 @@ def tool_benchmark_scenario(
         "diff": diff,
         "fixed_code": repaired_sources.get(sc.target_file, ""),
     }
+
+
+def tool_execute_harness(
+    manifest_path: str | None = None,
+    manifest_dict: dict[str, Any] | None = None,
+    save_distilled_workflow: bool = True,
+    workflow_output_path: str | None = None,
+) -> dict[str, Any]:
+    """Executes a 2026 Deterministic Loop Harness according to a declarative LoopManifest."""
+    from evolab.harness import DeterministicHarness, LoopManifest
+
+    try:
+        if manifest_path:
+            manifest = LoopManifest.load(manifest_path)
+        elif manifest_dict:
+            manifest = LoopManifest.from_dict(manifest_dict)
+        else:
+            return {"success": False, "error": "Must provide either manifest_path or manifest_dict"}
+    except Exception as exc:
+        return {"success": False, "error": f"Failed to load manifest: {exc}"}
+
+    harness = DeterministicHarness(manifest)
+    report = harness.run()
+
+    distilled_wf_summary = None
+    if report.distilled_workflow:
+        wf = report.distilled_workflow
+        distilled_wf_summary = {
+            "workflow_id": wf.workflow_id,
+            "actions_count": len(wf.actions),
+            "defect_signatures": wf.defect_signatures,
+            "evaluations_saved": wf.search_evaluations_saved,
+        }
+        if save_distilled_workflow:
+            out_p = workflow_output_path or f"{manifest.name}_distilled_workflow.json"
+            wf.save(out_p)
+
+    return {
+        "success": report.status == "SUCCESS",
+        "status": report.status,
+        "manifest_name": report.manifest_name,
+        "evaluations_consumed": report.evaluations_consumed,
+        "duration_ms": report.duration_ms,
+        "best_score": report.best_score,
+        "verification": report.verification.to_dict(),
+        "distilled_workflow": distilled_wf_summary,
+    }
+
+
+def tool_verify_additive_baseline(
+    candidate_code: str,
+    target_file: str,
+    baseline_code: str | None = None,
+    test_code: str | None = None,
+    scenario_name: str | None = None,
+    enforce_type_check: bool = True,
+    enforce_purity: bool = True,
+) -> dict[str, Any]:
+    """Evaluates candidate code against an additive baseline verification gate."""
+    from evolab.harness import AdditiveBaselineGate
+
+    base_sources: dict[str, str] = {}
+    evaluator = None
+
+    if scenario_name and scenario_name in SCENARIO_REGISTRY:
+        sc = SCENARIO_REGISTRY[scenario_name]()
+        base_sources = dict(sc.sources)
+        evaluator = sc.create_evaluator()
+        target_file = sc.target_file
+    else:
+        if baseline_code is not None:
+            base_sources = {target_file: baseline_code}
+        else:
+            base_sources = {target_file: candidate_code}
+
+    gate = AdditiveBaselineGate(
+        enforce_purity=enforce_purity,
+        enforce_type_check=enforce_type_check,
+    )
+
+    baseline = gate.capture_baseline(
+        sources=base_sources,
+        target_file=target_file,
+        evaluator=evaluator,
+    )
+
+    report = gate.verify(
+        candidate_sources={target_file: candidate_code},
+        target_file=target_file,
+        baseline=baseline,
+        evaluator=evaluator,
+    )
+
+    return {
+        "success": report.passed,
+        "verdict": report.verdict,
+        "fail_to_pass_resolved": report.fail_to_pass_resolved,
+        "pass_to_pass_preserved": report.pass_to_pass_preserved,
+        "regressions": report.regressions,
+        "new_type_errors": report.new_type_errors,
+        "cured_type_errors": report.cured_type_errors,
+        "reasons": report.reasons,
+    }
+
+
+def tool_replay_workflow(
+    workflow_path: str | None = None,
+    workflow_dict: dict[str, Any] | None = None,
+    sources: dict[str, str] | None = None,
+    source_file: str | None = None,
+    apply_to_file: bool = False,
+) -> dict[str, Any]:
+    """Replays a distilled workflow recipe deterministically in O(1) time without search."""
+    from evolab.harness import WorkflowExecutor, WorkflowManifest
+
+    try:
+        if workflow_path:
+            workflow = WorkflowManifest.load(workflow_path)
+        elif workflow_dict:
+            workflow = WorkflowManifest.from_dict(workflow_dict)
+        else:
+            return {"success": False, "error": "Must provide workflow_path or workflow_dict"}
+    except Exception as exc:
+        return {"success": False, "error": f"Failed to load workflow: {exc}"}
+
+    target_sources: dict[str, str] = {}
+    if sources:
+        target_sources = dict(sources)
+    elif source_file:
+        p = Path(source_file)
+        if not p.is_file():
+            return {"success": False, "error": f"Source file not found: {source_file}"}
+        target_sources = {workflow.target_file: p.read_text(encoding="utf-8")}
+    else:
+        return {"success": False, "error": "Must provide sources or source_file"}
+
+    t0 = time.perf_counter()
+    repaired_sources = WorkflowExecutor.apply(target_sources, workflow)
+    elapsed_ms = (time.perf_counter() - t0) * 1000.0
+
+    if apply_to_file and source_file:
+        p = Path(source_file)
+        repaired_code = repaired_sources.get(workflow.target_file, "")
+        p.write_text(repaired_code, encoding="utf-8")
+
+    return {
+        "success": True,
+        "workflow_id": workflow.workflow_id,
+        "actions_applied": len(workflow.actions),
+        "replay_duration_ms": round(elapsed_ms, 3),
+        "repaired_code": repaired_sources.get(workflow.target_file, ""),
+    }
+

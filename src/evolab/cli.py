@@ -888,6 +888,122 @@ def cmd_mcp(args) -> int:
         return 1
 
 
+def cmd_harness(args) -> int:
+    """Execute modern 2026 deterministic loop harness, additive gate verification, or distillation."""
+    import time
+    action = getattr(args, "harness_action", None)
+    if action == "run":
+        from .harness import DeterministicHarness, LoopManifest
+        m_path = getattr(args, "manifest", None)
+        if not m_path or not Path(m_path).is_file():
+            print(f"error: manifest file not found: {m_path}", file=sys.stderr)
+            return 2
+        try:
+            manifest = LoopManifest.load(m_path)
+        except Exception as exc:
+            print(f"error: failed to load manifest {m_path}: {exc}", file=sys.stderr)
+            return 2
+
+        harness = DeterministicHarness(manifest)
+        report = harness.run()
+
+        if not getattr(args, "quiet", False):
+            print("\n=======================================================")
+            print("  DARWIN-EVOLAB 2026 DETERMINISTIC HARNESS REPORT")
+            print("=======================================================")
+            print(f"  Manifest:             {report.manifest_name}")
+            print(f"  Status:               {report.status}")
+            print(f"  Best Score:           {report.best_score:.2f}%")
+            print(f"  Evaluations Consumed: {report.evaluations_consumed}")
+            print(f"  Duration:             {report.duration_ms:.2f} ms")
+            print(f"  Verification Gate:    {report.verification.verdict} (Passed: {report.verification.passed})")
+            if report.verification.fail_to_pass_resolved:
+                print(f"  FAIL->PASS Resolved:  {len(report.verification.fail_to_pass_resolved)} tests")
+            if report.verification.pass_to_pass_preserved:
+                print(f"  PASS->PASS Preserved: {len(report.verification.pass_to_pass_preserved)} tests")
+            if report.verification.regressions:
+                print(f"  Regressions:          {len(report.verification.regressions)} tests")
+            if report.verification.new_type_errors:
+                print(f"  New Type Errors:      {len(report.verification.new_type_errors)}")
+            if report.distilled_workflow:
+                wf = report.distilled_workflow
+                print(f"  Distilled Workflow:   {wf.workflow_id} ({len(wf.actions)} actions, O(1) replay ready)")
+            print("=======================================================\n")
+
+        out_path = getattr(args, "output", None)
+        if out_path:
+            p = Path(out_path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(json.dumps(report.to_dict(), indent=2), encoding="utf-8")
+            if not getattr(args, "quiet", False):
+                print(f"Report written to: {out_path}")
+
+        save_wf = getattr(args, "save_workflow", None)
+        if save_wf and report.distilled_workflow:
+            report.distilled_workflow.save(save_wf)
+            if not getattr(args, "quiet", False):
+                print(f"Distilled workflow recipe saved to: {save_wf}")
+
+        return 0 if report.status == "SUCCESS" else 1
+
+    elif action == "init-manifest":
+        from .harness import LoopManifest
+        from .code_fixtures import SCENARIO_REGISTRY
+        sc_name = getattr(args, "scenario", "requests_http_helper")
+        if sc_name not in SCENARIO_REGISTRY:
+            print(f"error: unknown scenario '{sc_name}'. Available: {list(SCENARIO_REGISTRY.keys())}", file=sys.stderr)
+            return 2
+        sc = SCENARIO_REGISTRY[sc_name]()
+        manifest = LoopManifest.for_repair(
+            name=getattr(args, "name", "starter_loop"),
+            sources=sc.sources,
+            target_file=sc.target_file,
+            max_evals=32,
+            scenario_name=sc_name,
+        )
+        out_p = getattr(args, "output", "loop.json")
+        manifest.save(out_p)
+        print(f"Scaffolded 2026 LoopManifest to: {out_p}")
+        return 0
+
+    elif action == "replay":
+        from .harness import WorkflowExecutor, WorkflowManifest
+        wf_p = getattr(args, "workflow", None)
+        if not wf_p or not Path(wf_p).is_file():
+            print(f"error: workflow file not found: {wf_p}", file=sys.stderr)
+            return 2
+        wf = WorkflowManifest.load(wf_p)
+        src_path = getattr(args, "source", None)
+        if not src_path or not Path(src_path).is_file():
+            print(f"error: source file not found: {src_path}", file=sys.stderr)
+            return 2
+        orig_code = Path(src_path).read_text(encoding="utf-8")
+        sources = {wf.target_file: orig_code}
+
+        t0 = time.perf_counter()
+        repaired_sources = WorkflowExecutor.apply(sources, wf)
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+
+        repaired_code = repaired_sources.get(wf.target_file, "")
+        print(f"Replayed workflow {wf.workflow_id} in {elapsed_ms:.3f} ms ({len(wf.actions)} actions applied).")
+
+        if getattr(args, "apply", False):
+            Path(src_path).write_text(repaired_code, encoding="utf-8")
+            print(f"Applied fix directly in-place to: {src_path}")
+
+        out_path = getattr(args, "output", None)
+        if out_path:
+            Path(out_path).write_text(repaired_code, encoding="utf-8")
+            print(f"Wrote repaired code to: {out_path}")
+
+        return 0
+
+    else:
+        print("error: harness requires action: run, init-manifest, or replay", file=sys.stderr)
+        print("hint: evolab harness run --manifest loop.json", file=sys.stderr)
+        return 2
+
+
 def cmd_eval(args) -> int:
     """Standalone Fitness Oracle evaluating candidate representation from CLI argument or stdin."""
     import sys
@@ -994,6 +1110,31 @@ def build_parser() -> argparse.ArgumentParser:
     p_mcp = sub.add_parser("mcp", help="launch Model Context Protocol (MCP) stdio server for AI coding agents")
     p_mcp.add_argument("--transport", choices=["stdio"], default="stdio", help="transport protocol (default: stdio)")
     p_mcp.set_defaults(func=cmd_mcp)
+
+    # Subcommand: harness (2026 Modern Deterministic Harness & Loop Engine)
+    p_harness = sub.add_parser("harness", help="2026 modern deterministic loop harness, additive gate, and distillation")
+    p_harness_sub = p_harness.add_subparsers(dest="harness_action", help="harness actions")
+
+    # Action: harness run --manifest loop.json
+    p_h_run = p_harness_sub.add_parser("run", help="execute deterministic loop according to loop.json manifest")
+    p_h_run.add_argument("-m", "--manifest", required=True, help="path to declarative loop.json manifest")
+    p_h_run.add_argument("-o", "--output", default=None, help="path to save harness execution report JSON")
+    p_h_run.add_argument("--save-workflow", default=None, help="path to save distilled workflow JSON (if successful)")
+    p_h_run.add_argument("--quiet", action="store_true", help="suppress human-readable summary")
+
+    # Action: harness init-manifest --scenario <name> -o loop.json
+    p_h_init = p_harness_sub.add_parser("init-manifest", help="scaffold a new declarative loop.json manifest")
+    p_h_init.add_argument("--name", default="starter_loop", help="manifest name")
+    p_h_init.add_argument("--scenario", default="requests_http_helper", help="scaffold from pre-calibrated scenario")
+    p_h_init.add_argument("-o", "--output", default="loop.json", help="output path for manifest JSON")
+
+    # Action: harness replay --workflow workflow.json [--source file.py]
+    p_h_rep = p_harness_sub.add_parser("replay", help="replay distilled workflow recipe in O(1) time")
+    p_h_rep.add_argument("-w", "--workflow", required=True, help="path to distilled workflow.json")
+    p_h_rep.add_argument("-s", "--source", default=None, help="path to target source file to replay against")
+    p_h_rep.add_argument("--apply", action="store_true", help="apply fix directly in-place")
+    p_h_rep.add_argument("-o", "--output", default=None, help="save repaired source to output path")
+    p_harness.set_defaults(func=cmd_harness)
 
     # Subcommand: audit
     p_audit = sub.add_parser("audit", help="run autonomous self-audit and governance verification")
@@ -1189,6 +1330,8 @@ def _run_cli(argv: list[str] | None = None) -> int:
         return cmd_init(args)
     if cmd == "mcp":
         return cmd_mcp(args)
+    if cmd == "harness":
+        return cmd_harness(args)
     if hasattr(args, "func"):
         return args.func(args)
     return 2
