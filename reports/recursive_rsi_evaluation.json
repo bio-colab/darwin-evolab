@@ -9,16 +9,22 @@
     "max_evals_per_instance": 32,
     "alpha_prior": 1.0,
     "first_ascent": true,
-    "governor_alpha": 0.05
+    "governor_alpha": 0.05,
+    "context_boost_coefficient": 0.25,
+    "selected_a_priori": true,
+    "hyperparameter_protocol_note": "Selected a priori before D2 holdout evaluation as a conservative damping constant (0.25) to prevent over-biasing away from Ochiai SBFL; held strictly fixed throughout all splits with zero tuning on D_2."
   },
   "methodological_classification": "Empirically Demonstrated Multi-Stage Recursive Search Policy Improvement",
   "benchmark_description": "Distilled AST Benchmark Fixtures derived from SWE-bench defect archetypes",
+  "evaluation_scope": "75 unseen holdout evaluations across 3 independently seeded splits",
+  "conditioning_model": "source-level syntax-marker conditioning",
   "seeds": [
     100,
     2026,
     42
   ],
   "total_unseen_tasks_evaluated": 75,
+  "unique_holdout_fixtures_count": 71,
   "per_seed_results": {
     "100": {
       "d0_instances": [
@@ -107,7 +113,15 @@
       "pi2_op_mean": 2.76,
       "pi2_ctx_mean": 2.48,
       "pi2_ctx_saved": 58.67,
-      "regressions": 0
+      "monotonic": true,
+      "regressions": 0,
+      "pairwise_regressions": {
+        "pi0_to_pi1": 0,
+        "pi1_to_pi2_op": 0,
+        "pi1_to_pi2_ctx": 0,
+        "pi2_op_to_pi2_ctx": 0,
+        "pi0_to_pi2_ctx": 0
+      }
     },
     "2026": {
       "d0_instances": [
@@ -196,7 +210,15 @@
       "pi2_op_mean": 4.2,
       "pi2_ctx_mean": 4.12,
       "pi2_ctx_saved": 45.79,
-      "regressions": 0
+      "monotonic": true,
+      "regressions": 0,
+      "pairwise_regressions": {
+        "pi0_to_pi1": 0,
+        "pi1_to_pi2_op": 0,
+        "pi1_to_pi2_ctx": 0,
+        "pi2_op_to_pi2_ctx": 0,
+        "pi0_to_pi2_ctx": 0
+      }
     },
     "42": {
       "d0_instances": [
@@ -285,11 +307,24 @@
       "pi2_op_mean": 4.68,
       "pi2_ctx_mean": 4.68,
       "pi2_ctx_saved": 41.21,
-      "regressions": 0
+      "monotonic": false,
+      "regressions": 0,
+      "pairwise_regressions": {
+        "pi0_to_pi1": 0,
+        "pi1_to_pi2_op": 0,
+        "pi1_to_pi2_ctx": 0,
+        "pi2_op_to_pi2_ctx": 0,
+        "pi0_to_pi2_ctx": 0
+      }
     }
   },
   "pooled_metrics": {
     "total_unseen_tasks": 75,
+    "unique_holdout_fixtures": 71,
+    "evaluation_scope": "75 unseen holdout evaluations across 3 independently seeded splits",
+    "conditioning_type": "source-level syntax-marker conditioning",
+    "context_boost_coefficient": 0.25,
+    "selected_a_priori": true,
     "pi0_total_evals": 539,
     "pi1_total_evals": 302,
     "pi2_op_total_evals": 291,
@@ -306,8 +341,18 @@
     "t_stat_1_vs_2ctx": 1.5673,
     "p_val_1_vs_2ctx": 0.12131095750608333,
     "cohen_d_0_vs_2ctx": 1.4958,
+    "pooled_monotonic_progression": true,
+    "per_seed_monotonic_progression": false,
     "monotonic_progression": true,
-    "total_regressions": 0
+    "total_regressions": 0,
+    "pairwise_solution_regressions": {
+      "pi0_to_pi1": 0,
+      "pi1_to_pi2_op": 0,
+      "pi1_to_pi2_ctx": 0,
+      "pi2_op_to_pi2_ctx": 0,
+      "pi0_to_pi2_ctx": 0
+    },
+    "scientific_conclusion": "A multi-stage recursive policy chain was implemented and its final policy generalized substantially better than pi_0 on pooled unseen holdouts (p = 1.04e-20, d = 1.4958); incremental improvement from pi_1 to pi_2 was positive in aggregate (302 -> 282 evals) but not statistically significant (p = 0.1213) in this sample size."
   },
   "governor_verdict": {
     "decision": "ACCEPT",

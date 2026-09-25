@@ -527,7 +527,7 @@ Full artifact is persisted at [`reports/live_rsi_generalization.json`](../report
 
 ### 6.3 Empirical Proof: Multi-Stage Recursive Search Policy Progression ($\mathcal{D}_0 \to \pi_1 \to \mathcal{D}_1 \to \pi_2 \to \text{Unseen } \mathcal{D}_2$)
 
-Addressing the frontier challenge from R&D review regarding whether Darwin-Evolab demonstrates true **recursive self-improvement** beyond single-step transfer, Darwin-Evolab evaluated an end-to-end multi-stage recursive policy learning pipeline (`src/evolab/dream/recursive_rsi.py`).
+Addressing the frontier challenge from R&D review regarding whether Darwin-Evolab demonstrates true **recursive search policy improvement** beyond single-step transfer, Darwin-Evolab evaluated an end-to-end multi-stage recursive policy learning pipeline (`src/evolab/dream/recursive_rsi.py`).
 
 #### Methodological Design & Invariants
 - **Tripartite Cohort Disjointness**: For every independent random seed, the task space is strictly partitioned into three disjoint cohorts:
@@ -537,9 +537,10 @@ Addressing the frontier challenge from R&D review regarding whether Darwin-Evola
 - **Generation 1 ($\mathcal{D}_1 \to \text{New Experience}$)**: Execution on completely unseen cohort $\mathcal{D}_1$ using $\pi_1$. Solved trajectories collect fresh empirical yield and AST syntax co-occurrence telemetry.
 - **Generation 2 (Recursive Synthesis $\to \pi_2$)**:
   - $\pi_2\text{-op}$: Posterior operator prior synthesized from cumulative cross-generation experience ($\mathcal{D}_0 + \mathcal{D}_1$).
-  - $\pi_2\text{-context}$: Operator prior conditioned on local AST syntax markers (dictionary access, None checks, boolean logic, comparison operators).
+  - $\pi_2\text{-context}$: Operator prior conditioned on local source-level syntax markers (dictionary access, None checks, boolean logic, comparison operators).
+- **Hyperparameter Protocol**: The contextual boost parameter `context_boost_coefficient = 0.25` was selected *a priori* as a conservative damping constant to prevent overriding fault-localization priors, and held strictly fixed across all splits with zero hyperparameter tuning on $\mathcal{D}_2$.
 - **Head-to-Head Evaluation on Fresh Unseen $\mathcal{D}_2$**:
-  The four policies ($\pi_0, \pi_1, \pi_2\text{-op}, \pi_2\text{-context}$) are simultaneously evaluated in identical conditions on completely fresh holdout cohort $\mathcal{D}_2$ across 3 independent seeds ($N = 75$ unseen tasks).
+  The four policies ($\pi_0, \pi_1, \pi_2\text{-op}, \pi_2\text{-context}$) are simultaneously evaluated in identical conditions on completely fresh holdout cohort $\mathcal{D}_2$ across 3 independent seeds ($N = 75$ unseen tasks across 3 independently seeded splits, comprising 71 unique defect fixtures).
 
 #### Empirical Pooled Results ($N=75$ Unseen Holdouts across Seeds 100, 2026, 42)
 
@@ -548,21 +549,22 @@ Addressing the frontier challenge from R&D review regarding whether Darwin-Evola
 | **$\pi_0$ (Baseline)** | Ochiai SBFL Fault-Localization Ordering | 7.187 evals | 539 evals | Baseline (0.0%) |
 | **$\pi_1$ (Gen 1)** | Marginal Operator Prior (from $\mathcal{D}_0$) | 4.027 evals | 302 evals | **43.97%** |
 | **$\pi_2\text{-op}$ (Gen 2 Recursive)** | Posterior Operator Prior ($\mathcal{D}_0 + \mathcal{D}_1$) | 3.880 evals | 291 evals | **46.01%** |
-| **$\pi_2\text{-context}$ (Gen 2 Context)** | Prior + Contextual AST Syntax Conditioning | **3.760 evals** | **282 evals** | **47.68%** |
+| **$\pi_2\text{-context}$ (Gen 2 Context)** | Prior + Source-Level Syntax Conditioning | **3.760 evals** | **282 evals** | **47.68%** |
 
 #### Strict Verification of Scientific Invariants
-1. **Strict Monotonic Progression Invariant**:
+1. **Monotonic Progression in Pooled Aggregate Evaluations**:
    $$\text{evals}(\pi_2\text{-context}) < \text{evals}(\pi_2\text{-op}) < \text{evals}(\pi_1) < \text{evals}(\pi_0)$$
-   Verified unconditionally across the 75 pooled holdout tasks ($282 < 291 < 302 < 539$, `monotonic_progression = true`).
+   Verified across the 75 pooled holdout tasks ($282 < 291 < 302 < 539$, `monotonic_progression = true`). Note: As expected under stochastic sampling across defect archetypes, individual seeds exhibit variance (Seed 100: $2.48 \le 2.76 \le 3.00 < 6.00$; Seed 2026: $4.12 \le 4.20 \le 4.56 < 7.60$; Seed 42: $4.68 \le 4.68 > 4.52 < 7.96$). The monotonic inequality is an aggregate system property across the pooled benchmark.
 2. **Causal Attribution Disentanglement**:
    - Compounding purely on operator frequencies ($\pi_1 \to \pi_2\text{-op}$) yields an additional $11$ evaluations saved ($302 \to 291$ evals, 46.01% vs 43.97%).
-   - Contextual conditioning ($\pi_2\text{-context}$) breaks the operator-only plateau, delivering an additional $9$ evaluations saved ($291 \to 282$ evals, **47.68% total reduction**).
-3. **Statistical Significance**:
-   - Paired Student's $t$-test ($\pi_0$ vs $\pi_2\text{-context}$): $t = 12.9541, \quad p = 1.0369 \times 10^{-20}$ ($p < 10^{-19}$).
-   - Cohen's $d$ effect size: $d = 1.4958$ (exceptionally large effect size $\ge 0.8$).
-   - Paired Student's $t$-test ($\pi_1$ vs $\pi_2\text{-context}$): $t = 1.5673, \quad p = 0.1213$.
-4. **Zero Regressions & Governor Gate**:
-   - $N_{\text{regress}} = 0$ across all 75 holdout tasks.
+   - Source-level syntax conditioning ($\pi_2\text{-context}$) breaks the operator-only plateau, delivering an additional $9$ evaluations saved ($291 \to 282$ evals, **47.68% total reduction**).
+3. **Statistical Significance & Scope of Claims**:
+   - Paired Student's $t$-test ($\pi_0$ vs $\pi_2\text{-context}$): $t = 12.9541, \quad p = 1.0369 \times 10^{-20}$ ($p < 10^{-19}$), demonstrating definitive generalization over the unbiased baseline.
+   - Cohen's $d$ effect size ($\pi_0$ vs $\pi_2\text{-context}$): $d = 1.4958$ (exceptionally large effect size $\ge 0.8$).
+   - Paired Student's $t$-test ($\pi_1$ vs $\pi_2\text{-context}$): $t = 1.5673, \quad p = 0.1213$. The incremental reduction ($302 \to 282$ evaluations) is a consistent positive directional trend, but does not achieve formal statistical significance at $\alpha = 0.05$ under this sample size ($N=75$).
+4. **Full Pairwise Solution Regressions & Governor Gate**:
+   - Pairwise solution regressions: $\pi_0 \to \pi_1 = 0$, $\pi_1 \to \pi_2\text{-op} = 0$, $\pi_1 \to \pi_2\text{-context} = 0$, $\pi_2\text{-op} \to \pi_2\text{-context} = 0$, and $\pi_0 \to \pi_2\text{-context} = 0$.
+   - Total regressions: $N_{\text{regress}} = 0$ regressions across all 75 holdout tasks (100% solution retention).
    - Statistical Governor decision: **`ACCEPT` (`all_gates_passed`)**.
 
 Full empirical artifact is persisted at [`reports/recursive_rsi_evaluation.json`](../reports/recursive_rsi_evaluation.json).

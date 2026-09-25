@@ -124,12 +124,19 @@ def test_committed_recursive_rsi_artifact():
     # 3. Pooled metrics and monotonic progression
     pm = data["pooled_metrics"]
     assert pm["monotonic_progression"] is True
+    assert pm["pooled_monotonic_progression"] is True
+    assert pm["per_seed_monotonic_progression"] is False
+    assert data["unique_holdout_fixtures_count"] == 71
+    assert data["config"]["selected_a_priori"] is True
+    assert data["config"]["context_boost_coefficient"] == 0.25
     assert pm["pi2_ctx_total_evals"] < pm["pi2_op_total_evals"] < pm["pi1_total_evals"] < pm["pi0_total_evals"]
     assert pm["pi2_ctx_saved_percent"] > 45.0
     assert pm["total_regressions"] == 0
+    assert all(v == 0 for v in pm["pairwise_solution_regressions"].values())
     assert pm["p_val_0_vs_2ctx"] < 1e-10
     assert pm["cohen_d_0_vs_2ctx"] > 1.0
 
     # 4. Statistical Governor
     assert data["governor_verdict"]["decision"] == "ACCEPT"
     assert "all_gates_passed" in data["governor_verdict"]["reasons"]
+
