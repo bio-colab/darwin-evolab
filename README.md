@@ -15,6 +15,7 @@
 [![JEV Search Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
 
 🌐 **Language & Guides:**
+- **[Architectural Reality & Scientific Charter](docs/ARCHITECTURAL_REALITY.md)** *(Unvarnished Theory & Invariants)*
 - **[العربية / Arabic Documentation & Quickstart](README_ar.md)**
 - **[Hands-On User & Developer Guide](docs/USER_GUIDE.md)**
 - **[Model Context Protocol (MCP) Integration Guide](docs/MCP_GUIDE.md)**

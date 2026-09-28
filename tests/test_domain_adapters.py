@@ -156,3 +156,35 @@ def test_custom_domain_adapter_registration():
     assert "dummy_domain" in list_domain_adapters()
     retrieved = get_domain_adapter("dummy_domain")
     assert isinstance(retrieved, DummyAdapter)
+
+
+def test_domain_adapter_universal_solve(tmp_path):
+    """Verifies that DomainAdapter.solve executes universal evolutionary optimization and exports solution."""
+    # 1. Discrete Logic Adapter via universal solve
+    logic_adapter = get_domain_adapter("discrete_logic")
+    v_out = tmp_path / "cgp_out.v"
+    res_logic = logic_adapter.solve(
+        raw_spec="Sum = A ^ B",
+        generations=10,
+        population_size=10,
+        seed=42,
+        output_path=v_out,
+    )
+    assert "verilog_code" in res_logic
+    assert res_logic["evaluations_consumed"] > 0
+    assert v_out.is_file()
+
+    # 2. Numerical Math Adapter via universal solve with governor
+    math_adapter = get_domain_adapter("numerical_math")
+    res_math = math_adapter.solve(
+        raw_spec={"target_function": "sphere", "dimensions": 2},
+        generations=15,
+        population_size=12,
+        seed=101,
+        governor_baseline=[10.0, 12.0, 11.0, 9.0, 10.5],
+        quality_floor=5.0,
+    )
+    assert "optimal_coordinates" in res_math
+    assert "target_function" in res_math
+    assert "governor_verdict" in res_math
+    assert "decision" in res_math["governor_verdict"]

@@ -96,6 +96,78 @@ class DomainAdapter(ABC, Generic[G, TSpec, TResult]):
     ) -> dict[str, Any]:
         """Exports the winning genome into domain-specific deployable artifacts (e.g. patch, Verilog, SPICE, report)."""
 
+    def solve(
+        self,
+        raw_spec: Any,
+        generations: int = 35,
+        population_size: int = 30,
+        seed: int = 42,
+        output_path: str | Path | None = None,
+        budget_evals: int | None = None,
+        governor_baseline: list[float] | None = None,
+        quality_floor: float | None = None,
+    ) -> dict[str, Any]:
+        """Universal evolutionary optimization loop for any Darwin-Evolab domain adapter."""
+        spec = self.parse_spec(raw_spec)
+        rng = random.Random(seed)
+        evaluator = self.build_evaluator(spec)
+        pop = self.build_population(spec, population_size, rng)
+
+        for ind in pop:
+            res = evaluator.evaluate(ind)
+            ind.fitness = res.score
+
+        eval_count = len(pop)
+        gen = 0
+        for gen in range(1, generations + 1):
+            pop.sort(key=lambda ind: ind.fitness, reverse=True)
+            if pop[0].fitness >= 99.8:
+                break
+            if budget_evals is not None and eval_count >= budget_evals:
+                break
+
+            new_pop = [pop[0].clone(), pop[1].clone()]
+            top_half = pop[: max(2, len(pop) // 2)]
+            while len(new_pop) < population_size:
+                if budget_evals is not None and eval_count >= budget_evals:
+                    new_pop.append(rng.choice(top_half).clone())
+                    continue
+                candidates = rng.sample(top_half, min(3, len(top_half)))
+                p1 = max(candidates, key=lambda ind: ind.fitness)
+                p2 = max(rng.sample(top_half, min(3, len(top_half))), key=lambda ind: ind.fitness)
+                child_g = p1.genome.clone()
+                if rng.random() < 0.7:
+                    child_g = child_g.crossover(p2.genome, rng=rng)
+                if rng.random() < 0.8:
+                    child_g = child_g.mutate(rng=rng)
+                child = Individual(genome=child_g, species=p1.species)
+                res = evaluator.evaluate(child)
+                child.fitness = res.score
+                eval_count += 1
+                new_pop.append(child)
+            pop = new_pop
+
+        pop.sort(key=lambda ind: ind.fitness, reverse=True)
+        winner = pop[0]
+        exported = self.export_solution(winner, spec, output_path=output_path)
+        exported["evaluations_consumed"] = eval_count
+        exported["generations_run"] = gen
+
+        # Optional epistemic self-governance evaluation
+        if governor_baseline is not None:
+            from .self_model import govern_modification
+            cand_scores = [ind.fitness for ind in pop[:len(governor_baseline)]]
+            gov_verdict = govern_modification(
+                baseline=governor_baseline,
+                candidate=cand_scores,
+                regressions=0 if winner.fitness > 50.0 else 1,
+                alpha=0.05,
+                quality_floor=quality_floor,
+            )
+            exported["governor_verdict"] = gov_verdict
+
+        return exported
+
 
 # =========================================================================== #
 # Canonical Domain Driver 1: Software Repair Adapter

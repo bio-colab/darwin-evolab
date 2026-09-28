@@ -18,6 +18,7 @@
 
 🌐 **اللغة / Language:**
 - **[English Version / النسخة الإنجليزية المعتمدة](README.md)**
+- **[الواقع المعماري والميثاق العلمي للمشروع / Architectural Reality](docs/ARCHITECTURAL_REALITY.md)**
 - **[دليل الاستخدام العملي للمطورين / Hands-On User Guide](docs/USER_GUIDE.md)**
 - **[دليل تكامل بروتوكول سياق النماذج / MCP Integration Guide](docs/MCP_GUIDE.md)**
 

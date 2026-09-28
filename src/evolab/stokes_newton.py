@@ -1368,67 +1368,14 @@ def run_stokes_evolution(
     rng_seed: int = 42,
 ) -> dict[str, Any]:
     """Runs evolutionary search for a single seed under the Darwin-Evolab engine contract."""
-    rng = random.Random(rng_seed)
     adapter = StokesNewtonDragAdapter()
-    evaluator = adapter.build_evaluator(spec)
-
-    pop = adapter.build_population(spec, population_size, rng)
-
-    # Initial evaluation
-    for ind in pop:
-        res = evaluator.evaluate(ind)
-        ind.fitness = res.score
-
-    eval_count = len(pop)
-
-    for gen in range(1, generations + 1):
-        # Sort by fitness descending
-        pop.sort(key=lambda ind: ind.fitness, reverse=True)
-
-        # Early stopping if optimal solution found
-        if pop[0].fitness >= 99.8:
-            break
-
-        if budget_evals is not None and eval_count >= budget_evals:
-            break
-
-        # Elitism: retain top 2 individuals
-        new_pop: list[Individual] = [pop[0].clone(), pop[1].clone()]
-
-        # Selection and reproduction
-        top_half = pop[: max(2, len(pop) // 2)]
-
-        while len(new_pop) < population_size:
-            if budget_evals is not None and eval_count >= budget_evals:
-                new_pop.append(rng.choice(top_half).clone())
-                continue
-
-            # Tournament selection
-            candidates = rng.sample(top_half, min(3, len(top_half)))
-            parent1 = max(candidates, key=lambda ind: ind.fitness)
-            parent2 = max(rng.sample(top_half, min(3, len(top_half))), key=lambda ind: ind.fitness)
-
-            child_genome = parent1.genome.clone()
-            if rng.random() < 0.7:
-                child_genome = child_genome.crossover(parent2.genome, rng=rng)
-
-            if rng.random() < 0.8:
-                child_genome = child_genome.mutate(rng=rng)
-
-            child = Individual(genome=child_genome, species=parent1.species)
-            res = evaluator.evaluate(child)
-            child.fitness = res.score
-            eval_count += 1
-            new_pop.append(child)
-
-        pop = new_pop
-
-    pop.sort(key=lambda ind: ind.fitness, reverse=True)
-    best_ind = pop[0]
-    solution_export = adapter.export_solution(best_ind, spec)
-    solution_export["evaluations_consumed"] = eval_count
-    solution_export["generations_run"] = gen
-    return solution_export
+    return adapter.solve(
+        raw_spec=spec,
+        population_size=population_size,
+        generations=generations,
+        budget_evals=budget_evals,
+        seed=rng_seed,
+    )
 
 
 def evaluate_single_seed(
