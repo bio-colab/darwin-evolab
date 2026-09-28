@@ -316,11 +316,52 @@ def verify_documentation() -> bool:
         errors.append(f"Recursive RSI check failed: {exc}")
 
     # -------------------------------------------------------------------------
-    # Check 9: Production Test Suite Badge & Verification (README.md)
+    # Check 9: Stokes-Newton Physics Discovery Benchmark (stokes_newton_evaluation_v2.json)
+    # -------------------------------------------------------------------------
+    try:
+        sn = load_json("stokes_newton_evaluation_v2.json")
+        verdict = sn["experiment_verdict"]
+        sealed_sha = sn["sealed_grid_sha256"]
+        p_cells = sn["primary_cells"]
+
+        if verdict not in doc_text:
+            errors.append(f"Stokes-Newton: Missing experiment verdict {verdict}")
+        else:
+            checks_passed += 1
+
+        if sealed_sha not in doc_text:
+            errors.append(f"Stokes-Newton: Missing sealed grid SHA-256 {sealed_sha}")
+        else:
+            checks_passed += 1
+
+        for cid, cinfo in p_cells.items():
+            if f"**`{cid}`**" not in doc_text:
+                errors.append(f"Stokes-Newton: Missing cell {cid} in results table")
+            else:
+                checks_passed += 1
+
+            pass_str = f"{cinfo['pass_count']} / {cinfo['total_seeds']} ({cinfo['pass_rate']*100:.1f}%)"
+            if pass_str not in doc_text:
+                errors.append(f"Stokes-Newton: Missing pass rate string for {cid}: {pass_str}")
+            else:
+                checks_passed += 1
+
+            mb_gap = f"{cinfo['mean_e_gap_mode_b']*100:.3f}%"
+            if mb_gap not in doc_text:
+                errors.append(f"Stokes-Newton: Missing Mode B mean e_gap for {cid}: {mb_gap}")
+            else:
+                checks_passed += 1
+
+        print(f"[OK] Stokes-Newton Physics Benchmark V2 ({verdict}, 4 primary cells, sealed SHA-256) verified.")
+    except Exception as exc:
+        errors.append(f"Stokes-Newton V2 check failed: {exc}")
+
+    # -------------------------------------------------------------------------
+    # Check 10: Production Test Suite Badge & Verification (README.md)
     # -------------------------------------------------------------------------
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
-        if any(b in readme_text for b in ["tests-711%20passed", "tests-711 passed", "tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
+        if any(b in readme_text for b in ["tests-725%20passed", "tests-725 passed", "tests-711%20passed", "tests-711 passed", "tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
             checks_passed += 1
             print(f"[OK] Production Test Suite Badge verified in README.md.")
         else:

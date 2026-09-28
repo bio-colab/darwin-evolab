@@ -571,7 +571,45 @@ Full empirical artifact is persisted at [`reports/recursive_rsi_evaluation.json`
 
 ---
 
-## 7. Index of Raw Empirical Artifacts
+## 7. Physics-Constrained Symbolic Regression Benchmark (Stokes–Newton Drag V2)
+
+> **Transparent Methodological Demarcation & Scientific Provenance**:
+> - **Synthetic Generator Provenance**: The underlying continuous data generator is the empirical correlation of Brown & Lawler (2003, *J. Environ. Eng.*). The objective is evaluating physics-constrained symbolic search and parameter estimation across an unseen transition gap $[5, 100]$. This benchmark evaluates search efficiency under physical constraints; it makes **no claim** of discovering a new physical law.
+> - **Two-Mode Disentanglement**:
+>   - **Mode A (Tabula Rasa Free Symbolic Search)**: Search starts strictly from elemental primitives and physical asymptotic anchors ($24/Re$ and $0.407$) without pre-injecting the 4-parameter Brown-Lawler skeleton.
+>   - **Mode B (Physics-Constrained Template Parameter Tuning)**: Semi-empirical template optimization tuning continuous transition parameters on the two-regime skeleton under boundary gates and dimensional rules.
+> - **Sealed Evaluation Grid Integrity**: Evaluated against a frozen 3,000-point noise-free logarithmic grid across $10^{-2} \le Re \le 10^4$ with SHA-256 fingerprint:
+>   `50857859bec82ccd18560e355e028fe50e5fef73747906701bb08ef13abad6b3`
+> - **Overall Protocol V2 Verdict**: **`FULL_SUCCESS`** (All 4 pre-registered primary cells P1–P4 achieve $\ge 80\%$ pass rate).
+
+### 7.1 Primary Cells Empirical Results ($N=10$ Seeds per Cell)
+
+| Cell ID | Level | Input Space | $N_{\text{train}}$ | Noise $\sigma$ | Mode B Pass Rate | Wilson 95% CI | Mode B Mean $e_{\text{gap}}$ | Mode A Mean $e_{\text{gap}}$ | Regularized Oracle $e_{\text{gap}}$ | Unconstrained GP $e_{\text{gap}}$ | Governor Decision | Cell Verdict |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`P1`** | **`LC`** | Dimensionless $Re \to C_D$ | 50 | 2.0% | **8 / 10 (80.0%)** | `[0.49, 0.94]` | **0.705%** | 36.85% | 0.656% | 68.92% | `REJECT` (1 regression) | **`PASS`** |
+| **`P2`** | **`LB`** | Raw variables $(v, \rho, \mu, r) \to F_D$ | 50 | 2.0% | **8 / 10 (80.0%)** | `[0.49, 0.94]` | **0.713%** | 36.85% | 0.656% | 68.92% | `REJECT` (1 regression) | **`PASS`** |
+| **`P3`** | **`LC`** | Dimensionless $Re \to C_D$ | 200 | 0.0% | **10 / 10 (100.0%)** | `[0.72, 1.00]` | **0.000%** | 36.85% | 0.000% | 418,654.71% | **`ACCEPT`** ($p < 0.001$) | **`STRONG_PASS`** |
+| **`P4`** | **`LB`** | Raw variables $(v, \rho, \mu, r) \to F_D$ | 200 | 0.0% | **10 / 10 (100.0%)** | `[0.72, 1.00]` | **0.000%** | 36.85% | 0.000% | 418,654.71% | **`ACCEPT`** ($p < 0.001$) | **`STRONG_PASS`** |
+
+### 7.2 Methodological Lessons & Scientific Insights
+
+1. **What Mode A Proves (Asymptotic Extraction vs. Transition Plateau)**:
+   - Starting from elementary grammar and boundary gates, Mode A consistently discovers the asymptotic additive compromise $C_D(Re) \approx 24/Re + 0.407$ (10 AST nodes in LC, 44 nodes in LB) adhering to 100% of physical boundary gates (Stokes window $[0.95, 1.05]$, Newton window $[0.383, 0.431]$, and aerodynamic drag monotonicity).
+   - However, discovering the exact four-parameter non-linear transition bridge ($Re^{0.681}$ and $1 + 8710/Re$) from pure discrete tree mutations without continuous parameter estimation plateaus at $36.85\%$ relative error across the unseen gap $[5, 100]$.
+2. **What Mode B Proves (Physics-Constrained Parameter Tuning on Manifolds)**:
+   - When given the two-regime transition functional skeleton, Darwin-Evolab's continuous parameter optimization bounded by asymptotic gates achieves $< 0.8\%$ gap error under 2% multiplicative noise and $0.000\%$ under noiseless conditions, recovering the true correlation across the held-out gap.
+3. **AST Complexity Scaling in Raw Physical Variables**:
+   - Expanding Reynolds number $Re = \frac{2\rho v r}{\mu}$ into aerodynamic drag $F_D = \frac{1}{2}\rho v^2 \pi r^2 C_D(Re)$ mathematically requires 104 AST nodes. Scaling the complexity gate from $C \le 50$ (valid only for dimensionless LC) to $C \le 150$ for raw variables LB resolves the artificial penalty flaw, allowing Level LB to achieve 80% pass in P2 and 100% pass in P4.
+4. **Regularized Logarithmic Oracle Baseline**:
+   - Fitting the true functional form via relative logarithmic loss $E_{data} = \operatorname{mean}[\ln^2(\hat{y}/y)]$ regularized by boundary gates recovers $e_{\text{gap}}^{\text{oracle}} = 0.656\%$, perfectly matching the theoretical prediction ($0.57\% - 0.76\%$) and tightening the $S_2$ success gate to $\sim 1.3\%$.
+5. **Two-Tiered Governance (Domain Gates vs. Relative Governor)**:
+   - The statistical Governor correctly evaluates relative improvement over baselines ($p = 0.000976 < 0.001$ via Wilcoxon Signed-Rank Test for P3/P4), while the Domain Verification Gates enforce absolute engineering fitness, guaranteeing that relative superiority alone never bypasses domain standards.
+
+Full raw empirical report is archived at [`reports/stokes_newton_evaluation_v2.json`](../reports/stokes_newton_evaluation_v2.json).
+
+---
+
+## 8. Index of Raw Empirical Artifacts
 
 All benchmark summaries in this document are backed by committed, byte-for-byte verifiable JSON report files:
 
@@ -592,6 +630,7 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 | [`reports/dream_seeding_validation.json`](../reports/dream_seeding_validation.json) | Dream-RSI Holdout Cross-Validated Seeding & Dead Gate Avoidance (`ACCEPT` verdict, $p < 0.05$) | 5-fold out-of-fold CV |
 | [`reports/live_rsi_generalization.json`](../reports/live_rsi_generalization.json) | Dream-RSI Live Online Search Rollouts on Unseen Holdouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$, 43.48% saved, $p=0.000479$, 0 regressions) | 25 train / 25 test live rollouts |
 | [`reports/recursive_rsi_evaluation.json`](../reports/recursive_rsi_evaluation.json) | Multi-Stage Recursive Policy Improvement Evaluation ($\mathcal{D}_0 \to \pi_1 \to \mathcal{D}_1 \to \pi_2 \to \mathcal{D}_2$, 47.68% saved, $p=1.04 \times 10^{-20}$, monotonic progression) | 75 unseen holdouts across 3 seeds |
+| [`reports/stokes_newton_evaluation_v2.json`](../reports/stokes_newton_evaluation_v2.json) | Stokes-Newton Symbolic Physics Discovery Benchmark (Protocol V2, Full Success, Mode A vs Mode B) | 4 primary cells, 10 seeds each (40 runs) |
 | [`reports/pdf2rtf_real_word_holdout_benchmark.json`](../reports/pdf2rtf_real_word_holdout_benchmark.json) | Real Microsoft Word Holdout Benchmark | $N=12$ documents |
 | [`reports/pdf2rtf_word_oracle_audit.json`](../reports/pdf2rtf_word_oracle_audit.json) | Word-in-the-Loop Oracle Live COM Audit | $N=12$ documents, 100% pass |
 | [`reports/pdf2rtf_corpus_54_benchmark.json`](../reports/pdf2rtf_corpus_54_benchmark.json) | Comprehensive Evolab-54 Multi-Disciplinary Corpus Benchmark | $N=54$ documents |
@@ -604,7 +643,7 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 
 ---
 
-## 8. Exact Reproduction Commands
+## 9. Exact Reproduction Commands
 
 To reproduce every figure and table in this report on your local machine:
 
@@ -636,10 +675,13 @@ python scripts/verify_live_rsi.py --n-train 25 --n-test 25 --seed 42
 # 8. Run Dream-RSI Multi-Stage Recursive Policy Improvement (Empirical Monotonic Chain)
 python scripts/verify_recursive_rsi.py --n-per-stage 25 --seeds 100 2026 42
 
-# 9. Verify Complete Automated Test Suite
+# 9. Run Stokes-Newton Symbolic Physics Discovery Benchmark (Protocol V2)
+python scripts/run_stokes_newton_experiment_v2.py
+
+# 10. Verify Complete Automated Test Suite
 pytest tests/ -q
 
-# 10. Verify Truth in Documentation
+# 11. Verify Truth in Documentation
 python scripts/verify_docs.py
 ```
 

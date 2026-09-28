@@ -4,10 +4,11 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-711%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-725%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
+[![Physics Discovery Benchmark](https://img.shields.io/badge/Physics%20Discovery%20Benchmark-Full%20Success%20(V2)-brightgreen.svg)](docs/RESULTS.md#7-physics-constrained-symbolic-regression-benchmark-stokesnewton-drag-v2)
 [![AST Introns Pruned](https://img.shields.io/badge/AST%20Introns%20Pruned-592%20mutations-blueviolet.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Governor Calibrated](https://img.shields.io/badge/Governor%20Status-DREAM__RSI__READY%20(16.45%25)-success.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Search Space Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
@@ -975,6 +976,7 @@ m = store.run_metrics("run_id")       # التقييمات حتى أول نجا�
 2. **ليس أداة مسبكية للإقرار النهائي للتصنيع (EDA Signoff)**: يعتمد مسار تحجيم واستمثال الدوائر التناظرية على معادلات تحليلية للمستوى الأول (CMOS Level-1) بهامش ربح يتراوح بين $\pm 6\text{ to } 10\text{ dB}$ مقارنة بنماذج BSIM4، وذلك بهدف الاستكشاف الطوبولوجي السريع. لا ندّعي بأي حال جاهزية التصنيع (Tapeout Readiness) دون تحقق كامل في برمجيات EDA التجارية (مثل Cadence Spectre أو Synopsys HSPICE) بالاعتماد على PDKs رسمية ومعتمدة من المسابك بنماذج BSIM4/BSIM-CMG.
 3. **"نظام التشغيل" هو استعارة معمارية**: يُعد وصف "نظام تشغيل تطوري" نموذجاً تصميمياً معمارياً (نواة مشتركة تدير محولات نطاق تعمل كسواقات أجهزة)، وليس نظام تشغيل بمعيار POSIX أو نواة تقلع على العتاد.
 4. **المتحكم الميتا والتعديل الذاتي معطلان افتراضياً بقرار تجريبي**: التزاماً بالبروتوكولات المسجلة مسبقاً، تظل المرحلة الرابعة (حقن المهاجرين الديناميكي) والمرحلة الخامسة (التعديل الذاتي) معطلة افتراضياً (`meta_mode=None`). لقد رفض الحاكم التلقائي المسجل مسبقاً التفعيل التلقائي بعد أن أثبتت قياسات A/B عدم كفاية الكسب الحسابي مقارنة بالذراع الضابطة. *تحديث رسمي (سبتمبر 2026)*: عبر محاكاة الحلم وإعادة التشغيل بأثر رجعي ([`reports/dream_operator_reweighting.json`](reports/dream_operator_reweighting.json)) المستلهمة من Dream-RSI، حققت المرحلة الخامسة أول قرار قبول رسمي صريح **`ACCEPT`** من الحاكم الإحصائي ($p = 0.008 < 0.01$, Cohen's $d = 0.92$, وصفر تراجعات) بتكلفة تنفيذية صفرية وبلا أي مخاطرة بتسميم المجمع الجيني.
+5. **البحث الرمزي المقيد بالفيزياء مقابل اكتشاف قوانين جديدة للطبيعة**: يُقيّم معيار Stokes-Newton كفاءة البحث الرمزي واستمثال المعاملات عبر فجوة انتقالية محجوبة $[5, 100]$ بالاعتماد على ارتباط Brown & Lawler (2003) كدالة توليد اصطناعية مرجعية. نحن **لا ندّعي مطلقاً** اكتشاف قانون فيزيائي جديد للطبيعة. كما نُفصح صراحة وبنزاهة تامة عن الفارق بين **النمط A (البحث الرمزي الحر Tabula Rasa)**—الذي ينجح في استنتاج الأنظمة التقاربية ($24/Re + 0.407$) لكنه يتوقف عند خطأ $\sim 36.8\%$ في منحنى الانتقال—و**النمط B (استمثال معالم القوالب شبه التجريبية)**—الذي يحقق دقة فائقة (خطأ $< 0.8\%$) بفضل مساعدة الاستمثال المتصل تحت بوابات الفيزياء.
 
 ---
 

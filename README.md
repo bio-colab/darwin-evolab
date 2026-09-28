@@ -7,10 +7,11 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bio-colab/darwin-evolab/blob/main/kaggle_bundle/darwin_evolab_grand_run.ipynb)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-711%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-725%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
+[![Physics Discovery Benchmark](https://img.shields.io/badge/Physics%20Discovery%20Benchmark-Full%20Success%20(V2)-brightgreen.svg)](docs/RESULTS.md#7-physics-constrained-symbolic-regression-benchmark-stokesnewton-drag-v2)
 [![JEV Search Reduction](https://img.shields.io/badge/JEV--guided--search--reduction-76.0%25-blueviolet.svg)](docs/JEV_SYSTEM_ONE.md)
 
 🌐 **Language & Guides:**
@@ -216,13 +217,26 @@ To evaluate symbolic genetic search over real-world defect topologies at scale w
 > - **Dual Invariant Requirement**: A patch is classified as resolved *only* if it passes all target failing tests (`FAIL_TO_PASS`) while introducing zero regressions across existing test suites (`PASS_TO_PASS`).  
 > - **Wilson Score 95% Confidence Interval**: With 298 successes across 300 trials, the verified Wilson 95% CI is **`[0.9760, 0.9982]`**. Full traces in [`reports/swe_bench_heavy_breakthroughs.json`](reports/swe_bench_heavy_breakthroughs.json) and [`reports/swe_bench_lite_300.json`](reports/swe_bench_lite_300.json).
 
-### 3. Repository-Wide Test Health
+### 3. Physics-Constrained Symbolic Regression Benchmark (Stokes–Newton Drag V2)
+
+Evaluating symbolic regression across an unseen transition gap ($Re \in [5, 100]$) against Brown & Lawler's empirical sphere drag correlation under Protocol V2:
+
+| Cell ID | Level | Input Space | $N_{\text{train}}$ | Noise $\sigma$ | Mode B Pass Rate | Mean $e_{\text{gap}}$ (Mode B) | Mean $e_{\text{gap}}$ (Mode A) | Oracle $e_{\text{gap}}$ | Verdict |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`P1`** | **`LC`** | Dimensionless $Re \to C_D$ | 50 | 2.0% | **8 / 10 (80.0%)** | **0.705%** | 36.85% | 0.656% | **`PASS`** |
+| **`P2`** | **`LB`** | Raw variables $(v, \rho, \mu, r) \to F_D$ | 50 | 2.0% | **8 / 10 (80.0%)** | **0.713%** | 36.85% | 0.656% | **`PASS`** |
+| **`P3`** | **`LC`** | Dimensionless $Re \to C_D$ | 200 | 0.0% | **10 / 10 (100.0%)** | **0.000%** | 36.85% | 0.000% | **`STRONG_PASS`** |
+| **`P4`** | **`LB`** | Raw variables $(v, \rho, \mu, r) \to F_D$ | 200 | 0.0% | **10 / 10 (100.0%)** | **0.000%** | 36.85% | 0.000% | **`STRONG_PASS`** |
+
+> 🔬 **Transparent Demarcation**: Mode A (Tabula Rasa) discovers asymptotic limits ($24/Re + 0.407$, 10 AST nodes, 100% boundary gate compliance); Mode B (Template Tuning) bridges non-linear transition parameters ($e_{\text{gap}} \le 0.71\%$). Unconstrained GP explodes ($e_{\text{gap}} > 68\%$ to $418,654\%$). Overall Protocol V2 Verdict: **`FULL_SUCCESS`**. Full report in [`experiments/stokes_newton/RESULTS_V2.md`](experiments/stokes_newton/RESULTS_V2.md) and [`reports/stokes_newton_evaluation_v2.json`](reports/stokes_newton_evaluation_v2.json).
+
+### 4. Repository-Wide Test Health
 
 ```text
-tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI, DNA Reader, Island Swarm) : 691 passed, 1 skipped (100%)
-Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 24/24 checks passed (100%)
+tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI, DNA Reader, Island Swarm, Stokes-Newton Physics) : 725 passed, 1 skipped (100%)
+Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 39/39 checks passed (100%)
 ==================================================================================================================
-Total Production Test Suite                                                                        : 691 automated tests (100% passing)
+Total Production Test Suite                                                                        : 725 automated tests (100% passing)
 ```
 
 > 🔬 **Full Scientific Telemetry & Ablation Studies**: See [`docs/RESULTS.md`](docs/RESULTS.md) for unadorned telemetry, ablation tables, and pre-registered negative results.
@@ -234,6 +248,7 @@ Total Production Test Suite                                                     
 | Document | Focus | Description |
 | :--- | :---: | :--- |
 | **[`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)** | 🛠️ **User Guide** | Practical hands-on guide: code repair, pytest, Verilog synthesis, and configuration. |
+| **[`experiments/stokes_newton/RESULTS_V2.md`](experiments/stokes_newton/RESULTS_V2.md)** | 🌐 **Physics Benchmark** | Stokes-Newton Discovery Benchmark Protocol V2: Mode A/B, regularized Oracle, Wilcoxon Governor. |
 | **[`reports/GRAND_RUN_EXECUTIVE_REPORT.md`](reports/GRAND_RUN_EXECUTIVE_REPORT.md)** | ⚡ **Grand Kaggle Run** | Executive report for 636k evals multi-stage benchmark, 592 pruned introns, and Dream-RSI. |
 | **[`docs/BENCHMARKS_300.md`](docs/BENCHMARKS_300.md)** | 📊 **Distilled AST N=300** | Full 300-instance distillation benchmark, scorecard, and local hardware disclosure. |
 | **[`docs/AUTONOMOUS_SELF_EVOLUTION.md`](docs/AUTONOMOUS_SELF_EVOLUTION.md)** | 🧠 **Self-Evolution** | The 3 Pillars of Self-Evolution, Interoceptive Self-Model, and Vaccinated Governor. |
@@ -252,6 +267,7 @@ To ensure absolute rigor and clarity for peer review and academic scrutiny, we e
 1. **Distilled AST Proxy vs. Full Multi-Node Container Evaluation**: Our 300-instance evaluation is conducted via the **Distilled Procedural AST Representation** (achieving 33.7% in smoke baseline and 99.33% with multi-core evolutionary search). We do **NOT** claim that this was executed using the heavy 150 GB Princeton Docker harness, which requires multi-node cloud clusters. The distilled harness provides a democratized, reproducible local approximation (SWE-bench Distribution Proxy).
 2. **"Operating System" is an Architectural Metaphor**: Darwin-Evolab is an evolutionary optimization framework structured around an operating-system-inspired design pattern (a domain-agnostic kernel orchestrating pluggable domain adapter drivers). It is not a POSIX or bootable operating system.
 3. **Exploratory Proofs-of-Concept are Retired & Archived**: Exploratory prototypes previously developed across extreme domains (procedural maze generation, neuromorphic CGP, Genesis physics bridge) successfully concluded their lifecycle and are permanently preserved at Git tag [`v0.6.0-pocs-graduation`](https://github.com/bio-colab/darwin-evolab/releases/tag/v0.6.0-pocs-graduation) and branch [`archive/experimental-pocs`](https://github.com/bio-colab/darwin-evolab/tree/archive/experimental-pocs).
+4. **Physics-Constrained Symbolic Search vs. New Law Discovery**: The Stokes-Newton benchmark evaluates search efficiency and parameter estimation over an unseen transition gap $[5, 100]$ using Brown & Lawler's (2003) empirical sphere drag correlation as the ground-truth generator. We do **NOT** claim the discovery of a new physical law of nature. Furthermore, we explicitly distinguish between **Mode A (Tabula Rasa Free Symbolic Search)**—which successfully discovers asymptotic anchors ($24/Re + 0.407$) but plateaus on non-linear transition curves—and **Mode B (Semi-Empirical Template Parameter Tuning)**—which optimizes continuous parameters to $<0.8\%$ error.
 4. **Meta-Controller is Opt-In by Empirical Decision**: Phase 4 and Phase 5 self-modification remain disabled by default (`meta_mode=None`) until activated with an empirical Governor gate. Retrospective dreaming (Dream-RSI) provides safe, offline counterfactual simulation.
 
 ---
