@@ -700,21 +700,24 @@ class DragSymbolicGenome(EvolabGenome):
                     target.op = "SUB" if target.op == "ADD" else "ADD"
 
         elif mtype == "schema_inject":
-            # Inject physics building blocks: Stokes factor, Newton asymptote, power law
+            # Inject generic physics building blocks: Stokes factor, constant asymptote, generic power law, rational transition
             if child.level == "LC":
                 target = r.choice(nodes)
+                p_rand = round(r.uniform(-1.5, 1.5), 2)
+                c_rand = round(r.choice([10.0, 100.0, 1000.0, 5000.0]) * r.uniform(0.5, 1.5), 1)
+                const_asymp = round(r.uniform(0.2, 0.8), 3)
                 blocks = [
-                    # (24 / Re)
+                    # Canonical Stokes asymptote: 24 / Re
                     DragExprNode("DIV", None, DragExprNode("CONST", 24.0), DragExprNode("VAR", "Re")),
-                    # (0.407)
-                    DragExprNode("CONST", 0.407),
-                    # Re^0.681
-                    DragExprNode("POW", None, DragExprNode("VAR", "Re"), DragExprNode("CONST", 0.681)),
-                    # 1 / (1 + 8710 / Re)
+                    # High-Re saturation constant
+                    DragExprNode("CONST", const_asymp),
+                    # Generic power law Re^p
+                    DragExprNode("POW", None, DragExprNode("VAR", "Re"), DragExprNode("CONST", p_rand)),
+                    # Generic rational transition 1 / (1 + c / Re)
                     DragExprNode(
                         "DIV", None, DragExprNode("CONST", 1.0),
                         DragExprNode("ADD", None, DragExprNode("CONST", 1.0),
-                                     DragExprNode("DIV", None, DragExprNode("CONST", 8710.0), DragExprNode("VAR", "Re")))
+                                     DragExprNode("DIV", None, DragExprNode("CONST", c_rand), DragExprNode("VAR", "Re")))
                     ),
                 ]
                 chosen = r.choice(blocks).clone()
