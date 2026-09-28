@@ -1,0 +1,68 @@
+# protocol.yaml — Frozen Stokes-Newton Protocol Specification (Version 1)
+# Frozen in accordance with stokes-newton-experiment-plan.md Section 4, Step 4.
+
+version: 1
+frozen_status: SEALED
+tag: stokes-newton-protocol-v1
+physics:
+  re_definition: "rho*v*(2r)/mu"
+  generator: brown_lawler_2003
+  re_range: [0.01, 10000.0]
+  gates:
+    low:
+      re_range: [0.01, 0.1]
+      ratio_to_stokes: [0.95, 1.05]
+      tolerance_percent: 5.0
+    high:
+      re_range: [2000.0, 10000.0]
+      cd_asymptote: 0.407
+      ratio_bounds: [0.94, 1.06]
+      tolerance_percent: 6.0
+    monotone_F_in_v: true
+
+data:
+  transition_gap: [5.0, 100.0]
+  n_train_levels: [20, 50, 200]
+  noise_levels: [0.0, 0.02, 0.05, 0.10]
+  sealed_grid_points: 3000
+  sealed_grid_sha256: "50857859bec82ccd18560e355e028fe50e5fef73747906701bb08ef13abad6b3"
+
+run:
+  seeds_per_cell: 10
+  primary_seeds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110]
+  pilot_seeds: [1000, 1001, 1002]
+  budget_evaluations_per_seed: 2000
+
+primary_cells:
+  - {cell: P1, level: LC, n: 50,  sigma: 0.02}
+  - {cell: P2, level: LB, n: 50,  sigma: 0.02}
+  - {cell: P3, level: LC, n: 200, sigma: 0.00}
+  - {cell: P4, level: LB, n: 200, sigma: 0.00}
+
+success_criteria:
+  single_seed:
+    s1_gates: "no violation of low window, high window, or F_D monotonicity"
+    s2_gap_accuracy: "e_gap <= max(1.0%, 2.0 * e_gap_oracle)"
+    s3_full_range_accuracy: "e_max <= max(3.0%, 2.0 * e_max_oracle)"
+    s4_complexity: "C <= 50 AST nodes"
+    s5_numerical_sanity: "no NaN, no negative values"
+    s6_protocol_sanity: "zero information leakage, sealed grid sha256 match"
+  cell_level:
+    pass_threshold: ">= 8 / 10 seeds pass S1-S6"
+    strong_pass_threshold: ">= 9 / 10 seeds pass S1-S6"
+  experiment_level:
+    full_success: "P1, P2, P3, P4 all pass AND Evolab non-inferior to baselines"
+    partial_success: "P1 and P3 (LC) pass, P2 or P4 (LB) fail"
+    failure: "P1 or P3 fail"
+
+baselines:
+  - name: oracle
+    type: "True Brown-Lawler functional form with 4 continuous parameters fitted via curve_fit"
+  - name: gplearn_sr
+    type: "Standard unconstrained Symbolic Regressor Genetic Programming baseline"
+  - name: stokes_only
+    type: "Analytical Stokes law C_D = 24 / Re"
+  - name: naive_sum
+    type: "Naive Stokes + Newton sum C_D = 24 / Re + 0.407"
+  - name: spline
+    type: "Cubic spline in log-space (ln Re, ln C_D)"

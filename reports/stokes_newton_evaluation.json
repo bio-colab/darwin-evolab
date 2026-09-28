@@ -1,0 +1,3443 @@
+{
+  "title": "Stokes-Newton Symbolic Physics Discovery Benchmark",
+  "methodological_classification": "Physics-Constrained Symbolic Search under Frozen Protocol",
+  "disclosure": "Synthetic benchmark derived from Brown-Lawler (2003) empirical correlation; no claim of new physical law discovery.",
+  "sealed_grid_sha256": "50857859bec82ccd18560e355e028fe50e5fef73747906701bb08ef13abad6b3",
+  "sealed_grid_points": 3000,
+  "experiment_verdict": "PARTIAL_SUCCESS",
+  "execution_time_seconds": 520.11,
+  "primary_cells": {
+    "P1": {
+      "cell_id": "P1",
+      "level": "LC",
+      "n_train": 50,
+      "sigma": 0.02,
+      "total_seeds": 10,
+      "pass_count": 9,
+      "pass_rate": 0.9,
+      "wilson_95_ci": [
+        0.5958,
+        0.9821
+      ],
+      "cell_verdict": "STRONG_PASS",
+      "mean_e_gap_evolab": 0.007047,
+      "mean_e_gap_gp": 0.689236,
+      "mean_e_gap_oracle": 0.334155,
+      "gate_violations_count": 1,
+      "governor_verdict": {
+        "decision": "REJECT",
+        "reasons": [
+          "regressions_present"
+        ],
+        "mean_b": -0.6892,
+        "mean_c": -0.007,
+        "median_b": -0.6493,
+        "median_c": -0.0071,
+        "worst_b": -1.3321,
+        "worst_c": -0.0157,
+        "regressions": 1,
+        "delta_mean": 0.6822,
+        "delta_median": 0.6422,
+        "p_value": 1.6e-05,
+        "cohen_d": 2.414
+      },
+      "seed_results": [
+        {
+          "seed": 101,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1533 * (Re ** 0.6754)))) + (0.3629 / (1 + (6518.3973 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.5013,
+            "e_gap": 0.0026849429702493453,
+            "e_max": 0.00959531016445833,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 101,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.020146902527577504,
+                1.080996832742134,
+                0.10024385646815755,
+                49967.43471387491
+              ],
+              "e_gap": 0.2598191255457842,
+              "e_max": 1.52979646598039,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.04343520652102788,
+              "e_max": 0.08152964565814323,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(log(mul(X0, 0.297)))",
+              "e_gap": 0.5486684391622584,
+              "e_max": 18.96992655225668,
+              "ast_nodes": 14,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.5196382510915684,
+            "e_max_threshold": 3.05959293196078,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 102,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1444 * (Re ** 0.6884)))) + (0.3884 / (1 + (8443.4470 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.5605,
+            "e_gap": 0.007608419299443725,
+            "e_max": 0.010494053080702047,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 102,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1656239099048114,
+                0.8446715234694777,
+                0.10000000000000002,
+                49999.99999999999
+              ],
+              "e_gap": 0.57016664457082,
+              "e_max": 2.05011641940587,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.21717638689931448,
+              "e_max": 0.3173343261109502,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(neg(X0), add(add(log(abs(0.018)), add(mul(-0.143, add(sub(sub(X0, -0.040), abs(-0.973)), mul(sqrt(-0.752), mul(sqrt(-0.752), log(X0))))), 0.018)), add(mul(-0.143, X0), 0.018)))",
+              "e_gap": 1.3320804850108263,
+              "e_max": 1.462120550788623,
+              "ast_nodes": 88,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 1.14033328914164,
+            "e_max_threshold": 4.10023283881174,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 103,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1502 * (Re ** 0.6836)))) + (0.7941 / (1 + (22838.7278 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 0.0,
+            "e_gap": 0.0055883938048251775,
+            "e_max": 0.0708114551064809,
+            "passed_gates": false,
+            "gate_failures": [
+              "high_window_violation(cd=[0.3849, 0.4397], req=[0.3826, 0.4314])"
+            ],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 103,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.17167579047544582,
+                0.7875063689524242,
+                0.10000000000003606,
+                49999.99999996342
+              ],
+              "e_gap": 0.3860913843718636,
+              "e_max": 1.1066041901837027,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.010366939426114267,
+              "e_max": 0.35573330097863354,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(sqrt(sub(0.695, X0)), sub(0.695, X0))",
+              "e_gap": 0.7664823240176444,
+              "e_max": 219487.86114240412,
+              "ast_nodes": 20,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": false,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.7721827687437272,
+            "e_max_threshold": 2.2132083803674054,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 104,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1437 * (Re ** 0.6882)))) + (0.3467 / (1 + (7191.5482 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.51,
+            "e_gap": 0.010282122578151979,
+            "e_max": 0.02743876665367377,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 104,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.12992606742464652,
+                0.775331618652086,
+                0.10000000545945241,
+                49999.997481271064
+              ],
+              "e_gap": 0.1274873367614978,
+              "e_max": 0.4816083936584519,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.016061532163873623,
+              "e_max": 0.4371505811786879,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(mul(log(div(div(div(log(sqrt(X0)), add(0.761, -0.538)), log(neg(div(sub(X0, -0.877), sqrt(X0))))), neg(div(sub(X0, log(abs(sub(-0.637, -0.173)))), sqrt(X0))))), neg(div(neg(sub(X0, sqrt(X0))), sqrt(X0)))))",
+              "e_gap": 0.6746293989593622,
+              "e_max": 11699.772258583109,
+              "ast_nodes": 112,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.2549746735229956,
+            "e_max_threshold": 0.9632167873169039,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 105,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1393 * (Re ** 0.6948)))) + (0.6224 / (1 + (17505.7143 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.6011,
+            "e_gap": 0.0157178559225422,
+            "e_max": 0.04657609826109069,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 105,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.10918131739378822,
+                0.9214132951748806,
+                0.10000000000000006,
+                49999.964596690064
+              ],
+              "e_gap": 0.44379359073355606,
+              "e_max": 2.604347623265032,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.039419810325636254,
+              "e_max": 0.1439689729172225,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(mul(log(-0.315), div(mul(log(-0.315), sub(0.967, X0)), sub(abs(X0), sub(0.967, X0)))), sub(abs(X0), sub(0.967, X0)))",
+              "e_gap": 0.6240090072307656,
+              "e_max": 197713.66656398948,
+              "ast_nodes": 60,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.8875871814671121,
+            "e_max_threshold": 5.208695246530064,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 106,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1485 * (Re ** 0.6832)))) + (0.4817 / (1 + (11229.1883 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.7239,
+            "e_gap": 0.0017457181323445518,
+            "e_max": 0.02739421626855146,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 106,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.018486424928777962,
+                0.10000000000000002,
+                0.5693330087594601,
+                100.00000000204984
+              ],
+              "e_gap": 0.47332075922064,
+              "e_max": 0.5495036114909057,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.017017076891349268,
+              "e_max": 0.026276973035188254,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(mul(neg(X0), abs(-0.415)), add(sqrt(add(mul(log(X0), abs(-0.415)), add(add(mul(neg(X0), abs(-0.415)), add(sqrt(log(-0.515)), mul(neg(neg(0.647)), neg(log(0.647))))), add(add(mul(neg(X0), abs(-0.415)), add(sqrt(add(mul(neg(X0), abs(-0.415)), add(sqrt(log(-0.515)), sqrt(0.647)))), add(neg(-0.813), neg(-0.813)))), neg(neg(0.647)))))), add(neg(-0.813), neg(neg(0.647)))))",
+              "e_gap": 0.814658401388799,
+              "e_max": 1.0287105173777709,
+              "ast_nodes": 188,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.94664151844128,
+            "e_max_threshold": 1.0990072229818113,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 107,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1451 * (Re ** 0.6862)))) + (0.3756 / (1 + (7535.3552 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.7295,
+            "e_gap": 0.008613488871575495,
+            "e_max": 0.013093271738286628,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 107,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.11219298269238787,
+                0.5570052719778465,
+                0.37191225150062773,
+                100.00000099553533
+              ],
+              "e_gap": 0.2358683789770233,
+              "e_max": 0.2899496951096181,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.11336819537656398,
+              "e_max": 0.20957390052339064,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(mul(sub(div(sqrt(X0), add(div(sqrt(X0), add(-0.552, X0)), X0)), sqrt(sub(0.939, 0.885))), abs(abs(sub(neg(add(sub(div(sqrt(-0.552), add(log(0.113), div(sqrt(add(div(sqrt(X0), add(-0.552, X0)), X0)), add(log(0.113), X0)))), sqrt(sub(0.939, 0.885))), X0)), mul(sub(sub(div(sqrt(neg(sub(neg(X0), log(0.113)))), add(log(0.113), X0)), sqrt(sub(0.939, 0.885))), sqrt(0.113)), sub(neg(X0), log(0.113))))))))",
+              "e_gap": 0.7436935982130471,
+              "e_max": 0.9972931532182762,
+              "ast_nodes": 191,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.4717367579540466,
+            "e_max_threshold": 0.5798993902192362,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 108,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1460 * (Re ** 0.6850)))) + (0.3906 / (1 + (8296.1866 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.6408,
+            "e_gap": 0.007514524956651587,
+            "e_max": 0.008063311589942945,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 108,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.01696974708653201,
+                1.1033310988879907,
+                0.1046397959820016,
+                49808.3950561111
+              ],
+              "e_gap": 0.2845036745809755,
+              "e_max": 1.6175598856557827,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.08475759404387195,
+              "e_max": 0.12906167912175204,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "mul(neg(div(add(sub(log(-0.272), div(X0, -0.772)), sub(log(-0.272), abs(-0.715))), neg(log(-0.272)))), sqrt(mul(neg(sub(neg(0.839), mul(neg(div(add(sub(neg(0.535), div(X0, -0.772)), sub(sub(X0, -0.201), log(-0.715))), neg(log(-0.272)))), sqrt(mul(neg(sub(neg(0.839), log(-0.372))), abs(div(div(0.659, X0), log(0.119)))))))), abs(div(log(-0.272), sub(add(div(X0, -0.772), div(sqrt(X0), sub(neg(0.839), mul(neg(div(add(sub(log(0.119), div(X0, -0.772)), sub(sub(X0, log(-0.372)), neg(log(-0.272)))), neg(log(-0.272)))), sqrt(mul(neg(sub(neg(0.839), log(-0.372))), abs(div(div(0.659, X0), log(-0.272))))))))), neg(neg(abs(sub(neg(0.535), div(X0, -0.772)))))))))))",
+              "e_gap": 0.597513184828198,
+              "e_max": 0.9883217749500648,
+              "ast_nodes": 326,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.569007349161951,
+            "e_max_threshold": 3.2351197713115654,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 109,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1479 * (Re ** 0.6830)))) + (0.3836 / (1 + (8017.1617 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.6526,
+            "e_gap": 0.004050995707350457,
+            "e_max": 0.009334681997477863,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 109,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.06416230081918303,
+                0.9482956366989361,
+                0.10000000000000002,
+                49999.99999999999
+              ],
+              "e_gap": 0.13977925054551724,
+              "e_max": 1.6300690327710123,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.014405985076320847,
+              "e_max": 0.10810853501019782,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(abs(neg(X0)), neg(X0))",
+              "e_gap": 0.5895597769488564,
+              "e_max": 3.1396856298949865,
+              "ast_nodes": 18,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.2795585010910345,
+            "e_max_threshold": 3.2601380655420247,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 110,
+          "level": "LC",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1537 * (Re ** 0.6773)))) + (0.3640 / (1 + (7050.9851 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 99.5874,
+            "e_gap": 0.006659923990286088,
+            "e_max": 0.014538378413958457,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 110,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.10662921182697557,
+                0.9212795977889507,
+                0.10000000000000288,
+                49999.99997683224
+              ],
+              "e_gap": 0.42071874185311275,
+              "e_max": 2.5172856965490986,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.025795152109539008,
+              "e_max": 0.10589294740090799,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(sub(abs(div(-0.323, 0.101)), log(sub(X0, -0.476))), log(sub(X0, -0.476)))",
+              "e_gap": 0.20106084876367938,
+              "e_max": 76228.70191681747,
+              "ast_nodes": 40,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.8414374837062255,
+            "e_max_threshold": 5.034571393098197,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        }
+      ]
+    },
+    "P2": {
+      "cell_id": "P2",
+      "level": "LB",
+      "n_train": 50,
+      "sigma": 0.02,
+      "total_seeds": 10,
+      "pass_count": 0,
+      "pass_rate": 0.0,
+      "wilson_95_ci": [
+        0.0,
+        0.2775
+      ],
+      "cell_verdict": "FAIL",
+      "mean_e_gap_evolab": 0.007081,
+      "mean_e_gap_gp": 0.689236,
+      "mean_e_gap_oracle": 0.334155,
+      "gate_violations_count": 1,
+      "governor_verdict": {
+        "decision": "REJECT",
+        "reasons": [
+          "regressions_present"
+        ],
+        "mean_b": -0.6892,
+        "mean_c": -0.0071,
+        "median_b": -0.6493,
+        "median_c": -0.0071,
+        "worst_b": -1.3321,
+        "worst_c": -0.016,
+        "regressions": 1,
+        "delta_mean": 0.6821,
+        "delta_median": 0.6422,
+        "p_value": 1.6e-05,
+        "cohen_d": 2.414
+      },
+      "seed_results": [
+        {
+          "seed": 101,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1532 * (((2 * (rho * (v * r))) / mu) ** 0.6754)))) + (0.3631 / (1 + (6528.2491 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.7706,
+            "e_gap": 0.0026420506195239174,
+            "e_max": 0.009555229603178027,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 101,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.020146902527577504,
+                1.080996832742134,
+                0.10024385646815755,
+                49967.43471387491
+              ],
+              "e_gap": 0.2598191255457842,
+              "e_max": 1.52979646598039,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.04343520652102788,
+              "e_max": 0.08152964565814323,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(log(mul(X0, 0.297)))",
+              "e_gap": 0.5486684391622584,
+              "e_max": 18.96992655225668,
+              "ast_nodes": 14,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.5196382510915684,
+            "e_max_threshold": 3.05959293196078,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 102,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1444 * (((2 * (rho * (v * r))) / mu) ** 0.6884)))) + (0.3883 / (1 + (8438.6525 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.7978,
+            "e_gap": 0.0076124936790812415,
+            "e_max": 0.01049656760399455,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 102,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1656239099048114,
+                0.8446715234694777,
+                0.10000000000000002,
+                49999.99999999999
+              ],
+              "e_gap": 0.57016664457082,
+              "e_max": 2.05011641940587,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.21717638689931448,
+              "e_max": 0.3173343261109502,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(neg(X0), add(add(log(abs(0.018)), add(mul(-0.143, add(sub(sub(X0, -0.040), abs(-0.973)), mul(sqrt(-0.752), mul(sqrt(-0.752), log(X0))))), 0.018)), add(mul(-0.143, X0), 0.018)))",
+              "e_gap": 1.3320804850108263,
+              "e_max": 1.462120550788623,
+              "ast_nodes": 88,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 1.14033328914164,
+            "e_max_threshold": 4.10023283881174,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 103,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1501 * (((2 * (rho * (v * r))) / mu) ** 0.6836)))) + (0.7594 / (1 + (21679.1137 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 0.0,
+            "e_gap": 0.005536454174984631,
+            "e_max": 0.0657331718301216,
+            "passed_gates": false,
+            "gate_failures": [
+              "high_window_violation(cd=[0.3849, 0.4376], req=[0.3826, 0.4314])"
+            ],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 103,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.17167579047544582,
+                0.7875063689524242,
+                0.10000000000003606,
+                49999.99999996342
+              ],
+              "e_gap": 0.3860913843718636,
+              "e_max": 1.1066041901837027,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.010366939426114267,
+              "e_max": 0.35573330097863354,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(sqrt(sub(0.695, X0)), sub(0.695, X0))",
+              "e_gap": 0.7664823240176444,
+              "e_max": 219487.86114240412,
+              "ast_nodes": 20,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": false,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.7721827687437272,
+            "e_max_threshold": 2.2132083803674054,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 104,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1437 * (((2 * (rho * (v * r))) / mu) ** 0.6882)))) + (0.3467 / (1 + (7191.2471 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.7746,
+            "e_gap": 0.010295319180363196,
+            "e_max": 0.02746321012347721,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 104,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.12992606742464652,
+                0.775331618652086,
+                0.10000000545945241,
+                49999.997481271064
+              ],
+              "e_gap": 0.1274873367614978,
+              "e_max": 0.4816083936584519,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.016061532163873623,
+              "e_max": 0.4371505811786879,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(mul(log(div(div(div(log(sqrt(X0)), add(0.761, -0.538)), log(neg(div(sub(X0, -0.877), sqrt(X0))))), neg(div(sub(X0, log(abs(sub(-0.637, -0.173)))), sqrt(X0))))), neg(div(neg(sub(X0, sqrt(X0))), sqrt(X0)))))",
+              "e_gap": 0.6746293989593622,
+              "e_max": 11699.772258583109,
+              "ast_nodes": 112,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.2549746735229956,
+            "e_max_threshold": 0.9632167873169039,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 105,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1391 * (((2 * (rho * (v * r))) / mu) ** 0.6949)))) + (0.6206 / (1 + (17445.8346 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.8165,
+            "e_gap": 0.0159534389733322,
+            "e_max": 0.04628538794373522,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 105,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.10918131739378822,
+                0.9214132951748806,
+                0.10000000000000006,
+                49999.964596690064
+              ],
+              "e_gap": 0.44379359073355606,
+              "e_max": 2.604347623265032,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.039419810325636254,
+              "e_max": 0.1439689729172225,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(mul(log(-0.315), div(mul(log(-0.315), sub(0.967, X0)), sub(abs(X0), sub(0.967, X0)))), sub(abs(X0), sub(0.967, X0)))",
+              "e_gap": 0.6240090072307656,
+              "e_max": 197713.66656398948,
+              "ast_nodes": 60,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.8875871814671121,
+            "e_max_threshold": 5.208695246530064,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 106,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1484 * (((2 * (rho * (v * r))) / mu) ** 0.6834)))) + (0.4841 / (1 + (11335.0329 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.873,
+            "e_gap": 0.001930700835516367,
+            "e_max": 0.02778369655098662,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 106,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.018486424928777962,
+                0.10000000000000002,
+                0.5693330087594601,
+                100.00000000204984
+              ],
+              "e_gap": 0.47332075922064,
+              "e_max": 0.5495036114909057,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.017017076891349268,
+              "e_max": 0.026276973035188254,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(mul(neg(X0), abs(-0.415)), add(sqrt(add(mul(log(X0), abs(-0.415)), add(add(mul(neg(X0), abs(-0.415)), add(sqrt(log(-0.515)), mul(neg(neg(0.647)), neg(log(0.647))))), add(add(mul(neg(X0), abs(-0.415)), add(sqrt(add(mul(neg(X0), abs(-0.415)), add(sqrt(log(-0.515)), sqrt(0.647)))), add(neg(-0.813), neg(-0.813)))), neg(neg(0.647)))))), add(neg(-0.813), neg(neg(0.647)))))",
+              "e_gap": 0.814658401388799,
+              "e_max": 1.0287105173777709,
+              "ast_nodes": 188,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.94664151844128,
+            "e_max_threshold": 1.0990072229818113,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 107,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1451 * (((2 * (rho * (v * r))) / mu) ** 0.6862)))) + (0.3756 / (1 + (7535.3552 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.8756,
+            "e_gap": 0.008613488871575512,
+            "e_max": 0.013093271738286628,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 107,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.11219298269238787,
+                0.5570052719778465,
+                0.37191225150062773,
+                100.00000099553533
+              ],
+              "e_gap": 0.2358683789770233,
+              "e_max": 0.2899496951096181,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.11336819537656398,
+              "e_max": 0.20957390052339064,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(mul(sub(div(sqrt(X0), add(div(sqrt(X0), add(-0.552, X0)), X0)), sqrt(sub(0.939, 0.885))), abs(abs(sub(neg(add(sub(div(sqrt(-0.552), add(log(0.113), div(sqrt(add(div(sqrt(X0), add(-0.552, X0)), X0)), add(log(0.113), X0)))), sqrt(sub(0.939, 0.885))), X0)), mul(sub(sub(div(sqrt(neg(sub(neg(X0), log(0.113)))), add(log(0.113), X0)), sqrt(sub(0.939, 0.885))), sqrt(0.113)), sub(neg(X0), log(0.113))))))))",
+              "e_gap": 0.7436935982130471,
+              "e_max": 0.9972931532182762,
+              "ast_nodes": 191,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.4717367579540466,
+            "e_max_threshold": 0.5798993902192362,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 108,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1460 * (((2 * (rho * (v * r))) / mu) ** 0.6850)))) + (0.3906 / (1 + (8296.1866 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.8348,
+            "e_gap": 0.0075145249566516015,
+            "e_max": 0.008063311589942945,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 108,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.01696974708653201,
+                1.1033310988879907,
+                0.1046397959820016,
+                49808.3950561111
+              ],
+              "e_gap": 0.2845036745809755,
+              "e_max": 1.6175598856557827,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.08475759404387195,
+              "e_max": 0.12906167912175204,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "mul(neg(div(add(sub(log(-0.272), div(X0, -0.772)), sub(log(-0.272), abs(-0.715))), neg(log(-0.272)))), sqrt(mul(neg(sub(neg(0.839), mul(neg(div(add(sub(neg(0.535), div(X0, -0.772)), sub(sub(X0, -0.201), log(-0.715))), neg(log(-0.272)))), sqrt(mul(neg(sub(neg(0.839), log(-0.372))), abs(div(div(0.659, X0), log(0.119)))))))), abs(div(log(-0.272), sub(add(div(X0, -0.772), div(sqrt(X0), sub(neg(0.839), mul(neg(div(add(sub(log(0.119), div(X0, -0.772)), sub(sub(X0, log(-0.372)), neg(log(-0.272)))), neg(log(-0.272)))), sqrt(mul(neg(sub(neg(0.839), log(-0.372))), abs(div(div(0.659, X0), log(-0.272))))))))), neg(neg(abs(sub(neg(0.535), div(X0, -0.772)))))))))))",
+              "e_gap": 0.597513184828198,
+              "e_max": 0.9883217749500648,
+              "ast_nodes": 326,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.569007349161951,
+            "e_max_threshold": 3.2351197713115654,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 109,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1479 * (((2 * (rho * (v * r))) / mu) ** 0.6830)))) + (0.3836 / (1 + (8017.1617 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.8402,
+            "e_gap": 0.0040509957073504785,
+            "e_max": 0.009334681997477863,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 109,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.06416230081918303,
+                0.9482956366989361,
+                0.10000000000000002,
+                49999.99999999999
+              ],
+              "e_gap": 0.13977925054551724,
+              "e_max": 1.6300690327710123,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.014405985076320847,
+              "e_max": 0.10810853501019782,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(abs(neg(X0)), neg(X0))",
+              "e_gap": 0.5895597769488564,
+              "e_max": 3.1396856298949865,
+              "ast_nodes": 18,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.2795585010910345,
+            "e_max_threshold": 3.2601380655420247,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 110,
+          "level": "LB",
+          "n_train": 50,
+          "sigma": 0.02,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1537 * (((2 * (rho * (v * r))) / mu) ** 0.6773)))) + (0.3640 / (1 + (7050.9851 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 45.8102,
+            "e_gap": 0.00665992399028607,
+            "e_max": 0.014538378413958322,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 50,
+            "sigma": 0.02,
+            "seed": 110,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.10662921182697557,
+                0.9212795977889507,
+                0.10000000000000288,
+                49999.99997683224
+              ],
+              "e_gap": 0.42071874185311275,
+              "e_max": 2.5172856965490986,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.025795152109539008,
+              "e_max": 0.10589294740090799,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(sub(abs(div(-0.323, 0.101)), log(sub(X0, -0.476))), log(sub(X0, -0.476)))",
+              "e_gap": 0.20106084876367938,
+              "e_max": 76228.70191681747,
+              "ast_nodes": 40,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.8414374837062255,
+            "e_max_threshold": 5.034571393098197,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        }
+      ]
+    },
+    "P3": {
+      "cell_id": "P3",
+      "level": "LC",
+      "n_train": 200,
+      "sigma": 0.0,
+      "total_seeds": 10,
+      "pass_count": 10,
+      "pass_rate": 1.0,
+      "wilson_95_ci": [
+        0.7225,
+        1.0
+      ],
+      "cell_verdict": "STRONG_PASS",
+      "mean_e_gap_evolab": 0.0,
+      "mean_e_gap_gp": 4186.547078,
+      "mean_e_gap_oracle": 0.0,
+      "gate_violations_count": 0,
+      "governor_verdict": {
+        "decision": "REJECT",
+        "reasons": [
+          "not_statistically_significant"
+        ],
+        "mean_b": -4186.5471,
+        "mean_c": 0.0,
+        "median_b": -0.7269,
+        "median_c": -0.0,
+        "worst_b": -41858.816,
+        "worst_c": -0.0,
+        "regressions": 0,
+        "delta_mean": 4186.5471,
+        "delta_median": 0.7269,
+        "p_value": 0.171678,
+        "cohen_d": 0.3163
+      },
+      "seed_results": [
+        {
+          "seed": 101,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 101,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1500000000000132,
+                0.681000000000009,
+                0.4069999999959971,
+                8709.999999864303
+              ],
+              "e_gap": 7.478807804886165e-14,
+              "e_max": 1.2887858460572796e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.034173031934767874,
+              "e_max": 0.04312413186194914,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(log(mul(sub(neg(abs(add(neg(log(mul(sub(neg(abs(neg(abs(add(-0.475, X0))))), X0), sqrt(add(sub(neg(add(mul(sub(neg(abs(add(-0.475, X0))), -0.602), sqrt(log(mul(sub(neg(abs(add(-0.475, X0))), X0), sqrt(add(sub(neg(abs(add(-0.475, X0))), X0), X0)))))), X0)), X0), X0))))), X0))), X0), sqrt(mul(X0, -0.006)))))",
+              "e_gap": 0.3404974728429966,
+              "e_max": 15.964688886978179,
+              "ast_nodes": 171,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 102,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 102,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1499999999999735,
+                0.6809999999999384,
+                0.40699999999547615,
+                8709.999999822763
+              ],
+              "e_gap": 2.135107789119978e-13,
+              "e_max": 1.2156469451114087e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03540266882121154,
+              "e_max": 0.04466349702916118,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(sqrt(div(add(sqrt(div(sqrt(sub(sqrt(log(-0.660)), -0.576)), log(-0.871))), div(neg(add(sub(X0, div(sub(0.569, 0.721), log(sub(-0.121, -0.928)))), sqrt(X0))), abs(div(add(0.490, X0), log(X0))))), log(-0.871))), div(neg(add(sub(X0, log(-0.871)), sqrt(X0))), abs(div(add(0.490, X0), log(X0)))))",
+              "e_gap": 1.7230314081881608,
+              "e_max": 32.244345742722516,
+              "ast_nodes": 148,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 103,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 103,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1500000000000044,
+                0.6810000000000442,
+                0.406999999998098,
+                8709.999999945512
+              ],
+              "e_gap": 1.0846245691878599e-13,
+              "e_max": 7.303074730306749e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03728574138177678,
+              "e_max": 0.046656582322943216,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "abs(log(abs(div(div(log(sub(X0, log(-0.130))), log(-0.130)), log(-0.130)))))",
+              "e_gap": 0.47977359637795536,
+              "e_max": 8.939788612948583,
+              "ast_nodes": 43,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 104,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 104,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1500000000000056,
+                0.6810000000000185,
+                0.4069999999978795,
+                8709.999999931755
+              ],
+              "e_gap": 6.169319729786356e-14,
+              "e_max": 7.316593935657187e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03422190565624257,
+              "e_max": 0.043201614645230604,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(mul(neg(sub(X0, neg(add(X0, -0.686)))), neg(log(0.888))), log(add(X0, -0.686)))",
+              "e_gap": 41858.81598120802,
+              "e_max": 497993.0795774173,
+              "ast_nodes": 45,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 105,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 105,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.15000000000002336,
+                0.6809999999999737,
+                0.4069999999960713,
+                8709.99999986561
+              ],
+              "e_gap": 4.301502831323698e-14,
+              "e_max": 1.3488111178132255e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.036891094104525464,
+              "e_max": 0.04639041443526266,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(mul(log(-0.230), sub(0.967, X0)), sub(abs(X0), sub(0.967, X0)))",
+              "e_gap": 0.4807158716457254,
+              "e_max": 182322.61917386195,
+              "ast_nodes": 34,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 106,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 106,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1499999999999959,
+                0.6810000000000007,
+                0.40699999999899766,
+                8709.999999963828
+              ],
+              "e_gap": 1.2417831716900589e-14,
+              "e_max": 2.903925309274139e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03421314842869974,
+              "e_max": 0.042878337116120484,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(mul(neg(X0), abs(-0.415)), add(abs(-0.415), add(add(mul(mul(neg(X0), sqrt(-0.415)), abs(-0.415)), add(neg(-0.813), add(neg(-0.813), neg(-0.813)))), neg(-0.813))))",
+              "e_gap": 0.8802382012780182,
+              "e_max": 0.9807170416934162,
+              "ast_nodes": 87,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 107,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 107,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.15000000000000377,
+                0.6809999999999976,
+                0.40699999999479874,
+                8709.999999822045
+              ],
+              "e_gap": 1.8822380936770144e-14,
+              "e_max": 1.730187900749089e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.029425238671010573,
+              "e_max": 0.03775797609917946,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(add(abs(-0.671), sub(abs(add(sub(neg(X0), log(0.113)), log(add(add(mul(add(sqrt(X0), X0), mul(abs(-0.671), sub(X0, -0.302))), add(abs(add(sub(mul(X0, X0), sub(abs(add(sub(neg(X0), log(0.113)), log(add(add(mul(mul(add(sqrt(X0), X0), mul(sub(X0, X0), sqrt(0.944))), mul(sub(X0, X0), sqrt(0.944))), add(log(sub(X0, X0)), abs(sub(0.134, 0.450)))), mul(X0, X0))))), 0.625)), sub(0.134, 0.450))), abs(sub(0.134, 0.450)))), mul(X0, X0))))), sqrt(mul(X0, 0.015)))), sub(log(abs(log(add(add(log(abs(log(0.113))), add(sub(mul(X0, X0), sub(mul(add(sqrt(X0), sub(0.134, 0.450)), mul(sqrt(X0), sub(X0, -0.302))), 0.625)), abs(sub(0.134, 0.450)))), mul(X0, X0))))), log(neg(abs(-0.671)))))",
+              "e_gap": 0.9016392107431235,
+              "e_max": 2.6251527714414937,
+              "ast_nodes": 329,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 108,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 108,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.14999999999999178,
+                0.6810000000000155,
+                0.40699999999788783,
+                8709.999999927992
+              ],
+              "e_gap": 9.809148721944138e-15,
+              "e_max": 6.700118171677203e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03225247872676723,
+              "e_max": 0.04101953903839967,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "abs(mul(sub(X0, abs(mul(sub(sub(sub(X0, -0.721), sqrt(X0)), abs(sqrt(-0.154))), log(mul(sub(add(X0, 0.734), sqrt(X0)), log(sub(sub(sub(X0, -0.721), sqrt(X0)), abs(sqrt(-0.154))))))))), log(log(sqrt(X0)))))",
+              "e_gap": 0.9221401676459966,
+              "e_max": 1118.6316640764517,
+              "ast_nodes": 109,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 109,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 109,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.14999999999999306,
+                0.6809999999999833,
+                0.40699999999811315,
+                8709.999999928661
+              ],
+              "e_gap": 5.583333262957635e-14,
+              "e_max": 5.29276889469658e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.031122836572976167,
+              "e_max": 0.03922052188769366,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(mul(sqrt(log(abs(abs(abs(-0.162))))), sqrt(mul(neg(X0), add(abs(X0), neg(X0))))), log(div(sub(sqrt(X0), sqrt(mul(X0, X0))), log(abs(sqrt(-0.020))))))",
+              "e_gap": 0.35322651790967224,
+              "e_max": 58.336662636089095,
+              "ast_nodes": 86,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        },
+        {
+          "seed": 110,
+          "level": "LC",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerCandidate",
+            "expression": "(((24 / Re) * (1 + (0.1500 * (Re ** 0.6810)))) + (0.4070 / (1 + (8710 / Re))))",
+            "ast_nodes": 33,
+            "fitness_score": 100.0,
+            "e_gap": 0.0,
+            "e_max": 0.0,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LC",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 110,
+            "evaluations_consumed": 30,
+            "generations_run": 1
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.14999999999999655,
+                0.6810000000000042,
+                0.4069999999920004,
+                8709.999999729456
+              ],
+              "e_gap": 1.3947247881612919e-14,
+              "e_max": 2.7453450305134982e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03531441034076375,
+              "e_max": 0.04437382527687429,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(sub(0.886, log(log(sub(log(div(X0, 0.886)), sub(0.521, sub(log(div(X0, 0.886)), sub(sqrt(log(log(sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(sqrt(div(sub(0.521, sub(log(div(X0, 0.886)), sub(sqrt(0.521), sub(log(div(X0, 0.886)), sub(sqrt(0.521), X0))))), neg(X0))), add(X0, 0.796)))))))), add(X0, 0.796)))))))), log(log(sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(sqrt(0.521), add(X0, 0.796))))))))",
+              "e_gap": 0.5735364076668472,
+              "e_max": 108.64646007492568,
+              "ast_nodes": 216,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": true,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": true
+        }
+      ]
+    },
+    "P4": {
+      "cell_id": "P4",
+      "level": "LB",
+      "n_train": 200,
+      "sigma": 0.0,
+      "total_seeds": 10,
+      "pass_count": 0,
+      "pass_rate": 0.0,
+      "wilson_95_ci": [
+        0.0,
+        0.2775
+      ],
+      "cell_verdict": "FAIL",
+      "mean_e_gap_evolab": 0.0,
+      "mean_e_gap_gp": 4186.547078,
+      "mean_e_gap_oracle": 0.0,
+      "gate_violations_count": 0,
+      "governor_verdict": {
+        "decision": "REJECT",
+        "reasons": [
+          "not_statistically_significant"
+        ],
+        "mean_b": -4186.5471,
+        "mean_c": -0.0,
+        "median_b": -0.7269,
+        "median_c": -0.0,
+        "worst_b": -41858.816,
+        "worst_c": -0.0,
+        "regressions": 0,
+        "delta_mean": 4186.5471,
+        "delta_median": 0.7269,
+        "p_value": 0.171678,
+        "cohen_d": 0.3163
+      },
+      "seed_results": [
+        {
+          "seed": 101,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 101,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1500000000000132,
+                0.681000000000009,
+                0.4069999999959971,
+                8709.999999864303
+              ],
+              "e_gap": 7.478807804886165e-14,
+              "e_max": 1.2887858460572796e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.034173031934767874,
+              "e_max": 0.04312413186194914,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "neg(log(mul(sub(neg(abs(add(neg(log(mul(sub(neg(abs(neg(abs(add(-0.475, X0))))), X0), sqrt(add(sub(neg(add(mul(sub(neg(abs(add(-0.475, X0))), -0.602), sqrt(log(mul(sub(neg(abs(add(-0.475, X0))), X0), sqrt(add(sub(neg(abs(add(-0.475, X0))), X0), X0)))))), X0)), X0), X0))))), X0))), X0), sqrt(mul(X0, -0.006)))))",
+              "e_gap": 0.3404974728429966,
+              "e_max": 15.964688886978179,
+              "ast_nodes": 171,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 102,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 102,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1499999999999735,
+                0.6809999999999384,
+                0.40699999999547615,
+                8709.999999822763
+              ],
+              "e_gap": 2.135107789119978e-13,
+              "e_max": 1.2156469451114087e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03540266882121154,
+              "e_max": 0.04466349702916118,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(sqrt(div(add(sqrt(div(sqrt(sub(sqrt(log(-0.660)), -0.576)), log(-0.871))), div(neg(add(sub(X0, div(sub(0.569, 0.721), log(sub(-0.121, -0.928)))), sqrt(X0))), abs(div(add(0.490, X0), log(X0))))), log(-0.871))), div(neg(add(sub(X0, log(-0.871)), sqrt(X0))), abs(div(add(0.490, X0), log(X0)))))",
+              "e_gap": 1.7230314081881608,
+              "e_max": 32.244345742722516,
+              "ast_nodes": 148,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 103,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 103,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1500000000000044,
+                0.6810000000000442,
+                0.406999999998098,
+                8709.999999945512
+              ],
+              "e_gap": 1.0846245691878599e-13,
+              "e_max": 7.303074730306749e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03728574138177678,
+              "e_max": 0.046656582322943216,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "abs(log(abs(div(div(log(sub(X0, log(-0.130))), log(-0.130)), log(-0.130)))))",
+              "e_gap": 0.47977359637795536,
+              "e_max": 8.939788612948583,
+              "ast_nodes": 43,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 104,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 104,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1500000000000056,
+                0.6810000000000185,
+                0.4069999999978795,
+                8709.999999931755
+              ],
+              "e_gap": 6.169319729786356e-14,
+              "e_max": 7.316593935657187e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03422190565624257,
+              "e_max": 0.043201614645230604,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(mul(neg(sub(X0, neg(add(X0, -0.686)))), neg(log(0.888))), log(add(X0, -0.686)))",
+              "e_gap": 41858.81598120802,
+              "e_max": 497993.0795774173,
+              "ast_nodes": 45,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 105,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 105,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.15000000000002336,
+                0.6809999999999737,
+                0.4069999999960713,
+                8709.99999986561
+              ],
+              "e_gap": 4.301502831323698e-14,
+              "e_max": 1.3488111178132255e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.036891094104525464,
+              "e_max": 0.04639041443526266,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "div(mul(log(-0.230), sub(0.967, X0)), sub(abs(X0), sub(0.967, X0)))",
+              "e_gap": 0.4807158716457254,
+              "e_max": 182322.61917386195,
+              "ast_nodes": 34,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 106,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 106,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.1499999999999959,
+                0.6810000000000007,
+                0.40699999999899766,
+                8709.999999963828
+              ],
+              "e_gap": 1.2417831716900589e-14,
+              "e_max": 2.903925309274139e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03421314842869974,
+              "e_max": 0.042878337116120484,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "add(mul(neg(X0), abs(-0.415)), add(abs(-0.415), add(add(mul(mul(neg(X0), sqrt(-0.415)), abs(-0.415)), add(neg(-0.813), add(neg(-0.813), neg(-0.813)))), neg(-0.813))))",
+              "e_gap": 0.8802382012780182,
+              "e_max": 0.9807170416934162,
+              "ast_nodes": 87,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 107,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 107,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.15000000000000377,
+                0.6809999999999976,
+                0.40699999999479874,
+                8709.999999822045
+              ],
+              "e_gap": 1.8822380936770144e-14,
+              "e_max": 1.730187900749089e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.029425238671010573,
+              "e_max": 0.03775797609917946,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(add(abs(-0.671), sub(abs(add(sub(neg(X0), log(0.113)), log(add(add(mul(add(sqrt(X0), X0), mul(abs(-0.671), sub(X0, -0.302))), add(abs(add(sub(mul(X0, X0), sub(abs(add(sub(neg(X0), log(0.113)), log(add(add(mul(mul(add(sqrt(X0), X0), mul(sub(X0, X0), sqrt(0.944))), mul(sub(X0, X0), sqrt(0.944))), add(log(sub(X0, X0)), abs(sub(0.134, 0.450)))), mul(X0, X0))))), 0.625)), sub(0.134, 0.450))), abs(sub(0.134, 0.450)))), mul(X0, X0))))), sqrt(mul(X0, 0.015)))), sub(log(abs(log(add(add(log(abs(log(0.113))), add(sub(mul(X0, X0), sub(mul(add(sqrt(X0), sub(0.134, 0.450)), mul(sqrt(X0), sub(X0, -0.302))), 0.625)), abs(sub(0.134, 0.450)))), mul(X0, X0))))), log(neg(abs(-0.671)))))",
+              "e_gap": 0.9016392107431235,
+              "e_max": 2.6251527714414937,
+              "ast_nodes": 329,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 108,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 108,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.14999999999999178,
+                0.6810000000000155,
+                0.40699999999788783,
+                8709.999999927992
+              ],
+              "e_gap": 9.809148721944138e-15,
+              "e_max": 6.700118171677203e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03225247872676723,
+              "e_max": 0.04101953903839967,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "abs(mul(sub(X0, abs(mul(sub(sub(sub(X0, -0.721), sqrt(X0)), abs(sqrt(-0.154))), log(mul(sub(add(X0, 0.734), sqrt(X0)), log(sub(sub(sub(X0, -0.721), sqrt(X0)), abs(sqrt(-0.154))))))))), log(log(sqrt(X0)))))",
+              "e_gap": 0.9221401676459966,
+              "e_max": 1118.6316640764517,
+              "ast_nodes": 109,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 109,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 109,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.14999999999999306,
+                0.6809999999999833,
+                0.40699999999811315,
+                8709.999999928661
+              ],
+              "e_gap": 5.583333262957635e-14,
+              "e_max": 5.29276889469658e-13,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.031122836572976167,
+              "e_max": 0.03922052188769366,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(mul(sqrt(log(abs(abs(abs(-0.162))))), sqrt(mul(neg(X0), add(abs(X0), neg(X0))))), log(div(sub(sqrt(X0), sqrt(mul(X0, X0))), log(abs(sqrt(-0.020))))))",
+              "e_gap": 0.35322651790967224,
+              "e_max": 58.336662636089095,
+              "ast_nodes": 86,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        },
+        {
+          "seed": 110,
+          "level": "LB",
+          "n_train": 200,
+          "sigma": 0.0,
+          "evolab": {
+            "formula_name": "BrownLawlerDimensionalCandidate",
+            "expression": "((0.5000 * (rho * (v * v))) * ((3.1416 * (r * r)) * (((24 / ((2 * (rho * (v * r))) / mu)) * (1 + (0.1500 * (((2 * (rho * (v * r))) / mu) ** 0.6810)))) + (0.4070 / (1 + (8710 / ((2 * (rho * (v * r))) / mu)))))))",
+            "ast_nodes": 104,
+            "fitness_score": 46.0,
+            "e_gap": 1.246747294465937e-16,
+            "e_max": 5.823964393409991e-16,
+            "passed_gates": true,
+            "gate_failures": [],
+            "level": "LB",
+            "n_train": 200,
+            "sigma": 0.0,
+            "seed": 110,
+            "evaluations_consumed": 600,
+            "generations_run": 22
+          },
+          "baselines": {
+            "oracle": {
+              "baseline": "oracle",
+              "popt": [
+                0.14999999999999655,
+                0.6810000000000042,
+                0.4069999999920004,
+                8709.999999729456
+              ],
+              "e_gap": 1.3947247881612919e-14,
+              "e_max": 2.7453450305134982e-12,
+              "ast_nodes": 33,
+              "passed_gates": true
+            },
+            "stokes": {
+              "baseline": "stokes_only",
+              "expression": "24 / Re",
+              "e_gap": 0.5680493836092777,
+              "e_max": 0.9941550315348564,
+              "ast_nodes": 5,
+              "passed_gates": false
+            },
+            "naive_sum": {
+              "baseline": "naive_sum",
+              "expression": "24 / Re + 0.407",
+              "e_gap": 0.36845733596120267,
+              "e_max": 0.4150044804391032,
+              "ast_nodes": 7,
+              "passed_gates": false
+            },
+            "spline": {
+              "baseline": "spline",
+              "e_gap": 0.03531441034076375,
+              "e_max": 0.04437382527687429,
+              "ast_nodes": 0,
+              "passed_gates": false
+            },
+            "gplearn": {
+              "baseline": "gplearn_sr",
+              "expression": "sub(sub(0.886, log(log(sub(log(div(X0, 0.886)), sub(0.521, sub(log(div(X0, 0.886)), sub(sqrt(log(log(sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(sqrt(div(sub(0.521, sub(log(div(X0, 0.886)), sub(sqrt(0.521), sub(log(div(X0, 0.886)), sub(sqrt(0.521), X0))))), neg(X0))), add(X0, 0.796)))))))), add(X0, 0.796)))))))), log(log(sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(log(div(X0, 0.886)), sub(sqrt(0.521), add(X0, 0.796))))))))",
+              "e_gap": 0.5735364076668472,
+              "e_max": 108.64646007492568,
+              "ast_nodes": 216,
+              "passed_gates": false
+            }
+          },
+          "gates": {
+            "s1_passed_gates": true,
+            "s2_gap_accuracy": true,
+            "s3_full_range_accuracy": true,
+            "s4_complexity": false,
+            "s5_numerical_sanity": true,
+            "s6_protocol_sanity": true
+          },
+          "thresholds": {
+            "e_gap_threshold": 0.01,
+            "e_max_threshold": 0.03,
+            "max_ast_nodes": 50
+          },
+          "seed_passed": false
+        }
+      ]
+    }
+  }
+}
