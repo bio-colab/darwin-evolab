@@ -27,10 +27,10 @@ Protocol V2 directly resolves the five forensic audit findings from V1:
 
 | Cell | Level | Mode A Mean $e_{gap}$ | Mode A Pass Rate | Mode B Mean $e_{gap}$ | Mode B Pass Rate | Mode A Expressions |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **P1** | LC | 36.85% | 0/10 | **0.705%** | 8/10 | `24/Re + 0.407` (asymptotic sum) |
-| **P2** | LB | 36.85% | 0/10 | **0.713%** | 8/10 | `24/Re + 0.407` (asymptotic sum) |
-| **P3** | LC | 36.85% | 0/10 | **0.000%** | 10/10 | `24/Re + 0.407` (asymptotic sum) |
-| **P4** | LB | 36.85% | 0/10 | **0.000%** | 10/10 | `24/Re + 0.407` (asymptotic sum) |
+| **P1** | LC | 31.63% | 0/10 | **0.705%** | 8/10 | `24/Re + 0.407` (asymptotic sum) |
+| **P2** | LB | 34.24% | 0/10 | **0.713%** | 8/10 | `24/Re + 0.407` (asymptotic sum) |
+| **P3** | LC | 31.25% | 0/10 | **0.000%** | 10/10 | `24/Re + 0.407` (asymptotic sum) |
+| **P4** | LB | 34.24% | 0/10 | **0.000%** | 10/10 | `24/Re + 0.407` (asymptotic sum) |
 
 ### Key Finding on Mode A vs Mode B:
 - **Mode A (Free Tabula Rasa Symbolic Search)** successfully discovers the two-regime additive structure $C_D \approx 24/Re + 0.407$ (10 AST nodes) satisfying 100% of the physical asymptotic boundary gates (Stokes low-Re, Newton high-Re, and monotonicity). However, discovering the exact four-parameter non-linear transition bridge without template guidance yields an error of $\sim 36.8\%$ across the unseen gap $[5, 100]$.

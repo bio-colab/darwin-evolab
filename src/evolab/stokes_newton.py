@@ -624,51 +624,136 @@ class DragSymbolicGenome(EvolabGenome):
             }
             return self.root.evaluate(env, self.params)
 
+    def collect_const_nodes(self) -> list[DragExprNode]:
+        """Collects all CONST leaf nodes in the AST for Lamarckian continuous parameter tuning."""
+        nodes: list[DragExprNode] = []
+
+        def _collect(n: DragExprNode | None) -> None:
+            if n is None:
+                return
+            if n.op == "CONST":
+                nodes.append(n)
+            _collect(n.left)
+            _collect(n.right)
+
+        _collect(self.root)
+        return nodes
+
     def optimize_constants(self, train_points: list[PhysicsDataPoint]) -> None:
-        """Non-linear least squares / Nelder-Mead continuous parameter optimization."""
-        if not self.params:
-            return
+        """Non-linear least squares / Nelder-Mead continuous parameter optimization.
 
-        if self.level == "LC":
-            re_arr = np.array([p.re for p in train_points], dtype=np.float64)
-            y_obs = np.array([p.cd_obs for p in train_points], dtype=np.float64)
+        Supports both Mode B (template parameters via self.params) and Mode A
+        (Lamarckian tree continuous parameter optimization on CONST nodes under physical boundary gate regularization).
+        """
+        if self.params:
+            if self.level == "LC":
+                re_arr = np.array([p.re for p in train_points], dtype=np.float64)
+                y_obs = np.array([p.cd_obs for p in train_points], dtype=np.float64)
 
-            def objective(p_vec: np.ndarray) -> float:
-                try:
-                    env = {"Re": re_arr}
-                    pred = self.root.evaluate(env, list(p_vec))
-                    if np.any(pred <= 0) or np.any(np.isnan(pred)):
+                def objective(p_vec: np.ndarray) -> float:
+                    try:
+                        env = {"Re": re_arr}
+                        pred = self.root.evaluate(env, list(p_vec))
+                        if np.any(pred <= 0) or np.any(np.isnan(pred)):
+                            return 1e9
+                        return float(np.mean(np.log(pred / y_obs) ** 2))
+                    except Exception:
                         return 1e9
-                    return float(np.mean(np.log(pred / y_obs) ** 2))
-                except Exception:
-                    return 1e9
+
+            else:
+                rho_arr = np.array([p.rho for p in train_points], dtype=np.float64)
+                v_arr = np.array([p.v for p in train_points], dtype=np.float64)
+                r_arr = np.array([p.r for p in train_points], dtype=np.float64)
+                mu_arr = np.array([p.mu for p in train_points], dtype=np.float64)
+                y_obs = np.array([p.fd_obs for p in train_points], dtype=np.float64)
+
+                def objective(p_vec: np.ndarray) -> float:
+                    try:
+                        env = {"rho": rho_arr, "v": v_arr, "r": r_arr, "mu": mu_arr}
+                        pred = self.root.evaluate(env, list(p_vec))
+                        if np.any(pred <= 0) or np.any(np.isnan(pred)):
+                            return 1e9
+                        return float(np.mean(np.log(pred / y_obs) ** 2))
+                    except Exception:
+                        return 1e9
+
+            # Run bounded or unconstrained Nelder-Mead optimization
+            x0 = np.array(self.params, dtype=np.float64)
+            try:
+                with np.errstate(all="ignore"):
+                    res = minimize(objective, x0, method="Nelder-Mead", options={"maxiter": 60, "xatol": 1e-3, "fatol": 1e-4})
+                    if res.success or res.fun < objective(x0):
+                        self.params = [float(x) for x in res.x]
+            except Exception:
+                pass
 
         else:
-            rho_arr = np.array([p.rho for p in train_points], dtype=np.float64)
-            v_arr = np.array([p.v for p in train_points], dtype=np.float64)
-            r_arr = np.array([p.r for p in train_points], dtype=np.float64)
-            mu_arr = np.array([p.mu for p in train_points], dtype=np.float64)
-            y_obs = np.array([p.fd_obs for p in train_points], dtype=np.float64)
+            # Mode A: Lamarckian tree continuous parameter optimization on CONST nodes
+            const_nodes = self.collect_const_nodes()
+            if not const_nodes or len(const_nodes) > 6:
+                return
 
-            def objective(p_vec: np.ndarray) -> float:
-                try:
-                    env = {"rho": rho_arr, "v": v_arr, "r": r_arr, "mu": mu_arr}
-                    pred = self.root.evaluate(env, list(p_vec))
-                    if np.any(pred <= 0) or np.any(np.isnan(pred)):
+            x0 = np.array([float(n.value) for n in const_nodes], dtype=np.float64)
+            orig_vals = list(x0)
+
+            if self.level == "LC":
+                re_arr = np.array([p.re for p in train_points], dtype=np.float64)
+                y_obs = np.array([p.cd_obs for p in train_points], dtype=np.float64)
+
+                def objective_tree(p_vec: np.ndarray) -> float:
+                    try:
+                        for n, v in zip(const_nodes, p_vec):
+                            n.value = float(v)
+                        pred = self.evaluate_cd(re_arr)
+                        if np.any(pred <= 0) or np.any(np.isnan(pred)):
+                            return 1e9
+                        loss = float(np.mean(np.log(pred / y_obs) ** 2))
+                        p_gates, _ = verify_all_physical_gates(self.evaluate_cd)
+                        if not p_gates:
+                            loss += 10.0
+                        return loss
+                    except Exception:
                         return 1e9
-                    return float(np.mean(np.log(pred / y_obs) ** 2))
-                except Exception:
-                    return 1e9
+            else:
+                rho_arr = np.array([p.rho for p in train_points], dtype=np.float64)
+                v_arr = np.array([p.v for p in train_points], dtype=np.float64)
+                r_arr = np.array([p.r for p in train_points], dtype=np.float64)
+                mu_arr = np.array([p.mu for p in train_points], dtype=np.float64)
+                y_obs = np.array([p.fd_obs for p in train_points], dtype=np.float64)
 
-        # Run bounded or unconstrained Nelder-Mead optimization
-        x0 = np.array(self.params, dtype=np.float64)
-        try:
-            with np.errstate(all="ignore"):
-                res = minimize(objective, x0, method="Nelder-Mead", options={"maxiter": 60, "xatol": 1e-3, "fatol": 1e-4})
-                if res.success or res.fun < objective(x0):
-                    self.params = [float(x) for x in res.x]
-        except Exception:
-            pass
+                def objective_tree(p_vec: np.ndarray) -> float:
+                    try:
+                        for n, v in zip(const_nodes, p_vec):
+                            n.value = float(v)
+                        pred = self.evaluate_fd(rho_arr, v_arr, r_arr, mu_arr)
+                        if np.any(pred <= 0) or np.any(np.isnan(pred)):
+                            return 1e9
+                        loss = float(np.mean(np.log(pred / y_obs) ** 2))
+                        p_gates, _ = verify_all_physical_gates(self.evaluate_cd)
+                        if not p_gates:
+                            loss += 10.0
+                        return loss
+                    except Exception:
+                        return 1e9
+
+            initial_loss = objective_tree(x0)
+            try:
+                with np.errstate(all="ignore"):
+                    res = minimize(
+                        objective_tree,
+                        x0,
+                        method="Nelder-Mead",
+                        options={"maxiter": 40, "xatol": 1e-2, "fatol": 1e-3},
+                    )
+                    if res.success or res.fun < initial_loss:
+                        for n, v in zip(const_nodes, res.x):
+                            n.value = float(v)
+                    else:
+                        for n, v in zip(const_nodes, orig_vals):
+                            n.value = v
+            except Exception:
+                for n, v in zip(const_nodes, orig_vals):
+                    n.value = v
 
     def mutate(self, rng: random.Random | None = None, **kwargs: Any) -> DragSymbolicGenome:
         r = rng or random
@@ -1510,15 +1595,17 @@ def run_stokes_newton_cell(
         candidate=candidate_b_scores,
         regressions=gate_violations_b,
         alpha=0.05,
+        quality_floor=-0.05,
     )
 
-    # Governor Verdict: compare Evolab Mode A vs GP baseline
+    # Governor Verdict: compare Evolab Mode A vs GP baseline (with absolute quality floor to prevent weak baseline trap)
     candidate_a_scores = [-e for e in evolab_a_gap_errors]
     gov_verdict_a = govern_modification(
         baseline=baseline_scores,
         candidate=candidate_a_scores,
         regressions=gate_violations_a,
         alpha=0.05,
+        quality_floor=-0.05,
     )
 
     return {

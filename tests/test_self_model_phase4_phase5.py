@@ -122,3 +122,16 @@ def test_p5_governor_statistical_vaccination():
     assert v_reg["decision"] == "REJECT"
     assert "regressions_present" in v_reg["reasons"]
 
+    # 6. Quality floor rejects candidate beating catastrophic baseline if below absolute threshold
+    b_catastrophic = [-1000.0, -1200.0, -1100.0, -950.0, -1050.0]
+    c_weak = [-0.35, -0.37, -0.36, -0.38, -0.34]  # ~36% error
+    v_weak = govern_modification(b_catastrophic, c_weak, regressions=0, alpha=0.05, quality_floor=-0.05)
+    assert v_weak["decision"] == "REJECT"
+    assert "below_quality_floor" in v_weak["reasons"]
+
+    # Passing candidate meeting the quality floor
+    c_strong = [-0.007, -0.008, -0.006, -0.007, -0.005]  # < 1% error
+    v_strong = govern_modification(b_catastrophic, c_strong, regressions=0, alpha=0.05, quality_floor=-0.05)
+    assert v_strong["decision"] == "ACCEPT"
+    assert "below_quality_floor" not in v_strong["reasons"]
+

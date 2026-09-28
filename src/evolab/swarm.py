@@ -416,8 +416,8 @@ class BurdenGatedIslandSwarmEngine:
 
         # Baseline reference estimates (used by BurdenMonitor)
         baseline_fit = 0.0
-        baseline_expected_sec = 0.5
-        baseline_expected_evals = 32
+        baseline_expected_sec = 0.5 * self.island_count
+        baseline_expected_evals = 32 * self.island_count
         if baseline_evaluator_fn is not None:
             try:
                 b_fit, b_sec, b_evals = baseline_evaluator_fn()

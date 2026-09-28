@@ -361,7 +361,7 @@ def verify_documentation() -> bool:
     # -------------------------------------------------------------------------
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
-        if any(b in readme_text for b in ["tests-725%20passed", "tests-725 passed", "tests-711%20passed", "tests-711 passed", "tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
+        if any(b in readme_text for b in ["tests-726%20passed", "tests-726 passed", "tests-725%20passed", "tests-725 passed", "tests-711%20passed", "tests-711 passed", "tests-705%20passed", "tests-705 passed", "tests-700%20passed", "tests-700 passed", "tests-691%20passed", "tests-691 passed"]):
             checks_passed += 1
             print(f"[OK] Production Test Suite Badge verified in README.md.")
         else:

@@ -22,7 +22,8 @@ from evolab.stokes_newton import (
     BROWN_LAWLER_C1,
     BROWN_LAWLER_C2,
     BROWN_LAWLER_C3,
-    BROWN_LAWLER_C4,
+    DragExprNode,
+    DragSymbolicGenome,
     FROZEN_GRID_SHA256,
     StokesNewtonDragAdapter,
     StokesNewtonSpec,
@@ -164,3 +165,28 @@ def test_domain_adapter_registration_and_execution():
     assert "e_gap" in export
     assert "e_max" in export
     assert export["passed_gates"] is True
+
+
+def test_lamarckian_tree_constant_optimization():
+    """Verifies that free symbolic trees in Mode A optimize CONST nodes under physical gates."""
+    ds = generate_experiment_dataset(n_train=50, sigma=0.02, seed=101)
+    naive_root = DragExprNode(
+        "ADD", None,
+        DragExprNode("DIV", None, DragExprNode("CONST", 20.0), DragExprNode("VAR", "Re")),
+        DragExprNode("CONST", 0.35),
+    )
+    genome = DragSymbolicGenome(root=naive_root, level="LC")
+    const_nodes = genome.collect_const_nodes()
+    assert len(const_nodes) == 2
+    assert [n.value for n in const_nodes] == [20.0, 0.35]
+
+    # Optimize constants on training data
+    genome.optimize_constants(ds.train_points)
+
+    # Values should be adjusted closer to Stokes (24) and Newton (~0.407)
+    vals = [n.value for n in genome.collect_const_nodes()]
+    assert 22.0 <= vals[0] <= 26.0
+    assert 0.38 <= vals[1] <= 0.44
+    passed, reasons = verify_all_physical_gates(genome.evaluate_cd)
+    assert passed, f"Gates failed after Lamarckian optimization: {reasons}"
+

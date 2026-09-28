@@ -370,7 +370,7 @@ def _compute_governor_statistics(b: list[float], c: list[float]) -> tuple[float,
                 try:
                     w_res = _stats.wilcoxon(c, b, alternative="greater", zero_method="wilcox")
                     w_p = float(w_res.pvalue)
-                    if all(d > 0 for d in diffs) or (w_p < 0.05 and t_p >= 0.05):
+                    if all(d > 0 for d in diffs):
                         p_val = min(t_p, w_p)
                 except Exception:
                     pass
@@ -412,6 +412,7 @@ def govern_modification(
     regressions: int = 0,
     alpha: float | None = None,
     min_effect_size: float | None = None,
+    quality_floor: float | None = None,
 ) -> dict[str, Any]:
     """Phase 5: mathematically calibrated evolutionary self-governance decision.
 
@@ -422,6 +423,7 @@ def govern_modification(
       4. regressions == 0 (zero holdout / test regressions)
       5. p_value < alpha (statistically significant against null hypothesis, N >= 5)
       6. cohen_d >= min_effect_size (if requested)
+      7. mean_c >= quality_floor (if requested, guards against weak-baseline trap)
     Anything else → REJECT with explicit failure reasons. Never raises.
     """
     import statistics as _st
@@ -446,6 +448,8 @@ def govern_modification(
             reasons.append("worst_regressed")
         if int(regressions or 0) != 0:
             reasons.append("regressions_present")
+        if quality_floor is not None and mean_c < quality_floor:
+            reasons.append("below_quality_floor")
 
         p_val, cohen_d = _compute_governor_statistics(b, c)
         if alpha is not None and len(b) >= 5 and p_val >= alpha:
