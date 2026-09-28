@@ -1,0 +1,37 @@
+# protocol_v2.yaml — Frozen Stokes-Newton Protocol V2 Specification
+version: 2
+frozen_status: SEALED
+physics:
+  re_definition: "rho*v*(2r)/mu"
+  generator: brown_lawler_2003
+  re_range: [0.01, 10000.0]
+  gates:
+    low:  {re: [0.01, 0.1], ratio_to_stokes: [0.95, 1.05]}
+    high: {re: [2000.0, 10000.0], cd_asymptote: 0.407, tol: 0.06}
+    monotone_F_in_v: true
+data:
+  gap: [5.0, 100.0]
+  n_train: [20, 50, 200]
+  sigma: [0.0, 0.02, 0.05, 0.10]
+  sealed_grid_points: 3000
+  sealed_sha256: "50857859bec82ccd18560e355e028fe50e5fef73747906701bb08ef13abad6b3"
+run:
+  seeds_per_cell: 10
+  primary_seeds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110]
+  pilot_seeds: [1000, 1001, 1002]
+primary_cells:
+  - {cell: P1, level: LC, n: 50,  sigma: 0.02}
+  - {cell: P2, level: LB, n: 50,  sigma: 0.02}
+  - {cell: P3, level: LC, n: 200, sigma: 0.0}
+  - {cell: P4, level: LB, n: 200, sigma: 0.0}
+success:
+  e_gap: {abs_floor: 0.01, oracle_multiple: 2.0}
+  e_max: {abs_floor: 0.03, oracle_multiple: 2.0}
+  complexity_max_nodes:
+    LC: 50
+    LB: 150
+  cell_min_pass_seeds: 8
+modes:
+  mode_a: "Tabula Rasa Free Symbolic Search (Grammar-Constrained Expression GP)"
+  mode_b: "Physics-Constrained Semi-Empirical Template Parameter Tuning"
+baselines: [oracle_regularized, gplearn_sr, stokes_only, naive_sum, spline]

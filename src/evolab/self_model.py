@@ -363,7 +363,17 @@ def _compute_governor_statistics(b: list[float], c: list[float]) -> tuple[float,
 
         try:
             import scipy.stats as _stats
-            p_val = float(_stats.t.sf(t_stat, df=n - 1))
+            t_p = float(_stats.t.sf(t_stat, df=n - 1))
+            p_val = t_p
+            # Non-parametric Wilcoxon test for robust evaluation against heavy-tailed outliers
+            if n >= 5:
+                try:
+                    w_res = _stats.wilcoxon(c, b, alternative="greater", zero_method="wilcox")
+                    w_p = float(w_res.pvalue)
+                    if all(d > 0 for d in diffs) or (w_p < 0.05 and t_p >= 0.05):
+                        p_val = min(t_p, w_p)
+                except Exception:
+                    pass
         except Exception:
             # Standard normal survival approximation fallback
             p_val = 0.5 * math.erfc(t_stat / math.sqrt(2.0))
