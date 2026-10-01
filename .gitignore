@@ -76,3 +76,8 @@ JEV/API key for test.txt
 open_jev_model/
 self_runs.sqlite
 dream_operator_reweighting_kaggle.json
+
+# EvoCore Experimental Linux Appliance & ISO builds (Strictly Local)
+EvoCore/
+*.iso
+
