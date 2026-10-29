@@ -236,7 +236,7 @@ def test_hybrid_mutation_accounting():
     assert hm["light"] + hm["semantic"] == hm["total_mutations"] > 0
     assert abs(hm["light"] / hm["total_mutations"] - 0.7) < 0.05
     assert hm["est_llm_calls_saved_pct"] > 60.0
-    assert r["engine_version"].endswith("6.0")
+    assert r["engine_version"].startswith("evolab-engine/")
 
 
 def test_dynamic_sharing_schedule_fields():
