@@ -1523,8 +1523,8 @@ def test_strategic_selector_biases_toward_better_type():
 def test_package_version_consistency():
     import evolab
     from evolab.engine import ENGINE_VERSION
-    assert evolab.__version__ == "0.6.0"
-    assert ENGINE_VERSION == "evolab-engine/0.6.0"
+    assert evolab.__version__ == "0.7.0"
+    assert ENGINE_VERSION == "evolab-engine/0.7.0"
 
 
 def test_memory_enabled_fires_with_float_genome():
