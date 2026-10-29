@@ -133,8 +133,11 @@ def test_inspect_json_missing_file():
 
 def test_inspect_json_valid_report(tmp_path: Path):
     """Agent contract: inspect valid report returns structured report object."""
+    from evolab.engine import EvolutionEngine
+    engine = EvolutionEngine(population_size=4, seed=42)
+    rep = engine.run(generations=2)
     rep_file = tmp_path / "rep.json"
-    rep_file.write_text((ROOT / "run_report.json").read_text(encoding="utf-8"), encoding="utf-8")
+    rep_file.write_text(json.dumps(rep, indent=2), encoding="utf-8")
     proc = run_cmd(["inspect", str(rep_file), "--json"], cwd=tmp_path)
     assert proc.returncode == 0
     data = json.loads(proc.stdout)

@@ -1,5 +1,5 @@
 {
-  "timestamp": 1793226625.4568582,
+  "timestamp": 1793235811.648785,
   "attestation": {
     "schema_version": "1.0.0",
     "python_sha256": "42ac541168e97dedb9aabd8be335539fc41c682e414b9e8d137b164fb68683b0",
@@ -15,7 +15,7 @@
       "machine_arch": "AMD64",
       "logical_cpus": 8
     },
-    "timestamp_utc": "2026-10-28T22:30:25.508428+00:00"
+    "timestamp_utc": "2026-10-29T01:03:31.690889+00:00"
   },
   "overall_verdict": "NEEDS_REVIEW",
   "governor": {
@@ -38,28 +38,28 @@
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 3,
-        "duration_seconds": 0.101
+        "duration_seconds": 0.113
       },
       "requests_http_helper": {
         "passed": true,
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.028
+        "duration_seconds": 0.019
       },
       "lru_cache_logic": {
         "passed": true,
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.043
+        "duration_seconds": 0.026
       },
       "multi_file_config": {
         "passed": true,
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.038
+        "duration_seconds": 0.035
       }
     }
   },
