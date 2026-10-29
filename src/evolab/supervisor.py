@@ -20,6 +20,7 @@ from typing import Any, TextIO
 from .code_fixtures import SCENARIO_REGISTRY
 from .engine import EvolutionEngine
 from .experience import govern_modification, wilson_interval
+from .provenance import build_runtime_attestation
 from .repair import greedy_run_report
 from .ui.terminal import _BOLD, _CYAN, _DIM, _GREEN, _MAGENTA, _RED, _RESET, _YELLOW, supports_color
 
@@ -128,6 +129,7 @@ class SelfAuditSupervisor:
 
         audit_data = {
             "timestamp": time.time(),
+            "attestation": build_runtime_attestation(),
             "overall_verdict": overall_verdict,
             "governor": {
                 "verdict": gov_verdict,

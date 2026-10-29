@@ -263,6 +263,11 @@ def build_run_report(
         "engine_version": ENGINE_VERSION,
         "schema_version": SCHEMA_VERSION,
     }
+    try:
+        from .provenance import build_runtime_attestation
+        report["attestation"] = build_runtime_attestation()
+    except Exception:
+        pass
     if engine.record_population_snapshots:
         report["population_snapshots"] = engine._population_snapshots
     if engine.record_archive_solutions:

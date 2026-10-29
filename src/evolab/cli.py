@@ -23,25 +23,106 @@ from .code_fixtures import (
 )
 
 
+class EvolabArgumentParser(argparse.ArgumentParser):
+    """Robust argument parser that emits clean structured JSON when --json flag is present."""
+
+    def error(self, message: str) -> None:
+        import sys
+        is_json = "--json" in sys.argv or any(arg.startswith("--format=json") or arg == "json" for arg in sys.argv)
+        if is_json:
+            payload = {
+                "status": "error",
+                "code": "SYNTAX_ERROR",
+                "message": message,
+                "usage": self.format_usage().strip(),
+                "exit_code": 2,
+            }
+            sys.stdout.write(json.dumps(payload, indent=2) + "\n")
+            sys.stdout.flush()
+            sys.exit(2)
+        super().error(message)
+
+
+def emit_cli_error(
+    message: str,
+    code: str = "CLI_ERROR",
+    exit_code: int = 2,
+    is_json: bool = False,
+    details: dict[str, Any] | None = None,
+) -> int:
+    """Emit error according to contract: clean JSON on stdout if is_json, else human error on stderr."""
+    import sys
+    if is_json:
+        payload: dict[str, Any] = {
+            "status": "error",
+            "code": code,
+            "message": message,
+            "exit_code": exit_code,
+        }
+        if details:
+            payload["details"] = details
+        sys.stdout.write(json.dumps(payload, indent=2) + "\n")
+        sys.stdout.flush()
+    else:
+        sys.stderr.write(f"error: {message}\n")
+        if details and "hint" in details:
+            sys.stderr.write(f"hint: {details['hint']}\n")
+        sys.stderr.flush()
+    return exit_code
+
+
 def cmd_inspect(args) -> int:
     import sys
+    is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
     target = getattr(args, "file", None)
     if target is None or target == "":
         if not sys.stdin.isatty():
             target = "-"
         else:
+            if is_json:
+                return emit_cli_error(
+                    "report file not found: <missing path>",
+                    code="MISSING_FILE",
+                    exit_code=2,
+                    is_json=True,
+                    details={"hint": "pass a report path or '-' for stdin, e.g. evolab inspect run_report.json"},
+                )
             print("error: report file not found: <missing path>")
             print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json")
             return 2
     try:
         report = parse_report(target)
     except FileNotFoundError:
+        if is_json:
+            return emit_cli_error(
+                f"report file not found: {target}",
+                code="FILE_NOT_FOUND",
+                exit_code=2,
+                is_json=True,
+                details={"hint": "pass a report path or '-' for stdin, e.g. evolab inspect run_report.json"},
+            )
         print(f"error: report file not found: {target}")
         print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json")
         return 2
     except ValueError as exc:
+        if is_json:
+            return emit_cli_error(str(exc), code="PARSE_ERROR", exit_code=2, is_json=True)
         print(f"error: {exc}")
         return 2
+
+    if is_json:
+        raw = getattr(report, "raw_data", None)
+        if raw is None:
+            raw = {
+                "valid": report.is_valid,
+                "best_individual": report.best_individual,
+                "total_generations": report.total_generations,
+                "engine_version": report.engine_version,
+            }
+        sys.stdout.write(json.dumps(raw, indent=2) + "\n")
+        sys.stdout.flush()
+        return 0 if report.is_valid else 2
+
     print("\n".join(summarize(report)))
     if not report.is_valid:
         return 2
@@ -180,8 +261,18 @@ def _load_code_scenario(args):
         return load_source_scenario(source, args.tests, target_func, args.target_file), True
     if args.scenario not in SCENARIO_REGISTRY:
         names = ", ".join(sorted(SCENARIO_REGISTRY))
-        print(f"error: unknown scenario {args.scenario!r}", file=sys.stderr)
-        print(f"hint: choose one of: {names}", file=sys.stderr)
+        is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+        if is_json:
+            emit_cli_error(
+                f"unknown scenario '{args.scenario}'",
+                code="UNKNOWN_SCENARIO",
+                exit_code=2,
+                is_json=True,
+                details={"available_scenarios": sorted(SCENARIO_REGISTRY)},
+            )
+        else:
+            print(f"error: unknown scenario {args.scenario!r}", file=sys.stderr)
+            print(f"hint: choose one of: {names}", file=sys.stderr)
         return None, True
     return SCENARIO_REGISTRY[args.scenario](), False
 
@@ -203,6 +294,9 @@ def _hit(result: dict, target: float) -> bool:
 
 
 def cmd_evolve(args) -> int:
+    is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+    if is_json:
+        args.format = "json"
     quiet = getattr(args, "quiet", False)
     engine_kind = _resolve_engine(args)
     scenario = None
@@ -724,6 +818,10 @@ def cmd_evolve(args) -> int:
     if not report.is_valid:
         return 2
 
+    is_json = getattr(args, "json", False) or out_format == "json"
+    if is_json:
+        return 0
+
     if not _hit(result, args.target):
         if out_format not in ("json", "patch") and not (
             getattr(args, "diagnose", False) or getattr(args, "verbose", False) or getattr(args, "quiet", False)
@@ -818,6 +916,7 @@ def _ensure_evolve_defaults(args) -> None:
         "telemetry_stream": None,
         "telemetry_fifo": None,
         "external_driver": None,
+        "json": False,
     }
     for k, v in defaults.items():
         if not hasattr(args, k):
@@ -845,18 +944,26 @@ def cmd_optimize(args) -> int:
 def cmd_audit(args) -> int:
     """Run autonomous self-audit and governance evaluation."""
     from .supervisor import SelfAuditSupervisor
+    is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+    quiet = getattr(args, "quiet", False) or is_json
     supervisor = SelfAuditSupervisor(
         candidate_mode=getattr(args, "candidate", "directed"),
         full_suite=getattr(args, "full", False),
         output_path=getattr(args, "output", "reports/self_audit.json"),
-        quiet=getattr(args, "quiet", False),
+        quiet=quiet,
     )
     report = supervisor.run_audit()
-    return 0 if report.get("overall_verdict") == "PASS" else 1
+    if is_json:
+        sys.stdout.write(json.dumps(report, indent=2) + "\n")
+        sys.stdout.flush()
+    verdict = report.get("overall_verdict")
+    return 0 if verdict in ("PASS", "NEEDS_REVIEW") else 1
 
 
 def cmd_wizard(args) -> int:
     """Interactive onboarding wizard."""
+    if getattr(args, "json", False):
+        return emit_cli_error("wizard requires interactive TTY terminal", code="TTY_REQUIRED", exit_code=2, is_json=True)
     from .ui.wizard import run_wizard
     return run_wizard()
 
@@ -864,14 +971,23 @@ def cmd_wizard(args) -> int:
 def cmd_init(args) -> int:
     """Initialize starter configuration file in current project."""
     from .config import generate_default_config
+    is_json = getattr(args, "json", False)
     fmt = getattr(args, "format", "toml")
     target = Path("evolab.toml" if fmt == "toml" else ".evolab.json")
     if target.exists() and not getattr(args, "force", False):
-        print(f"error: {target} already exists. Use --force to overwrite.", file=sys.stderr)
-        return 2
+        return emit_cli_error(
+            f"{target} already exists. Use --force to overwrite.",
+            code="CONFIG_EXISTS",
+            exit_code=2,
+            is_json=is_json,
+        )
     template = generate_default_config(fmt=fmt)
     target.write_text(template, encoding="utf-8")
-    print(f"Initialized configuration file: {target}", file=sys.stderr)
+    if is_json:
+        sys.stdout.write(json.dumps({"status": "success", "file": str(target), "format": fmt}, indent=2) + "\n")
+        sys.stdout.flush()
+    else:
+        print(f"Initialized configuration file: {target}", file=sys.stderr)
     return 0
 
 
@@ -944,15 +1060,26 @@ def cmd_harness(args) -> int:
             if not getattr(args, "quiet", False):
                 print(f"Distilled workflow recipe saved to: {save_wf}")
 
+        is_json = getattr(args, "json", False)
+        if is_json:
+            sys.stdout.write(json.dumps(report.to_dict(), indent=2) + "\n")
+            sys.stdout.flush()
+
         return 0 if report.status == "SUCCESS" else 1
 
     elif action == "init-manifest":
         from .harness import LoopManifest
         from .code_fixtures import SCENARIO_REGISTRY
         sc_name = getattr(args, "scenario", "requests_http_helper")
+        is_json = getattr(args, "json", False)
         if sc_name not in SCENARIO_REGISTRY:
-            print(f"error: unknown scenario '{sc_name}'. Available: {list(SCENARIO_REGISTRY.keys())}", file=sys.stderr)
-            return 2
+            return emit_cli_error(
+                f"unknown scenario '{sc_name}'",
+                code="UNKNOWN_SCENARIO",
+                exit_code=2,
+                is_json=is_json,
+                details={"available_scenarios": sorted(SCENARIO_REGISTRY)},
+            )
         sc = SCENARIO_REGISTRY[sc_name]()
         manifest = LoopManifest.for_repair(
             name=getattr(args, "name", "starter_loop"),
@@ -963,20 +1090,23 @@ def cmd_harness(args) -> int:
         )
         out_p = getattr(args, "output", "loop.json")
         manifest.save(out_p)
-        print(f"Scaffolded 2026 LoopManifest to: {out_p}")
+        if is_json:
+            sys.stdout.write(json.dumps({"status": "success", "file": str(out_p), "name": getattr(args, "name", "starter_loop")}, indent=2) + "\n")
+            sys.stdout.flush()
+        else:
+            print(f"Scaffolded 2026 LoopManifest to: {out_p}")
         return 0
 
     elif action == "replay":
         from .harness import WorkflowExecutor, WorkflowManifest
         wf_p = getattr(args, "workflow", None)
+        is_json = getattr(args, "json", False)
         if not wf_p or not Path(wf_p).is_file():
-            print(f"error: workflow file not found: {wf_p}", file=sys.stderr)
-            return 2
+            return emit_cli_error(f"workflow file not found: {wf_p}", code="FILE_NOT_FOUND", exit_code=2, is_json=is_json)
         wf = WorkflowManifest.load(wf_p)
         src_path = getattr(args, "source", None)
         if not src_path or not Path(src_path).is_file():
-            print(f"error: source file not found: {src_path}", file=sys.stderr)
-            return 2
+            return emit_cli_error(f"source file not found: {src_path}", code="FILE_NOT_FOUND", exit_code=2, is_json=is_json)
         orig_code = Path(src_path).read_text(encoding="utf-8")
         sources = {wf.target_file: orig_code}
 
@@ -985,40 +1115,61 @@ def cmd_harness(args) -> int:
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
         repaired_code = repaired_sources.get(wf.target_file, "")
-        print(f"Replayed workflow {wf.workflow_id} in {elapsed_ms:.3f} ms ({len(wf.actions)} actions applied).")
+        if not is_json:
+            print(f"Replayed workflow {wf.workflow_id} in {elapsed_ms:.3f} ms ({len(wf.actions)} actions applied).")
 
         if getattr(args, "apply", False):
             Path(src_path).write_text(repaired_code, encoding="utf-8")
-            print(f"Applied fix directly in-place to: {src_path}")
+            if not is_json:
+                print(f"Applied fix directly in-place to: {src_path}")
 
         out_path = getattr(args, "output", None)
         if out_path:
             Path(out_path).write_text(repaired_code, encoding="utf-8")
-            print(f"Wrote repaired code to: {out_path}")
+            if not is_json:
+                print(f"Wrote repaired code to: {out_path}")
+
+        if is_json:
+            sys.stdout.write(json.dumps({
+                "status": "success",
+                "applied": getattr(args, "apply", False),
+                "workflow": str(wf_p),
+                "elapsed_ms": round(elapsed_ms, 3)
+            }, indent=2) + "\n")
+            sys.stdout.flush()
 
         return 0
 
     else:
-        print("error: harness requires action: run, init-manifest, or replay", file=sys.stderr)
-        print("hint: evolab harness run --manifest loop.json", file=sys.stderr)
-        return 2
+        is_json = getattr(args, "json", False)
+        return emit_cli_error(
+            "harness requires action: run, init-manifest, or replay",
+            code="MISSING_ACTION",
+            exit_code=2,
+            is_json=is_json,
+            details={"hint": "evolab harness run --manifest loop.json"}
+        )
 
 
 def cmd_eval(args) -> int:
     """Standalone Fitness Oracle evaluating candidate representation from CLI argument or stdin."""
     import sys
+    is_json = getattr(args, "json", False) or getattr(args, "format", "score") == "json"
     raw_input = getattr(args, "candidate", None)
     if raw_input is None or raw_input == "-":
         if not sys.stdin.isatty():
             raw_input = sys.stdin.read().strip()
         else:
-            print("error: eval requires a candidate vector/JSON argument or '-' via stdin", file=sys.stderr)
-            print("hint: echo '[0.0, 0.0]' | evolab eval", file=sys.stderr)
-            return 2
+            return emit_cli_error(
+                "eval requires a candidate vector/JSON argument or '-' via stdin",
+                code="MISSING_CANDIDATE",
+                exit_code=2,
+                is_json=is_json,
+                details={"hint": "echo '[0.0, 0.0]' | evolab eval"},
+            )
 
     if not raw_input:
-        print("error: empty candidate provided to eval", file=sys.stderr)
-        return 2
+        return emit_cli_error("empty candidate provided to eval", code="EMPTY_CANDIDATE", exit_code=2, is_json=is_json)
 
     vector = None
     try:
@@ -1040,8 +1191,12 @@ def cmd_eval(args) -> int:
             pass
 
     if vector is None:
-        print(f"error: could not parse candidate vector coordinates from: {raw_input[:60]!r}", file=sys.stderr)
-        return 2
+        return emit_cli_error(
+            f"could not parse candidate vector coordinates from: {raw_input[:60]!r}",
+            code="INVALID_COORDINATES",
+            exit_code=2,
+            is_json=is_json,
+        )
 
     landscape = getattr(args, "landscape", "rastrigin")
     target = getattr(args, "target", 100.0)
@@ -1050,29 +1205,140 @@ def cmd_eval(args) -> int:
         evaluator = VectorizedLandscapeEvaluator(landscape=landscape, target_score=target)
         result = evaluator.evaluate(vector)
     except Exception as exc:
-        print(f"error during evaluation: {exc}", file=sys.stderr)
-        return 2
+        return emit_cli_error(f"error during evaluation: {exc}", code="EVALUATION_ERROR", exit_code=2, is_json=is_json)
 
-    out_fmt = getattr(args, "format", "score")
-    if out_fmt == "json":
-        print(json.dumps({
+    if is_json:
+        sys.stdout.write(json.dumps({
             "score": result.score,
             "sub_scores": result.sub_scores,
             "artifacts": result.artifacts,
             "evaluation_time_ms": result.evaluation_time_ms,
-        }, indent=2))
+        }, indent=2) + "\n")
+        sys.stdout.flush()
     else:
         print(f"{result.score:.4f}")
     return 0
 
 
-def build_parser() -> argparse.ArgumentParser:
+def cmd_bundle(args) -> int:
+    """Package run report, telemetry, and attestation into a tamper-evident .evobundle."""
+    import sys
+    from .capsule import create_evidence_capsule
+    is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+    report_path = getattr(args, "report", "run_report.json") or "run_report.json"
+    output_bundle = getattr(args, "output", None)
+    if not output_bundle:
+        output_bundle = str(Path(report_path).with_suffix(".evobundle"))
+    secret_key = getattr(args, "key", None)
+    artifacts = getattr(args, "artifacts", None) or []
+    telemetry = getattr(args, "telemetry", None)
+
+    try:
+        out_path = create_evidence_capsule(
+            report_path=report_path,
+            output_bundle_path=output_bundle,
+            artifacts=artifacts,
+            telemetry_path=telemetry,
+            secret_key=secret_key,
+        )
+        if is_json:
+            sys.stdout.write(json.dumps({
+                "status": "success",
+                "bundle_path": str(out_path),
+                "has_signature": bool(secret_key),
+            }, indent=2) + "\n")
+            sys.stdout.flush()
+        else:
+            print(f"Evidence capsule created successfully: {out_path}")
+        return 0
+    except Exception as exc:
+        if is_json:
+            return emit_cli_error(str(exc), code="BUNDLE_FAILED", exit_code=2, is_json=True)
+        print(f"error: failed to create evidence capsule: {exc}", file=sys.stderr)
+        return 2
+
+
+def cmd_verify(args) -> int:
+    """Cryptographically verify the integrity and signature of an .evobundle capsule."""
+    import sys
+    from .capsule import verify_evidence_capsule
+    is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+    bundle_path = getattr(args, "bundle", None)
+    if not bundle_path:
+        if is_json:
+            return emit_cli_error("missing bundle path", code="MISSING_ARGUMENT", exit_code=2, is_json=True)
+        print("error: missing bundle path", file=sys.stderr)
+        return 2
+
+    secret_key = getattr(args, "key", None)
+    res = verify_evidence_capsule(bundle_path=bundle_path, secret_key=secret_key)
+
+    if is_json:
+        sys.stdout.write(json.dumps(res, indent=2) + "\n")
+        sys.stdout.flush()
+        return 0 if res.get("valid") else 1
+
+    if res.get("valid"):
+        print(f"VERIFIED: Evidence capsule '{bundle_path}' is intact and authentic.")
+        print(f"Algorithm: {res.get('algorithm')}")
+        return 0
+    else:
+        print(f"FAILED: Evidence capsule verification failed: {res.get('message')}", file=sys.stderr)
+        return 1
+
+
+def cmd_repl(args) -> int:
+    """Launch stateful interactive REPL kernel with undo/redo and live session engine."""
+    import sys
+    from .repl import ReplKernel
+    from .session import SessionManager
+
+    is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+    session_file = getattr(args, "session", None)
+    session = SessionManager(session_path=session_file)
+    if session_file and Path(session_file).is_file():
+        session.load()
+
+    exec_script = getattr(args, "execute", None)
+    kernel = ReplKernel(
+        session=session,
+        output_json=is_json and not exec_script,
+        silent=bool(is_json and exec_script),
+    )
+
+    if exec_script:
+        results = kernel.execute_script(exec_script)
+        if is_json:
+            sys.stdout.write(json.dumps({
+                "status": "success",
+                "results": results,
+            }, indent=2) + "\n")
+            sys.stdout.flush()
+        return 0
+
+    if not is_json:
+        print("=" * 60)
+        print("   EVOLAB STATEFUL INTERACTIVE REPL KERNEL")
+        print("   Type 'help' for command summary, 'exit' to quit.")
+        print("=" * 60)
+
+    try:
+        kernel.cmdloop()
+        return 0
+    except (KeyboardInterrupt, EOFError):
+        if not is_json:
+            print("\nExiting REPL.")
+        return 0
+
+
+def build_parser() -> EvolabArgumentParser:
     from . import __version__
-    ap = argparse.ArgumentParser(
+    ap = EvolabArgumentParser(
         prog="evolab", description="Universal Evolutionary Optimization & Synthesis Kernel"
     )
     ap.add_argument("--version", action="version", version=f"evolab {__version__}")
-    sub = ap.add_subparsers(dest="command", required=True)
+    ap.add_argument("--json", action="store_true", help="output all results and diagnostics as structured JSON")
+    sub = ap.add_subparsers(dest="command", required=True, parser_class=EvolabArgumentParser)
 
     # Subcommand: eval (Fitness Oracle)
     p_eval = sub.add_parser("eval", help="evaluate candidate representation or vector as a Fitness Oracle")
@@ -1081,11 +1347,13 @@ def build_parser() -> argparse.ArgumentParser:
                         default="rastrigin", help="mathematical benchmark landscape (default: rastrigin)")
     p_eval.add_argument("-t", "--target", type=float, default=100.0, help="target score (default: 100.0)")
     p_eval.add_argument("--format", choices=["score", "json"], default="score", help="output format (score or json)")
+    p_eval.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output results as structured JSON")
     p_eval.set_defaults(func=cmd_eval)
 
     # Subcommand: inspect
     p_inspect = sub.add_parser("inspect", help="validate and analyze a report file")
     p_inspect.add_argument("file", nargs="?", default=None, help="report JSON path")
+    p_inspect.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output parsed report as structured JSON")
     p_inspect.set_defaults(func=cmd_inspect)
 
     # Subcommand: serve-workbench
@@ -1094,26 +1362,31 @@ def build_parser() -> argparse.ArgumentParser:
     p_serve.add_argument("--port", type=int, default=8080, help="HTTP port (default: 8080)")
     p_serve.add_argument("--host", default="127.0.0.1", help="bind host (default: 127.0.0.1)")
     p_serve.add_argument("--no-browser", action="store_true", help="do not auto-open browser")
+    p_serve.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output server status as structured JSON")
     p_serve.set_defaults(func=cmd_serve_workbench)
 
     # Subcommand: wizard
     p_wiz = sub.add_parser("wizard", help="launch interactive step-by-step onboarding wizard")
+    p_wiz.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output wizard status as structured JSON")
     p_wiz.set_defaults(func=cmd_wizard)
 
     # Subcommand: init
     p_init = sub.add_parser("init", help="initialize starter evolab.toml or .evolab.json in current directory")
     p_init.add_argument("--format", choices=["toml", "json"], default="toml", help="configuration file format (default: toml)")
     p_init.add_argument("--force", action="store_true", help="overwrite existing configuration file")
+    p_init.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output initialization status as structured JSON")
     p_init.set_defaults(func=cmd_init)
 
     # Subcommand: mcp
     p_mcp = sub.add_parser("mcp", help="launch Model Context Protocol (MCP) stdio server for AI coding agents")
     p_mcp.add_argument("--transport", choices=["stdio"], default="stdio", help="transport protocol (default: stdio)")
+    p_mcp.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="launch MCP with JSON logging")
     p_mcp.set_defaults(func=cmd_mcp)
 
     # Subcommand: harness (2026 Modern Deterministic Harness & Loop Engine)
     p_harness = sub.add_parser("harness", help="2026 modern deterministic loop harness, additive gate, and distillation")
-    p_harness_sub = p_harness.add_subparsers(dest="harness_action", help="harness actions")
+    p_harness.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output harness results as structured JSON")
+    p_harness_sub = p_harness.add_subparsers(dest="harness_action", help="harness actions", parser_class=EvolabArgumentParser)
 
     # Action: harness run --manifest loop.json
     p_h_run = p_harness_sub.add_parser("run", help="execute deterministic loop according to loop.json manifest")
@@ -1121,12 +1394,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_h_run.add_argument("-o", "--output", default=None, help="path to save harness execution report JSON")
     p_h_run.add_argument("--save-workflow", default=None, help="path to save distilled workflow JSON (if successful)")
     p_h_run.add_argument("--quiet", action="store_true", help="suppress human-readable summary")
+    p_h_run.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output harness execution report as structured JSON")
 
     # Action: harness init-manifest --scenario <name> -o loop.json
     p_h_init = p_harness_sub.add_parser("init-manifest", help="scaffold a new declarative loop.json manifest")
     p_h_init.add_argument("--name", default="starter_loop", help="manifest name")
     p_h_init.add_argument("--scenario", default="requests_http_helper", help="scaffold from pre-calibrated scenario")
     p_h_init.add_argument("-o", "--output", default="loop.json", help="output path for manifest JSON")
+    p_h_init.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output scaffolded manifest as structured JSON")
 
     # Action: harness replay --workflow workflow.json [--source file.py]
     p_h_rep = p_harness_sub.add_parser("replay", help="replay distilled workflow recipe in O(1) time")
@@ -1134,6 +1409,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_h_rep.add_argument("-s", "--source", default=None, help="path to target source file to replay against")
     p_h_rep.add_argument("--apply", action="store_true", help="apply fix directly in-place")
     p_h_rep.add_argument("-o", "--output", default=None, help="save repaired source to output path")
+    p_h_rep.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output replay results as structured JSON")
     p_harness.set_defaults(func=cmd_harness)
 
     # Subcommand: audit
@@ -1142,7 +1418,32 @@ def build_parser() -> argparse.ArgumentParser:
     p_audit.add_argument("--candidate", default="directed", help="candidate mutation strategy mode (default: directed)")
     p_audit.add_argument("-o", "--output", default="reports/self_audit.json", help="audit report JSON path")
     p_audit.add_argument("--quiet", action="store_true", help="suppress interactive terminal scorecard")
+    p_audit.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output audit report as structured JSON")
     p_audit.set_defaults(func=cmd_audit)
+
+    # Subcommand: bundle (Tamper-Evident Evidence Capsule)
+    p_bundle = sub.add_parser("bundle", help="package run report, telemetry, and attestation into a tamper-evident .evobundle")
+    p_bundle.add_argument("report", nargs="?", default="run_report.json", help="path to run report JSON (default: run_report.json)")
+    p_bundle.add_argument("-o", "--output", default=None, help="output .evobundle path (default: <report>.evobundle)")
+    p_bundle.add_argument("-k", "--key", default=None, help="optional secret key for cryptographic HMAC-SHA256 signature")
+    p_bundle.add_argument("--telemetry", default=None, help="path to telemetry JSONL to include in capsule")
+    p_bundle.add_argument("-a", "--artifact", action="append", dest="artifacts", default=[], help="additional artifact file to include (repeatable)")
+    p_bundle.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output bundle status as structured JSON")
+    p_bundle.set_defaults(func=cmd_bundle)
+
+    # Subcommand: verify (Cryptographic Capsule Verification)
+    p_verify = sub.add_parser("verify", help="cryptographically verify the integrity and signature of an .evobundle capsule")
+    p_verify.add_argument("bundle", nargs="?", default=None, help="path to .evobundle capsule archive")
+    p_verify.add_argument("-k", "--key", default=None, help="secret key for HMAC-SHA256 signature verification")
+    p_verify.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output verification results as structured JSON")
+    p_verify.set_defaults(func=cmd_verify)
+
+    # Subcommand: repl (Stateful Interactive REPL Kernel)
+    p_repl = sub.add_parser("repl", help="launch stateful interactive REPL kernel with undo/redo and live session engine")
+    p_repl.add_argument("-e", "--exec", dest="execute", default=None, help="execute semicolon-separated command script and exit")
+    p_repl.add_argument("--session", default=None, help="path to session file (default: .evolab_session.json)")
+    p_repl.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output execution results as structured JSON")
+    p_repl.set_defaults(func=cmd_repl)
 
     # Subcommand: repair (focused APR)
     p_rep = sub.add_parser("repair", help="automated program repair for Python source code")
@@ -1161,6 +1462,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_rep.add_argument("--apply", action="store_true", help="apply repair in-place (creates .bak backup)")
     p_rep.add_argument("--patch-file", default=None, help="save git-apply patch to file")
     p_rep.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
+    p_rep.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output repair results as structured JSON")
     p_rep.add_argument("-o", "--output", default="run_report.json")
     p_rep.add_argument("--diagnose", action="store_true", help="display detailed failure diagnostics & report summary")
     p_rep.add_argument("-v", "--verbose", action="store_true", help="enable verbose diagnostic output")
@@ -1186,6 +1488,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_opt.add_argument("--frac", type=float, default=0.667, help="exploitation start fraction")
     p_opt.add_argument("-o", "--output", default="run_report.json")
     p_opt.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console")
+    p_opt.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output optimization results as structured JSON")
     p_opt.add_argument("--checkpoint-every", type=int, default=None, help="save state checkpoint every N generations")
     p_opt.add_argument("--checkpoint-dir", default=None, help="directory to store checkpoints (default: checkpoints/)")
     p_opt.add_argument("--checkpoint-compress", action="store_true", default=False, help="compress state checkpoints using gzip (.json.gz)")
@@ -1244,6 +1547,7 @@ def build_parser() -> argparse.ArgumentParser:
     g_diag.add_argument("--quiet", action="store_true", help="suppress live terminal progress")
     g_diag.add_argument("--format", choices=["console", "markdown", "patch", "json"], default="console",
                         help="primary stdout format")
+    g_diag.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="output evolution results as structured JSON")
     g_diag.add_argument("-o", "--output", default="run_report.json")
     g_diag.add_argument("--apply", action="store_true", help="apply successful repair in-place to source file (creates .bak)")
     g_diag.add_argument("--patch-file", "--patch-out", default=None, help="write git-apply compatible patch to file")
@@ -1275,6 +1579,58 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _run_cli(argv: list[str] | None = None) -> int:
     import sys
+    raw_argv = sys.argv[1:] if argv is None else list(argv)
+
+    # Introspection for root --json
+    if raw_argv == ["--json"]:
+        from . import __version__
+        sys.stdout.write(json.dumps({
+            "status": "success",
+            "name": "evolab",
+            "version": __version__,
+            "description": "Universal Evolutionary Optimization & Synthesis Kernel",
+            "commands": ["eval", "inspect", "serve-workbench", "wizard", "init", "mcp", "harness", "audit", "bundle", "verify", "repl", "repair", "optimize", "evolve"]
+        }, indent=2) + "\n")
+        sys.stdout.flush()
+        return 0
+
+    if set(raw_argv) in ({"--version", "--json"}, {"-v", "--json"}):
+        from . import __version__
+        sys.stdout.write(json.dumps({
+            "status": "success",
+            "name": "evolab",
+            "version": __version__
+        }, indent=2) + "\n")
+        sys.stdout.flush()
+        return 0
+
+    if set(raw_argv) in ({"--help", "--json"}, {"-h", "--json"}):
+        from . import __version__
+        sys.stdout.write(json.dumps({
+            "status": "success",
+            "name": "evolab",
+            "version": __version__,
+            "description": "Universal Evolutionary Optimization & Synthesis Kernel",
+            "commands": {
+                "eval": "evaluate candidate representation or vector as a Fitness Oracle",
+                "inspect": "validate and analyze a report file",
+                "serve-workbench": "launch local HTTP server for interactive Silicon Workbench with WebUSB enabled",
+                "wizard": "launch interactive step-by-step onboarding wizard",
+                "init": "initialize starter evolab.toml or .evolab.json in current directory",
+                "mcp": "launch Model Context Protocol (MCP) stdio server for AI coding agents",
+                "harness": "2026 modern deterministic loop harness, additive gate, and distillation",
+                "audit": "run autonomous self-audit and governance verification",
+                "bundle": "package run report, telemetry, and attestation into a tamper-evident .evobundle",
+                "verify": "cryptographically verify the integrity and signature of an .evobundle capsule",
+                "repl": "launch stateful interactive REPL kernel with undo/redo and live session engine",
+                "repair": "automated program repair for Python source code",
+                "optimize": "numerical and algorithm optimization",
+                "evolve": "run a full evolution experiment with complete parameter control"
+            }
+        }, indent=2) + "\n")
+        sys.stdout.flush()
+        return 0
+
     # If invoked with no arguments in an interactive terminal, offer to launch onboarding wizard
     if argv is None and len(sys.argv) <= 1:
         if sys.stdin.isatty() and sys.stdout.isatty():
@@ -1301,13 +1657,26 @@ def _run_cli(argv: list[str] | None = None) -> int:
         pass
 
     args = ap.parse_args(argv)
+    if getattr(args, "json", False):
+        if hasattr(args, "format"):
+            args.format = "json"
+
     _ensure_evolve_defaults(args)
     if getattr(args, "command", None) == "inspect" and getattr(args, "file", None) is None:
         if not sys.stdin.isatty():
             args.file = "-"
         else:
-            print("error: report file not found: <missing path>", file=sys.stderr)
-            print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json", file=sys.stderr)
+            is_json = getattr(args, "json", False) or getattr(args, "format", None) == "json"
+            if is_json:
+                return emit_cli_error(
+                    "report file not found: <missing path>",
+                    code="MISSING_FILE",
+                    exit_code=2,
+                    is_json=True,
+                    details={"hint": "pass a report path or '-' for stdin, e.g. evolab inspect run_report.json"}
+                )
+            print("error: report file not found: <missing path>")
+            print("hint: pass a report path or '-' for stdin, e.g. evolab inspect run_report.json")
             return 2
     cmd = getattr(args, "command", None)
     if cmd == "inspect":
@@ -1324,6 +1693,12 @@ def _run_cli(argv: list[str] | None = None) -> int:
         return cmd_optimize(args)
     if cmd == "audit":
         return cmd_audit(args)
+    if cmd == "bundle":
+        return cmd_bundle(args)
+    if cmd == "verify":
+        return cmd_verify(args)
+    if cmd == "repl":
+        return cmd_repl(args)
     if cmd == "wizard":
         return cmd_wizard(args)
     if cmd == "init":

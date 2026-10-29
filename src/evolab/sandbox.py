@@ -209,7 +209,7 @@ import sys
 import types
 import traceback
 
-def _apply_sandboxing(allow_network: bool, max_memory_mb: int):
+def _apply_sandboxing(allow_network: bool, max_memory_mb: int, scratch_dir: str | None = None):
     # Enforce network isolation and log probe telemetry if invoked
     if not allow_network:
         try:
@@ -247,7 +247,7 @@ def _apply_sandboxing(allow_network: bool, max_memory_mb: int):
     except Exception:
         pass
 
-    # Block direct shell command execution inside worker
+    # Block direct shell and process execution inside worker
     try:
         import os
         def _blocked_shell(*args, **kwargs):
@@ -258,6 +258,58 @@ def _apply_sandboxing(allow_network: bool, max_memory_mb: int):
         os.popen = _blocked_shell
     except Exception:
         pass
+
+    try:
+        import subprocess
+        def _blocked_subprocess(*args, **kwargs):
+            sys.stderr.write("[SECURITY_VIOLATION:ENVIRONMENT_PROBE:BLOCKED_SUBPROCESS]\n")
+            sys.stderr.flush()
+            raise PermissionError("Process spawning (subprocess) is blocked by Sandbox containment policy")
+        subprocess.Popen = _blocked_subprocess
+        subprocess.run = _blocked_subprocess
+        subprocess.call = _blocked_subprocess
+        subprocess.check_call = _blocked_subprocess
+        subprocess.check_output = _blocked_subprocess
+    except Exception:
+        pass
+
+    try:
+        import ctypes
+        def _blocked_ctypes(*args, **kwargs):
+            sys.stderr.write("[SECURITY_VIOLATION:ENVIRONMENT_PROBE:BLOCKED_CTYPES]\n")
+            sys.stderr.flush()
+            raise PermissionError("Native C-extension access (ctypes) is blocked by Sandbox containment policy")
+        ctypes.CDLL = _blocked_ctypes
+        if hasattr(ctypes, "WinDLL"):
+            ctypes.WinDLL = _blocked_ctypes
+    except Exception:
+        pass
+
+    # Enforce filesystem write jail
+    if scratch_dir:
+        try:
+            import os
+            import builtins
+            _orig_open = builtins.open
+            _scratch_norm = os.path.normcase(os.path.abspath(scratch_dir))
+
+            def _jailed_open(file, *args, **kwargs):
+                mode = args[0] if len(args) > 0 else kwargs.get("mode", "r")
+                if any(m in mode for m in ("w", "a", "+", "x")):
+                    try:
+                        target_norm = os.path.normcase(os.path.abspath(str(file)))
+                        if not target_norm.startswith(_scratch_norm):
+                            sys.stderr.write(f"[SECURITY_VIOLATION:FILESYSTEM_JAIL:WRITE_ATTEMPT:{target_norm}]\n")
+                            sys.stderr.flush()
+                            raise PermissionError(f"Filesystem write outside sandbox jail is blocked: {target_norm}")
+                    except Exception as e:
+                        if isinstance(e, PermissionError):
+                            raise
+                return _orig_open(file, *args, **kwargs)
+
+            builtins.open = _jailed_open
+        except Exception:
+            pass
 
     # Enforce POSIX memory limits if supported
     if max_memory_mb > 0:
@@ -278,7 +330,8 @@ def main():
         
         _apply_sandboxing(
             allow_network=payload.get("allow_network", False),
-            max_memory_mb=payload.get("max_memory_mb", 256)
+            max_memory_mb=payload.get("max_memory_mb", 256),
+            scratch_dir=payload.get("scratch_dir", None),
         )
         
         sources = payload.get("sources", {})
@@ -457,9 +510,13 @@ class SandboxRunner:
         return self._execute_worker(payload)
 
     def _execute_worker(self, payload: dict[str, Any]) -> ExecutionResult:
+        import shutil
+        import tempfile
         t0 = time.perf_counter()
+        scratch_dir = tempfile.mkdtemp(prefix="evolab_jail_")
         payload["allow_network"] = self.config.allow_network
         payload["max_memory_mb"] = self.config.max_memory_mb
+        payload["scratch_dir"] = scratch_dir
         json_input = json.dumps(payload)
 
         # Prepare environment
@@ -495,6 +552,7 @@ class SandboxRunner:
             "stderr": subprocess.PIPE,
             "text": True,
             "env": env,
+            "cwd": scratch_dir,
         }
         if sys.platform != "win32":
             popen_kwargs["start_new_session"] = True
@@ -599,3 +657,10 @@ class SandboxRunner:
             )
         finally:
             job_guard.close()
+            try:
+                shutil.rmtree(scratch_dir, onexc=_force_remove_readonly)
+            except (TypeError, Exception):
+                try:
+                    shutil.rmtree(scratch_dir, onerror=_force_remove_readonly)
+                except Exception:
+                    pass
