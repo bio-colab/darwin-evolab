@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Community Discussions & Q&A
+    url: https://github.com/bio-colab/darwin-evolab/discussions
+    about: Ask questions, share synthesis experiments, and brainstorm architectural ideas.
+  - name: 📖 Architectural Reality & Documentation
+    url: https://github.com/bio-colab/darwin-evolab/blob/main/docs/ARCHITECTURAL_REALITY.md
+    about: Read our scientific charter and empirical invariants.

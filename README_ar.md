@@ -2,9 +2,12 @@
 ### Universal Kernel + Pluggable Domain Adapters across Software, Silicon & Self-Evolution
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Release](https://img.shields.io/badge/release-v0.7.0-blue.svg)](https://github.com/bio-colab/darwin-evolab/releases)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
+[![Discussions](https://img.shields.io/badge/community-discussions-blue.svg)](https://github.com/bio-colab/darwin-evolab/discussions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-726%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-773%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Capsules Verified](https://img.shields.io/badge/capsules-.evobundle%20verified-success.svg)](docs/USER_GUIDE.md#evidence-capsules)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
@@ -38,7 +41,7 @@ pip install -e .
 
 # التحقق من نجاح التثبيت
 evolab --version
-# الناتج: evolab 0.6.0
+# الناتج: evolab 0.7.0
 ```
 
 ### 2. إصلاح فوري لعلل برمجية في أقل من ثانية
@@ -100,6 +103,44 @@ Test Cases  : 3 assertions
 > **المعالج التفاعلي خطوة بخطوة (Onboarding Wizard)**:  
 > شغّل الأمر `evolab wizard` في الطرفية للحصول على جولة تفاعلية ممتعة لاكتشاف قدرات إصلاح الكود، وتوليف السيليكون، والاستمثال الرياضي!
 
+### 4. محرك الجلسات والطرفية التفاعلية الحية (Interactive REPL)
+
+تشغيل جلسة استمثال تفاعلية مباشرة مع دعم تعديل المعاملات، والتقييم الفوري، والتراجع (Undo/Redo):
+
+```bash
+evolab repl
+```
+```text
+evolab> status
+Current Session Parameters:
+  engine              : GA
+  generations         : 20
+  population_size     : 16
+  target_fitness      : 99.7
+
+evolab> set population_size 64
+Updated population_size = 64
+
+evolab> eval [0.0, 0.0]
+Candidate Fitness: 100.0000 (landscape=rastrigin)
+
+evolab> undo
+Reverted to previous state.
+```
+
+### 5. كبسولات الأدلة الرقمية المحمية ضد العبث (`.evobundle`)
+
+تغليف التقارير التطورية، وسجلات القياس الآني، وشهادة شجرة ميركل التشفيرية، والنماذج المولدة في حزم موقعة رقمياً وقابلة للتحقق الفوري:
+
+```bash
+# إنشاء كبسولة أدلة تشفيرية لتجربة استمثال
+evolab bundle run_report.json -o experiment.evobundle
+
+# التحقق من سلامة وصحة التوقيع الرقمي للكبسولة
+evolab verify experiment.evobundle
+# الناتج: VERIFIED: Evidence capsule 'experiment.evobundle' is intact and authentic.
+```
+
 ---
 
 ## 🛠️ جدول أوامر الاستخدام المباشر (CLI Recipes)
@@ -114,6 +155,10 @@ Test Cases  : 3 assertions
 | **تشغيل منصة العمل التفاعلية** | `evolab serve-workbench --port 8080` | تشغيل واجهة ويب تفاعلية لبرمجة شرائح FPGA مباشرة عبر WebUSB. |
 | **الاستمثال الرياضي المستمر** | `evolab optimize -g 50 -p 32 -s 42` | بحث تطوري مستمر عالي الأبعاد حتى 500 بعد مع كبح التضخم. |
 | **فحص وتحليل تقرير تشغيل** | `evolab inspect run_report.json` | التحقق من صحة التقرير، وتحليل التنوع الوراثي، ومسار اللياقة. |
+| **الطرفية التفاعلية الحية** | `evolab repl` | طرفية تفاعلية مستمرة لضبط المعاملات والتراجع الذري Undo/Redo. |
+| **تغليف كبسولة الأدلة** | `evolab bundle run_report.json` | تغليف التقرير والشهادة التشفيرية في أرشيف `.evobundle` موقع رقمياً. |
+| **التحقق من كبسولة الأدلة** | `evolab verify archive.evobundle` | التحقق التشفيري الصارم من سلامة كبسولة الأدلة وعدم التلاعب بمحتواها. |
+| **أوراكل اللياقة لمتجه إحداثيات** | `evolab eval "[0.0, 0.0]" --json` | تقييم فوري لمتجه إحداثيات أو كود مع عقد JSON منظم ومحكم. |
 | **خادم وكلاء الذكاء الاصطناعي (MCP)** | `evolab mcp` (أو `evolab-mcp`) | خادم FastMCP لربط قدرات الترقيع والعتاد مع Claude Desktop وCursor. |
 
 > 📖 **المرجع الشامل للتعليمات**: راجع [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) للتفاصيل الكاملة وإعدادات المشاريع متعددة الملفات.

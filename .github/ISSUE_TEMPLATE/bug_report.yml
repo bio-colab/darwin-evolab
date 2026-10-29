@@ -1,0 +1,69 @@
+name: 🐛 Bug Report
+description: Report an issue, bug, or unexpected behavior in Darwin-Evolab
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please check existing issues and discussions before filing.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the problem clearly...
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      description: Which part of the system is affected?
+      options:
+        - Core Engine / EvolutionEngine
+        - Automated Program Repair (APR)
+        - Silicon Logic / Verilog Synthesis
+        - Sandbox & Isolation Environment
+        - Cryptographic Provenance & Evidence Capsules (.evobundle)
+        - Interactive REPL & Session Manager
+        - CLI & Machine Contracts (--json)
+        - Model Context Protocol (MCP) Server
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Provide a minimal, reproducible code snippet or CLI command.
+      placeholder: |
+        1. Run `evolab repair ...`
+        2. Execute `...`
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Telemetry
+      description: Python version, OS platform, and Evolab version.
+      placeholder: |
+        - Evolab Version: (e.g. 0.7.0)
+        - Python Version: (e.g. 3.12.0)
+        - Operating System: (e.g. Ubuntu 24.04 / Windows 11)
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Terminal Logs / Traceback
+      description: Paste relevant terminal logs or error tracebacks here.
+      render: shell

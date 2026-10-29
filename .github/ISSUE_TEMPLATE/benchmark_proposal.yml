@@ -1,0 +1,41 @@
+name: 🔬 Benchmark & Challenge Proposal
+description: Propose a pre-registered benchmark scenario for empirical validation
+title: "[Benchmark]: "
+labels: ["benchmark", "empirical-science"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Darwin-Evolab adheres to rigorous empirical benchmarks with pre-registered protocols.
+  - type: input
+    id: benchmark_name
+    attributes:
+      label: Benchmark Name / Scenario Identifier
+      placeholder: e.g., kv_store_concurrency, floating_point_filter
+    validations:
+      required: true
+  - type: dropdown
+    id: benchmark_type
+    attributes:
+      label: Benchmark Category
+      options:
+        - Automated Program Repair (Python AST)
+        - Digital Circuit & Verilog Logic Synthesis (CGP)
+        - High-Dimensional Continuous Landscape
+        - Physics / Symbolic Discovery
+        - Adversarial Sandbox Robustness
+    validations:
+      required: true
+  - type: textarea
+    id: specification
+    attributes:
+      label: Problem Specification & Target Invariants
+      description: What are the objective functions, passing thresholds, and holdout suites?
+      placeholder: Describe the fitness function, constraints, and success criteria...
+    validations:
+      required: true
+  - type: textarea
+    id: baseline
+    attributes:
+      label: Baseline Performance & State of the Art
+      description: How do existing approaches or random search perform on this task?

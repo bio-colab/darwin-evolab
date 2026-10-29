@@ -1,0 +1,43 @@
+name: 💡 Feature Request
+description: Propose a new feature, optimization strategy, or architectural improvement
+title: "[Feature]: "
+labels: ["enhancement", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We welcome ideas that expand Evolab's universal optimization and synthesis capabilities!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement / Motivation
+      description: Is your feature request related to a specific challenge, bottleneck, or domain?
+      placeholder: Describe the motivation or challenge...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Architectural Design
+      description: Describe your proposed design, API syntax, or algorithm.
+      placeholder: Detail the proposed solution...
+    validations:
+      required: true
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Target Domain / Subsystem
+      options:
+        - Domain Adapter (New Engineering Representation)
+        - Evolutionary Optimization & Selection Operators
+        - Verification Oracles & Sandboxing
+        - Cryptographic Provenance & Telemetry
+        - Interactive Shell (REPL) & Tooling
+        - Agent & MCP Integrations
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?

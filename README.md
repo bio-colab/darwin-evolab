@@ -1,13 +1,15 @@
 # Darwin-Evolab: Evolutionary Optimization across Software and Silicon
 
-> **Fast, zero-LLM automated code repair and evolutionary digital circuit synthesis.**  
-> *A domain-agnostic evolutionary operating system orchestrating Python AST repairs, synthesizable Verilog RTL, and continuous high-dimensional optimization in milliseconds.*
+> **Universal Evolutionary Synthesis & Optimization Kernel across Code, Silicon, and Continuous Spaces.**  
+> *Deterministic automated program repair, synthesizable Verilog RTL, verifiable cryptographic evidence capsules, hermetic sandboxing, and interactive REPL kernel in milliseconds.*
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Release](https://img.shields.io/badge/release-v0.7.0-blue.svg)](https://github.com/bio-colab/darwin-evolab/releases)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bio-colab/darwin-evolab/blob/main/kaggle_bundle/darwin_evolab_grand_run.ipynb)
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
+[![Discussions](https://img.shields.io/badge/community-discussions-blue.svg)](https://github.com/bio-colab/darwin-evolab/discussions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-726%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-773%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Distilled AST Benchmark](https://img.shields.io/badge/Distilled%20AST%20Benchmark-298%2F300%20(99.33%25)-brightgreen.svg)](reports/swe_bench_lite_300.json)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
@@ -36,7 +38,7 @@ pip install -e .
 
 # Verify installation
 evolab --version
-# Output: evolab 0.6.0
+# Output: evolab 0.7.0
 ```
 
 ### 2. Instant 1-Second Bug Repair
@@ -98,6 +100,44 @@ Test Cases  : 3 assertions
 > **Interactive Onboarding Wizard**:  
 > Run `evolab wizard` in your terminal for an interactive, step-by-step tour through automated code repair, silicon synthesis, and high-dimensional optimization!
 
+### 4. Stateful Interactive REPL & Session Engine
+
+Launch a stateful evolutionary kernel session with live parameter tuning, instant evaluation, and reversible transactions:
+
+```bash
+evolab repl
+```
+```text
+evolab> status
+Current Session Parameters:
+  engine              : GA
+  generations         : 20
+  population_size     : 16
+  target_fitness      : 99.7
+
+evolab> set population_size 64
+Updated population_size = 64
+
+evolab> eval [0.0, 0.0]
+Candidate Fitness: 100.0000 (landscape=rastrigin)
+
+evolab> undo
+Reverted to previous state.
+```
+
+### 5. Tamper-Evident Evidence Capsules (`.evobundle`)
+
+Package run reports, telemetry, runtime Merkle tree attestation, and artifacts into cryptographically verifiable archives:
+
+```bash
+# Package experiment into an evidence capsule
+evolab bundle run_report.json -o experiment.evobundle
+
+# Verify integrity and digital signature
+evolab verify experiment.evobundle
+# Output: VERIFIED: Evidence capsule 'experiment.evobundle' is intact and authentic.
+```
+
 ---
 
 ## 🛠️ CLI Practical Recipes
@@ -112,6 +152,10 @@ Test Cases  : 3 assertions
 | **Launch Workbench** | `evolab serve-workbench --port 8080` | Interactive web dashboard with WebUSB hardware flashing. |
 | **Optimize Function** | `evolab optimize -g 50 -p 32 -s 42` | Vectorized continuous genetic optimization up to 500D. |
 | **Inspect Report** | `evolab inspect run_report.json` | Validates schema, analyzes diversity, and summarizes fitness history. |
+| **Interactive REPL** | `evolab repl` | Stateful interactive shell with parameter tuning and atomic undo/redo. |
+| **Evidence Capsule** | `evolab bundle run_report.json` | Packages report, attestation, and telemetry into signed `.evobundle`. |
+| **Verify Capsule** | `evolab verify archive.evobundle` | Cryptographically verifies HMAC/SHA-256 integrity seal against tampering. |
+| **Fitness Oracle** | `evolab eval "[0.0, 0.0]" --json` | Evaluates candidate coordinates with structured machine contract. |
 | **AI Agent MCP Server** | `evolab mcp` (or `evolab-mcp`) | FastMCP stdio server connecting Claude Desktop, Cursor, and Windsurf. |
 
 > 📖 **Full Command Reference**: See [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) for detailed flags, multi-file projects, and CI integration.
