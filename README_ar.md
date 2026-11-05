@@ -6,7 +6,7 @@
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![Discussions](https://img.shields.io/badge/community-discussions-blue.svg)](https://github.com/bio-colab/darwin-evolab/discussions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-773%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-783%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Capsules Verified](https://img.shields.io/badge/capsules-.evobundle%20verified-success.svg)](docs/USER_GUIDE.md#evidence-capsules)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)
@@ -159,6 +159,7 @@ evolab verify experiment.evobundle
 | **تغليف كبسولة الأدلة** | `evolab bundle run_report.json` | تغليف التقرير والشهادة التشفيرية في أرشيف `.evobundle` موقع رقمياً. |
 | **التحقق من كبسولة الأدلة** | `evolab verify archive.evobundle` | التحقق التشفيري الصارم من سلامة كبسولة الأدلة وعدم التلاعب بمحتواها. |
 | **أوراكل اللياقة لمتجه إحداثيات** | `evolab eval "[0.0, 0.0]" --json` | تقييم فوري لمتجه إحداثيات أو كود مع عقد JSON منظم ومحكم. |
+| **جراحة وإصلاح الأوزان العصبية** | `python examples/06_neural_weight_space_programming.py` | تعديل أوزان النماذج العصبية جراحياً بنظام مزدوج وصفر تراجعات. |
 | **خادم وكلاء الذكاء الاصطناعي (MCP)** | `evolab mcp` (أو `evolab-mcp`) | خادم FastMCP لربط قدرات الترقيع والعتاد مع Claude Desktop وCursor. |
 
 > 📖 **المرجع الشامل للتعليمات**: راجع [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) للتفاصيل الكاملة وإعدادات المشاريع متعددة الملفات.
@@ -184,7 +185,7 @@ graph TD
 
     Kernel --> Driver3["🧠 الركيزة 3: التطور الذاتي المستقل (Autonomous Self-Evolution)<br/>• الحاكم المطعّم إحصائياً (Vaccinated Governor: خطأ الفرضية الأولى 4.2%)<br/>• مقياس التنوع الفعلي للبرامج الفريدة unique_programs<br/>• محاكي الاسترجاع التاريخي Dream-RSI وإعادة وزن المشغلات ذاتياً"]
 
-    Kernel -.-> DriverExt["📐 محولات مجالات إضافية قابلة للامتداد<br/>• التضاريس الرياضية المستمرة، والنبضات الكمومية، والمحاكاة الهندسية"]
+    Kernel -.-> DriverExt["📐 محولات مجالات إضافية قابلة للامتداد<br/>• التضاريس المستمرة، النبضات الكمومية، فضاء الأوزان العصبية (DWSP)، والمحاكاة الهندسية"]
 ```
 
 > ### 🌟 برهان شمولية النواة الحية

@@ -33,7 +33,7 @@ evolab --version
 ```
 Expected output:
 ```text
-evolab 0.6.0
+evolab 0.7.0
 ```
 
 > [!TIP]
@@ -252,7 +252,34 @@ When `JEV_API_KEY` is present, `evolab` automatically pairs System 1 neural rout
 
 ---
 
-## ❓ 7. Troubleshooting & FAQs
+## 🧠 7. Neural Weight-Space Programming Track (DWSP)
+
+Darwin-Evolab enables targeted neural network repair and post-training alignment directly in continuous weight space without backpropagation or full retraining:
+- **Immutable Base Models**: The original neural weights are never duplicated or overwritten; candidate solutions are represented as sparse coordinate updates or rank-1 factors.
+- **Dual-System Search**: System 1 diagnostic hypotheses guide algebraic population mutations (SVD singular scaling + LoRA-style rank-1 perturbers).
+- **Dual Invariants**: Candidate patches are accepted only if target defect recall $\ge 96\%$ AND anchor suite accuracy achieves 100% with zero regressions ($R = 0$).
+
+### 7.1 Run the Neural Repair Example
+
+```bash
+python examples/06_neural_weight_space_programming.py
+```
+
+### 7.2 Programmatic Python API
+
+```python
+from evolab.neural.benchmark import ControlledToyBenchmark
+from evolab.neural.experiment import run_tri_factor_benchmark
+
+# Execute benchmark with signed cryptographic capsule output
+results = run_tri_factor_benchmark(seed=42, output_bundle="reports/dwsp_solution.evobundle")
+print("Target Recall:", results["group_c_darwin_wsp"]["target_recall"])
+print("Regressions  :", results["group_c_darwin_wsp"]["regressions"])
+```
+
+---
+
+## ❓ 8. Troubleshooting & FAQs
 
 ### Q: "Target fitness not reached within evaluation budget"
 **Cause**: The bug requires multi-hunk composition or the evaluation budget was exhausted before exploring the correct branch.  

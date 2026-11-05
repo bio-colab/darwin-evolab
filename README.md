@@ -156,6 +156,7 @@ evolab verify experiment.evobundle
 | **Evidence Capsule** | `evolab bundle run_report.json` | Packages report, attestation, and telemetry into signed `.evobundle`. |
 | **Verify Capsule** | `evolab verify archive.evobundle` | Cryptographically verifies HMAC/SHA-256 integrity seal against tampering. |
 | **Fitness Oracle** | `evolab eval "[0.0, 0.0]" --json` | Evaluates candidate coordinates with structured machine contract. |
+| **Neural Weight Repair** | `python examples/06_neural_weight_space_programming.py` | Dual-system weight repair on immutable models with 0 regressions. |
 | **AI Agent MCP Server** | `evolab mcp` (or `evolab-mcp`) | FastMCP stdio server connecting Claude Desktop, Cursor, and Windsurf. |
 
 > 📖 **Full Command Reference**: See [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) for detailed flags, multi-file projects, and CI integration.
@@ -181,7 +182,7 @@ graph TD
     
     Kernel --> Driver3["🧠 Pillar 3: Autonomous Self-Evolution (Dream-RSI)<br/>• Statistically Vaccinated Governor (Type I error: 4.2%)<br/>• Unique Programs AST Diversity Metric<br/>• Retrospective Replay Simulation (Dirichlet Operator Reweighting)"]
 
-    Kernel -.-> DriverExt["📐 Extensible Domain Adapters<br/>• Continuous landscapes, quantum pulses, custom representations"]
+    Kernel -.-> DriverExt["📐 Extensible Domain Adapters<br/>• Continuous landscapes, quantum pulses, neural weight space (DWSP), custom representations"]
 ```
 
 ---
@@ -278,10 +279,10 @@ Evaluating symbolic regression across an unseen transition gap ($Re \in [5, 100]
 ### 4. Repository-Wide Test Health
 
 ```text
-tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI, DNA Reader, Island Swarm, Stokes-Newton Physics) : 725 passed, 1 skipped (100%)
-Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 39/39 checks passed (100%)
+tests/ (Core, Multi-File APR, Autonomous Manager, Sequential CGP SoC, SWE-bench 300, JEV, Reproducibility, Dream-RSI, DNA Reader, Island Swarm, Stokes-Newton Physics, DWSP Neural) : 783 passed, 1 skipped (100%)
+Truth-in-Documentation Verification Engine (scripts/verify_docs.py)                                 : 54/54 checks passed (100%)
 ==================================================================================================================
-Total Production Test Suite                                                                        : 725 automated tests (100% passing)
+Total Production Test Suite                                                                        : 783 automated tests (100% passing)
 ```
 
 > 🔬 **Full Scientific Telemetry & Ablation Studies**: See [`docs/RESULTS.md`](docs/RESULTS.md) for unadorned telemetry, ablation tables, and pre-registered negative results.
