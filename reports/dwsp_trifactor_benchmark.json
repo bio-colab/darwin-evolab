@@ -1,0 +1,36 @@
+{
+  "benchmark": "Controlled 4-Class Neural Weight Repair",
+  "seed": 42,
+  "group_a_blind_ga": {
+    "group": "Group A (Blind GA)",
+    "fitness": 5.0,
+    "target_recall": 5.0,
+    "anchor_accuracy": 100.0,
+    "regressions": 0,
+    "passed_holdout": false,
+    "evaluations": 122,
+    "elapsed_s": 0.017
+  },
+  "group_b_oneshot_llm": {
+    "group": "Group B (One-Shot LLM)",
+    "fitness": 100.0,
+    "target_recall": 100.0,
+    "anchor_accuracy": 100.0,
+    "regressions": 0,
+    "passed_holdout": true,
+    "evaluations": 1,
+    "elapsed_s": 0.0
+  },
+  "group_c_darwin_wsp": {
+    "group": "Group C (Darwin WSP)",
+    "fitness": 100.0,
+    "target_recall": 100.0,
+    "anchor_accuracy": 100.0,
+    "regressions": 0,
+    "passed_holdout": true,
+    "evaluations": 8,
+    "pruned_parameters": 60,
+    "evidence_capsule": "reports\\dwsp_solution.evobundle",
+    "elapsed_s": 0.046
+  }
+}

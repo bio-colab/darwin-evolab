@@ -65,6 +65,9 @@ full = [
     "pytest-asyncio>=0.21.0",
 ]
 llm = []
+neural = [
+    "torch>=2.0.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

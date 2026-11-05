@@ -609,7 +609,40 @@ Full raw empirical report is archived at [`reports/stokes_newton_evaluation_v2.j
 
 ---
 
-## 8. Index of Raw Empirical Artifacts
+## 8. Neural Weight-Space Programming (DWSP) Tri-Factor Benchmark
+
+> **Methodological Lineage & Problem Framing**:  
+> Inspired by the foundational paradigm of Takehi, Teoh, Zhang & Khattab (MIT CSAIL, 2026), Darwin Weight-Space Programming (DWSP) formalizes weight editing through an evolutionary Dual-Invariant lens: combining diagnostic hypothesis generation (System 1) with algebraic manifold exploration, parsimony pruning, and non-regression gating (System 2).
+> Evaluated on a controlled 4-class neural classification network ($8 \to 16 \to 4$) with localized Class 3 functional inhibition and 100 anchor samples ($N=100$) enforcing strict zero-regression holdout guarantees.
+
+### 8.1 Tri-Factor Comparative Evaluation Protocol
+
+The benchmark contrasts three distinct weight-space optimization paradigms under matched evaluation conditions:
+1. **Group A (Blind Genetic Search)**: Standard genetic algorithm exploring rank-1 and spectral perturbations without diagnostic semantic guidance.
+2. **Group B (One-Shot LLM Weight Editing)**: Pure diagnostic hypothesis injection applied directly with unit scaling without evolutionary refinement.
+3. **Group C (Darwin Weight-Space Programming - DWSP)**: Dual-System paradigm combining diagnostic subspace hypothesis injection, algebraic population diversification (SVD singular scaling + LoRA-style rank-1 perturbers), Dual-Invariant selection, and counterfactual intron pruning.
+
+| Metric | Group A (Blind GA) | Group B (One-Shot LLM) | Group C (Darwin WSP) | Target Gate |
+| :--- | :---: | :---: | :---: | :---: |
+| **Target Defect Recall (`FAIL_TO_PASS`)** | 5.0% | **100.0%** | **100.0%** | $\ge 96.0\%$ |
+| **Anchor Suite Accuracy (`PASS_TO_PASS`)** | 100.0% | 100.0% | **100.0%** | $\ge 99.0\%$ |
+| **Holdout Pairwise Regressions** | 0 | 0 | **0** | $0$ (Strict) |
+| **Holdout Invariant Status** | `FAILED` | `PASSED` | **`PASSED`** | `PASSED` |
+| **Evaluations to Convergence** | 122 (budget exhausted) | 1 | **8** | $\le 30$ |
+| **Redundant Introns Pruned** | 0 | 0 | **60 params** | Parsimonious |
+| **Cryptographic Evidence Capsule** | N/A | N/A | **`VERIFIED` (SHA-256 seal)** | `.evobundle` |
+
+### 8.2 Key Empirical Takeaways
+
+1. **Failure of Blind Stochastic Exploration (Group A)**: Without structural or semantic hypotheses, blind evolutionary perturbation struggles in continuous weight space, achieving only 5.0% recall within 122 evaluations.
+2. **Efficacy of Targeted Subspace Injection (Group B & C)**: Diagnostic analysis identifies the specific under-activated hidden neuron representation subspace (indices $[12, 13, 14, 15]$ for Class 3), transforming an intractable continuous search into targeted rank-1 manifold corrections.
+3. **Parsimony and Governance via DWSP (Group C)**: Group C achieves immediate defect resolution and then counterfactually prunes 60 redundant near-zero parameters, producing minimal sparse patches sealed inside a cryptographically verified `.evobundle` evidence capsule.
+
+Full raw empirical report is archived at [`reports/dwsp_trifactor_benchmark.json`](../reports/dwsp_trifactor_benchmark.json) with accompanying evidence capsule at [`reports/dwsp_solution.evobundle`](../reports/dwsp_solution.evobundle).
+
+---
+
+## 9. Index of Raw Empirical Artifacts
 
 All benchmark summaries in this document are backed by committed, byte-for-byte verifiable JSON report files:
 
@@ -631,6 +664,7 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 | [`reports/live_rsi_generalization.json`](../reports/live_rsi_generalization.json) | Dream-RSI Live Online Search Rollouts on Unseen Holdouts ($D_{\text{train}} \cap D_{\text{test}} = \emptyset$, 43.48% saved, $p=0.000479$, 0 regressions) | 25 train / 25 test live rollouts |
 | [`reports/recursive_rsi_evaluation.json`](../reports/recursive_rsi_evaluation.json) | Multi-Stage Recursive Policy Improvement Evaluation ($\mathcal{D}_0 \to \pi_1 \to \mathcal{D}_1 \to \pi_2 \to \mathcal{D}_2$, 47.68% saved, $p=1.04 \times 10^{-20}$, monotonic progression) | 75 unseen holdouts across 3 seeds |
 | [`reports/stokes_newton_evaluation_v2.json`](../reports/stokes_newton_evaluation_v2.json) | Stokes-Newton Symbolic Physics Discovery Benchmark (Protocol V2, Full Success, Mode A vs Mode B) | 4 primary cells, 10 seeds each (40 runs) |
+| [`reports/dwsp_trifactor_benchmark.json`](../reports/dwsp_trifactor_benchmark.json) | Darwin Weight-Space Programming (DWSP) Tri-Factor Empirical Benchmark | 3 groups, seed=42 |
 | [`reports/pdf2rtf_real_word_holdout_benchmark.json`](../reports/pdf2rtf_real_word_holdout_benchmark.json) | Real Microsoft Word Holdout Benchmark | $N=12$ documents |
 | [`reports/pdf2rtf_word_oracle_audit.json`](../reports/pdf2rtf_word_oracle_audit.json) | Word-in-the-Loop Oracle Live COM Audit | $N=12$ documents, 100% pass |
 | [`reports/pdf2rtf_corpus_54_benchmark.json`](../reports/pdf2rtf_corpus_54_benchmark.json) | Comprehensive Evolab-54 Multi-Disciplinary Corpus Benchmark | $N=54$ documents |
@@ -643,7 +677,7 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 
 ---
 
-## 9. Exact Reproduction Commands
+## 10. Exact Reproduction Commands
 
 To reproduce every figure and table in this report on your local machine:
 
@@ -678,10 +712,13 @@ python scripts/verify_recursive_rsi.py --n-per-stage 25 --seeds 100 2026 42
 # 9. Run Stokes-Newton Symbolic Physics Discovery Benchmark (Protocol V2)
 python scripts/run_stokes_newton_experiment_v2.py
 
-# 10. Verify Complete Automated Test Suite
+# 10. Run Darwin Weight-Space Programming (DWSP) Tri-Factor Benchmark
+python -c "from evolab.neural.experiment import run_tri_factor_benchmark; run_tri_factor_benchmark(seed=42, output_bundle='reports/dwsp_solution.evobundle')"
+
+# 11. Verify Complete Automated Test Suite
 pytest tests/ -q
 
-# 11. Verify Truth in Documentation
+# 12. Verify Truth in Documentation
 python scripts/verify_docs.py
 ```
 

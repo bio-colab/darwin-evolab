@@ -536,6 +536,9 @@ def get_domain_adapter(name: str) -> DomainAdapter:
     if key in ("stokes_newton_drag", "stokes_newton", "stokes"):
         from .stokes_newton import StokesNewtonDragAdapter
         return StokesNewtonDragAdapter()
+    if key in ("neural_weight_space", "neural_weight", "neural", "wsp"):
+        from .neural.adapter import NeuralWeightAdapter
+        return NeuralWeightAdapter()
     if key not in _ADAPTER_REGISTRY:
         raise KeyError(f"Unknown domain adapter {name!r}. Available: {list_domain_adapters()}")
     return _ADAPTER_REGISTRY[key]

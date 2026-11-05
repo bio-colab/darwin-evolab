@@ -1,0 +1,29 @@
+{
+  "experiment": "Darwin Weight-Space Programming (DWSP) Tri-Factor",
+  "group": "Group C",
+  "fitness": 100.0,
+  "target_recall": 100.0,
+  "anchor_accuracy": 100.0,
+  "regressions": 0,
+  "passed_holdout": true,
+  "evaluations": 8,
+  "pruned_parameters": 60,
+  "genome": {
+    "genome_type": "NeuralWeightGenome",
+    "base_model_id": "toy_mlp_8x16x4",
+    "scale": 1.0,
+    "fingerprint": "ec47bb672a500bb2c44aaf03494062a637a8bcfa3a9e3caa364520b286d54b68",
+    "active_layers_count": 1,
+    "layers": {
+      "layer2.weight": {
+        "shape": [
+          4,
+          16
+        ],
+        "nonzero_elements": 4,
+        "frobenius_norm": 5.0
+      }
+    },
+    "edit_lineage_count": 1
+  }
+}
