@@ -1,0 +1,60 @@
+{
+  "benchmark": "Controlled 4-Class Neural Weight Repair (deep)",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "group_a_blind_ga": {
+    "group": "Group A (Blind GA)",
+    "seeds_tested": 10,
+    "pass_rate_pct": 0.0,
+    "pass_rate_wilson_ci95": [
+      0.0,
+      27.75
+    ],
+    "mean_target_recall": 3.5,
+    "std_target_recall": 7.76,
+    "mean_anchor_accuracy": 100.0,
+    "std_anchor_accuracy": 0.0,
+    "mean_regressions": 0.0,
+    "mean_evaluations": 122.0
+  },
+  "group_b_oneshot_llm": {
+    "group": "Group B (One-Shot LLM)",
+    "seeds_tested": 10,
+    "pass_rate_pct": 100.0,
+    "pass_rate_wilson_ci95": [
+      72.25,
+      100.0
+    ],
+    "mean_target_recall": 100.0,
+    "std_target_recall": 0.0,
+    "mean_anchor_accuracy": 100.0,
+    "std_anchor_accuracy": 0.0,
+    "mean_regressions": 0.0,
+    "mean_evaluations": 1.0
+  },
+  "group_c_darwin_wsp": {
+    "group": "Group C (Darwin WSP)",
+    "seeds_tested": 10,
+    "pass_rate_pct": 100.0,
+    "pass_rate_wilson_ci95": [
+      72.25,
+      100.0
+    ],
+    "mean_target_recall": 100.0,
+    "std_target_recall": 0.0,
+    "mean_anchor_accuracy": 100.0,
+    "std_anchor_accuracy": 0.0,
+    "mean_regressions": 0.0,
+    "mean_evaluations": 8.0
+  }
+}

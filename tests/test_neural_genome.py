@@ -217,3 +217,135 @@ def test_neural_weight_adapter_lifecycle():
     assert "status" in export_data
     assert "fitness_score" in export_data
     assert "genome_serialization" in export_data
+
+
+def test_neural_weight_genome_patch_scope_and_zero_drift():
+    """Verify patch_scope ensures zero parameter drift on exit even if exceptions occur."""
+    base_dict = {"layer1.weight": np.array([[1.0, 2.0], [3.0, 4.0]], dtype=float)}
+    original_copy = np.copy(base_dict["layer1.weight"])
+
+    g = NeuralWeightGenome(
+        base_model_id="test",
+        sparse_patches={"layer1.weight": np.array([[0.5, -0.5], [1.0, -1.0]])},
+        scale=1.0,
+    )
+
+    # 1. Normal exit
+    with g.patch_scope(base_dict) as patched:
+        np.testing.assert_allclose(patched["layer1.weight"], [[1.5, 1.5], [4.0, 3.0]])
+
+    # Verify complete reversion to original state
+    np.testing.assert_allclose(base_dict["layer1.weight"], original_copy)
+
+    # 2. Exit upon exception
+    with pytest.raises(RuntimeError):
+        with g.patch_scope(base_dict):
+            raise RuntimeError("Simulated evaluation failure")
+
+    np.testing.assert_allclose(base_dict["layer1.weight"], original_copy)
+
+    # 3. PyTorch nn.Module if available
+    if HAS_TORCH:
+        linear = torch.nn.Linear(2, 2, bias=False)
+        with torch.no_grad():
+            linear.weight.copy_(torch.from_numpy(original_copy))
+        g_torch = NeuralWeightGenome(
+            base_model_id="test",
+            sparse_patches={"weight": np.array([[0.5, -0.5], [1.0, -1.0]])},
+            scale=1.0,
+        )
+        with g_torch.patch_scope(linear):
+            np.testing.assert_allclose(linear.weight.detach().cpu().numpy(), [[1.5, 1.5], [4.0, 3.0]])
+        np.testing.assert_allclose(linear.weight.detach().cpu().numpy(), original_copy)
+
+
+def test_neural_weight_genome_serialization_and_deserialization():
+    """Verify byte-accurate genome reconstruction from serialized COO representations."""
+    p = np.array([[0.0, 2.5], [-1.5, 0.0]], dtype=float)
+    u = np.array([[1.0], [2.0]], dtype=float)
+    v = np.array([[0.5], [-0.5]], dtype=float)
+
+    g = NeuralWeightGenome(
+        base_model_id="mlp_serdes",
+        sparse_patches={"w1": p},
+        low_rank_factors={"w2": (u, v)},
+        scale=1.25,
+        edit_lineage=[{"op": "init", "val": 42}],
+    )
+
+    ser = g.serialize(include_coo=True)
+    assert "sparse_coo" in ser
+    assert "low_rank_factors" in ser
+    assert ser["scale"] == 1.25
+
+    reconstructed = NeuralWeightGenome.deserialize(ser)
+    assert reconstructed.base_model_id == g.base_model_id
+    assert reconstructed.scale == g.scale
+    assert reconstructed.fingerprint() == g.fingerprint()
+    np.testing.assert_allclose(reconstructed.get_dense_delta("w1"), g.get_dense_delta("w1"))
+    np.testing.assert_allclose(reconstructed.get_dense_delta("w2"), g.get_dense_delta("w2"))
+    assert reconstructed.edit_lineage == g.edit_lineage
+
+
+def test_neural_weight_genome_functional_distance():
+    """Verify functional divergence distance on probe sets with forward function."""
+    g1 = NeuralWeightGenome(
+        base_model_id="mlp_dist",
+        sparse_patches={"w": np.array([[1.0, 0.0], [0.0, 1.0]])},
+    )
+    g2 = NeuralWeightGenome(
+        base_model_id="mlp_dist",
+        sparse_patches={"w": np.array([[2.0, 0.0], [0.0, 2.0]])},
+    )
+
+    model = {"w": np.zeros((2, 2), dtype=float)}
+    probe_inputs = np.array([[1.0, 1.0], [2.0, 3.0]], dtype=float)
+
+    def forward_fn(m, x):
+        return np.dot(x, m["w"])
+
+    dist_func = g1.distance_to(g2, probe_inputs=probe_inputs, forward_fn=forward_fn, model=model)
+    dist_param = g1.distance_to(g2)
+    assert dist_func > dist_param
+
+
+def test_controlled_benchmark_deep_architecture():
+    """Verify deep 6-layer GELU architecture (8 -> 32 -> 16 -> 48 -> 32 -> 16 -> 4) defect repair."""
+    bench = ControlledToyBenchmark(seed=42, architecture="deep")
+    spec = bench.get_spec()
+    evaluator = NeuralWeightEvaluator(spec, min_anchor_acc=99.7, min_fail_acc=96.0)
+
+    # 1. Defective baseline
+    g_base = NeuralWeightGenome(base_model_id=spec.base_model_id)
+    res_base = evaluator.evaluate(g_base)
+    assert res_base.sub_scores["target_defect_recall"] == 0.0
+    assert res_base.sub_scores["anchor_suite_accuracy"] >= 99.7
+    assert res_base.passed_holdout is False
+
+    # 2. Perfect repair
+    diff_w6 = bench.clean_weights["layer6.weight"] - spec.base_weights["layer6.weight"]
+    g_perfect = NeuralWeightGenome(
+        base_model_id=spec.base_model_id,
+        sparse_patches={"layer6.weight": diff_w6},
+    )
+    res_perfect = evaluator.evaluate(g_perfect)
+    assert res_perfect.sub_scores["target_defect_recall"] == 100.0
+    assert res_perfect.sub_scores["anchor_suite_accuracy"] == 100.0
+    assert res_perfect.passed_holdout is True
+
+
+def test_multiseed_tri_factor_benchmark_and_wilson_ci():
+    """Verify multi-seed benchmark execution and Wilson confidence intervals."""
+    from evolab.neural.experiment import run_multiseed_tri_factor_benchmark, wilson_score_interval
+
+    # Wilson interval check
+    ci_low, ci_high = wilson_score_interval(10, 10)
+    assert 70.0 < ci_low <= 75.0
+    assert ci_high == 100.0
+
+    # Fast 2-seed execution
+    summary = run_multiseed_tri_factor_benchmark(seeds=[1, 2], architecture="shallow")
+    assert summary["group_a_blind_ga"]["seeds_tested"] == 2
+    assert summary["group_c_darwin_wsp"]["pass_rate_pct"] == 100.0
+
+

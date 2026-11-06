@@ -91,7 +91,7 @@ def run_group_b_oneshot_llm(spec: NeuralProblemSpec) -> Dict[str, Any]:
         base_weights=spec.base_weights,
         failing_inputs=spec.fail_to_pass_x,
         target_class=spec.target_class,
-        penultimate_layer="layer2.weight",
+        penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
     )
 
     if not hypotheses:
@@ -137,7 +137,7 @@ def run_group_c_darwin_wsp(
         base_weights=spec.base_weights,
         failing_inputs=spec.fail_to_pass_x,
         target_class=spec.target_class,
-        penultimate_layer="layer2.weight",
+        penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
     )
 
     g0 = NeuralWeightGenome(base_model_id=spec.base_model_id)
@@ -254,3 +254,87 @@ def run_tri_factor_benchmark(seed: int = 42, output_bundle: Optional[str | Path]
         "group_b_oneshot_llm": {**res_b, "elapsed_s": round(t_b, 3)},
         "group_c_darwin_wsp": {**res_c, "elapsed_s": round(t_c, 3)},
     }
+
+
+def wilson_score_interval(successes: int, total: int, confidence: float = 0.95) -> Tuple[float, float]:
+    """Calculate Wilson score interval for binomial proportions."""
+    if total == 0:
+        return 0.0, 0.0
+    z = 1.95996  # 95% confidence
+    p = successes / total
+    denominator = 1 + z**2 / total
+    centre_adjusted_probability = p + z**2 / (2 * total)
+    adjusted_std_dev = np.sqrt((p * (1 - p) + z**2 / (4 * total)) / total)
+    lower = (centre_adjusted_probability - z * adjusted_std_dev) / denominator
+    upper = (centre_adjusted_probability + z * adjusted_std_dev) / denominator
+    return float(max(0.0, lower * 100.0)), float(min(100.0, upper * 100.0))
+
+
+def run_multiseed_tri_factor_benchmark(
+    seeds: Optional[List[int]] = None,
+    architecture: str = "shallow",
+    output_json: Optional[str | Path] = None,
+) -> Dict[str, Any]:
+    """Execute rigorous multi-seed comparative benchmark across independent seeds.
+
+    Calculates:
+    - Pass rates (% meeting zero regression + anchor >= 99.7% + target >= 96.0%)
+    - Wilson 95% confidence intervals
+    - Mean target recall, anchor accuracy, regressions, and evaluation counts
+    - Statistical comparisons between Blind GA, One-Shot LLM, and DWSP.
+    """
+    if seeds is None:
+        seeds = list(range(1, 11))
+
+    results_a: List[Dict[str, Any]] = []
+    results_b: List[Dict[str, Any]] = []
+    results_c: List[Dict[str, Any]] = []
+
+    for s in seeds:
+        bench = ControlledToyBenchmark(seed=s, architecture=architecture)
+        spec = bench.get_spec()
+        res_a = run_group_a_blind_ga(spec, seed=s)
+        res_b = run_group_b_oneshot_llm(spec)
+        res_c = run_group_c_darwin_wsp(spec, seed=s)
+        results_a.append(res_a)
+        results_b.append(res_b)
+        results_c.append(res_c)
+
+    def _summarize(group_name: str, group_results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        n = len(group_results)
+        passed_count = sum(1 for r in group_results if r["passed_holdout"])
+        pass_rate = (passed_count / n) * 100.0
+        ci_low, ci_high = wilson_score_interval(passed_count, n)
+
+        recalls = [r["target_recall"] for r in group_results]
+        anchors = [r["anchor_accuracy"] for r in group_results]
+        regressions = [r["regressions"] for r in group_results]
+        evals = [r["evaluations"] for r in group_results]
+
+        return {
+            "group": group_name,
+            "seeds_tested": n,
+            "pass_rate_pct": round(pass_rate, 2),
+            "pass_rate_wilson_ci95": [round(ci_low, 2), round(ci_high, 2)],
+            "mean_target_recall": round(float(np.mean(recalls)), 2),
+            "std_target_recall": round(float(np.std(recalls)), 2),
+            "mean_anchor_accuracy": round(float(np.mean(anchors)), 2),
+            "std_anchor_accuracy": round(float(np.std(anchors)), 2),
+            "mean_regressions": round(float(np.mean(regressions)), 2),
+            "mean_evaluations": round(float(np.mean(evals)), 2),
+        }
+
+    summary = {
+        "benchmark": f"Controlled 4-Class Neural Weight Repair ({architecture})",
+        "seeds": seeds,
+        "group_a_blind_ga": _summarize("Group A (Blind GA)", results_a),
+        "group_b_oneshot_llm": _summarize("Group B (One-Shot LLM)", results_b),
+        "group_c_darwin_wsp": _summarize("Group C (Darwin WSP)", results_c),
+    }
+
+    if output_json:
+        p = Path(output_json)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    return summary

@@ -61,24 +61,38 @@ class MockWeightAnalyst:
             if failing_inputs is not None and len(failing_inputs) > 0:
                 try:
                     profile = self.profiler.profile(base_weights, failing_inputs, anchor_inputs)
-                    # Check if profiler found active units for the input layer to the target layer
-                    prev_layer = "layer1" if "layer1" in profile.active_indices else profile.top_discrepancy_layer
-                    if prev_layer in profile.active_indices and len(profile.active_indices[prev_layer]) > 0:
-                        active_idx = np.array(profile.active_indices[prev_layer])
+                    prev_name = None
+                    if "layer" in layer_key:
+                        parts = layer_key.split(".")[0].replace("layer", "")
+                        if parts.isdigit():
+                            prev_idx = int(parts) - 1
+                            if prev_idx >= 1:
+                                prev_name = f"layer{prev_idx}"
+
+                    target_prev = prev_name if (prev_name and prev_name in profile.active_indices) else ("layer1" if "layer1" in profile.active_indices else profile.top_discrepancy_layer)
+                    if target_prev in profile.active_indices and len(profile.active_indices[target_prev]) > 0:
+                        candidates = [idx for idx in profile.active_indices[target_prev] if idx < W.shape[1]]
+                        if candidates:
+                            active_idx = np.array(candidates)
                 except Exception:
                     pass
 
             # Fallback direct inspection if profiler didn't resolve
-            if active_idx is None:
-                w1_key = "layer1.weight" if "layer1.weight" in base_weights else ("layer1" if "layer1" in base_weights else None)
-                b1_key = "layer1.bias" if "layer1.bias" in base_weights else None
-                if w1_key and failing_inputs is not None and len(failing_inputs) > 0:
-                    w1 = base_weights[w1_key]
-                    b1 = base_weights.get(b1_key, 0.0)
-                    h = np.maximum(0, failing_inputs @ w1.T + b1)
+            if active_idx is None and failing_inputs is not None and len(failing_inputs) > 0:
+                h = failing_inputs
+                all_layer_keys = sorted([k for k in base_weights.keys() if k.endswith(".weight")])
+                for lk in all_layer_keys:
+                    if lk == layer_key:
+                        break
+                    w = base_weights[lk]
+                    b = base_weights.get(lk.replace(".weight", ".bias"), 0.0)
+                    h = np.maximum(0.0, np.dot(h, w.T) + b)
+
+                if h.ndim == 2 and h.shape[1] == W.shape[1]:
                     mean_h = np.mean(h, axis=0)
-                    pos_idx = np.where(mean_h > 1.0)[0]
-                    active_idx = pos_idx if len(pos_idx) > 0 else np.argsort(mean_h)[-4:]
+                    pos_idx = np.where(mean_h > 0.5)[0]
+                    candidates = pos_idx if len(pos_idx) > 0 else np.argsort(mean_h)[-4:]
+                    active_idx = np.array([idx for idx in candidates if idx < W.shape[1]])
 
             if target_class < W.shape[0]:
                 if active_idx is not None and len(active_idx) > 0:

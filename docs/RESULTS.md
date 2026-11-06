@@ -617,28 +617,45 @@ Full raw empirical report is archived at [`reports/stokes_newton_evaluation_v2.j
 
 ### 8.1 Tri-Factor Comparative Evaluation Protocol
 
-The benchmark contrasts three distinct weight-space optimization paradigms under matched evaluation conditions:
-1. **Group A (Blind Genetic Search)**: Standard genetic algorithm exploring rank-1 and spectral perturbations without diagnostic semantic guidance.
+The benchmark contrasts three distinct weight-space optimization paradigms under matched evaluation conditions across both shallow ($8 \to 16 \to 4$, ReLU) and deep ($8 \to 32 \to 16 \to 48 \to 32 \to 16 \to 4$, GELU) architectures:
+1. **Group A (Blind Genetic Search)**: Standard genetic algorithm exploring rank-1, rank-$r$, and spectral perturbations without diagnostic semantic guidance.
 2. **Group B (One-Shot LLM Weight Editing)**: Pure diagnostic hypothesis injection applied directly with unit scaling without evolutionary refinement.
-3. **Group C (Darwin Weight-Space Programming - DWSP)**: Dual-System paradigm combining diagnostic subspace hypothesis injection, algebraic population diversification (SVD singular scaling + LoRA-style rank-1 perturbers), Dual-Invariant selection, and counterfactual intron pruning.
+3. **Group C (Darwin Weight-Space Programming - DWSP)**: Dual-System paradigm combining diagnostic subspace hypothesis injection, algebraic population diversification (SVD singular scaling + LoRA-style rank-1 perturbers + null-space projection), Dual-Invariant selection, and counterfactual intron pruning.
 
 | Metric | Group A (Blind GA) | Group B (One-Shot LLM) | Group C (Darwin WSP) | Target Gate |
 | :--- | :---: | :---: | :---: | :---: |
 | **Target Defect Recall (`FAIL_TO_PASS`)** | 5.0% | **100.0%** | **100.0%** | $\ge 96.0\%$ |
-| **Anchor Suite Accuracy (`PASS_TO_PASS`)** | 100.0% | 100.0% | **100.0%** | $\ge 99.0\%$ |
+| **Anchor Suite Accuracy (`PASS_TO_PASS`)** | 100.0% | 100.0% | **100.0%** | $\ge 99.7\%$ |
 | **Holdout Pairwise Regressions** | 0 | 0 | **0** | $0$ (Strict) |
 | **Holdout Invariant Status** | `FAILED` | `PASSED` | **`PASSED`** | `PASSED` |
 | **Evaluations to Convergence** | 122 (budget exhausted) | 1 | **8** | $\le 30$ |
 | **Redundant Introns Pruned** | 0 | 0 | **60 params** | Parsimonious |
 | **Cryptographic Evidence Capsule** | N/A | N/A | **`VERIFIED` (SHA-256 seal)** | `.evobundle` |
 
-### 8.2 Key Empirical Takeaways
+### 8.2 Multi-Seed Empirical Verification (10 Independent Seeds)
 
-1. **Failure of Blind Stochastic Exploration (Group A)**: Without structural or semantic hypotheses, blind evolutionary perturbation struggles in continuous weight space, achieving only 5.0% recall within 122 evaluations.
-2. **Efficacy of Targeted Subspace Injection (Group B & C)**: Diagnostic analysis identifies the specific under-activated hidden neuron representation subspace (indices $[12, 13, 14, 15]$ for Class 3), transforming an intractable continuous search into targeted rank-1 manifold corrections.
-3. **Parsimony and Governance via DWSP (Group C)**: Group C achieves immediate defect resolution and then counterfactually prunes 60 redundant near-zero parameters, producing minimal sparse patches sealed inside a cryptographically verified `.evobundle` evidence capsule.
+To guarantee statistical significance beyond single-seed artifacts, all three groups were evaluated across 10 independent random seeds ($\text{seed} \in [1, 10]$) on both the standard shallow architecture and the deep 6-layer GELU architecture ($8 \to 32 \to 16 \to 48 \to 32 \to 16 \to 4$). Pass rates and Wilson 95% binomial confidence intervals are reported below:
 
-Full raw empirical report is archived at [`reports/dwsp_trifactor_benchmark.json`](../reports/dwsp_trifactor_benchmark.json) with accompanying evidence capsule at [`reports/dwsp_solution.evobundle`](../reports/dwsp_solution.evobundle).
+| Architecture | Paradigm | Pass Rate (Wilson 95% CI) | Mean Target Recall | Mean Anchor Acc | Mean Regressions | Mean Evals |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Shallow (ReLU)** | Group A (Blind GA) | 0.0% [0.0%, 27.7%] | $6.50\% \pm 4.5\%$ | $100.0\% \pm 0.0\%$ | 0.0 | 122.0 |
+| | Group B (One-Shot LLM) | 100.0% [72.3%, 100.0%] | $100.0\% \pm 0.0\%$ | $100.0\% \pm 0.0\%$ | 0.0 | 1.0 |
+| | **Group C (Darwin WSP)** | **100.0% [72.3%, 100.0%]** | **$100.0\% \pm 0.0\%$** | **$100.0\% \pm 0.0\%$** | **0.0** | **8.0** |
+| **Deep (GELU)** | Group A (Blind GA) | 0.0% [0.0%, 27.7%] | $3.50\% \pm 7.8\%$ | $100.0\% \pm 0.0\%$ | 0.0 | 122.0 |
+| | Group B (One-Shot LLM) | 100.0% [72.3%, 100.0%] | $100.0\% \pm 0.0\%$ | $100.0\% \pm 0.0\%$ | 0.0 | 1.0 |
+| | **Group C (Darwin WSP)** | **100.0% [72.3%, 100.0%]** | **$100.0\% \pm 0.0\%$** | **$100.0\% \pm 0.0\%$** | **0.0** | **8.0** |
+
+### 8.3 Key Empirical Takeaways
+
+1. **Failure of Blind Stochastic Exploration (Group A)**: Without structural or semantic hypotheses, blind evolutionary perturbation struggles in continuous weight space, achieving only 3.5%–6.5% recall within 122 evaluations across all 10 seeds.
+2. **Efficacy of Targeted Subspace Injection (Group B & C)**: Diagnostic analysis identifies the specific under-activated hidden neuron representation subspace, transforming an intractable continuous search into targeted manifold corrections.
+3. **Parsimony and Governance via DWSP (Group C)**: While One-Shot editing lacks safety mechanisms and parameter compression, DWSP applies null-space projection to preserve anchor invariants by mathematical construction, counterfactually prunes redundant near-zero parameter introns, and seals solutions in cryptographically verified `.evobundle` capsules.
+
+Full raw empirical reports are archived at:
+- [`reports/dwsp_trifactor_benchmark.json`](../reports/dwsp_trifactor_benchmark.json)
+- [`reports/dwsp_multiseed_benchmark.json`](../reports/dwsp_multiseed_benchmark.json)
+- [`reports/dwsp_deep_multiseed_benchmark.json`](../reports/dwsp_deep_multiseed_benchmark.json)
+- Accompanied by evidence capsule at [`reports/dwsp_solution.evobundle`](../reports/dwsp_solution.evobundle).
 
 ---
 
@@ -665,6 +682,8 @@ All benchmark summaries in this document are backed by committed, byte-for-byte 
 | [`reports/recursive_rsi_evaluation.json`](../reports/recursive_rsi_evaluation.json) | Multi-Stage Recursive Policy Improvement Evaluation ($\mathcal{D}_0 \to \pi_1 \to \mathcal{D}_1 \to \pi_2 \to \mathcal{D}_2$, 47.68% saved, $p=1.04 \times 10^{-20}$, monotonic progression) | 75 unseen holdouts across 3 seeds |
 | [`reports/stokes_newton_evaluation_v2.json`](../reports/stokes_newton_evaluation_v2.json) | Stokes-Newton Symbolic Physics Discovery Benchmark (Protocol V2, Full Success, Mode A vs Mode B) | 4 primary cells, 10 seeds each (40 runs) |
 | [`reports/dwsp_trifactor_benchmark.json`](../reports/dwsp_trifactor_benchmark.json) | Darwin Weight-Space Programming (DWSP) Tri-Factor Empirical Benchmark | 3 groups, seed=42 |
+| [`reports/dwsp_multiseed_benchmark.json`](../reports/dwsp_multiseed_benchmark.json) | DWSP Shallow Architecture (ReLU) Multi-Seed Benchmark with Wilson 95% CIs | 10 seeds, 3 groups |
+| [`reports/dwsp_deep_multiseed_benchmark.json`](../reports/dwsp_deep_multiseed_benchmark.json) | DWSP Deep 6-layer Architecture (GELU) Multi-Seed Benchmark with Wilson 95% CIs | 10 seeds, 3 groups |
 | [`reports/pdf2rtf_real_word_holdout_benchmark.json`](../reports/pdf2rtf_real_word_holdout_benchmark.json) | Real Microsoft Word Holdout Benchmark | $N=12$ documents |
 | [`reports/pdf2rtf_word_oracle_audit.json`](../reports/pdf2rtf_word_oracle_audit.json) | Word-in-the-Loop Oracle Live COM Audit | $N=12$ documents, 100% pass |
 | [`reports/pdf2rtf_corpus_54_benchmark.json`](../reports/pdf2rtf_corpus_54_benchmark.json) | Comprehensive Evolab-54 Multi-Disciplinary Corpus Benchmark | $N=54$ documents |
@@ -714,6 +733,7 @@ python scripts/run_stokes_newton_experiment_v2.py
 
 # 10. Run Darwin Weight-Space Programming (DWSP) Tri-Factor Benchmark
 python -c "from evolab.neural.experiment import run_tri_factor_benchmark; run_tri_factor_benchmark(seed=42, output_bundle='reports/dwsp_solution.evobundle')"
+python -c "from evolab.neural.experiment import run_multiseed_tri_factor_benchmark; run_multiseed_tri_factor_benchmark(output_json='reports/dwsp_multiseed_benchmark.json'); run_multiseed_tri_factor_benchmark(architecture='deep', output_json='reports/dwsp_deep_multiseed_benchmark.json')"
 
 # 11. Verify Complete Automated Test Suite
 pytest tests/ -q
