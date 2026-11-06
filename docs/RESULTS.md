@@ -613,7 +613,8 @@ Full raw empirical report is archived at [`reports/stokes_newton_evaluation_v2.j
 
 > **Methodological Lineage & Problem Framing**:  
 > Inspired by the foundational paradigm of Takehi, Teoh, Zhang & Khattab (MIT CSAIL, 2026), Darwin Weight-Space Programming (DWSP) formalizes weight editing through an evolutionary Dual-Invariant lens: combining diagnostic hypothesis generation (System 1) with algebraic manifold exploration, parsimony pruning, and non-regression gating (System 2).
-> Evaluated on a controlled 4-class neural classification network with localized Class 3 functional inhibition and a high-resolution 1,000-sample anchor suite ($N=1000$) guaranteeing single-sample mathematical precision for the $\ge 99.7\%$ accuracy threshold ($\le 3$ errors allowed; 0 regressions = 100.0%).
+> Evaluated on a controlled 4-class neural classification network with localized Class 3 functional inhibition and a high-resolution 1,000-sample anchor suite ($N=1000$) guaranteeing single-sample mathematical precision for the $\ge 99.7\%$ accuracy threshold ($\le 3$ errors allowed; 0 regressions = 100.0%).  
+> Pre-registered protocol, architectural specification, and formal invariants: [docs/RFC_DARWIN_WEIGHT_SPACE_PROGRAMMING.md](RFC_DARWIN_WEIGHT_SPACE_PROGRAMMING.md).
 
 ### 8.1 Tri-Factor Comparative Evaluation Protocol
 
@@ -705,14 +706,19 @@ Analyzing dispersion metrics reveals a fundamental phenomenon:
 ```
 Visualizing the Bimodal Regression Distribution under No Governor (10 Independent Seeds):
 ==========================================================================================
-Seed Index:            s1    s2    s3    s4    s5    s6    s7    s8    s9    s10
-Holdout Regressions:    0     0    72     0     0    53     0    77     0      0
-Bimodal Regime:       [--- Clean Mode (70%) ---]  [-- Catastrophic Cross-Talk Mode (30%) --]
+Chronological Seed Order:
+  Seed:         s1   s2   s3   s4   s5   s6   s7   s8   s9   s10
+  Regressions:   0    0   72    0    0   53    0   77    0     0
+  Regime:       [--- Clean Mode ---]     [-- Catastrophic Cross-Talk Mode --]
 
-Frequency Histogram:
+Rank-Ordered Distribution (Sorted Ascending by Regression Magnitude):
+  Seeds:        s1, s2, s4, s5, s7, s9, s10  -->  s6 (53)  -->  s3 (72)  -->  s8 (77)
+  Regressions:  0,  0,  0,  0,  0,  0,  0    -->  53       -->  72       -->  77
+
+Frequency Histogram (Showing Clean Separation & Russian Roulette Bimodal Gap):
 ------------------------------------------------------------------------------------------
 0 Regressions:        ██████████████████████████████  (7 seeds: s1, s2, s4, s5, s7, s9, s10) [70%]
-1 - 49 Regressions:   (0 seeds)                                                              [ 0%]
+1 - 49 Regressions:   (0 seeds) -- Bimodal Separation Gap                                    [ 0%]
 50 - 79 Regressions:  █████████████                   (3 seeds: s6=53, s3=72, s8=77)         [30%]
 ------------------------------------------------------------------------------------------
 Dispersion Summary:   Non-Parametric Median = 0.0 [IQR: 0.0 – 39.8] | Parametric Mean = 20.2 ± 31.4
@@ -744,6 +750,8 @@ Replicating the sensitivity check across an expanded suite of 10 independent see
 - At $\Delta = 0\%$ (nominal 1.00): Group B pass rate is 30.0% (3/10) with $20.2$ mean regressions; Group C achieves **100.0% (10/10)** with **0.0 regressions**.
 - At $\Delta = +20\%$ (scale 1.20): Group B regressions surge to **100.0 mean regressions** (severely corrupting holdouts); Group C maintains **100.0% (10/10)** with **strict 0.0 regressions**.
 
+> *Note on Baseline Calibration Comparability*: The $\Delta = 0\%$ nominal row reports the $N=10$ pilot baseline ($3/10 = 30.0\%$, mean regressions $= 20.2$) for direct architectural and seed-level comparability with the $N=5$ and $N=10$ sensitivity sweeps. The primary extended benchmark estimate across $N=30$ independent seeds is $10.0\%$ ($3/30$, mean regressions $= 29.0 \pm 31.8$); see Section 8.2.
+
 ---
 
 ### 8.6 Formal Statistical Significance & Multiple Testing Methodology
@@ -773,13 +781,14 @@ For the primary deep architecture comparison between Group C and Group B across 
    - Normal approximation two-sided $p$-value:
      $$p_{\text{approx}} = 2 \cdot \Phi(-4.6112) \approx 4.00 \times 10^{-6}$$
    - Exact continuity-corrected evaluation in SciPy yields:
-     $$p = 3.465 \times 10^{-6} \approx 3.5 \times 10^{-6} \quad (\text{reported as } 3.0 \times 10^{-6} \text{ when rounded to 6 decimal places: } 0.000003)$$
-3. **Naive $N=30$ Formulation (Assuming All 30 Differences Non-Zero)**:
-   If one assumes all 30 differences were strictly non-zero without dropping ties:
+     $$p_{\text{exact}} = 3.465 \times 10^{-6}$$
+     *Precision Formulation*: The exact SciPy value is **$3.465 \times 10^{-6}$** ($\approx 3.5 \times 10^{-6}$ to two significant figures; reported as $3.0 \times 10^{-6}$ when rounded to 6 decimal places: $0.000003$).
+3. **Unadjusted $N=30$ Formulation (Assuming All 30 Differences Non-Zero)**:
+   If one assumes all 30 differences were strictly non-zero without dropping zero-difference ties:
    $$\mu_W = \frac{30 \times 31}{4} = 232.5, \quad \sigma_W = \sqrt{\frac{30 \times 31 \times 61}{24}} = \sqrt{2363.75} \approx 48.6184$$
    $$z = \frac{0 - 232.5 + 0.5}{48.6184} = \frac{-232.0}{48.6184} \approx -4.7719$$
-   $$p_{\text{naive}} = 2 \cdot \Phi(-4.7719) \approx 1.82 \times 10^{-6}$$
-Under both formulations, the Wilcoxon signed-rank test decisively rejects the null hypothesis at $p < 4.0 \times 10^{-6} \ll 0.001$, confirming the overwhelming statistical superiority of Darwin WSP over One-Shot LLM weight editing.
+   $$p_{\text{unadjusted}} = 2 \cdot \Phi(-4.7719) \approx 1.82 \times 10^{-6}$$
+Both the unadjusted $N=30$ derivation ($p = 1.82 \times 10^{-6}$) and the tie-adjusted $N_{\text{eff}} = 28$ Pratt/Wilcoxon derivation ($p = 3.465 \times 10^{-6}$) decisively reject the null hypothesis at $p < 4.0 \times 10^{-6} \ll 0.001$, confirming the overwhelming statistical superiority of Darwin WSP over One-Shot LLM weight editing.
 
 #### Pre-Registered Rationale for Holm-Bonferroni Correction:
 - **Positive Stochastic Dependence**: Because all four statistical comparison tests evaluate models on the exact same benchmark generator and share identical random seeds, the test statistics exhibit positive regression dependence.

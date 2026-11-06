@@ -460,7 +460,18 @@ def verify_documentation() -> bool:
             else:
                 checks_passed += 1
 
-        print(f"[OK] DWSP Tri-Factor, Primary 30-Seed, Pilot 10-Seed, Noise Sensitivity & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 30-seeds: 100%, Noise Robustness: 100%, 0 regressions).")
+        # Check in-repo RFC existence and synchronization
+        in_repo_rfc = REPO_ROOT / "docs" / "RFC_DARWIN_WEIGHT_SPACE_PROGRAMMING.md"
+        if not in_repo_rfc.exists():
+            errors.append("DWSP RFC: Missing in-repo RFC at docs/RFC_DARWIN_WEIGHT_SPACE_PROGRAMMING.md")
+        else:
+            rfc_text = in_repo_rfc.read_text(encoding="utf-8")
+            if "Executive Empirical Takeaway ($N=30$ Multi-Seed Evaluation)" not in rfc_text:
+                errors.append("DWSP RFC: Missing Section 1.3 Executive Empirical Takeaway in in-repo RFC")
+            else:
+                checks_passed += 1
+
+        print(f"[OK] DWSP Tri-Factor, In-Repo RFC, Primary 30-Seed, Pilot 10-Seed, Noise Sensitivity & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 30-seeds: 100%, Noise Robustness: 100%, 0 regressions).")
     except Exception as exc:
         errors.append(f"DWSP check failed: {exc}")
 

@@ -21,6 +21,7 @@
 - **[العربية / Arabic Documentation & Quickstart](README_ar.md)**
 - **[Hands-On User & Developer Guide](docs/USER_GUIDE.md)**
 - **[Model Context Protocol (MCP) Integration Guide](docs/MCP_GUIDE.md)**
+- **[Darwin Weight-Space Programming (DWSP) RFC & Pre-Registration](docs/RFC_DARWIN_WEIGHT_SPACE_PROGRAMMING.md)** *(Neural Weight Evolution Protocol)*
 
 ---
 
