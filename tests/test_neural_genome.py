@@ -395,12 +395,68 @@ def test_dwsp_ablation_study_and_statistical_significance():
     assert "no_null_space" in conds
     assert conds["full_dwsp"]["pass_rate_pct"] == 100.0
     assert "std_regressions" in conds["no_governor"]
+    assert "median_regressions" in conds["no_governor"]
+    assert "iqr_regressions" in conds["no_governor"]
 
     # 3. Fast 1-seed sensitivity execution
     sens = run_dwsp_sensitivity_benchmark(seeds=[2])
     assert "shallow_architecture" in sens
     assert "deep_architecture" in sens
     assert sens["shallow_architecture"]["group_c_darwin_wsp"]["pass_rate_pct"] == 100.0
+
+
+def test_dwsp_noise_sensitivity_check():
+    """Verify DWSP noise sensitivity check varying Group B noise scale by +/-20%."""
+    from evolab.neural.analyst import MockWeightAnalyst
+    from evolab.neural.benchmark import ControlledToyBenchmark
+    from evolab.neural.experiment import (
+        run_dwsp_noise_sensitivity_check,
+        run_group_b_oneshot_llm,
+        run_group_c_darwin_wsp,
+    )
+
+    bench = ControlledToyBenchmark(seed=42, architecture="shallow")
+    spec = bench.get_spec()
+    analyst = MockWeightAnalyst(fidelity="realistic")
+
+    # 1. Verify analyst respects noise_scale
+    hyp_nom = analyst.diagnose_and_propose(
+        base_weights=spec.base_weights,
+        failing_inputs=spec.fail_to_pass_x,
+        target_class=spec.target_class,
+        noise_scale=1.0,
+        seed=42,
+    )
+    hyp_high = analyst.diagnose_and_propose(
+        base_weights=spec.base_weights,
+        failing_inputs=spec.fail_to_pass_x,
+        target_class=spec.target_class,
+        noise_scale=1.2,
+        seed=42,
+    )
+    assert hyp_nom and hyp_high
+    # Scaled delta should reflect higher magnitude
+    assert np.max(np.abs(hyp_high[0].delta)) >= np.max(np.abs(hyp_nom[0].delta)) * 0.99
+
+    # 2. Verify run_group_c respects noise_scale and passes holdout
+    res_c_scaled = run_group_c_darwin_wsp(spec, seed=42, noise_scale=1.2)
+    assert res_c_scaled["passed_holdout"] is True
+    assert res_c_scaled["regressions"] == 0
+
+    # 3. Fast multi-perturbation runner test
+    noise_res = run_dwsp_noise_sensitivity_check(
+        seeds=[1, 2],
+        perturbations=[-0.20, 0.0, 0.20],
+        architecture="shallow",
+    )
+    assert "results" in noise_res
+    assert len(noise_res["results"]) == 3
+    for pkey, pval in noise_res["results"].items():
+        assert "group_b_oneshot_llm" in pval
+        assert "group_c_darwin_wsp" in pval
+        assert pval["group_c_darwin_wsp"]["pass_rate_pct"] == 100.0
+        assert pval["group_c_darwin_wsp"]["mean_regressions"] == 0.0
+
 
 
 

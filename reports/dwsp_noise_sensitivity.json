@@ -1,0 +1,78 @@
+{
+  "study": "DWSP Noise Sensitivity Check (Takehi et al., 2026 Calibration Variation +/-20%)",
+  "architecture": "shallow",
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "perturbations": [
+    -0.2,
+    0.0,
+    0.2
+  ],
+  "results": {
+    "noise_scale_0.80_delta_-20%": {
+      "delta_pct": "-20%",
+      "noise_scale": 0.8,
+      "seeds_tested": 5,
+      "group_b_oneshot_llm": {
+        "passed": 3,
+        "pass_rate_pct": 60.0,
+        "mean_target_recall": 85.04,
+        "mean_anchor_accuracy": 100.0,
+        "mean_regressions": 0.0
+      },
+      "group_c_darwin_wsp": {
+        "passed": 5,
+        "pass_rate_pct": 100.0,
+        "mean_target_recall": 100.0,
+        "mean_anchor_accuracy": 100.0,
+        "mean_regressions": 0.0,
+        "mean_evaluations": 12.2
+      }
+    },
+    "noise_scale_1.00_delta_+0%": {
+      "delta_pct": "+0%",
+      "noise_scale": 1.0,
+      "seeds_tested": 5,
+      "group_b_oneshot_llm": {
+        "passed": 2,
+        "pass_rate_pct": 40.0,
+        "mean_target_recall": 90.88,
+        "mean_anchor_accuracy": 98.56,
+        "mean_regressions": 14.4
+      },
+      "group_c_darwin_wsp": {
+        "passed": 5,
+        "pass_rate_pct": 100.0,
+        "mean_target_recall": 100.0,
+        "mean_anchor_accuracy": 100.0,
+        "mean_regressions": 0.0,
+        "mean_evaluations": 8.0
+      }
+    },
+    "noise_scale_1.20_delta_+20%": {
+      "delta_pct": "+20%",
+      "noise_scale": 1.2,
+      "seeds_tested": 5,
+      "group_b_oneshot_llm": {
+        "passed": 2,
+        "pass_rate_pct": 40.0,
+        "mean_target_recall": 95.52,
+        "mean_anchor_accuracy": 93.32,
+        "mean_regressions": 66.8
+      },
+      "group_c_darwin_wsp": {
+        "passed": 5,
+        "pass_rate_pct": 100.0,
+        "mean_target_recall": 100.0,
+        "mean_anchor_accuracy": 100.0,
+        "mean_regressions": 0.0,
+        "mean_evaluations": 8.0
+      }
+    }
+  }
+}

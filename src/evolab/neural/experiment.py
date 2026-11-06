@@ -83,7 +83,11 @@ def run_group_a_blind_ga(spec: NeuralProblemSpec, generations: int = 10, pop_siz
     }
 
 
-def run_group_b_oneshot_llm(spec: NeuralProblemSpec, seed: int = 42) -> Dict[str, Any]:
+def run_group_b_oneshot_llm(
+    spec: NeuralProblemSpec,
+    seed: int = 42,
+    noise_scale: float = 1.0,
+) -> Dict[str, Any]:
     """Group B: Raw one-shot LLM weight editing (Takehi et al. WSP paradigm)."""
     evaluator = NeuralWeightEvaluator(spec)
     analyst = MockWeightAnalyst(fidelity="realistic")
@@ -95,6 +99,7 @@ def run_group_b_oneshot_llm(spec: NeuralProblemSpec, seed: int = 42) -> Dict[str
         penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
         anchor_inputs=spec.pass_to_pass_x,
         seed=seed,
+        noise_scale=noise_scale,
     )
 
     if not hypotheses:
@@ -129,6 +134,7 @@ def run_group_c_darwin_wsp(
     pop_size: int = 8,
     seed: int = 42,
     output_bundle: Optional[str | Path] = None,
+    noise_scale: float = 1.0,
 ) -> Dict[str, Any]:
     """Group C: Darwin Weight-Space Programming (DWSP Dual-System)."""
     evaluator = NeuralWeightEvaluator(spec)
@@ -143,6 +149,7 @@ def run_group_c_darwin_wsp(
         penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
         anchor_inputs=spec.pass_to_pass_x,
         seed=seed,
+        noise_scale=noise_scale,
     )
 
     g0 = NeuralWeightGenome(base_model_id=spec.base_model_id)
@@ -647,19 +654,33 @@ def run_dwsp_ablation_study(
         pass_rate = (passed / n) * 100.0
         ci_l, ci_h = wilson_score_interval(passed, n)
         cp_l, cp_h = clopper_pearson_interval(passed, n)
+
+        rec_vals = [r["target_recall"] for r in cond_results]
+        anc_vals = [r["anchor_accuracy"] for r in cond_results]
+        reg_vals = [r["regressions"] for r in cond_results]
+        eval_vals = [r["evaluations"] for r in cond_results]
+
         return {
             "condition": name,
             "pass_rate_pct": round(pass_rate, 2),
             "pass_rate_wilson_ci95": [round(ci_l, 2), round(ci_h, 2)],
             "pass_rate_clopper_pearson_ci95": [round(cp_l, 2), round(cp_h, 2)],
-            "mean_target_recall": round(float(np.mean([r["target_recall"] for r in cond_results])), 2),
-            "std_target_recall": round(float(np.std([r["target_recall"] for r in cond_results])), 2),
-            "mean_anchor_accuracy": round(float(np.mean([r["anchor_accuracy"] for r in cond_results])), 2),
-            "std_anchor_accuracy": round(float(np.std([r["anchor_accuracy"] for r in cond_results])), 2),
-            "mean_regressions": round(float(np.mean([r["regressions"] for r in cond_results])), 2),
-            "std_regressions": round(float(np.std([r["regressions"] for r in cond_results])), 2),
-            "mean_evaluations": round(float(np.mean([r["evaluations"] for r in cond_results])), 2),
-            "std_evaluations": round(float(np.std([r["evaluations"] for r in cond_results])), 2),
+            "mean_target_recall": round(float(np.mean(rec_vals)), 2),
+            "std_target_recall": round(float(np.std(rec_vals)), 2),
+            "median_target_recall": round(float(np.median(rec_vals)), 2),
+            "iqr_target_recall": [round(float(np.percentile(rec_vals, 25)), 2), round(float(np.percentile(rec_vals, 75)), 2)],
+            "mean_anchor_accuracy": round(float(np.mean(anc_vals)), 2),
+            "std_anchor_accuracy": round(float(np.std(anc_vals)), 2),
+            "median_anchor_accuracy": round(float(np.median(anc_vals)), 2),
+            "iqr_anchor_accuracy": [round(float(np.percentile(anc_vals, 25)), 2), round(float(np.percentile(anc_vals, 75)), 2)],
+            "mean_regressions": round(float(np.mean(reg_vals)), 2),
+            "std_regressions": round(float(np.std(reg_vals)), 2),
+            "median_regressions": round(float(np.median(reg_vals)), 2),
+            "iqr_regressions": [round(float(np.percentile(reg_vals, 25)), 2), round(float(np.percentile(reg_vals, 75)), 2)],
+            "mean_evaluations": round(float(np.mean(eval_vals)), 2),
+            "std_evaluations": round(float(np.std(eval_vals)), 2),
+            "median_evaluations": round(float(np.median(eval_vals)), 2),
+            "iqr_evaluations": [round(float(np.percentile(eval_vals, 25)), 2), round(float(np.percentile(eval_vals, 75)), 2)],
         }
 
     ablation_summary = {
@@ -705,5 +726,73 @@ def run_dwsp_sensitivity_benchmark(
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(res, indent=2), encoding="utf-8")
     return res
+
+
+def run_dwsp_noise_sensitivity_check(
+    seeds: Optional[List[int]] = None,
+    perturbations: Optional[List[float]] = None,
+    architecture: str = "shallow",
+    output_json: Optional[str | Path] = None,
+) -> Dict[str, Any]:
+    """Execute sensitivity evaluation varying Group B noise parameters by +/- 20% across seeds.
+
+    Tests robustness of DWSP against fluctuations in proposal scaling and cross-talk leakage.
+    """
+    if seeds is None:
+        seeds = list(range(1, 6))
+    if perturbations is None:
+        perturbations = [-0.20, 0.0, 0.20]
+
+    eval_results = {}
+    for delta in perturbations:
+        scale = round(1.0 + delta, 2)
+        key = f"noise_scale_{scale:0.2f}_delta_{delta:+.0%}"
+        b_results = []
+        c_results = []
+        for s in seeds:
+            bench = ControlledToyBenchmark(seed=s, architecture=architecture)
+            spec = bench.get_spec()
+            res_b = run_group_b_oneshot_llm(spec, seed=s, noise_scale=scale)
+            res_c = run_group_c_darwin_wsp(spec, seed=s, noise_scale=scale)
+            b_results.append(res_b)
+            c_results.append(res_c)
+
+        n = len(seeds)
+        b_passes = sum(1 for r in b_results if r["passed_holdout"])
+        c_passes = sum(1 for r in c_results if r["passed_holdout"])
+
+        eval_results[key] = {
+            "delta_pct": f"{delta:+.0%}",
+            "noise_scale": scale,
+            "seeds_tested": n,
+            "group_b_oneshot_llm": {
+                "passed": b_passes,
+                "pass_rate_pct": round((b_passes / n) * 100.0, 1),
+                "mean_target_recall": round(float(np.mean([r["target_recall"] for r in b_results])), 2),
+                "mean_anchor_accuracy": round(float(np.mean([r["anchor_accuracy"] for r in b_results])), 2),
+                "mean_regressions": round(float(np.mean([r["regressions"] for r in b_results])), 2),
+            },
+            "group_c_darwin_wsp": {
+                "passed": c_passes,
+                "pass_rate_pct": round((c_passes / n) * 100.0, 1),
+                "mean_target_recall": round(float(np.mean([r["target_recall"] for r in c_results])), 2),
+                "mean_anchor_accuracy": round(float(np.mean([r["anchor_accuracy"] for r in c_results])), 2),
+                "mean_regressions": round(float(np.mean([r["regressions"] for r in c_results])), 2),
+                "mean_evaluations": round(float(np.mean([r["evaluations"] for r in c_results])), 2),
+            },
+        }
+
+    summary = {
+        "study": "DWSP Noise Sensitivity Check (Takehi et al., 2026 Calibration Variation +/-20%)",
+        "architecture": architecture,
+        "seeds": seeds,
+        "perturbations": perturbations,
+        "results": eval_results,
+    }
+
+    if output_json:
+        p = Path(output_json)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
     return summary

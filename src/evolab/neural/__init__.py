@@ -13,6 +13,9 @@ from .experiment import (
     run_group_b_oneshot_llm,
     run_group_c_darwin_wsp,
     run_tri_factor_benchmark,
+    run_dwsp_ablation_study,
+    run_dwsp_sensitivity_benchmark,
+    run_dwsp_noise_sensitivity_check,
 )
 from .genome import NeuralWeightGenome
 from .operators import (
@@ -45,4 +48,11 @@ __all__ = [
     "ActivationProfiler",
     "ActivationProfile",
     "LayerActivationStats",
+    "run_group_a_blind_ga",
+    "run_group_b_oneshot_llm",
+    "run_group_c_darwin_wsp",
+    "run_tri_factor_benchmark",
+    "run_dwsp_ablation_study",
+    "run_dwsp_sensitivity_benchmark",
+    "run_dwsp_noise_sensitivity_check",
 ]

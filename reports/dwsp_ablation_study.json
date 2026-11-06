@@ -16,12 +16,32 @@
       ],
       "mean_target_recall": 100.0,
       "std_target_recall": 0.0,
+      "median_target_recall": 100.0,
+      "iqr_target_recall": [
+        100.0,
+        100.0
+      ],
       "mean_anchor_accuracy": 100.0,
       "std_anchor_accuracy": 0.0,
+      "median_anchor_accuracy": 100.0,
+      "iqr_anchor_accuracy": [
+        100.0,
+        100.0
+      ],
       "mean_regressions": 0.0,
       "std_regressions": 0.0,
+      "median_regressions": 0.0,
+      "iqr_regressions": [
+        0.0,
+        0.0
+      ],
       "mean_evaluations": 8.0,
-      "std_evaluations": 0.0
+      "std_evaluations": 0.0,
+      "median_evaluations": 8.0,
+      "iqr_evaluations": [
+        8.0,
+        8.0
+      ]
     },
     "no_llm_analyst": {
       "condition": "No LLM Analyst (Blind GA)",
@@ -34,14 +54,34 @@
         0.0,
         30.85
       ],
-      "mean_target_recall": 11.64,
-      "std_target_recall": 7.01,
+      "mean_target_recall": 12.48,
+      "std_target_recall": 7.93,
+      "median_target_recall": 11.2,
+      "iqr_target_recall": [
+        8.3,
+        13.9
+      ],
       "mean_anchor_accuracy": 100.0,
       "std_anchor_accuracy": 0.0,
+      "median_anchor_accuracy": 100.0,
+      "iqr_anchor_accuracy": [
+        100.0,
+        100.0
+      ],
       "mean_regressions": 0.0,
       "std_regressions": 0.0,
+      "median_regressions": 0.0,
+      "iqr_regressions": [
+        0.0,
+        0.0
+      ],
       "mean_evaluations": 122.0,
-      "std_evaluations": 0.0
+      "std_evaluations": 0.0,
+      "median_evaluations": 122.0,
+      "iqr_evaluations": [
+        122.0,
+        122.0
+      ]
     },
     "no_evolution": {
       "condition": "No Evolution (One-Shot LLM)",
@@ -56,12 +96,32 @@
       ],
       "mean_target_recall": 89.28,
       "std_target_recall": 13.81,
+      "median_target_recall": 100.0,
+      "iqr_target_recall": [
+        77.1,
+        100.0
+      ],
       "mean_anchor_accuracy": 97.98,
       "std_anchor_accuracy": 3.14,
+      "median_anchor_accuracy": 100.0,
+      "iqr_anchor_accuracy": [
+        96.03,
+        100.0
+      ],
       "mean_regressions": 20.2,
       "std_regressions": 31.37,
+      "median_regressions": 0.0,
+      "iqr_regressions": [
+        0.0,
+        39.75
+      ],
       "mean_evaluations": 1.0,
-      "std_evaluations": 0.0
+      "std_evaluations": 0.0,
+      "median_evaluations": 1.0,
+      "iqr_evaluations": [
+        1.0,
+        1.0
+      ]
     },
     "no_governor": {
       "condition": "No Governor (Unconstrained)",
@@ -76,12 +136,32 @@
       ],
       "mean_target_recall": 99.52,
       "std_target_recall": 1.44,
+      "median_target_recall": 100.0,
+      "iqr_target_recall": [
+        100.0,
+        100.0
+      ],
       "mean_anchor_accuracy": 97.98,
       "std_anchor_accuracy": 3.14,
+      "median_anchor_accuracy": 100.0,
+      "iqr_anchor_accuracy": [
+        96.03,
+        100.0
+      ],
       "mean_regressions": 20.2,
       "std_regressions": 31.37,
+      "median_regressions": 0.0,
+      "iqr_regressions": [
+        0.0,
+        39.75
+      ],
       "mean_evaluations": 15.7,
-      "std_evaluations": 14.16
+      "std_evaluations": 14.16,
+      "median_evaluations": 8.0,
+      "iqr_evaluations": [
+        8.0,
+        13.25
+      ]
     },
     "no_null_space": {
       "condition": "No Null-Space Projection",
@@ -96,12 +176,32 @@
       ],
       "mean_target_recall": 90.6,
       "std_target_recall": 23.7,
+      "median_target_recall": 100.0,
+      "iqr_target_recall": [
+        99.2,
+        100.0
+      ],
       "mean_anchor_accuracy": 99.99,
       "std_anchor_accuracy": 0.03,
+      "median_anchor_accuracy": 100.0,
+      "iqr_anchor_accuracy": [
+        100.0,
+        100.0
+      ],
       "mean_regressions": 0.1,
       "std_regressions": 0.3,
+      "median_regressions": 0.0,
+      "iqr_regressions": [
+        0.0,
+        0.0
+      ],
       "mean_evaluations": 30.4,
-      "std_evaluations": 20.0
+      "std_evaluations": 20.0,
+      "median_evaluations": 36.0,
+      "iqr_evaluations": [
+        8.0,
+        50.0
+      ]
     }
   }
 }

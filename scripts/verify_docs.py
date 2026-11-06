@@ -362,6 +362,7 @@ def verify_documentation() -> bool:
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
         valid_badges = [
+            "tests-795%20passed", "tests-795 passed",
             "tests-794%20passed", "tests-794 passed",
             "tests-793%20passed", "tests-793 passed",
             "tests-788%20passed", "tests-788 passed",
@@ -427,7 +428,39 @@ def verify_documentation() -> bool:
         else:
             checks_passed += 1
 
-        print(f"[OK] DWSP Tri-Factor, Multi-Seed, Sensitivity & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 30-seeds: 100%, 0 regressions).")
+        # Check inverted pyramid structure: Primary 30-seed before Pilot 10-seed
+        pos_primary = doc_text.find("### 8.2 Primary Multi-Seed Benchmark ($N=30$ Independent Seeds)")
+        pos_pilot = doc_text.find("### 8.3 Pilot Seed Calibration Benchmark ($N=10$ Seeds)")
+        if pos_primary == -1:
+            errors.append("DWSP: Missing Primary Multi-Seed Benchmark ($N=30$) header in docs/RESULTS.md")
+        elif pos_pilot == -1:
+            errors.append("DWSP: Missing Pilot Seed Calibration Benchmark ($N=10$) header in docs/RESULTS.md")
+        elif pos_primary >= pos_pilot:
+            errors.append("DWSP: Inverted pyramid violation - Primary ($N=30$) must precede Pilot ($N=10$)")
+        else:
+            checks_passed += 1
+
+        # Check bimodal regression dispersion reporting
+        if "0.0 [0.0, 39.8]" not in doc_text:
+            errors.append("DWSP Ablation: Missing bimodal median/IQR '0.0 [0.0, 39.8]' for No Governor regressions")
+        else:
+            checks_passed += 1
+
+        # Check noise sensitivity report
+        noise_rep = load_json("dwsp_noise_sensitivity.json")
+        if "Noise Sensitivity Verification" not in doc_text:
+            errors.append("DWSP: Missing Noise Sensitivity Verification in docs/RESULTS.md")
+        else:
+            checks_passed += 1
+
+        for pkey, pval in noise_rep["results"].items():
+            c_p = f"{pval['group_c_darwin_wsp']['pass_rate_pct']:.1f}% ({pval['group_c_darwin_wsp']['passed']}/5)"
+            if c_p not in doc_text:
+                errors.append(f"DWSP Noise Sensitivity: Missing Group C pass rate {c_p} for {pkey}")
+            else:
+                checks_passed += 1
+
+        print(f"[OK] DWSP Tri-Factor, Primary 30-Seed, Pilot 10-Seed, Noise Sensitivity & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 30-seeds: 100%, Noise Robustness: 100%, 0 regressions).")
     except Exception as exc:
         errors.append(f"DWSP check failed: {exc}")
 

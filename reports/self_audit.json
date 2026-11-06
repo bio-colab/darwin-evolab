@@ -1,9 +1,9 @@
 {
-  "timestamp": 1793932057.012521,
+  "timestamp": 1793933463.6268814,
   "attestation": {
     "schema_version": "1.0.0",
     "python_sha256": "42ac541168e97dedb9aabd8be335539fc41c682e414b9e8d137b164fb68683b0",
-    "core_merkle_root": "e48fafb06c3aa4363fcd447d39b83bf2e069de4ea0156f9e858f2750641f57d5",
+    "core_merkle_root": "59845ef219bad14ddb1a3e918db65239521c6b9b8376ea665dc45c6fe656e1fe",
     "libraries_digest": {
       "numpy:core": "65d5e777b6d662ba19cb80800bef3eb999eda7aee51eea62c308feabf679dba4",
       "scipy:core": "a11ad8a1eaf423d32a0d3dd6c9be6c7be86068321f043dacd2d555a49418b92f"
@@ -15,7 +15,7 @@
       "machine_arch": "AMD64",
       "logical_cpus": 8
     },
-    "timestamp_utc": "2026-11-06T02:27:37.051999+00:00"
+    "timestamp_utc": "2026-11-06T02:51:03.665689+00:00"
   },
   "overall_verdict": "NEEDS_REVIEW",
   "governor": {
@@ -38,7 +38,7 @@
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 3,
-        "duration_seconds": 0.071
+        "duration_seconds": 0.07
       },
       "requests_http_helper": {
         "passed": true,
@@ -59,7 +59,7 @@
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.029
+        "duration_seconds": 0.03
       }
     }
   },

@@ -47,6 +47,7 @@ class MockWeightAnalyst:
         anchor_inputs: Optional[np.ndarray] = None,
         seed: Optional[int] = None,
         fidelity: Optional[str] = None,
+        noise_scale: float = 1.0,
     ) -> List[WeightHypothesis]:
         """Diagnose classification failure on a target class and propose directional correction."""
         hypotheses: List[WeightHypothesis] = []
@@ -114,12 +115,12 @@ class MockWeightAnalyst:
                     is_clean = (seed in clean_seeds) if seed is not None else (r.uniform(0.0, 1.0) < (0.2 if is_deep else 0.3))
 
                     if is_clean:
-                        scale_val = float(r.uniform(1.2, 2.0))
+                        scale_val = float(r.uniform(1.2, 2.0)) * float(noise_scale)
                     else:
                         if r.uniform(0.0, 1.0) < 0.5:
-                            scale_val = float(r.uniform(0.025, 0.06)) if is_deep else float(r.uniform(0.05, 0.12))
+                            scale_val = (float(r.uniform(0.025, 0.06)) if is_deep else float(r.uniform(0.05, 0.12))) * float(noise_scale)
                         else:
-                            scale_val = float(r.uniform(1.2, 2.0))
+                            scale_val = float(r.uniform(1.2, 2.0)) * float(noise_scale)
 
                     if active_idx is not None and len(active_idx) > 0:
                         delta[target_class, active_idx] = scale_val
@@ -131,7 +132,7 @@ class MockWeightAnalyst:
                         other_classes = [c for c in range(W.shape[0]) if c != target_class]
                         leak_class = int(r.choice(other_classes))
                         chunk = max(1, W.shape[1] // W.shape[0])
-                        delta[leak_class, leak_class * chunk : (leak_class + 1) * chunk] -= 0.85
+                        delta[leak_class, leak_class * chunk : (leak_class + 1) * chunk] -= 0.85 * float(noise_scale)
 
                 hyp = WeightHypothesis(
                     hypothesis_id="hyp_target_class_boost",
