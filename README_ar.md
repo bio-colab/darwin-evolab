@@ -6,7 +6,7 @@
 [![CI](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml/badge.svg)](https://github.com/bio-colab/darwin-evolab/actions/workflows/ci.yml)
 [![Discussions](https://img.shields.io/badge/community-discussions-blue.svg)](https://github.com/bio-colab/darwin-evolab/discussions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests Passing](https://img.shields.io/badge/tests-783%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
+[![Tests Passing](https://img.shields.io/badge/tests-788%20passed-brightgreen.svg)](https://github.com/bio-colab/darwin-evolab)
 [![Capsules Verified](https://img.shields.io/badge/capsules-.evobundle%20verified-success.svg)](docs/USER_GUIDE.md#evidence-capsules)
 [![Truth in Docs](https://img.shields.io/badge/docs-100%25%20verified-brightgreen.svg)](docs/RESULTS.md)
 [![Kaggle Heavy Compute](https://img.shields.io/badge/Kaggle%20Heavy%20Compute-636k%20evals%20%7C%207.39m-blue.svg)](reports/GRAND_RUN_EXECUTIVE_REPORT.md)

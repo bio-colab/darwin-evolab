@@ -18,10 +18,13 @@ from .genome import NeuralWeightGenome
 from .operators import (
     CounterfactualIntronPruner,
     LLMHypothesisMutation,
+    NullSpaceProjectionMutation,
     RankOnePerturbationMutation,
+    RankRPerturbationMutation,
     SpectralRescaleMutation,
     WeightSpaceOperator,
 )
+from .profiler import ActivationProfile, ActivationProfiler, LayerActivationStats
 
 __all__ = [
     "NeuralWeightGenome",
@@ -32,9 +35,14 @@ __all__ = [
     "WeightSpaceOperator",
     "SpectralRescaleMutation",
     "RankOnePerturbationMutation",
+    "RankRPerturbationMutation",
+    "NullSpaceProjectionMutation",
     "LLMHypothesisMutation",
     "CounterfactualIntronPruner",
     "WeightHypothesis",
     "MockWeightAnalyst",
     "LLMWeightAnalyst",
+    "ActivationProfiler",
+    "ActivationProfile",
+    "LayerActivationStats",
 ]

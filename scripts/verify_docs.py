@@ -362,6 +362,7 @@ def verify_documentation() -> bool:
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
         valid_badges = [
+            "tests-788%20passed", "tests-788 passed",
             "tests-783%20passed", "tests-783 passed",
             "tests-773%20passed", "tests-773 passed",
             "tests-726%20passed", "tests-726 passed",

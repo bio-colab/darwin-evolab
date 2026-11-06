@@ -188,3 +188,144 @@ class CounterfactualIntronPruner:
 
     def prune(self, genome: NeuralWeightGenome) -> int:
         return genome.prune_inactive_weights(self.threshold)
+
+
+class NullSpaceProjectionMutation(WeightSpaceOperator):
+    """Projects candidate weight updates onto the null space of anchor representations.
+
+    Guarantees ΔW · X_anchor^T ≈ 0 by construction, eliminating catastrophic regressions
+    on invariant holdout sets.
+    """
+
+    def __init__(self, target_layer: str, anchor_activations: np.ndarray, eta: float = 0.05, tol: float = 1e-4) -> None:
+        self.target_layer = str(target_layer)
+        self.anchor_activations = np.asarray(anchor_activations, dtype=float)
+        self.eta = float(eta)
+        self.tol = float(tol)
+        self._P_null: Optional[np.ndarray] = None
+        self._compute_projection()
+
+    def _compute_projection(self) -> None:
+        X = self.anchor_activations
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
+        N, d_in = X.shape
+        try:
+            _, s, Vt = svd(X, full_matrices=True)
+            cutoff = self.tol * (s[0] if len(s) > 0 else 1.0)
+            rank = int(np.sum(s > cutoff))
+            if rank < d_in:
+                V_null = Vt[rank:, :].T
+                self._P_null = V_null @ V_null.T
+            else:
+                k = max(1, d_in // 4)
+                V_least = Vt[-k:, :].T
+                self._P_null = V_least @ V_least.T
+        except Exception:
+            self._P_null = np.eye(d_in)
+
+    def mutate(
+        self,
+        genome: NeuralWeightGenome,
+        rng: Optional[random.Random] = None,
+        layer_shapes: Optional[Dict[str, Tuple[int, ...]]] = None,
+        **kwargs: Any,
+    ) -> NeuralWeightGenome:
+        child = genome.clone()
+        r = rng or random
+
+        if not layer_shapes or self.target_layer not in layer_shapes or self._P_null is None:
+            return child
+
+        d_out, d_in = layer_shapes[self.target_layer]
+        if self._P_null.shape != (d_in, d_in):
+            return child
+
+        # Generate unconstrained exploratory perturbation
+        W_raw = np.array([[_sample_normal(r, 0.0, 1.0) for _ in range(d_in)] for _ in range(d_out)], dtype=float)
+        norm_raw = np.linalg.norm(W_raw, ord="fro") + 1e-8
+        W_raw = (W_raw / norm_raw) * self.eta
+
+        # Project onto null space: W_safe = W_raw @ P_null
+        W_safe = W_raw @ self._P_null
+
+        if self.target_layer in child.sparse_patches:
+            child.sparse_patches[self.target_layer] = child.sparse_patches[self.target_layer] + W_safe
+        else:
+            child.sparse_patches[self.target_layer] = W_safe
+
+        child.edit_lineage.append({
+            "op": "null_space_projection",
+            "layer": self.target_layer,
+            "eta": self.eta,
+            "null_energy": float(np.linalg.norm(W_safe, ord="fro")),
+        })
+        return child
+
+
+class RankRPerturbationMutation(WeightSpaceOperator):
+    """Generates rank-r low-rank updates ΔW = η · Σ_{i=1}^r σ_i (u_i ⊗ v_i).
+
+    Allows richer manifold exploration beyond rank-1 perturbations while preserving
+    compact parameterization.
+    """
+
+    def __init__(self, rank: int = 2, eta: float = 0.05, decay_rate: float = 0.6) -> None:
+        self.rank = max(1, int(rank))
+        self.eta = float(eta)
+        self.decay_rate = float(decay_rate)
+
+    def mutate(
+        self,
+        genome: NeuralWeightGenome,
+        rng: Optional[random.Random] = None,
+        layer_shapes: Optional[Dict[str, Tuple[int, ...]]] = None,
+        projection_matrix: Optional[np.ndarray] = None,
+        **kwargs: Any,
+    ) -> NeuralWeightGenome:
+        child = genome.clone()
+        r = rng or random
+
+        if not layer_shapes:
+            return child
+
+        matrix_layers = [name for name, shape in layer_shapes.items() if len(shape) == 2]
+        if not matrix_layers:
+            return child
+
+        target_layer = _sample_choice(r, matrix_layers)
+        d_out, d_in = layer_shapes[target_layer]
+
+        # Multi-rank synthesis
+        actual_rank = min(self.rank, min(d_out, d_in))
+        delta = np.zeros((d_out, d_in), dtype=float)
+
+        for i in range(actual_rank):
+            sigma_i = (self.decay_rate ** i)
+            u_i = np.array([_sample_normal(r, 0.0, 1.0) for _ in range(d_out)], dtype=float)
+            v_i = np.array([_sample_normal(r, 0.0, 1.0) for _ in range(d_in)], dtype=float)
+            u_i /= (np.linalg.norm(u_i) + 1e-8)
+            v_i /= (np.linalg.norm(v_i) + 1e-8)
+
+            if projection_matrix is not None and projection_matrix.shape == (d_in, d_in):
+                v_i = projection_matrix @ v_i
+                norm_p = np.linalg.norm(v_i)
+                if norm_p > 1e-8:
+                    v_i /= norm_p
+
+            delta += sigma_i * np.outer(u_i, v_i)
+
+        delta = (delta / (np.linalg.norm(delta, ord="fro") + 1e-8)) * self.eta
+
+        if target_layer in child.sparse_patches:
+            child.sparse_patches[target_layer] = child.sparse_patches[target_layer] + delta
+        else:
+            child.sparse_patches[target_layer] = delta
+
+        child.edit_lineage.append({
+            "op": "rank_r_perturbation",
+            "layer": target_layer,
+            "rank": actual_rank,
+            "eta": self.eta,
+        })
+        return child

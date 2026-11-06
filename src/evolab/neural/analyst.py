@@ -13,6 +13,8 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
+from .profiler import ActivationProfiler, ActivationProfile
+
 
 @dataclass
 class WeightHypothesis:
@@ -28,11 +30,12 @@ class MockWeightAnalyst:
     """Deterministic activation/subspace diagnostic oracle for offline, hermetic execution.
 
     Inspects defective network behavior and computes directional hypotheses
-    without requiring external API calls or network connections.
+    using ActivationProfiler without requiring external API calls or network connections.
     """
 
     def __init__(self, name: str = "mock_weight_analyst") -> None:
         self.name = name
+        self.profiler = ActivationProfiler()
 
     def diagnose_and_propose(
         self,
@@ -40,6 +43,7 @@ class MockWeightAnalyst:
         failing_inputs: np.ndarray,
         target_class: int,
         penultimate_layer: str = "layer2",
+        anchor_inputs: Optional[np.ndarray] = None,
     ) -> List[WeightHypothesis]:
         """Diagnose classification failure on a target class and propose directional correction."""
         hypotheses: List[WeightHypothesis] = []
@@ -52,23 +56,32 @@ class MockWeightAnalyst:
             W = base_weights[layer_key]
             delta = np.zeros_like(W, dtype=float)
 
-            # Determine activating hidden neurons for failing inputs
+            # Determine activating hidden neurons for failing inputs using profiler if available
             active_idx = None
-            w1_key = "layer1.weight" if "layer1.weight" in base_weights else ("layer1" if "layer1" in base_weights else None)
-            b1_key = "layer1.bias" if "layer1.bias" in base_weights else None
-            if w1_key and failing_inputs is not None and len(failing_inputs) > 0:
-                w1 = base_weights[w1_key]
-                b1 = base_weights.get(b1_key, 0.0)
-                h = np.maximum(0, failing_inputs @ w1.T + b1)
-                mean_h = np.mean(h, axis=0)
-                pos_idx = np.where(mean_h > 1.0)[0]
-                if len(pos_idx) > 0:
-                    active_idx = pos_idx
-                else:
-                    active_idx = np.argsort(mean_h)[-4:]
+            if failing_inputs is not None and len(failing_inputs) > 0:
+                try:
+                    profile = self.profiler.profile(base_weights, failing_inputs, anchor_inputs)
+                    # Check if profiler found active units for the input layer to the target layer
+                    prev_layer = "layer1" if "layer1" in profile.active_indices else profile.top_discrepancy_layer
+                    if prev_layer in profile.active_indices and len(profile.active_indices[prev_layer]) > 0:
+                        active_idx = np.array(profile.active_indices[prev_layer])
+                except Exception:
+                    pass
+
+            # Fallback direct inspection if profiler didn't resolve
+            if active_idx is None:
+                w1_key = "layer1.weight" if "layer1.weight" in base_weights else ("layer1" if "layer1" in base_weights else None)
+                b1_key = "layer1.bias" if "layer1.bias" in base_weights else None
+                if w1_key and failing_inputs is not None and len(failing_inputs) > 0:
+                    w1 = base_weights[w1_key]
+                    b1 = base_weights.get(b1_key, 0.0)
+                    h = np.maximum(0, failing_inputs @ w1.T + b1)
+                    mean_h = np.mean(h, axis=0)
+                    pos_idx = np.where(mean_h > 1.0)[0]
+                    active_idx = pos_idx if len(pos_idx) > 0 else np.argsort(mean_h)[-4:]
 
             if target_class < W.shape[0]:
-                if active_idx is not None:
+                if active_idx is not None and len(active_idx) > 0:
                     delta[target_class, active_idx] = 2.5
                 else:
                     delta[target_class, :] = 0.5 * np.ones(W.shape[1])
