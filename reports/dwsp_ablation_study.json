@@ -10,10 +10,18 @@
         72.25,
         100.0
       ],
+      "pass_rate_clopper_pearson_ci95": [
+        69.15,
+        100.0
+      ],
       "mean_target_recall": 100.0,
+      "std_target_recall": 0.0,
       "mean_anchor_accuracy": 100.0,
+      "std_anchor_accuracy": 0.0,
       "mean_regressions": 0.0,
-      "mean_evaluations": 8.0
+      "std_regressions": 0.0,
+      "mean_evaluations": 8.0,
+      "std_evaluations": 0.0
     },
     "no_llm_analyst": {
       "condition": "No LLM Analyst (Blind GA)",
@@ -22,10 +30,18 @@
         0.0,
         27.75
       ],
+      "pass_rate_clopper_pearson_ci95": [
+        0.0,
+        30.85
+      ],
       "mean_target_recall": 11.64,
+      "std_target_recall": 7.01,
       "mean_anchor_accuracy": 100.0,
+      "std_anchor_accuracy": 0.0,
       "mean_regressions": 0.0,
-      "mean_evaluations": 122.0
+      "std_regressions": 0.0,
+      "mean_evaluations": 122.0,
+      "std_evaluations": 0.0
     },
     "no_evolution": {
       "condition": "No Evolution (One-Shot LLM)",
@@ -34,10 +50,18 @@
         10.78,
         60.32
       ],
+      "pass_rate_clopper_pearson_ci95": [
+        6.67,
+        65.25
+      ],
       "mean_target_recall": 89.28,
+      "std_target_recall": 13.81,
       "mean_anchor_accuracy": 97.98,
+      "std_anchor_accuracy": 3.14,
       "mean_regressions": 20.2,
-      "mean_evaluations": 1.0
+      "std_regressions": 31.37,
+      "mean_evaluations": 1.0,
+      "std_evaluations": 0.0
     },
     "no_governor": {
       "condition": "No Governor (Unconstrained)",
@@ -46,10 +70,18 @@
         31.27,
         83.18
       ],
+      "pass_rate_clopper_pearson_ci95": [
+        26.24,
+        87.84
+      ],
       "mean_target_recall": 99.52,
+      "std_target_recall": 1.44,
       "mean_anchor_accuracy": 97.98,
+      "std_anchor_accuracy": 3.14,
       "mean_regressions": 20.2,
-      "mean_evaluations": 15.7
+      "std_regressions": 31.37,
+      "mean_evaluations": 15.7,
+      "std_evaluations": 14.16
     },
     "no_null_space": {
       "condition": "No Null-Space Projection",
@@ -58,10 +90,18 @@
         39.68,
         89.22
       ],
+      "pass_rate_clopper_pearson_ci95": [
+        34.75,
+        93.33
+      ],
       "mean_target_recall": 90.6,
+      "std_target_recall": 23.7,
       "mean_anchor_accuracy": 99.99,
+      "std_anchor_accuracy": 0.03,
       "mean_regressions": 0.1,
-      "mean_evaluations": 30.4
+      "std_regressions": 0.3,
+      "mean_evaluations": 30.4,
+      "std_evaluations": 20.0
     }
   }
 }

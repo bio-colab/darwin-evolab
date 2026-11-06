@@ -293,6 +293,31 @@ def wilson_score_interval(successes: int, total: int, confidence: float = 0.95) 
     return float(max(0.0, lower * 100.0)), float(min(100.0, upper * 100.0))
 
 
+def clopper_pearson_interval(successes: int, total: int, confidence: float = 0.95) -> Tuple[float, float]:
+    """Calculate exact Clopper-Pearson binomial confidence interval."""
+    if total == 0:
+        return 0.0, 0.0
+    alpha = 1.0 - confidence
+    try:
+        from scipy.stats import beta
+        lower = 0.0 if successes == 0 else float(beta.ppf(alpha / 2, successes, total - successes + 1))
+        upper = 1.0 if successes == total else float(beta.ppf(1 - alpha / 2, successes + 1, total - successes))
+        return float(lower * 100.0), float(upper * 100.0)
+    except Exception:
+        # Fallback to Wilson score interval
+        return wilson_score_interval(successes, total, confidence)
+
+
+def cliffs_delta(x: List[float], y: List[float]) -> float:
+    """Calculate Cliff's delta non-parametric effect size in [-1, 1]."""
+    nx, ny = len(x), len(y)
+    if nx == 0 or ny == 0:
+        return 0.0
+    more = sum(1 for xi in x for yj in y if xi > yj)
+    less = sum(1 for xi in x for yj in y if xi < yj)
+    return float((more - less) / (nx * ny))
+
+
 def cohens_d(x: List[float], y: List[float]) -> float:
     """Calculate Cohen's d effect size between two independent/paired samples."""
     nx, ny = len(x), len(y)
@@ -325,6 +350,33 @@ def wilcoxon_signed_rank_test(x: List[float], y: List[float]) -> Tuple[float, fl
         z = (w - mean_w + 0.5) / max(1e-9, std_w)
         pval = 2.0 * (1.0 - 0.5 * (1.0 + math.erf(abs(z) / math.sqrt(2.0))))
         return float(w), float(pval)
+
+
+def holm_bonferroni_correction(p_values: Dict[str, float], alpha: float = 0.05) -> Dict[str, Any]:
+    """Perform Holm-Bonferroni step-down multiple testing correction across tests."""
+    sorted_items = sorted(p_values.items(), key=lambda item: item[1])
+    m = len(sorted_items)
+    results = {}
+    running_max_adj = 0.0
+
+    for rank, (name, raw_p) in enumerate(sorted_items, 1):
+        crit_alpha = alpha / (m - rank + 1)
+        adj_p = min(1.0, max(running_max_adj, raw_p * (m - rank + 1)))
+        running_max_adj = adj_p
+        bonf_p = min(1.0, raw_p * m)
+        is_sig_holm = bool(raw_p <= crit_alpha)
+        is_sig_bonf = bool(bonf_p <= alpha)
+
+        results[name] = {
+            "rank": rank,
+            "raw_p_value": round(float(raw_p), 6),
+            "crit_alpha_holm": round(float(crit_alpha), 6),
+            "p_value_holm_adjusted": round(float(adj_p), 6),
+            "p_value_bonferroni_adjusted": round(float(bonf_p), 6),
+            "significant_holm": is_sig_holm,
+            "significant_bonferroni": is_sig_bonf,
+        }
+    return results
 
 
 def run_multiseed_tri_factor_benchmark(
@@ -362,6 +414,7 @@ def run_multiseed_tri_factor_benchmark(
         passed_count = sum(1 for r in group_results if r["passed_holdout"])
         pass_rate = (passed_count / n) * 100.0
         ci_low, ci_high = wilson_score_interval(passed_count, n)
+        cp_low, cp_high = clopper_pearson_interval(passed_count, n)
 
         recalls = [r["target_recall"] for r in group_results]
         anchors = [r["anchor_accuracy"] for r in group_results]
@@ -374,6 +427,7 @@ def run_multiseed_tri_factor_benchmark(
             "seeds_tested": n,
             "pass_rate_pct": round(pass_rate, 2),
             "pass_rate_wilson_ci95": [round(ci_low, 2), round(ci_high, 2)],
+            "pass_rate_clopper_pearson_ci95": [round(cp_low, 2), round(cp_high, 2)],
             "mean_fitness": round(float(np.mean(fitnesses)), 2),
             "std_fitness": round(float(np.std(fitnesses)), 2),
             "mean_target_recall": round(float(np.mean(recalls)), 2),
@@ -381,7 +435,9 @@ def run_multiseed_tri_factor_benchmark(
             "mean_anchor_accuracy": round(float(np.mean(anchors)), 2),
             "std_anchor_accuracy": round(float(np.std(anchors)), 2),
             "mean_regressions": round(float(np.mean(regressions)), 2),
+            "std_regressions": round(float(np.std(regressions)), 2),
             "mean_evaluations": round(float(np.mean(evals)), 2),
+            "std_evaluations": round(float(np.std(evals)), 2),
         }
 
     fitness_a = [r["fitness"] for r in results_a]
@@ -392,6 +448,14 @@ def run_multiseed_tri_factor_benchmark(
     stat_cb, p_cb = wilcoxon_signed_rank_test(fitness_c, fitness_b)
     d_ca = cohens_d(fitness_c, fitness_a)
     d_cb = cohens_d(fitness_c, fitness_b)
+    cliff_ca = cliffs_delta(fitness_c, fitness_a)
+    cliff_cb = cliffs_delta(fitness_c, fitness_b)
+
+    p_dict = {
+        "group_c_vs_group_a": p_ca,
+        "group_c_vs_group_b": p_cb,
+    }
+    multi_test = holm_bonferroni_correction(p_dict)
 
     summary = {
         "benchmark": f"Controlled 4-Class Neural Weight Repair ({architecture})",
@@ -405,13 +469,17 @@ def run_multiseed_tri_factor_benchmark(
                 "wilcoxon_stat": round(stat_ca, 4),
                 "p_value": round(p_ca, 6),
                 "cohens_d": round(d_ca, 4),
+                "cliffs_delta": round(cliff_ca, 4),
                 "significant_p01": bool(p_ca < 0.01),
+                "holm_bonferroni": multi_test["group_c_vs_group_a"],
             },
             "group_c_vs_group_b": {
                 "wilcoxon_stat": round(stat_cb, 4),
                 "p_value": round(p_cb, 6),
                 "cohens_d": round(d_cb, 4),
+                "cliffs_delta": round(cliff_cb, 4),
                 "significant_p05": bool(p_cb < 0.05),
+                "holm_bonferroni": multi_test["group_c_vs_group_b"],
             },
         },
     }
@@ -578,14 +646,20 @@ def run_dwsp_ablation_study(
         passed = sum(1 for r in cond_results if r["passed_holdout"])
         pass_rate = (passed / n) * 100.0
         ci_l, ci_h = wilson_score_interval(passed, n)
+        cp_l, cp_h = clopper_pearson_interval(passed, n)
         return {
             "condition": name,
             "pass_rate_pct": round(pass_rate, 2),
             "pass_rate_wilson_ci95": [round(ci_l, 2), round(ci_h, 2)],
+            "pass_rate_clopper_pearson_ci95": [round(cp_l, 2), round(cp_h, 2)],
             "mean_target_recall": round(float(np.mean([r["target_recall"] for r in cond_results])), 2),
+            "std_target_recall": round(float(np.std([r["target_recall"] for r in cond_results])), 2),
             "mean_anchor_accuracy": round(float(np.mean([r["anchor_accuracy"] for r in cond_results])), 2),
+            "std_anchor_accuracy": round(float(np.std([r["anchor_accuracy"] for r in cond_results])), 2),
             "mean_regressions": round(float(np.mean([r["regressions"] for r in cond_results])), 2),
+            "std_regressions": round(float(np.std([r["regressions"] for r in cond_results])), 2),
             "mean_evaluations": round(float(np.mean([r["evaluations"] for r in cond_results])), 2),
+            "std_evaluations": round(float(np.std([r["evaluations"] for r in cond_results])), 2),
         }
 
     ablation_summary = {
@@ -607,5 +681,29 @@ def run_dwsp_ablation_study(
         p.write_text(json.dumps(ablation_summary, indent=2), encoding="utf-8")
 
     return ablation_summary
+
+
+def run_dwsp_sensitivity_benchmark(
+    seeds: Optional[List[int]] = None,
+    output_json: Optional[str | Path] = None,
+) -> Dict[str, Any]:
+    """Execute extended sensitivity verification across 30 seeds for shallow and deep architectures."""
+    if seeds is None:
+        seeds = list(range(1, 31))
+
+    shallow_summary = run_multiseed_tri_factor_benchmark(seeds=seeds, architecture="shallow")
+    deep_summary = run_multiseed_tri_factor_benchmark(seeds=seeds, architecture="deep")
+
+    res = {
+        "benchmark": "DWSP Extended Sensitivity Verification (30 Seeds)",
+        "seeds_count": len(seeds),
+        "shallow_architecture": shallow_summary,
+        "deep_architecture": deep_summary,
+    }
+    if output_json:
+        p = Path(output_json)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(res, indent=2), encoding="utf-8")
+    return res
 
     return summary

@@ -419,7 +419,15 @@ def verify_documentation() -> bool:
         else:
             checks_passed += 1
 
-        print(f"[OK] DWSP Tri-Factor, Multi-Seed & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 0 regressions).")
+        # Check sensitivity 30-seed report
+        sens = load_json("dwsp_sensitivity_30seeds.json")
+        c_30_pass = f"{sens['shallow_architecture']['group_c_darwin_wsp']['pass_rate_pct']:.1f}% (30/30)"
+        if c_30_pass not in doc_text:
+            errors.append(f"DWSP Sensitivity: Missing 30-seed pass rate {c_30_pass} in docs/RESULTS.md")
+        else:
+            checks_passed += 1
+
+        print(f"[OK] DWSP Tri-Factor, Multi-Seed, Sensitivity & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 30-seeds: 100%, 0 regressions).")
     except Exception as exc:
         errors.append(f"DWSP check failed: {exc}")
 

@@ -1,0 +1,282 @@
+{
+  "benchmark": "DWSP Extended Sensitivity Verification (30 Seeds)",
+  "seeds_count": 30,
+  "shallow_architecture": {
+    "benchmark": "Controlled 4-Class Neural Weight Repair (shallow)",
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "group_a_blind_ga": {
+      "group": "Group A (Blind GA)",
+      "seeds_tested": 30,
+      "pass_rate_pct": 0.0,
+      "pass_rate_wilson_ci95": [
+        0.0,
+        11.35
+      ],
+      "pass_rate_clopper_pearson_ci95": [
+        0.0,
+        11.57
+      ],
+      "mean_fitness": 11.25,
+      "std_fitness": 7.03,
+      "mean_target_recall": 11.25,
+      "std_target_recall": 7.03,
+      "mean_anchor_accuracy": 100.0,
+      "std_anchor_accuracy": 0.0,
+      "mean_regressions": 0.0,
+      "std_regressions": 0.0,
+      "mean_evaluations": 122.0,
+      "std_evaluations": 0.0
+    },
+    "group_b_oneshot_llm": {
+      "group": "Group B (One-Shot LLM)",
+      "seeds_tested": 30,
+      "pass_rate_pct": 10.0,
+      "pass_rate_wilson_ci95": [
+        3.46,
+        25.62
+      ],
+      "pass_rate_clopper_pearson_ci95": [
+        2.11,
+        26.53
+      ],
+      "mean_fitness": 37.37,
+      "std_fitness": 37.86,
+      "mean_target_recall": 84.04,
+      "std_target_recall": 20.84,
+      "mean_anchor_accuracy": 97.1,
+      "std_anchor_accuracy": 3.18,
+      "mean_regressions": 29.0,
+      "std_regressions": 31.8,
+      "mean_evaluations": 1.0,
+      "std_evaluations": 0.0
+    },
+    "group_c_darwin_wsp": {
+      "group": "Group C (Darwin WSP)",
+      "seeds_tested": 30,
+      "pass_rate_pct": 100.0,
+      "pass_rate_wilson_ci95": [
+        88.65,
+        100.0
+      ],
+      "pass_rate_clopper_pearson_ci95": [
+        88.43,
+        100.0
+      ],
+      "mean_fitness": 100.0,
+      "std_fitness": 0.0,
+      "mean_target_recall": 100.0,
+      "std_target_recall": 0.0,
+      "mean_anchor_accuracy": 100.0,
+      "std_anchor_accuracy": 0.0,
+      "mean_regressions": 0.0,
+      "std_regressions": 0.0,
+      "mean_evaluations": 8.23,
+      "std_evaluations": 1.26
+    },
+    "statistical_significance": {
+      "metric": "fitness_dual_invariant",
+      "group_c_vs_group_a": {
+        "wilcoxon_stat": 0.0,
+        "p_value": 2e-06,
+        "cohens_d": 17.5463,
+        "cliffs_delta": 1.0,
+        "significant_p01": true,
+        "holm_bonferroni": {
+          "rank": 1,
+          "raw_p_value": 2e-06,
+          "crit_alpha_holm": 0.025,
+          "p_value_holm_adjusted": 3e-06,
+          "p_value_bonferroni_adjusted": 3e-06,
+          "significant_holm": true,
+          "significant_bonferroni": true
+        }
+      },
+      "group_c_vs_group_b": {
+        "wilcoxon_stat": 0.0,
+        "p_value": 4e-06,
+        "cohens_d": 2.2998,
+        "cliffs_delta": 0.9,
+        "significant_p05": true,
+        "holm_bonferroni": {
+          "rank": 2,
+          "raw_p_value": 4e-06,
+          "crit_alpha_holm": 0.05,
+          "p_value_holm_adjusted": 4e-06,
+          "p_value_bonferroni_adjusted": 8e-06,
+          "significant_holm": true,
+          "significant_bonferroni": true
+        }
+      }
+    }
+  },
+  "deep_architecture": {
+    "benchmark": "Controlled 4-Class Neural Weight Repair (deep)",
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "group_a_blind_ga": {
+      "group": "Group A (Blind GA)",
+      "seeds_tested": 30,
+      "pass_rate_pct": 0.0,
+      "pass_rate_wilson_ci95": [
+        0.0,
+        11.35
+      ],
+      "pass_rate_clopper_pearson_ci95": [
+        0.0,
+        11.57
+      ],
+      "mean_fitness": 6.83,
+      "std_fitness": 10.83,
+      "mean_target_recall": 6.83,
+      "std_target_recall": 10.83,
+      "mean_anchor_accuracy": 100.0,
+      "std_anchor_accuracy": 0.0,
+      "mean_regressions": 0.0,
+      "std_regressions": 0.0,
+      "mean_evaluations": 122.0,
+      "std_evaluations": 0.0
+    },
+    "group_b_oneshot_llm": {
+      "group": "Group B (One-Shot LLM)",
+      "seeds_tested": 30,
+      "pass_rate_pct": 6.67,
+      "pass_rate_wilson_ci95": [
+        1.85,
+        21.32
+      ],
+      "pass_rate_clopper_pearson_ci95": [
+        0.82,
+        22.07
+      ],
+      "mean_fitness": 36.92,
+      "std_fitness": 31.39,
+      "mean_target_recall": 78.92,
+      "std_target_recall": 26.92,
+      "mean_anchor_accuracy": 99.54,
+      "std_anchor_accuracy": 0.59,
+      "mean_regressions": 4.63,
+      "std_regressions": 5.94,
+      "mean_evaluations": 1.0,
+      "std_evaluations": 0.0
+    },
+    "group_c_darwin_wsp": {
+      "group": "Group C (Darwin WSP)",
+      "seeds_tested": 30,
+      "pass_rate_pct": 100.0,
+      "pass_rate_wilson_ci95": [
+        88.65,
+        100.0
+      ],
+      "pass_rate_clopper_pearson_ci95": [
+        88.43,
+        100.0
+      ],
+      "mean_fitness": 99.95,
+      "std_fitness": 0.22,
+      "mean_target_recall": 99.95,
+      "std_target_recall": 0.22,
+      "mean_anchor_accuracy": 100.0,
+      "std_anchor_accuracy": 0.0,
+      "mean_regressions": 0.0,
+      "std_regressions": 0.0,
+      "mean_evaluations": 42.43,
+      "std_evaluations": 24.38
+    },
+    "statistical_significance": {
+      "metric": "fitness_dual_invariant",
+      "group_c_vs_group_a": {
+        "wilcoxon_stat": 0.0,
+        "p_value": 1e-06,
+        "cohens_d": 11.9523,
+        "cliffs_delta": 1.0,
+        "significant_p01": true,
+        "holm_bonferroni": {
+          "rank": 1,
+          "raw_p_value": 1e-06,
+          "crit_alpha_holm": 0.025,
+          "p_value_holm_adjusted": 2e-06,
+          "p_value_bonferroni_adjusted": 2e-06,
+          "significant_holm": true,
+          "significant_bonferroni": true
+        }
+      },
+      "group_c_vs_group_b": {
+        "wilcoxon_stat": 0.0,
+        "p_value": 3e-06,
+        "cohens_d": 2.7914,
+        "cliffs_delta": 0.9289,
+        "significant_p05": true,
+        "holm_bonferroni": {
+          "rank": 2,
+          "raw_p_value": 3e-06,
+          "crit_alpha_holm": 0.05,
+          "p_value_holm_adjusted": 3e-06,
+          "p_value_bonferroni_adjusted": 7e-06,
+          "significant_holm": true,
+          "significant_bonferroni": true
+        }
+      }
+    }
+  }
+}

@@ -1,9 +1,9 @@
 {
-  "timestamp": 1793930985.4301667,
+  "timestamp": 1793932057.012521,
   "attestation": {
     "schema_version": "1.0.0",
     "python_sha256": "42ac541168e97dedb9aabd8be335539fc41c682e414b9e8d137b164fb68683b0",
-    "core_merkle_root": "a926e86808035a8d913d868002ddb0509ff51173556ff3c14c97249abae1bd24",
+    "core_merkle_root": "e48fafb06c3aa4363fcd447d39b83bf2e069de4ea0156f9e858f2750641f57d5",
     "libraries_digest": {
       "numpy:core": "65d5e777b6d662ba19cb80800bef3eb999eda7aee51eea62c308feabf679dba4",
       "scipy:core": "a11ad8a1eaf423d32a0d3dd6c9be6c7be86068321f043dacd2d555a49418b92f"
@@ -15,7 +15,7 @@
       "machine_arch": "AMD64",
       "logical_cpus": 8
     },
-    "timestamp_utc": "2026-11-06T02:09:45.471892+00:00"
+    "timestamp_utc": "2026-11-06T02:27:37.051999+00:00"
   },
   "overall_verdict": "NEEDS_REVIEW",
   "governor": {
@@ -38,28 +38,28 @@
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 3,
-        "duration_seconds": 0.073
+        "duration_seconds": 0.071
       },
       "requests_http_helper": {
         "passed": true,
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.019
+        "duration_seconds": 0.018
       },
       "lru_cache_logic": {
         "passed": true,
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.023
+        "duration_seconds": 0.021
       },
       "multi_file_config": {
         "passed": true,
         "fitness": 100.0,
         "passed_holdout": true,
         "edits_count": 2,
-        "duration_seconds": 0.03
+        "duration_seconds": 0.029
       }
     }
   },

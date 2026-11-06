@@ -353,15 +353,36 @@ def test_multiseed_tri_factor_benchmark_and_wilson_ci():
 
 def test_dwsp_ablation_study_and_statistical_significance():
     """Verify DWSP ablation study runner and statistical significance calculations."""
-    from evolab.neural.experiment import cohens_d, run_dwsp_ablation_study, wilcoxon_signed_rank_test
+    from evolab.neural.experiment import (
+        cliffs_delta,
+        clopper_pearson_interval,
+        cohens_d,
+        holm_bonferroni_correction,
+        run_dwsp_ablation_study,
+        run_dwsp_sensitivity_benchmark,
+        wilcoxon_signed_rank_test,
+    )
 
     # 1. Statistical functions test
     x = [100.0, 100.0, 100.0, 100.0]
     y = [10.0, 20.0, 15.0, 12.0]
     d = cohens_d(x, y)
     assert d > 2.0
+    c_delta = cliffs_delta(x, y)
+    assert c_delta == 1.0
     w_stat, p_val = wilcoxon_signed_rank_test(x, y)
     assert p_val < 0.15
+
+    # Clopper-Pearson exact interval
+    cp_low, cp_high = clopper_pearson_interval(1000, 1000)
+    assert 99.5 <= cp_low <= 100.0
+    assert cp_high == 100.0
+
+    # Holm-Bonferroni correction
+    p_dict = {"t1": 0.001, "t2": 0.015, "t3": 0.04}
+    holm_res = holm_bonferroni_correction(p_dict, alpha=0.05)
+    assert holm_res["t1"]["significant_holm"] is True
+    assert holm_res["t2"]["significant_holm"] is True
 
     # 2. Fast 1-seed ablation study execution
     ablation = run_dwsp_ablation_study(seeds=[2], architecture="shallow")
@@ -373,6 +394,13 @@ def test_dwsp_ablation_study_and_statistical_significance():
     assert "no_governor" in conds
     assert "no_null_space" in conds
     assert conds["full_dwsp"]["pass_rate_pct"] == 100.0
+    assert "std_regressions" in conds["no_governor"]
+
+    # 3. Fast 1-seed sensitivity execution
+    sens = run_dwsp_sensitivity_benchmark(seeds=[2])
+    assert "shallow_architecture" in sens
+    assert "deep_architecture" in sens
+    assert sens["shallow_architecture"]["group_c_darwin_wsp"]["pass_rate_pct"] == 100.0
 
 
 
