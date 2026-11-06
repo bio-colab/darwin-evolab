@@ -29,9 +29,10 @@ jobs:
 
       - name: Install system dependencies (Linux)
         if: runner.os == 'Linux'
+        timeout-minutes: 2
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q yosys || true
+          timeout 60s sudo apt-get update -q || true
+          timeout 60s sudo apt-get install -y -q yosys || true
 
       - name: Install package and test dependencies
         run: |
