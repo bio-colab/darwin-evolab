@@ -20,8 +20,10 @@
       0.0,
       27.75
     ],
-    "mean_target_recall": 6.5,
-    "std_target_recall": 4.5,
+    "mean_fitness": 11.64,
+    "std_fitness": 7.01,
+    "mean_target_recall": 11.64,
+    "std_target_recall": 7.01,
     "mean_anchor_accuracy": 100.0,
     "std_anchor_accuracy": 0.0,
     "mean_regressions": 0.0,
@@ -30,16 +32,18 @@
   "group_b_oneshot_llm": {
     "group": "Group B (One-Shot LLM)",
     "seeds_tested": 10,
-    "pass_rate_pct": 100.0,
+    "pass_rate_pct": 30.0,
     "pass_rate_wilson_ci95": [
-      72.25,
-      100.0
+      10.78,
+      60.32
     ],
-    "mean_target_recall": 100.0,
-    "std_target_recall": 0.0,
-    "mean_anchor_accuracy": 100.0,
-    "std_anchor_accuracy": 0.0,
-    "mean_regressions": 0.0,
+    "mean_fitness": 59.28,
+    "std_fitness": 40.59,
+    "mean_target_recall": 89.28,
+    "std_target_recall": 13.81,
+    "mean_anchor_accuracy": 97.98,
+    "std_anchor_accuracy": 3.14,
+    "mean_regressions": 20.2,
     "mean_evaluations": 1.0
   },
   "group_c_darwin_wsp": {
@@ -50,11 +54,28 @@
       72.25,
       100.0
     ],
+    "mean_fitness": 100.0,
+    "std_fitness": 0.0,
     "mean_target_recall": 100.0,
     "std_target_recall": 0.0,
     "mean_anchor_accuracy": 100.0,
     "std_anchor_accuracy": 0.0,
     "mean_regressions": 0.0,
     "mean_evaluations": 8.0
+  },
+  "statistical_significance": {
+    "metric": "fitness_dual_invariant",
+    "group_c_vs_group_a": {
+      "wilcoxon_stat": 0.0,
+      "p_value": 0.001953,
+      "cohens_d": 16.9177,
+      "significant_p01": true
+    },
+    "group_c_vs_group_b": {
+      "wilcoxon_stat": 0.0,
+      "p_value": 0.015625,
+      "cohens_d": 1.3459,
+      "significant_p05": true
+    }
   }
 }

@@ -1,0 +1,67 @@
+{
+  "study": "Darwin Weight-Space Programming (DWSP) Component Ablation Study",
+  "architecture": "shallow",
+  "seeds_tested": 10,
+  "conditions": {
+    "full_dwsp": {
+      "condition": "Full DWSP (Dual-System)",
+      "pass_rate_pct": 100.0,
+      "pass_rate_wilson_ci95": [
+        72.25,
+        100.0
+      ],
+      "mean_target_recall": 100.0,
+      "mean_anchor_accuracy": 100.0,
+      "mean_regressions": 0.0,
+      "mean_evaluations": 8.0
+    },
+    "no_llm_analyst": {
+      "condition": "No LLM Analyst (Blind GA)",
+      "pass_rate_pct": 0.0,
+      "pass_rate_wilson_ci95": [
+        0.0,
+        27.75
+      ],
+      "mean_target_recall": 11.64,
+      "mean_anchor_accuracy": 100.0,
+      "mean_regressions": 0.0,
+      "mean_evaluations": 122.0
+    },
+    "no_evolution": {
+      "condition": "No Evolution (One-Shot LLM)",
+      "pass_rate_pct": 30.0,
+      "pass_rate_wilson_ci95": [
+        10.78,
+        60.32
+      ],
+      "mean_target_recall": 89.28,
+      "mean_anchor_accuracy": 97.98,
+      "mean_regressions": 20.2,
+      "mean_evaluations": 1.0
+    },
+    "no_governor": {
+      "condition": "No Governor (Unconstrained)",
+      "pass_rate_pct": 60.0,
+      "pass_rate_wilson_ci95": [
+        31.27,
+        83.18
+      ],
+      "mean_target_recall": 99.52,
+      "mean_anchor_accuracy": 97.98,
+      "mean_regressions": 20.2,
+      "mean_evaluations": 15.7
+    },
+    "no_null_space": {
+      "condition": "No Null-Space Projection",
+      "pass_rate_pct": 70.0,
+      "pass_rate_wilson_ci95": [
+        39.68,
+        89.22
+      ],
+      "mean_target_recall": 90.6,
+      "mean_anchor_accuracy": 99.99,
+      "mean_regressions": 0.1,
+      "mean_evaluations": 30.4
+    }
+  }
+}

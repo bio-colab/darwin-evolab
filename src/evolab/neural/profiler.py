@@ -212,11 +212,12 @@ class ActivationProfiler:
         self,
         activations: np.ndarray,
         tol: float = 1e-4,
+        center: bool = False,
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Compute the orthogonal null-space projection matrix for anchor activations.
 
         Given anchor activations X in R^(N x d_in), computes P_null in R^(d_in x d_in)
-        such that X @ P_null = 0.
+        such that X @ P_null ≈ 0 (or zero-variance if center=True).
         Returns:
             P_null: (d_in, d_in) projection matrix.
             singular_values: (min(N, d_in),) singular values of X.
@@ -226,9 +227,10 @@ class ActivationProfiler:
             X = X.reshape(1, -1)
 
         N, d_in = X.shape
+        X_proc = (X - np.mean(X, axis=0, keepdims=True)) if center and N > 1 else X
 
         # SVD: X = U Sigma V^T
-        U, s, Vt = svd(X, full_matrices=True)
+        U, s, Vt = svd(X_proc, full_matrices=True)
         # Numerical rank
         cutoff = tol * (s[0] if len(s) > 0 else 1.0)
         rank = int(np.sum(s > cutoff))

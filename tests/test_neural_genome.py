@@ -347,5 +347,32 @@ def test_multiseed_tri_factor_benchmark_and_wilson_ci():
     summary = run_multiseed_tri_factor_benchmark(seeds=[1, 2], architecture="shallow")
     assert summary["group_a_blind_ga"]["seeds_tested"] == 2
     assert summary["group_c_darwin_wsp"]["pass_rate_pct"] == 100.0
+    assert "statistical_significance" in summary
+    assert "group_c_vs_group_a" in summary["statistical_significance"]
+
+
+def test_dwsp_ablation_study_and_statistical_significance():
+    """Verify DWSP ablation study runner and statistical significance calculations."""
+    from evolab.neural.experiment import cohens_d, run_dwsp_ablation_study, wilcoxon_signed_rank_test
+
+    # 1. Statistical functions test
+    x = [100.0, 100.0, 100.0, 100.0]
+    y = [10.0, 20.0, 15.0, 12.0]
+    d = cohens_d(x, y)
+    assert d > 2.0
+    w_stat, p_val = wilcoxon_signed_rank_test(x, y)
+    assert p_val < 0.15
+
+    # 2. Fast 1-seed ablation study execution
+    ablation = run_dwsp_ablation_study(seeds=[2], architecture="shallow")
+    assert "conditions" in ablation
+    conds = ablation["conditions"]
+    assert "full_dwsp" in conds
+    assert "no_llm_analyst" in conds
+    assert "no_evolution" in conds
+    assert "no_governor" in conds
+    assert "no_null_space" in conds
+    assert conds["full_dwsp"]["pass_rate_pct"] == 100.0
+
 
 

@@ -362,6 +362,7 @@ def verify_documentation() -> bool:
     if README_PATH.exists():
         readme_text = README_PATH.read_text(encoding="utf-8")
         valid_badges = [
+            "tests-794%20passed", "tests-794 passed",
             "tests-793%20passed", "tests-793 passed",
             "tests-788%20passed", "tests-788 passed",
             "tests-783%20passed", "tests-783 passed",
@@ -395,7 +396,30 @@ def verify_documentation() -> bool:
         else:
             checks_passed += 1
 
-        print(f"[OK] DWSP Tri-Factor Benchmark (Target Recall: {res_c['target_recall']:.1f}%, 0 regressions) verified.")
+        # Check multi-seed shallow report
+        shallow_ms = load_json("dwsp_multiseed_benchmark.json")
+        b_pass = f"{shallow_ms['group_b_oneshot_llm']['pass_rate_pct']:.1f}%"
+        if b_pass not in doc_text:
+            errors.append(f"DWSP Shallow: Missing Group B pass rate {b_pass} in docs/RESULTS.md")
+        else:
+            checks_passed += 1
+
+        # Check multi-seed deep report
+        deep_ms = load_json("dwsp_deep_multiseed_benchmark.json")
+        b_deep_pass = f"{deep_ms['group_b_oneshot_llm']['pass_rate_pct']:.1f}%"
+        if b_deep_pass not in doc_text:
+            errors.append(f"DWSP Deep: Missing Group B pass rate {b_deep_pass} in docs/RESULTS.md")
+        else:
+            checks_passed += 1
+
+        # Check ablation study report
+        ablation = load_json("dwsp_ablation_study.json")
+        if "Full DWSP (Dual-System)" not in doc_text:
+            errors.append("DWSP Ablation: Missing Full DWSP in docs/RESULTS.md")
+        else:
+            checks_passed += 1
+
+        print(f"[OK] DWSP Tri-Factor, Multi-Seed & Ablation Benchmarks verified (Shallow B: {b_pass}, Deep B: {b_deep_pass}, 0 regressions).")
     except Exception as exc:
         errors.append(f"DWSP check failed: {exc}")
 

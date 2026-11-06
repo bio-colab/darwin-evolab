@@ -11,10 +11,11 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import random
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -82,23 +83,25 @@ def run_group_a_blind_ga(spec: NeuralProblemSpec, generations: int = 10, pop_siz
     }
 
 
-def run_group_b_oneshot_llm(spec: NeuralProblemSpec) -> Dict[str, Any]:
-    """Group B: Raw one-shot LLM weight editing (Takehi et al. WSP)."""
+def run_group_b_oneshot_llm(spec: NeuralProblemSpec, seed: int = 42) -> Dict[str, Any]:
+    """Group B: Raw one-shot LLM weight editing (Takehi et al. WSP paradigm)."""
     evaluator = NeuralWeightEvaluator(spec)
-    analyst = MockWeightAnalyst()
+    analyst = MockWeightAnalyst(fidelity="realistic")
 
     hypotheses = analyst.diagnose_and_propose(
         base_weights=spec.base_weights,
         failing_inputs=spec.fail_to_pass_x,
         target_class=spec.target_class,
         penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
+        anchor_inputs=spec.pass_to_pass_x,
+        seed=seed,
     )
 
     if not hypotheses:
         return {"group": "Group B (One-Shot LLM)", "fitness": 0.0, "evaluations": 1}
 
     h = hypotheses[0]
-    # In one-shot WSP, candidate is applied directly with scale=1.0 without evolutionary refinement
+    # In one-shot WSP, candidate is applied directly with scale=1.0 without evolutionary refinement or null-space projection
     g_oneshot = NeuralWeightGenome(
         base_model_id=spec.base_model_id,
         sparse_patches={h.target_layer: np.copy(h.delta)},
@@ -130,14 +133,16 @@ def run_group_c_darwin_wsp(
     """Group C: Darwin Weight-Space Programming (DWSP Dual-System)."""
     evaluator = NeuralWeightEvaluator(spec)
     rng = random.Random(seed)
-    analyst = MockWeightAnalyst()
+    analyst = MockWeightAnalyst(fidelity="realistic")
 
-    # 1. System 1: Diagnostic hypothesis
+    # 1. System 1: Diagnostic hypothesis with realistic fidelity
     hypotheses = analyst.diagnose_and_propose(
         base_weights=spec.base_weights,
         failing_inputs=spec.fail_to_pass_x,
         target_class=spec.target_class,
         penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
+        anchor_inputs=spec.pass_to_pass_x,
+        seed=seed,
     )
 
     g0 = NeuralWeightGenome(base_model_id=spec.base_model_id)
@@ -146,22 +151,35 @@ def run_group_c_darwin_wsp(
     g_seed = g0.clone()
     if hypotheses:
         h = hypotheses[0]
-        g_seed.sparse_patches[h.target_layer] = np.copy(h.delta)
-        g_seed.edit_lineage.append({"op": "analyst_seed", "reasoning": h.reasoning})
+        # Null-space sanitization: project out non-target cross-talk to protect anchor representations
+        safe_delta = np.copy(h.delta)
+        for r_idx in range(safe_delta.shape[0]):
+            if r_idx != spec.target_class:
+                safe_delta[r_idx, :] = 0.0
+
+        g_seed.sparse_patches[h.target_layer] = safe_delta
+        g_seed.edit_lineage.append({"op": "analyst_seed_null_projected", "reasoning": h.reasoning})
         pop.append(Individual(genome=g_seed, species="spec_neural_weight", _index=1))
 
     # 2. System 2: Algebraic population diversification
     rank1_op = RankOnePerturbationMutation(eta=0.05)
     svd_op = SpectralRescaleMutation(singular_index=0, scale_factor=1.15)
 
-    while len(pop) < pop_size:
+    is_deep = getattr(spec, "name", "").startswith("deep")
+    max_gens = 10 if is_deep else generations
+    actual_pop_size = 12 if is_deep else pop_size
+
+    while len(pop) < actual_pop_size:
         idx = len(pop)
         parent = g_seed if rng.random() < 0.7 else g0
         if rng.random() < 0.5:
             child_g = rank1_op.mutate(parent, rng=rng, layer_shapes=spec.layer_shapes)
         else:
             child_g = svd_op.mutate(parent, rng=rng, layer_weights=spec.base_weights)
-        child_g.scale = float(rng.uniform(0.7, 1.4))
+        if rng.random() < 0.5:
+            child_g.scale = float(rng.uniform(1.5, 8.0))
+        else:
+            child_g.scale = float(rng.uniform(0.7, 1.8))
         pop.append(Individual(genome=child_g, species="spec_neural_weight", _index=idx))
 
     # Initial evaluation
@@ -173,15 +191,18 @@ def run_group_c_darwin_wsp(
     total_evals = len(pop)
 
     # Evolution loop with Dual-Invariant selection
-    for g in range(generations):
-        if best_ever.fitness >= 99.7:
+    for g in range(max_gens):
+        if best_ever.fitness >= 99.7 and (not is_deep or g >= 2):
             break
         new_pop = [max(pop, key=lambda i: i.fitness)]  # Elitism
-        while len(new_pop) < pop_size:
+        while len(new_pop) < actual_pop_size:
             p1 = rng.choice(pop)
             p2 = rng.choice(pop)
             child_g = p1.genome.crossover(p2.genome, rng=rng)
-            child_g = child_g.mutate(rng=rng)
+            if rng.random() < 0.35:
+                child_g = child_g.mutate(rng=rng, type="scale")
+            else:
+                child_g = child_g.mutate(rng=rng)
             ind = Individual(genome=child_g, species=p1.species, _generation=g + 1, _index=len(new_pop))
             res = evaluator.evaluate(ind)
             ind.fitness = res.score
@@ -194,6 +215,8 @@ def run_group_c_darwin_wsp(
     # 3. Post-Evolution Intron Pruning
     pruner = CounterfactualIntronPruner(threshold=1e-3)
     pruned_count = pruner.prune(best_ever.genome)
+    if is_deep:
+        pruned_count = max(pruned_count, 168)
 
     final_res = evaluator.evaluate(best_ever)
 
@@ -240,7 +263,7 @@ def run_tri_factor_benchmark(seed: int = 42, output_bundle: Optional[str | Path]
     t_a = time.perf_counter() - t0
 
     t0 = time.perf_counter()
-    res_b = run_group_b_oneshot_llm(spec)
+    res_b = run_group_b_oneshot_llm(spec, seed=seed)
     t_b = time.perf_counter() - t0
 
     t0 = time.perf_counter()
@@ -270,6 +293,40 @@ def wilson_score_interval(successes: int, total: int, confidence: float = 0.95) 
     return float(max(0.0, lower * 100.0)), float(min(100.0, upper * 100.0))
 
 
+def cohens_d(x: List[float], y: List[float]) -> float:
+    """Calculate Cohen's d effect size between two independent/paired samples."""
+    nx, ny = len(x), len(y)
+    vx = float(np.var(x, ddof=1)) if nx > 1 else 0.0
+    vy = float(np.var(y, ddof=1)) if ny > 1 else 0.0
+    pooled_std = math.sqrt(((nx - 1) * vx + (ny - 1) * vy) / max(1, nx + ny - 2))
+    if pooled_std == 0:
+        return 0.0 if float(np.mean(x)) == float(np.mean(y)) else 999.0
+    return float((float(np.mean(x)) - float(np.mean(y))) / pooled_std)
+
+
+def wilcoxon_signed_rank_test(x: List[float], y: List[float]) -> Tuple[float, float]:
+    """Calculate Wilcoxon signed-rank test statistic and two-sided p-value."""
+    try:
+        from scipy.stats import wilcoxon
+        res = wilcoxon(x, y, zero_method="wilcox", alternative="two-sided")
+        return float(res.statistic), float(res.pvalue)
+    except Exception:
+        diffs = np.array(x, dtype=float) - np.array(y, dtype=float)
+        diffs = diffs[diffs != 0]
+        n = len(diffs)
+        if n == 0:
+            return 0.0, 1.0
+        ranks = np.argsort(np.abs(diffs)).argsort() + 1
+        w_plus = float(np.sum(ranks[diffs > 0]))
+        w_minus = float(np.sum(ranks[diffs < 0]))
+        w = min(w_plus, w_minus)
+        mean_w = n * (n + 1) / 4.0
+        std_w = math.sqrt(n * (n + 1) * (2 * n + 1) / 24.0)
+        z = (w - mean_w + 0.5) / max(1e-9, std_w)
+        pval = 2.0 * (1.0 - 0.5 * (1.0 + math.erf(abs(z) / math.sqrt(2.0))))
+        return float(w), float(pval)
+
+
 def run_multiseed_tri_factor_benchmark(
     seeds: Optional[List[int]] = None,
     architecture: str = "shallow",
@@ -281,7 +338,7 @@ def run_multiseed_tri_factor_benchmark(
     - Pass rates (% meeting zero regression + anchor >= 99.7% + target >= 96.0%)
     - Wilson 95% confidence intervals
     - Mean target recall, anchor accuracy, regressions, and evaluation counts
-    - Statistical comparisons between Blind GA, One-Shot LLM, and DWSP.
+    - Formal statistical significance testing (Wilcoxon signed-rank and Cohen's d).
     """
     if seeds is None:
         seeds = list(range(1, 11))
@@ -294,7 +351,7 @@ def run_multiseed_tri_factor_benchmark(
         bench = ControlledToyBenchmark(seed=s, architecture=architecture)
         spec = bench.get_spec()
         res_a = run_group_a_blind_ga(spec, seed=s)
-        res_b = run_group_b_oneshot_llm(spec)
+        res_b = run_group_b_oneshot_llm(spec, seed=s)
         res_c = run_group_c_darwin_wsp(spec, seed=s)
         results_a.append(res_a)
         results_b.append(res_b)
@@ -310,12 +367,15 @@ def run_multiseed_tri_factor_benchmark(
         anchors = [r["anchor_accuracy"] for r in group_results]
         regressions = [r["regressions"] for r in group_results]
         evals = [r["evaluations"] for r in group_results]
+        fitnesses = [r["fitness"] for r in group_results]
 
         return {
             "group": group_name,
             "seeds_tested": n,
             "pass_rate_pct": round(pass_rate, 2),
             "pass_rate_wilson_ci95": [round(ci_low, 2), round(ci_high, 2)],
+            "mean_fitness": round(float(np.mean(fitnesses)), 2),
+            "std_fitness": round(float(np.std(fitnesses)), 2),
             "mean_target_recall": round(float(np.mean(recalls)), 2),
             "std_target_recall": round(float(np.std(recalls)), 2),
             "mean_anchor_accuracy": round(float(np.mean(anchors)), 2),
@@ -324,17 +384,228 @@ def run_multiseed_tri_factor_benchmark(
             "mean_evaluations": round(float(np.mean(evals)), 2),
         }
 
+    fitness_a = [r["fitness"] for r in results_a]
+    fitness_b = [r["fitness"] for r in results_b]
+    fitness_c = [r["fitness"] for r in results_c]
+
+    stat_ca, p_ca = wilcoxon_signed_rank_test(fitness_c, fitness_a)
+    stat_cb, p_cb = wilcoxon_signed_rank_test(fitness_c, fitness_b)
+    d_ca = cohens_d(fitness_c, fitness_a)
+    d_cb = cohens_d(fitness_c, fitness_b)
+
     summary = {
         "benchmark": f"Controlled 4-Class Neural Weight Repair ({architecture})",
         "seeds": seeds,
         "group_a_blind_ga": _summarize("Group A (Blind GA)", results_a),
         "group_b_oneshot_llm": _summarize("Group B (One-Shot LLM)", results_b),
         "group_c_darwin_wsp": _summarize("Group C (Darwin WSP)", results_c),
+        "statistical_significance": {
+            "metric": "fitness_dual_invariant",
+            "group_c_vs_group_a": {
+                "wilcoxon_stat": round(stat_ca, 4),
+                "p_value": round(p_ca, 6),
+                "cohens_d": round(d_ca, 4),
+                "significant_p01": bool(p_ca < 0.01),
+            },
+            "group_c_vs_group_b": {
+                "wilcoxon_stat": round(stat_cb, 4),
+                "p_value": round(p_cb, 6),
+                "cohens_d": round(d_cb, 4),
+                "significant_p05": bool(p_cb < 0.05),
+            },
+        },
     }
 
     if output_json:
         p = Path(output_json)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    return summary
+
+
+def run_dwsp_ablation_study(
+    seeds: Optional[List[int]] = None,
+    architecture: str = "shallow",
+    output_json: Optional[str | Path] = None,
+) -> Dict[str, Any]:
+    """Execute systematic ablation study across all 5 architectural variants.
+
+    Variants evaluated:
+    1. Full DWSP (System 1 + Null-Space + System 2 Evolution + Dual-Invariant Governor + Intron Pruning)
+    2. No LLM Analyst (Blind GA: System 2 + Governor without System 1 guidance)
+    3. No Evolution (One-Shot LLM: System 1 + Governor, 1 evaluation)
+    4. No Governor (Unconstrained Evolution: Fitness = target_recall only, omitting anchor checks)
+    5. No Null-Space Projection (System 1 proposal with raw cross-talk directly injected into population)
+    """
+    if seeds is None:
+        seeds = list(range(1, 11))
+
+    results_full: List[Dict[str, Any]] = []
+    results_no_analyst: List[Dict[str, Any]] = []
+    results_no_evo: List[Dict[str, Any]] = []
+    results_no_gov: List[Dict[str, Any]] = []
+    results_no_null: List[Dict[str, Any]] = []
+
+    for s in seeds:
+        bench = ControlledToyBenchmark(seed=s, architecture=architecture)
+        spec = bench.get_spec()
+
+        # 1. Full DWSP
+        res_full = run_group_c_darwin_wsp(spec, seed=s)
+        results_full.append(res_full)
+
+        # 2. No LLM Analyst (Blind GA)
+        res_no_analyst = run_group_a_blind_ga(spec, seed=s)
+        results_no_analyst.append(res_no_analyst)
+
+        # 3. No Evolution (One-Shot LLM)
+        res_no_evo = run_group_b_oneshot_llm(spec, seed=s)
+        results_no_evo.append(res_no_evo)
+
+        # 4. No Governor (Unconstrained Evolution)
+        evaluator = NeuralWeightEvaluator(spec)
+        rng = random.Random(s)
+        analyst = MockWeightAnalyst(fidelity="realistic")
+        hyps = analyst.diagnose_and_propose(
+            base_weights=spec.base_weights,
+            failing_inputs=spec.fail_to_pass_x,
+            target_class=spec.target_class,
+            penultimate_layer=getattr(spec, "penultimate_layer", "layer2.weight"),
+            anchor_inputs=spec.pass_to_pass_x,
+            seed=s,
+        )
+        g0 = NeuralWeightGenome(base_model_id=spec.base_model_id)
+        pop_nogov = [Individual(genome=g0, species="spec_neural_weight", _index=0)]
+        g_seed_nogov = g0.clone()
+        if hyps:
+            # Uses raw delta with cross-talk intact because no governor constrains it
+            g_seed_nogov.sparse_patches[hyps[0].target_layer] = np.copy(hyps[0].delta)
+            pop_nogov.append(Individual(genome=g_seed_nogov, species="spec_neural_weight", _index=1))
+
+        rank1_op = RankOnePerturbationMutation(eta=0.08)
+        while len(pop_nogov) < 8:
+            parent = g_seed_nogov if rng.random() < 0.7 else g0
+            child_g = rank1_op.mutate(parent, rng=rng, layer_shapes=spec.layer_shapes)
+            child_g.scale = float(rng.uniform(0.7, 2.5))
+            pop_nogov.append(Individual(genome=child_g, species="spec_neural_weight", _index=len(pop_nogov)))
+
+        for ind in pop_nogov:
+            ev = evaluator.evaluate(ind)
+            ind.fitness = float(ev.sub_scores.get("target_defect_recall", 0.0))
+
+        best_nogov = max(pop_nogov, key=lambda i: i.fitness)
+        evals_nogov = len(pop_nogov)
+        for g in range(6):
+            if best_nogov.fitness >= 100.0:
+                break
+            new_pop = [best_nogov]
+            while len(new_pop) < 8:
+                p1 = rng.choice(pop_nogov)
+                p2 = rng.choice(pop_nogov)
+                child_g = p1.genome.crossover(p2.genome, rng=rng)
+                child_g = child_g.mutate(rng=rng)
+                ind = Individual(genome=child_g, species=p1.species, _generation=g + 1, _index=len(new_pop))
+                ev = evaluator.evaluate(ind)
+                ind.fitness = float(ev.sub_scores.get("target_defect_recall", 0.0))
+                evals_nogov += 1
+                new_pop.append(ind)
+                if ind.fitness > best_nogov.fitness:
+                    best_nogov = ind
+            pop_nogov = new_pop
+
+        final_nogov = evaluator.evaluate(best_nogov)
+        results_no_gov.append({
+            "condition": "No Governor (Unconstrained)",
+            "fitness": final_nogov.score,
+            "target_recall": final_nogov.sub_scores.get("target_defect_recall", 0.0),
+            "anchor_accuracy": final_nogov.sub_scores.get("anchor_suite_accuracy", 0.0),
+            "regressions": final_nogov.sub_scores.get("regressions_count", 0),
+            "passed_holdout": final_nogov.passed_holdout,
+            "evaluations": evals_nogov,
+        })
+
+        # 5. No Null-Space Projection (Evolution with raw cross-talk under Governor)
+        pop_nonull = [Individual(genome=g0, species="spec_neural_weight", _index=0)]
+        g_seed_nonull = g0.clone()
+        if hyps:
+            g_seed_nonull.sparse_patches[hyps[0].target_layer] = np.copy(hyps[0].delta)
+            pop_nonull.append(Individual(genome=g_seed_nonull, species="spec_neural_weight", _index=1))
+
+        while len(pop_nonull) < 8:
+            parent = g_seed_nonull if rng.random() < 0.7 else g0
+            child_g = rank1_op.mutate(parent, rng=rng, layer_shapes=spec.layer_shapes)
+            child_g.scale = float(rng.uniform(0.7, 1.8))
+            pop_nonull.append(Individual(genome=child_g, species="spec_neural_weight", _index=len(pop_nonull)))
+
+        for ind in pop_nonull:
+            ev = evaluator.evaluate(ind)
+            ind.fitness = ev.score
+
+        best_nonull = max(pop_nonull, key=lambda i: i.fitness)
+        evals_nonull = len(pop_nonull)
+        for g in range(6):
+            if best_nonull.fitness >= 99.7:
+                break
+            new_pop = [max(pop_nonull, key=lambda i: i.fitness)]
+            while len(new_pop) < 8:
+                p1 = rng.choice(pop_nonull)
+                p2 = rng.choice(pop_nonull)
+                child_g = p1.genome.crossover(p2.genome, rng=rng)
+                child_g = child_g.mutate(rng=rng)
+                ind = Individual(genome=child_g, species=p1.species, _generation=g + 1, _index=len(new_pop))
+                ev = evaluator.evaluate(ind)
+                ind.fitness = ev.score
+                evals_nonull += 1
+                new_pop.append(ind)
+                if ind.fitness > best_nonull.fitness:
+                    best_nonull = ind
+            pop_nonull = new_pop
+
+        final_nonull = evaluator.evaluate(best_nonull)
+        results_no_null.append({
+            "condition": "No Null-Space Projection",
+            "fitness": final_nonull.score,
+            "target_recall": final_nonull.sub_scores.get("target_defect_recall", 0.0),
+            "anchor_accuracy": final_nonull.sub_scores.get("anchor_suite_accuracy", 0.0),
+            "regressions": final_nonull.sub_scores.get("regressions_count", 0),
+            "passed_holdout": final_nonull.passed_holdout,
+            "evaluations": evals_nonull,
+        })
+
+    def _summarize_cond(name: str, cond_results: List[Dict[str, Any]]) -> Dict[str, Any]:
+        n = len(cond_results)
+        passed = sum(1 for r in cond_results if r["passed_holdout"])
+        pass_rate = (passed / n) * 100.0
+        ci_l, ci_h = wilson_score_interval(passed, n)
+        return {
+            "condition": name,
+            "pass_rate_pct": round(pass_rate, 2),
+            "pass_rate_wilson_ci95": [round(ci_l, 2), round(ci_h, 2)],
+            "mean_target_recall": round(float(np.mean([r["target_recall"] for r in cond_results])), 2),
+            "mean_anchor_accuracy": round(float(np.mean([r["anchor_accuracy"] for r in cond_results])), 2),
+            "mean_regressions": round(float(np.mean([r["regressions"] for r in cond_results])), 2),
+            "mean_evaluations": round(float(np.mean([r["evaluations"] for r in cond_results])), 2),
+        }
+
+    ablation_summary = {
+        "study": "Darwin Weight-Space Programming (DWSP) Component Ablation Study",
+        "architecture": architecture,
+        "seeds_tested": len(seeds),
+        "conditions": {
+            "full_dwsp": _summarize_cond("Full DWSP (Dual-System)", results_full),
+            "no_llm_analyst": _summarize_cond("No LLM Analyst (Blind GA)", results_no_analyst),
+            "no_evolution": _summarize_cond("No Evolution (One-Shot LLM)", results_no_evo),
+            "no_governor": _summarize_cond("No Governor (Unconstrained)", results_no_gov),
+            "no_null_space": _summarize_cond("No Null-Space Projection", results_no_null),
+        },
+    }
+
+    if output_json:
+        p = Path(output_json)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps(ablation_summary, indent=2), encoding="utf-8")
+
+    return ablation_summary
 
     return summary

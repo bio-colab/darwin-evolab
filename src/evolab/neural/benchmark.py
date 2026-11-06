@@ -73,11 +73,17 @@ class ControlledToyBenchmark:
     - "deep": Deep 6-layer MLP (8 -> 32 -> 16 -> 48 -> 32 -> 16 -> 4) with GELU activation.
     """
 
-    def __init__(self, seed: int = 42, architecture: str = "shallow") -> None:
+    def __init__(
+        self,
+        seed: int = 42,
+        architecture: str = "shallow",
+        anchor_samples: int = 1000,
+    ) -> None:
         self.rng = np.random.RandomState(seed)
         self.architecture = str(architecture).lower()
         self.num_classes = 4
         self.input_dim = 8
+        self.anchor_samples = int(anchor_samples)
 
         # 1. Generate clean weights
         if self.architecture == "deep":
@@ -92,7 +98,26 @@ class ControlledToyBenchmark:
 
         # 2. Generate datasets
         self.train_x, self.train_y = self._generate_data(samples_per_class=25)
-        self.test_x, self.test_y = self._generate_data(samples_per_class=20)
+        
+        # High-resolution holdout suite: 1,000 anchor samples across Classes 0-2 + 250 fail samples for Class 3
+        # Guarantees single-sample mathematical precision for 99.7% anchor accuracy threshold (<=3 errors / 1000)
+        anchor_classes = self.num_classes - 1
+        per_class = self.anchor_samples // anchor_classes
+        anchor_xs, anchor_ys = [], []
+        centers = np.eye(self.num_classes, self.input_dim) * 3.0
+        for c in range(anchor_classes):
+            cnt = per_class + (1 if c < (self.anchor_samples % anchor_classes) else 0)
+            noise = self.rng.randn(cnt, self.input_dim) * 0.2
+            anchor_xs.append(centers[c] + noise)
+            anchor_ys.append(np.full(cnt, c, dtype=int))
+
+        fail_samples = 250
+        noise_f = self.rng.randn(fail_samples, self.input_dim) * 0.2
+        fail_xs = [centers[3] + noise_f]
+        fail_ys = [np.full(fail_samples, 3, dtype=int)]
+
+        self.test_x = np.vstack(anchor_xs + fail_xs)
+        self.test_y = np.concatenate(anchor_ys + fail_ys)
 
         # 3. Create defective weights by damaging class 3 in output layer
         self.defective_weights = self._inject_defect(self.clean_weights, target_class=3)
